@@ -1,4 +1,4 @@
-package com.taskforce.superinvention
+package com.tf.superinvention
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
