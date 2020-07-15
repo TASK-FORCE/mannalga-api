@@ -21,3 +21,15 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create-drop
+
+  cache:
+    type: redis
+
+  redis:
+    port: 6379
+    host: localhost
+
+  data:
+    redis:
+      repositories:
+        enabled: false
