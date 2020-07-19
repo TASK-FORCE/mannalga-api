@@ -1,4 +1,4 @@
-package com.tf.superinvention.common.config.jpa
+package com.taskforce.superinvention.common.config.jpa
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.context.annotation.Bean
