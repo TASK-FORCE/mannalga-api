@@ -37,8 +37,6 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:${queryDsl}:jpa")
 
     runtimeOnly("mysql:mysql-connector-java")
-    runtimeOnly("com.h2database:h2")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
