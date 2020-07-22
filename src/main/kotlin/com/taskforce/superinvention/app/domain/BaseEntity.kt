@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app
+package com.taskforce.superinvention.app.domain
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -11,7 +11,7 @@ open class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected val id: Long? = null
+    protected val seq: Long? = null
 
     @CreatedDate
     protected  val createdAt: LocalDateTime? = null
