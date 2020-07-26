@@ -5,6 +5,7 @@ plugins {
     id("org.springframework.boot")        version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("idea")
+    id ("groovy")
     kotlin("jvm")            version "1.3.72"
     kotlin("kapt")           version "1.3.72"
     kotlin("plugin.spring")  version "1.3.72"
@@ -42,6 +43,8 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.spockframework:spock-core:1.1-groovy-2.4") // Spock 의존성 추가
+    testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4") // Spock 의존성 추가
 }
 
 sourceSets["main"].withConvention(KotlinSourceSet::class) {
