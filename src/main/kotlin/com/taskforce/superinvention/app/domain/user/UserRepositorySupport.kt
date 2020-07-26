@@ -8,7 +8,6 @@ import javax.transaction.Transactional
 @Repository
 class UserRepositorySupport : QuerydslRepositorySupport(User::class.java) {
 
-    @Transactional
     fun findById(id: String): User {
         return from(QUser.user)
                 .where(QUser.user.id.eq(id))
