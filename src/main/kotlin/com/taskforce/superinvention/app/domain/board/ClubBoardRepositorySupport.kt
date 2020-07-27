@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class ClubRepositorySupport : QuerydslRepositorySupport(Club::class.java) {
+class ClubBoardRepositorySupport : QuerydslRepositorySupport(ClubBoard::class.java) {
 
-    fun findBySeq(seq: Long): Club {
-        return from(QClub.club)
-                .where(QClub.club.seq.eq(seq))
+    fun findBySeq(seq: Long): ClubBoard {
+        return from(QClubBoard.clubBoard)
+                .where(QClubBoard.clubBoard.seq.eq(seq))
                 .fetchOne()
     }
 
