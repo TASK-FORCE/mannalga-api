@@ -1,17 +1,15 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
-import javax.transaction.Transactional
 
 @Repository
-class UserRepositorySupport : QuerydslRepositorySupport(User::class.java) {
+class UserRepositorySupport : UserRepositoryCustom,
+                              QuerydslRepositorySupport(User::class.java) {
 
-    fun findById(id: String): User {
+    override fun findByUserId(id: String): User {
         return from(QUser.user)
-                .where(QUser.user.id.eq(id))
+                .where(QUser.user.userId.eq(id))
                 .fetchOne()
     }
-
 }
