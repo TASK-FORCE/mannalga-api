@@ -32,17 +32,20 @@ class JwtTokenProvider(
         const val TIME_ZONE_KST = "Asia/Seoul"
     }
 
-    fun createToken(userId: String, roles: Set<UserRole> ): String {
-        val claims: Claims  = Jwts.claims().setSubject(userId)
+    fun createToken(userId: String, roles: Set<UserRole>): String {
+        val payloads: Claims  = Jwts.claims()
         val authList = roles.map { role -> SimpleGrantedAuthority(role.authority) }.toList()
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
         val issuedDate  = Date.from(now.toInstant())
         val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
-        claims["auth"] = authList
+
+        payloads["auth"]   = authList
+        payloads["userId"] = userId
 
         return Jwts.builder()
-            .setClaims(claims)
+            .setClaims(payloads)
+            .setSubject(userId)
             .setIssuedAt(issuedDate)
             .setExpiration(expiredDate)
             .signWith(SignatureAlgorithm.HS256, getSecretKeyInBase64())

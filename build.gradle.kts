@@ -34,9 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    // JWT
     implementation("io.jsonwebtoken:jjwt:0.9.1")
-
     implementation("org.apache.httpcomponents:httpclient")
 
     // JPA
@@ -49,6 +47,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+
+    testImplementation("org.mockito:mockito-core:3.4.6")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.spockframework:spock-core:1.1-groovy-2.4")   // Spock 의존성 추가
     testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4") // Spock 의존성 추가

@@ -12,6 +12,4 @@ class ClubUser(
 
         @ManyToOne
         var user: User
-) : BaseEntity() {
-
-}
+) : BaseEntity()

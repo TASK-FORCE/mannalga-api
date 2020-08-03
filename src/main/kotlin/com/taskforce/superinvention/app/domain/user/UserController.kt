@@ -16,23 +16,18 @@ class UserController(
         private val jwtTokenProvider: JwtTokenProvider
 ) {
 
-    @PostMapping("/login")
-    fun userSignin() {
-
-    }
-
-    @PostMapping("/saveKakaoToken")
-    fun saveKakaoToken(@RequestBody token: KakaoTokenDto): AppToken {
-        return userService.registerUserWithToken(token)
-    }
-
-    @GetMapping("/me")
+    @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
     fun getUserInfo(request: HttpServletRequest): User? {
         val token  = jwtTokenProvider.resolveToken(request)
         val userId = jwtTokenProvider.getUserId(token)
 
         return userService.getUserInfo(userId)
+    }
+
+    @PostMapping("/saveKakaoToken")
+    fun saveKakaoToken(@RequestBody token: KakaoTokenDto): AppToken {
+        return userService.publishAppToken(token)
     }
 
     @PostMapping("/register")

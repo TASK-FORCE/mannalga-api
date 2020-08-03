@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne
 @Entity
 class UserRole(
         @ManyToOne
-        @JoinColumn(name = "seq")
+        @JoinColumn(name = "user_seq")
         var user: User,
         var roleName: String
 ) : BaseEntity(), GrantedAuthority {

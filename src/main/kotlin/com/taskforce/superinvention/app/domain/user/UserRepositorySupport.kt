@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.user.QUser.user
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
@@ -8,8 +9,8 @@ class UserRepositorySupport : UserRepositoryCustom,
                               QuerydslRepositorySupport(User::class.java) {
 
     override fun findByUserId(id: String): User {
-        return from(QUser.user)
-                .where(QUser.user.userId.eq(id))
+        return from(user)
+                .where(user.userId.eq(id))
                 .fetchOne()
     }
 }

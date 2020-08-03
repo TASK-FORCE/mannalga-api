@@ -21,6 +21,8 @@ class UserDetailsService(
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.userId)
+                .authorities(user.userRoles)
+                .roles(*user.userRoles.map { userRole -> userRole.roleName }.toTypedArray())
                 .build()
     }
 }

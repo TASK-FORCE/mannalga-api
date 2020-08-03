@@ -12,9 +12,9 @@ class User: BaseEntity {
     var userType: UserType
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    var userRoles: Set<UserRole>
+    var userRoles: MutableSet<UserRole>
 
-    constructor(userId: String, userType: UserType, userRoles: Set<UserRole>) {
+    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>) {
         this.userId = userId
         this.userType = userType
         this.userRoles = userRoles
@@ -23,34 +23,12 @@ class User: BaseEntity {
     constructor(userId: String, userType: UserType) {
         this.userId = userId
         this.userType = userType
-        this.userRoles = emptySet()
+        this.userRoles = hashSetOf()
     }
 
-//    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-//        return this.userRoles.stream().map { role -> SimpleGrantedAuthority("ROLE_$role") }.collect(Collectors.toSet())
-//    }
-//
-//    override fun isEnabled(): Boolean {
-//        return true
-//    }
-//
-//    override fun getUsername(): String {
-//        return "";
-//    }
-//
-//    override fun isCredentialsNonExpired(): Boolean {
-//        return true
-//    }
-//
-//    override fun getPassword(): String {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun isAccountNonExpired(): Boolean {
-//        return true
-//    }
-//
-//    override fun isAccountNonLocked(): Boolean {
-//        return true
-//    }
+    constructor(userId: String) {
+        this.userId = userId
+        this.userType = UserType.KAKAO
+        this.userRoles = hashSetOf()
+    }
 }
