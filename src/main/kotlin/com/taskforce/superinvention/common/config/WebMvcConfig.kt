@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.common.config
 
+import com.taskforce.superinvention.common.config.argument.auth.AuthorizeArgumentResolver
 import org.apache.http.client.HttpClient
 import org.apache.http.impl.client.HttpClientBuilder
 import org.springframework.context.annotation.Bean
@@ -10,10 +11,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
 
 @Configuration
-class WebMvcConfig: WebMvcConfigurationSupport() {
+class WebMvcConfig(
+        private val authorizeArgumentResolver: AuthorizeArgumentResolver
+): WebMvcConfigurationSupport() {
 
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         super.addArgumentResolvers(argumentResolvers)
+        argumentResolvers.add(authorizeArgumentResolver)
     }
 
     @Bean

@@ -1,8 +1,10 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.taskforce.superinvention.app.web.dto.AppToken
+import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import com.taskforce.superinvention.common.config.argument.auth.Authorize
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.common.config.security.SecurityUser
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -12,17 +14,13 @@ import javax.servlet.http.HttpServletRequest
 
 @RestController
 class UserController(
-        private val userService: UserService,
-        private val jwtTokenProvider: JwtTokenProvider
+        private val userService: UserService
 ) {
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
-    fun getUserInfo(request: HttpServletRequest): User? {
-        val token  = jwtTokenProvider.resolveToken(request)
-        val userId = jwtTokenProvider.getUserId(token)
-
-        return userService.getUserInfo(userId)
+    fun getUserInfo(@Authorize auth: SecurityUser): User? {
+        return userService.getUserInfo(auth.user.userId)
     }
 
     @PostMapping("/saveKakaoToken")

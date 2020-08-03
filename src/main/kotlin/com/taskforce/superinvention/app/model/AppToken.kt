@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web.dto
+package com.taskforce.superinvention.app.model
 
 class AppToken(
         var isFirst: Boolean?,

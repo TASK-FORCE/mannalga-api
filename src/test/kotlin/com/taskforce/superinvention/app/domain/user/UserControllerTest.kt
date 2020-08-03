@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(value = [UserController::class])
-class SecurityTest {
+class UserControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc

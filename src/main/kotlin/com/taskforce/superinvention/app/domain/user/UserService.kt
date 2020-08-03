@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.taskforce.superinvention.app.web.dto.AppToken
+import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
