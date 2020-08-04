@@ -18,21 +18,22 @@ import javax.servlet.http.HttpServletRequest
 
 @Component
 class JwtTokenProvider(
-    @Value("\${security.jwt.token.secret-key}")
-    private val secretKey: String,
-
-    @Value("\${security.jwt.token.expire-day}")
-    private val expireDay: Long,
-
     private val userDetailsService: UserDetailsService
 ) {
 
     companion object {
+
         const val TOKEN_HEADER  = "Authorization"
         const val TIME_ZONE_KST = "Asia/Seoul"
+
+        @Value("\${security.jwt.token.secret-key}")
+        var secretKey: String = "default"
+
+        @Value("\${security.jwt.token.expire-day}")
+        var expireDay: Long = 365
     }
 
-    fun createToken(userId: String, roles: Set<UserRole>): String {
+    fun createAppToken(userId: String, roles: Set<UserRole>): String {
         val payloads: Claims  = Jwts.claims()
         val authList = roles.map { role -> SimpleGrantedAuthority(role.authority) }.toList()
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
@@ -42,6 +43,7 @@ class JwtTokenProvider(
 
         payloads["auth"]   = authList
         payloads["userId"] = userId
+        // payloads["oAuthToken"]
 
         return Jwts.builder()
             .setClaims(payloads)
@@ -57,22 +59,6 @@ class JwtTokenProvider(
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
-    fun getUserId(token: String): String {
-        return Jwts
-                .parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .body
-                .subject
-    }
-
-    fun resolveToken(req: HttpServletRequest): String {
-        val bearerToken = req.getHeader(TOKEN_HEADER)
-        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            bearerToken.substring(7)
-        } else ""
-    }
-
     fun validateToken(token: String?): Boolean {
         return try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
@@ -86,5 +72,14 @@ class JwtTokenProvider(
 
     private fun getSecretKeyInBase64(): String {
         return Base64.getEncoder().encodeToString(secretKey.toByteArray())
+    }
+
+    private fun getUserId(token: String): String {
+        return Jwts
+                .parser()
+                .setSigningKey(getSecretKeyInBase64())
+                .parseClaimsJws(token)
+                .body
+                .subject
     }
 }

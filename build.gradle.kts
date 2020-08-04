@@ -11,6 +11,7 @@ plugins {
     kotlin("plugin.spring")  version "1.3.72"
     kotlin("plugin.jpa")     version "1.3.72"
     kotlin("plugin.allopen") version "1.3.72"
+    kotlin("plugin.noarg")   version "1.3.72"
 }
 
 group = "com.taskforce"

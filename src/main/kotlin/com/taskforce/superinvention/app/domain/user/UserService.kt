@@ -37,7 +37,7 @@ class UserService(
 
         return AppToken(
                 isFirst,
-                jwtTokenProvider.createToken(user.userId, user.userRoles)
+                jwtTokenProvider.createAppToken(user.userId, user.userRoles)
         )
     }
 }

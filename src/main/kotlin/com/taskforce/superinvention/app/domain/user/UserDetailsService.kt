@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.common.config.security.SecurityUser
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -19,10 +20,14 @@ class UserDetailsService(
             throw UsernameNotFoundException("User $userId is not Exist")
         }
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.userId)
-                .authorities(user.userRoles)
-                .roles(*user.userRoles.map { userRole -> userRole.roleName }.toTypedArray())
-                .build()
+        return SecurityUser(user, "")
+
+
+
+//        return org.springframework.security.core.userdetails.User
+//                .withUsername(user.userId)
+//                .authorities(user.userRoles)
+//                .roles(*user.userRoles.map { userRole -> userRole.roleName }.toTypedArray())
+//                .build()
     }
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
 @ExtendWith(MockitoExtension::class)
@@ -32,7 +33,7 @@ class UserServiceTest {
     lateinit var kakaoOAuth: KakaoOAuth
 
     @Test
-    fun `앱 토큰발행 - 신규 가입 유저`() {
+    fun `AppToken 발행 - 신규 가입 유저`() {
 
         // given
         val kakaoToken = KakaoTokenDto()
@@ -56,9 +57,9 @@ class UserServiceTest {
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_USER"))
 
-        given(kakaoOAuth.getKakaoId(kakaoToken)).willReturn(user.userId)
-        given(userRepository.findByUserId(user.userId)).willReturn(user)
-        given(jwtTokenProvider.createToken(user.userId, user.userRoles)).willReturn("hased-mock-token")
+        `when`(kakaoOAuth.getKakaoId(kakaoToken)).thenReturn(user.userId)
+        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)
+        `when`(jwtTokenProvider.createAppToken(user.userId, user.userRoles)).thenReturn("hased-mock-token")
 
         // when
         val appToken: AppToken = userService.publishAppToken(kakaoToken)

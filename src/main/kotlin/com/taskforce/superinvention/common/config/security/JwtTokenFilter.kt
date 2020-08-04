@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.common.config.security
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
@@ -12,10 +13,10 @@ class JwtTokenFilter(
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        val token = jwtTokenProvider.resolveToken(request)
+        val token: String = resolveToken(request)
 
         try {
-            if (!token.isBlank() && jwtTokenProvider.validateToken(token)) {
+            if (isTokenValidate(token)) {
                 val auth = jwtTokenProvider.getAuthentication(token)
                 SecurityContextHolder.getContext().authentication = auth
             }
@@ -25,5 +26,16 @@ class JwtTokenFilter(
             return
         }
         filterChain.doFilter(request, response)
+    }
+
+    private fun resolveToken(req: HttpServletRequest): String {
+        val bearerToken = req.getHeader(JwtTokenProvider.TOKEN_HEADER)
+        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            bearerToken.substring(7)
+        } else ""
+    }
+
+    private fun isTokenValidate(token: String): Boolean {
+        return !token.isBlank() && jwtTokenProvider.validateToken(token)
     }
 }
