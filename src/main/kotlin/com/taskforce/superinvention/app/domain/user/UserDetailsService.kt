@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.taskforce.superinvention.common.config.security.SecurityUser
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -12,22 +11,13 @@ class UserDetailsService(
         private val userRepository: UserRepository
 ): UserDetailsService {
 
-    @Cacheable(value= ["userId"], key = "#{userId}")
+    @Cacheable(value= ["loadUserByUsername"], key = "#{userId}")
     override fun loadUserByUsername(userId: String): UserDetails {
         val user: User? = userRepository.findByUserId(userId)
 
         if(user == null) {
             throw UsernameNotFoundException("User $userId is not Exist")
         }
-
-        return SecurityUser(user, "")
-
-
-
-//        return org.springframework.security.core.userdetails.User
-//                .withUsername(user.userId)
-//                .authorities(user.userRoles)
-//                .roles(*user.userRoles.map { userRole -> userRole.roleName }.toTypedArray())
-//                .build()
+        return user
     }
 }

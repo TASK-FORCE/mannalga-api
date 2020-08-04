@@ -1,7 +1,8 @@
 package com.taskforce.superinvention.common.config.argument.auth
 
-import com.taskforce.superinvention.common.config.security.SecurityUser
+import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.core.MethodParameter
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -13,10 +14,11 @@ import org.springframework.web.method.support.ModelAndViewContainer
 class AuthorizeArgumentResolver: HandlerMethodArgumentResolver{
 
     override fun supportsParameter(parameter: MethodParameter): Boolean {
-        return parameter == SecurityUser::class.java
+        return parameter.hasParameterAnnotation(AuthUser::class.java)
     }
 
-    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): SecurityUser {
-        return SecurityContextHolder.getContext().authentication.principal as SecurityUser
+    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): User {
+        val authentication: Authentication = SecurityContextHolder.getContext().authentication
+        return authentication.principal as User
     }
 }

@@ -2,6 +2,7 @@ package com.taskforce.superinvention.common.config.security
 
 import com.sun.org.apache.xpath.internal.operations.Bool
 import com.taskforce.superinvention.common.exception.BizException
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
@@ -17,7 +18,7 @@ class JwtTokenFilter(
 
         try {
             if (isTokenValidate(token)) {
-                val auth = jwtTokenProvider.getAuthentication(token)
+                val auth: Authentication = jwtTokenProvider.getAuthentication(token)
                 SecurityContextHolder.getContext().authentication = auth
             }
         } catch (ex: BizException) {
@@ -36,6 +37,13 @@ class JwtTokenFilter(
     }
 
     private fun isTokenValidate(token: String): Boolean {
-        return !token.isBlank() && jwtTokenProvider.validateToken(token)
+        if(token.isBlank()) {
+            return false
+        }
+
+        if(jwtTokenProvider.validateToken(token)) {
+            return true
+        }
+        return false
     }
 }

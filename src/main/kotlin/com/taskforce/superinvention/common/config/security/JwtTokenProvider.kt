@@ -27,7 +27,7 @@ class JwtTokenProvider(
         const val TIME_ZONE_KST = "Asia/Seoul"
 
         @Value("\${security.jwt.token.secret-key}")
-        var secretKey: String = "default"
+        var secretKey: String = "dev-secret-key"
 
         @Value("\${security.jwt.token.expire-day}")
         var expireDay: Long = 365
@@ -41,16 +41,15 @@ class JwtTokenProvider(
         val issuedDate  = Date.from(now.toInstant())
         val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
 
-        payloads["auth"]   = authList
+        payloads["auth"]   = authList.toString()
         payloads["userId"] = userId
-        // payloads["oAuthToken"]
 
         return Jwts.builder()
             .setClaims(payloads)
             .setSubject(userId)
             .setIssuedAt(issuedDate)
             .setExpiration(expiredDate)
-            .signWith(SignatureAlgorithm.HS256, getSecretKeyInBase64())
+            .signWith(SignatureAlgorithm.HS256, secretKey.toByteArray())
             .compact()
     }
 
@@ -61,7 +60,9 @@ class JwtTokenProvider(
 
     fun validateToken(token: String?): Boolean {
         return try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+            Jwts.parser()
+                .setSigningKey(secretKey.toByteArray())
+                .parseClaimsJws(token)
             true
         } catch (e: JwtException) {
             throw BizException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -70,14 +71,10 @@ class JwtTokenProvider(
         }
     }
 
-    private fun getSecretKeyInBase64(): String {
-        return Base64.getEncoder().encodeToString(secretKey.toByteArray())
-    }
-
     private fun getUserId(token: String): String {
         return Jwts
                 .parser()
-                .setSigningKey(getSecretKeyInBase64())
+                .setSigningKey(secretKey.toByteArray())
                 .parseClaimsJws(token)
                 .body
                 .subject

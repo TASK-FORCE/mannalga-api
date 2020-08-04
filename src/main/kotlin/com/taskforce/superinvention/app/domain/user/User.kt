@@ -1,18 +1,25 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-class User: BaseEntity {
+class User: BaseEntity, UserDetails {
 
     var userId: String
 
     @Enumerated(EnumType.STRING)
     var userType: UserType
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     var userRoles: MutableSet<UserRole>
+
+    var accessToken: String?  = null
+    var refrestToken: String? = null
 
     constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>) {
         this.userId = userId
@@ -20,15 +27,45 @@ class User: BaseEntity {
         this.userRoles = userRoles
     }
 
-    constructor(userId: String, userType: UserType) {
+    constructor(userId: String) {
         this.userId = userId
-        this.userType = userType
+        this.userType =  UserType.KAKAO
         this.userRoles = hashSetOf()
     }
 
-    constructor(userId: String) {
+    constructor(userId: String, token: KakaoTokenDto) {
         this.userId = userId
         this.userType = UserType.KAKAO
         this.userRoles = hashSetOf()
+        this.accessToken = token.access_token
+        this.refrestToken = token.refresh_token
+    }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return this.userRoles
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
+    }
+
+    override fun getUsername(): String {
+        return userId
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+       return true
+    }
+
+    override fun getPassword(): String {
+        return ""
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
     }
 }

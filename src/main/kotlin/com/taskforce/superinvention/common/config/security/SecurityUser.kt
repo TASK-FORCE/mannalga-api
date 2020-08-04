@@ -1,14 +1,12 @@
 package com.taskforce.superinvention.common.config.security
 
 import com.taskforce.superinvention.app.domain.user.User
+class SecurityUser {
 
-class SecurityUser: org.springframework.security.core.userdetails.User {
+    var user: User
+    var oAuthToken: String
 
-    val user: User
-    val oAuthToken: String
-
-    constructor(user: User, oAuthToken: String):
-        super(user.userId, "", user.userRoles) {
+    constructor(user: User, oAuthToken: String) {
         this.user = user
         this.oAuthToken = oAuthToken
     }

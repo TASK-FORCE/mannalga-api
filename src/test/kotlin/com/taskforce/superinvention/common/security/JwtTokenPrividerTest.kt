@@ -23,22 +23,20 @@ class JwtTokenPrividerTest {
     lateinit var userDetailsService: UserDetailsService
 
     @Test
-    fun tokenTest() {
+    fun `사용자 토큰 발급 로직`() {
 
         // given
         val user  = User("test-user-id")
-        val token = "test-kakao-oauth-token"
-        val securityUser = SecurityUser(user, token)
         val appToken: String = jwtTokenProvider.createAppToken(user.userId, user.userRoles)
 
-        `when`(userDetailsService.loadUserByUsername(user.userId)).thenReturn(securityUser)
+        `when`(userDetailsService.loadUserByUsername(user.userId)).thenReturn(user)
 
         // when
         val authentication = jwtTokenProvider.getAuthentication(appToken)
         val loginUser = authentication.principal as SecurityUser
 
         // then
-        assertNotEquals(loginUser.username, securityUser.user.userId)
+        assertNotEquals(loginUser.user, user.userId)
         assertEquals(loginUser.user.userId, user.userId)
     }
 }
