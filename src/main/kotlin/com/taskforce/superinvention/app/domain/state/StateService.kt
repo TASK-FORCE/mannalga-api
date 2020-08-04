@@ -11,6 +11,6 @@ class StateService(
 ) {
     @Cacheable(cacheNames = arrayOf("cache"))
     fun findAllStateDtoList(): List<StateDto> {
-        return stateRepositorySupport.findByLevel(1).stream().map { e -> StateDto(e) }.collect(Collectors.toList());
+        return stateRepositorySupport.findByLevel(1).map { e -> StateDto(e) }.toList()
     }
 }
