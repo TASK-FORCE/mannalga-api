@@ -25,4 +25,4 @@ jobs:
         USERNAME: ubunttu
         HOST: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
         SCRIPT: whoami
-        KEY: ${{ secrets.SSH_DEPLOYMENT_KEY }}
+        KEY: ${{ secrets.SSH_DEPL_KEY }}
