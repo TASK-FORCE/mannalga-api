@@ -7,10 +7,10 @@ import javax.persistence.ManyToOne
 
 @Entity
 class UserInterest(
-    @ManyToOne
+        @ManyToOne
     var user: User,
-    @ManyToOne
+        @ManyToOne
     var interest: UserInterest,
-    var priority: Long
+        var priority: Long
 ) : BaseEntity(){
 }

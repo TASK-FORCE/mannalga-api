@@ -1,28 +1,70 @@
 package com.taskforce.superinvention.app.domain.user
 
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import javax.transaction.Transactional
+import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
+import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.common.util.KakaoOAuth
+import org.junit.Assert.assertEquals
 
-@SpringBootTest
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.BDDMockito.given
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.junit.jupiter.MockitoExtension
+
+@ExtendWith(MockitoExtension::class)
 class UserServiceTest {
-    @Autowired
+
+    @InjectMocks
     lateinit var userService: UserService
 
-    @Autowired
+    @Mock
     lateinit var userRepository: UserRepository
 
+    @Mock
+    lateinit var userRoleRepository: UserRoleRepository
+
+    @Mock
+    lateinit var jwtTokenProvider: JwtTokenProvider
+
+    @Mock
+    lateinit var kakaoOAuth: KakaoOAuth
+
     @Test
-    @Transactional
-    fun findById() {
-        var userRoles: Set<UserRole> = HashSet<UserRole>();
-        var user: User = User("eric.cc", "에릭", "잘생기고 귀여운 에릭", UserType.KAKAO, userRoles)
-        val savedUser = userRepository.save(user)
-        val findUser = userService.getUserById("eric.cc")
-        assertEquals(findUser, savedUser);
+    fun `AppToken 발행 - 신규 가입 유저`() {
+
+        // given
+        val kakaoToken = KakaoToken()
+        val user: User = User("13141")
+
+        given(kakaoOAuth.getKakaoId(kakaoToken)).willReturn(user.userId)
+        given(userRepository.findByUserId(user.userId)).willReturn(null)
+
+        // when
+        val appToken: AppToken = userService.publishAppToken(kakaoToken)
+
+        // then
+        assertEquals(appToken.isFirst, true)
     }
 
+    @Test
+    fun `AppToken 발행 - 기존 로그인 유저`() {
+
+        // given
+        val kakaoToken = KakaoToken()
+        val user: User = User("13141")
+        user.userRoles.add(UserRole(user, "ROLE_USER"))
+
+        `when`(kakaoOAuth.getKakaoId(kakaoToken)).thenReturn(user.userId)
+        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)
+        `when`(jwtTokenProvider.createAppToken(user.userId, user.userRoles)).thenReturn("hased-mock-token")
+
+        // when
+        val appToken: AppToken = userService.publishAppToken(kakaoToken)
+
+        // then
+        assertEquals(appToken.isFirst, false)
+    }
 }

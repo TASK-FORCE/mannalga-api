@@ -11,6 +11,7 @@ plugins {
     kotlin("plugin.spring")  version "1.3.72"
     kotlin("plugin.jpa")     version "1.3.72"
     kotlin("plugin.allopen") version "1.3.72"
+    kotlin("plugin.noarg")   version "1.3.72"
 }
 
 group = "com.taskforce"
@@ -24,6 +25,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.session:spring-session-data-redis")
+
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -31,6 +34,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    implementation("org.apache.httpcomponents:httpclient")
 
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -42,8 +48,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
+
+    testImplementation("org.mockito:mockito-core:3.4.6")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.spockframework:spock-core:1.1-groovy-2.4") // Spock 의존성 추가
+    testImplementation("org.spockframework:spock-core:1.1-groovy-2.4")   // Spock 의존성 추가
     testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4") // Spock 의존성 추가
 }
 
