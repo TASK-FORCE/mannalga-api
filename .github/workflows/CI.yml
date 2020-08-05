@@ -19,16 +19,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build --exclude-task test
-    - name: Deploy
-      uses: appleboy/ssh-action@master
-      env:
-        USERNAME: ubunttu
-        HOST: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
-        SCRIPT: |
-          whoami
-          ls
-          cd ..
-          ls
-          cd ..
-          ls
-        KEY: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDtdv3Q+ViirkrSdQRmEVVy9QC1OaWQ1kg81lKJG0cEvyTqeWP3dqxOovo07TfcQIo+iv9LLfrijLByhgNk39eMMLa3MKmeiFnQ2/eCewF5X7i/SjDlzYxGBSHBhucLaO5hMz/Dk8wr7JthIW1jQmWazNkTgL1QdGwQqkKEw1h7+WpttfJY0+k7G6L9Tr/EOxFa1Jau8DVVpG7qbmaYkRPwNw81kNpixwEHOz5TrHSHUdu8p+Lu8eFol074lFIOrqJqYh0bKVO4m13Mbp59Nxn9vOC//JzehM6IILUXlRNucxq+yOCUmX4r0LSYPvl3jczVmUnsQfRF13G9VQ/uuHWryZDLDmJKQKJ9EunV5rhu8KKhRHQuvQ4MwLC8bE+vve3+/l8HbJ0QDhC+ej3vxOKXe5I1kzgJ4cK4W6U+es052D465kVjbSSLsHba8TmGU/LOKj+KcILTb3nZRob7qOzes3g4NFKq4d0LAzdnnDe/qVl7h1Z90BoOTOwBtkCGvQvEJitwkiUTHzRCpGGpJ6M6dl/usNPawEjGnOuQKVzrDRhWpTMEg3DxKLvHd391f8NZ5n+ra1BPJSkGDGXk7eHpHuX4xAsPtUXOe5myph2tjJa2Uexs9R2GDkBeAlm3zcRZxeZKPPgFX1auY1mzZUf4811ema2KKbGd2Mrzg4vI1Q== yyy9942@naver.com
