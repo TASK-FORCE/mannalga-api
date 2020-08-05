@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
@@ -19,7 +19,6 @@ class UserService(
         private var jwtTokenProvider: JwtTokenProvider
 ) {
     companion object {
-        const val KAKAO_USER_URI = "https://kapi.kakao.com/v2/user/me"
         val log: Logger = LoggerFactory.getLogger(UserService::class.java)
     }
 
@@ -28,7 +27,7 @@ class UserService(
     }
 
     @Transactional(rollbackOn = [Exception::class])
-    fun publishAppToken(token: KakaoTokenDto): AppToken {
+    fun publishAppToken(token: KakaoToken): AppToken {
         val kakaoId = kakaoOAuth.getKakaoId(token)
 
         if(kakaoId.isBlank()) {

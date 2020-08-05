@@ -1,9 +1,8 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
@@ -18,8 +17,8 @@ class User: BaseEntity, UserDetails {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     var userRoles: MutableSet<UserRole>
 
-    var accessToken: String?  = null
-    var refrestToken: String? = null
+    var accessToken: String?  = ""
+    var refrestToken: String? = ""
 
     constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>) {
         this.userId = userId
@@ -33,7 +32,7 @@ class User: BaseEntity, UserDetails {
         this.userRoles = hashSetOf()
     }
 
-    constructor(userId: String, token: KakaoTokenDto) {
+    constructor(userId: String, token: KakaoToken) {
         this.userId = userId
         this.userType = UserType.KAKAO
         this.userRoles = hashSetOf()

@@ -1,11 +1,9 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import com.taskforce.superinvention.common.config.security.SecurityUser
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -24,7 +22,7 @@ class UserController(
     }
 
     @PostMapping("/saveKakaoToken")
-    fun saveKakaoToken(@RequestBody token: KakaoTokenDto): AppToken {
+    fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
         return userService.publishAppToken(token)
     }
 

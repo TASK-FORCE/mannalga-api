@@ -27,11 +27,8 @@ class UserControllerTest {
     @Test
     @DisplayName("/saveKakaoToken으로 유저가 처음 접근했을 때")
     fun saveKakaoTokenPerform() {
-
         // given
         val mockRequest= MockMvcRequestBuilders.post("/saveKakaoToken")
-
         mockMvc.perform(mockRequest)
-
     }
 }

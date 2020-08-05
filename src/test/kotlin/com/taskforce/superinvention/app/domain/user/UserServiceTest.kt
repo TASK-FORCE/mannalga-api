@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.KakaoTokenDto
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.junit.Assert.assertEquals
@@ -36,7 +36,7 @@ class UserServiceTest {
     fun `AppToken 발행 - 신규 가입 유저`() {
 
         // given
-        val kakaoToken = KakaoTokenDto()
+        val kakaoToken = KakaoToken()
         val user: User = User("13141")
 
         given(kakaoOAuth.getKakaoId(kakaoToken)).willReturn(user.userId)
@@ -53,7 +53,7 @@ class UserServiceTest {
     fun `AppToken 발행 - 기존 로그인 유저`() {
 
         // given
-        val kakaoToken = KakaoTokenDto()
+        val kakaoToken = KakaoToken()
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_USER"))
 
