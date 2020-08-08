@@ -1,36 +1,47 @@
 package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.util.stream.Collectors
 import javax.persistence.*
-import kotlin.reflect.typeOf
 
 @Entity
-class User : UserDetails, BaseEntity{
+class User: BaseEntity, UserDetails {
 
-    private var id: String
-    private var name: String
-    private var nickname: String
+    var userId: String
 
     @Enumerated(EnumType.STRING)
-    private var userType: UserType
+    var userType: UserType
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private var userRoles: Set<UserRole>
+    var userRoles: MutableSet<UserRole>
 
-    constructor(id: String, name: String, nickname: String, userType: UserType, userRoles: Set<UserRole>) {
-        this.id = id
-        this.name = name
-        this.nickname = nickname
+    var accessToken: String?  = ""
+    var refrestToken: String? = ""
+
+    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>) {
+        this.userId = userId
         this.userType = userType
         this.userRoles = userRoles
     }
 
+    constructor(userId: String) {
+        this.userId = userId
+        this.userType =  UserType.KAKAO
+        this.userRoles = hashSetOf()
+    }
+
+    constructor(userId: String, token: KakaoToken) {
+        this.userId = userId
+        this.userType = UserType.KAKAO
+        this.userRoles = hashSetOf()
+        this.accessToken = token.access_token
+        this.refrestToken = token.refresh_token
+    }
+
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return this.userRoles.stream().map { role -> SimpleGrantedAuthority("ROLE_$role") }.collect(Collectors.toSet())
+        return this.userRoles
     }
 
     override fun isEnabled(): Boolean {
@@ -38,15 +49,15 @@ class User : UserDetails, BaseEntity{
     }
 
     override fun getUsername(): String {
-        return name;
+        return userId
     }
 
     override fun isCredentialsNonExpired(): Boolean {
-        return true
+       return true
     }
 
     override fun getPassword(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun isAccountNonExpired(): Boolean {
@@ -56,5 +67,4 @@ class User : UserDetails, BaseEntity{
     override fun isAccountNonLocked(): Boolean {
         return true
     }
-
 }
