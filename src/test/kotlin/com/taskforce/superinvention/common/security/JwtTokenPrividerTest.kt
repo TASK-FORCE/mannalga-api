@@ -33,10 +33,9 @@ class JwtTokenPrividerTest {
 
         // when
         val authentication = jwtTokenProvider.getAuthentication(appToken)
-        val loginUser = authentication.principal as SecurityUser
+        val loginUser = authentication.principal as User
 
         // then
-        assertNotEquals(loginUser.user, user.userId)
-        assertEquals(loginUser.user.userId, user.userId)
+        assertEquals(loginUser.userId, user.userId)
     }
 }
