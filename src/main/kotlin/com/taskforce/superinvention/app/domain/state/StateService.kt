@@ -7,9 +7,9 @@ import java.util.stream.Collectors
 
 @Service
 class StateService(
-        var stateRepositorySupport: StateRepositorySupport
+        private var stateRepositorySupport: StateRepositorySupport
 ) {
-    @Cacheable(cacheNames = arrayOf("cache"))
+    @Cacheable(cacheNames = ["cache"])
     fun findAllStateDtoList(): List<StateDto> {
         return stateRepositorySupport.findByLevel(1).map { e -> StateDto(e) }.toList()
     }
