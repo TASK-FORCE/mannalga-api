@@ -31,4 +31,4 @@ jobs:
           ls
           cd ..
           ls
-        KEY: ${{ secrets.SSH_RSA }}
+        KEY: ${{ secrets.SSH_KEY }}
