@@ -26,6 +26,6 @@ jobs:
       with:
         host: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
         username: ubuntu
-        key: evn.<SSH_RSA_PRI>
+        key: eval $SSH_RSA_PRI
         port: 22
         script: whoami
