@@ -22,7 +22,7 @@ jobs:
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
-        username: ubuntu
-        key: ${{ secrets.SSH_RSA_PRI }}
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRI }}
         script: whoami
