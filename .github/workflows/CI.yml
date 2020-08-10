@@ -1,5 +1,7 @@
-name: Java CI with Gradle
+name: Spring Boot CI/CD with Gradle
 
+#향후 1.0 version이 완성되어 배포되어야 한다면 master 브랜치로 변경
+#branch 단위 외에, tag나 cron식 사용가능
 on:
   push:
     branches: [ develop ]
@@ -11,18 +13,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
     - name: Build with Gradle
       run: ./gradlew build --exclude-task test
-    - name: Deploy
+    
+    - name: SSH Connection Test
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: whoami
+       
+    - name: copy file via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "tests/a.txt,tests/b.txt"
+        target: "test"
+
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          whoami
+          stat app/*.jar
+  
+  #deploy:
+    #runs-on: ubuntu-latest
+    #needs: build
+    #steps:
+    
