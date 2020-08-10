@@ -19,3 +19,16 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build --exclude-task test
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      env:
+        USERNAME: ubunttu
+        HOST: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
+        SCRIPT: |
+          whoami
+          ls
+          cd ..
+          ls
+          cd ..
+          ls
+        KEY: ${{ secrets.SSH_RSA }}
