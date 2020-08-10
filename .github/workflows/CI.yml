@@ -22,7 +22,7 @@ jobs:
     - name: Deploy
       uses: appleboy/ssh-action@master
       env:
-        USERNAME: ubunttu
+        USERNAME: ubuntu
         HOST: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
         SCRIPT: |
           whoami
