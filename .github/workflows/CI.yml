@@ -21,11 +21,9 @@ jobs:
       run: ./gradlew build --exclude-task test
     - name: Deploy
       uses: appleboy/ssh-action@master
-      env:
-        SSH_RSA_PRI: ${{ secrets.SSH_RSA_PRI }}
       with:
         host: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
         username: ubuntu
-        key: eval $SSH_RSA_PRI
+        key: ${{ secrets.SSH_RSA_PRI }}
         port: 22
         script: whoami
