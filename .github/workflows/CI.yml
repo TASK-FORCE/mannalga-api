@@ -23,6 +23,7 @@ jobs:
       uses: appleboy/ssh-action@master
       env:
         USERNAME: ubuntu
+        key: ${{ secrets.SSH_KEY }}
         HOST: ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com
         SCRIPT: |
           whoami
@@ -31,4 +32,3 @@ jobs:
           ls
           cd ..
           ls
-        KEY: ${{ secrets.SSH_KEY }}
