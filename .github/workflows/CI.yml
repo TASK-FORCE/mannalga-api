@@ -26,4 +26,3 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_RSA_PRI }}
         port: 22
-        script: whoami
