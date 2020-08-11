@@ -11,11 +11,12 @@ open class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected val seq: Long? = null
+    var seq: Long? = null
 
     @CreatedDate
     protected  val createdAt: LocalDateTime? = LocalDateTime.now()
 
     @LastModifiedDate
     protected  val updatedAt: LocalDateTime? = LocalDateTime.now()
+
 }
