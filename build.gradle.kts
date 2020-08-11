@@ -17,8 +17,6 @@ version = "SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 val queryDsl = "4.3.1"
-//val snippetsDir = file("build/generated-snippets")
-
 ext {
     set("snippetsDir", file("build/generated-snippets"))
 }
@@ -99,18 +97,12 @@ tasks {
         dependsOn(":copyDocument")
     }
 
-    jar {
-        enabled = false
-    }
-
     bootJar {
-        enabled = true
-        mainClassName = "com.taskforce.superinvention.SuperinventionApplication"
 
         dependsOn(asciidoctor)
-        from ("${asciidoctor.get().outputDir}/html5")
-        into("BOOT-INF/classes/static/docs")
-
+        from ("${asciidoctor.get().outputDir}/html5") {
+            into("BOOT-INF/classes/static/docs")
+        }
     }
 
     compileKotlin {
