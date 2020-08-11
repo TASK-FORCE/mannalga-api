@@ -4,14 +4,14 @@ import com.taskforce.superinvention.app.domain.BaseEntity
 import java.util.stream.Collectors
 
 
-class StateDto {
+class StateDto(state: State) {
     var seq: Long?
     var name: String
     var superStateRoot: String
     var level: Long
     var subStates: List<StateDto>
 
-    constructor(state: State) {
+    init {
         this.seq = state.seq
         this.name = state.name
         this.superStateRoot = state.superStateRoot

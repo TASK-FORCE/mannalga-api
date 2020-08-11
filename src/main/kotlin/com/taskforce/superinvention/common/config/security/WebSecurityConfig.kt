@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -14,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 class WebSecurityConfig(
-        val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider
 ): WebSecurityConfigurerAdapter() {
 
     @Bean
@@ -25,6 +26,11 @@ class WebSecurityConfig(
     @Bean
     override fun authenticationManager(): AuthenticationManager {
         return super.authenticationManager()
+    }
+
+    override fun configure(web: WebSecurity) {
+        web.ignoring()
+           .antMatchers("/resources/**"); // #3
     }
 
     override fun configure(http: HttpSecurity) {
