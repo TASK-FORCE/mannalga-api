@@ -10,7 +10,7 @@ services:
       - ./db/volume:/var/lib/mysql
     environment:
       MYSQL_DATABASE: taskforce
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: taskforce
       TZ: Asia/Seoul
     command:
       - --character-set-server=utf8mb4
@@ -24,11 +24,3 @@ services:
       - ./redis/volume:/data
     ports:
       - '6379:6379'
-  webserver:
-    network_mode: host
-    image: nginx
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx/log:/var/log/nginx
-      - ./nginx/config/reverse-proxy.conf:/etc/nginx/conf.d/default.conf
