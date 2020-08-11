@@ -1,6 +1,7 @@
-package com.taskforce.superinvention.app.domain.state
+package com.taskforce.superinvention.app.web.dto.state
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.state.State
 import java.util.stream.Collectors
 
 

@@ -1,6 +1,7 @@
-package com.taskforce.superinvention.app.domain.state
+package com.taskforce.superinvention.app.web.state
 
-import org.springframework.cache.annotation.Cacheable
+import com.taskforce.superinvention.app.web.dto.state.StateDto
+import com.taskforce.superinvention.app.domain.state.StateService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -13,4 +14,5 @@ class StateController(
         val findByLevel = stateService.findAllStateDtoList()
         return findByLevel
     }
+
 }
