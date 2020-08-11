@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.app.domain.state
 
 import com.taskforce.superinvention.app.web.dto.state.StateDto
-import com.taskforce.superinvention.app.domain.state.StateService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 

@@ -1,4 +1,16 @@
 package com.taskforce.superinvention.app.web.dto.state
 
-class UserStateDto {
+import com.taskforce.superinvention.app.domain.user.User
+import javax.swing.plaf.nimbus.State
+
+class UserStateDto(user: User, states: List<StateDto>) {
+    var userSeq: Long?
+    var userId: String
+    var states: List<StateDto>
+
+    init {
+        this.userSeq = user.seq
+        this.userId = user.userId
+        this.states = states
+    }
 }
