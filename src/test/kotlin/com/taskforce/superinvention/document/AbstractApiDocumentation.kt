@@ -1,4 +1,4 @@
-package com.taskforce.superinvention
+package com.taskforce.superinvention.document
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.state.StateController
@@ -17,12 +17,11 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 
-
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(controllers = [ StateController::class])
+@WebMvcTest(controllers = [ StateController::class ] )
 @Import(JwtTokenProvider::class, UserDetailsService::class)
 @AutoConfigureRestDocs
-abstract class ApiDocumentationTest {
+abstract class AbstractApiDocumentation {
 
     @Autowired
     lateinit var mockMvc: MockMvc

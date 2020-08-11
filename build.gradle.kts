@@ -17,7 +17,12 @@ version = "SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 val queryDsl = "4.3.1"
-val snippetsDir = file("build/generated-snippets")
+//val snippetsDir = file("build/generated-snippets")
+
+ext {
+    set("snippetsDir", file("build/generated-snippets"))
+}
+
 repositories {
     mavenCentral()
 }
@@ -65,12 +70,12 @@ tasks {
 
     test {
         useJUnitPlatform()
-         outputs.dir(snippetsDir)
+        outputs.dir(ext.get("snippetsDir") as File)
     }
 
     asciidoctor {
         dependsOn(test)
-        inputs.dir(snippetsDir)
+        inputs.dir(ext.get("snippetsDir") as File)
 
         doFirst {
             println("===== START asciidoctor GENERATE=======")

@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.testUtil
+package com.taskforce.superinvention.document
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor

@@ -1,11 +1,11 @@
-package com.taskforce.superinvention.document
+package com.taskforce.superinvention.document.state
 
-import com.taskforce.superinvention.ApiDocumentationTest
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.state.StateDto
 import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.testUtil.ApiDocumentUtil.getDocumentRequest
-import com.taskforce.superinvention.testUtil.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.document.AbstractApiDocumentation
+import com.taskforce.superinvention.document.ApiDocumentUtil.getDocumentRequest
+import com.taskforce.superinvention.document.ApiDocumentUtil.getDocumentResponse
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -18,7 +18,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class StateDocumentationTest: ApiDocumentationTest() {
+class StateDocumentation: AbstractApiDocumentation() {
 
     @MockBean
     lateinit var stateService: StateService
@@ -47,12 +47,12 @@ class StateDocumentationTest: ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isOk)
-               .andDo( document("states-all", getDocumentRequest(), getDocumentResponse(),
+               .andDo( document("state-all", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("[].name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("[].superStateRoot").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("이름"),
-                                fieldWithPath("[].subStates").type(JsonFieldType.ARRAY).description("이름")
+                                fieldWithPath("[].name").type(JsonFieldType.STRING).description("지역 "),
+                                fieldWithPath("[].superStateRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
+                                fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("지역 레벨"),
+                                fieldWithPath("[].subStates").type(JsonFieldType.ARRAY).description("하위 지역")
                         )
                ))
     }
