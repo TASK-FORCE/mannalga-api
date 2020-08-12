@@ -25,7 +25,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build --exclude-task test
 
-    - name: Deploy to Server(${{ secrets.SSH_HOST }})
+    - name: Testing SSH connection(${{ secrets.SSH_HOST }})
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -34,3 +34,13 @@ jobs:
         script: |
           whoami
           stat app/*.jar
+          
+    - name: Deploy to server(${{ secrets.SSH_HOST }})
+      uses: appleboy/scp-action@master
+      env:
+        HOST: ${{ secrets.SSH_HOST }}
+        USERNAME: ${{ secrets.SSH_USER }}
+        KEY: ${{ secrets.SSH_KEY }}
+      with:
+        source: "./target/*.jar"
+        target: "./app/*.jar"
