@@ -25,3 +25,8 @@ class KakaoUserInfo (
         val properties: Map<String, Any>,
         val kakao_account: Map<String, Any>
 )
+
+class KakaoUserRegistRequest (
+        val id: String,
+        val kakaoToken: KakaoToken
+)

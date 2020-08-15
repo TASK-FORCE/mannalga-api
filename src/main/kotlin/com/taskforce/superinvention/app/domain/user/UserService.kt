@@ -50,4 +50,9 @@ class UserService(
                 jwtTokenProvider.createAppToken(user.userId, user.userRoles)
         )
     }
+
+    @Transactional
+    fun regist(user: User) {
+        userRepository.save(user);
+    }
 }
