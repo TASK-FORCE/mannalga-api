@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.user
 
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken

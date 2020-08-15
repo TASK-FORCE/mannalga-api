@@ -1,0 +1,30 @@
+ifndef::snippets[]
+:interest-group-all-snippet: ../../../../build/generated-snippets/saveKakaoToken
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+=== Request
+
+==== [Request URL]
+include::{interest-group-all-snippet}/http-request.adoc[]
+
+==== [Request Headers]
+....
+요구 Request Header 없음
+....
+
+==== [Request HTTP Example]
+include::{interest-group-all-snippet}/http-request.adoc[]
+
+=== Response
+==== [Response Fields]
+include::{interest-group-all-snippet}/response-fields.adoc[]
+
+==== [Response HTTP Example]
+include::{interest-group-all-snippet}/http-response.adoc[]

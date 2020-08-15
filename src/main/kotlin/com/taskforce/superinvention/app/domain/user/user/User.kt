@@ -1,6 +1,8 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.user
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
+import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -28,7 +30,7 @@ class User: BaseEntity, UserDetails {
 
     constructor(userId: String) {
         this.userId = userId
-        this.userType =  UserType.KAKAO
+        this.userType = UserType.KAKAO
         this.userRoles = hashSetOf()
     }
 

@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.document
+package com.taskforce.superinvention.config
 
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor

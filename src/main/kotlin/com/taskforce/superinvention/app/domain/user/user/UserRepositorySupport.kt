@@ -1,6 +1,6 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.user
 
-import com.taskforce.superinvention.app.domain.user.QUser.user
+import com.taskforce.superinvention.app.domain.user.user.QUser.user
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
