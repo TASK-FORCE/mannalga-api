@@ -1,14 +1,19 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.web
 
+import com.taskforce.superinvention.app.domain.state.StateService
+import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
+import com.taskforce.superinvention.app.web.dto.state.UserStateDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
 class UserController(
-        private val userService: UserService
+        private val userService: UserService,
+        private val stateService: StateService
 ) {
 
     @GetMapping("/profile")
@@ -26,6 +31,11 @@ class UserController(
     @PostMapping("/register")
     fun registerUser() {
 
+    }
+
+    @GetMapping("/states/user/{userSeq}")
+    fun getUserStateList(@PathVariable("userSeq") userSeq: Long): UserStateDto {
+        return stateService.findUserStateList(userSeq)
     }
 }
 
