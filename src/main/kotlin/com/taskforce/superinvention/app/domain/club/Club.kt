@@ -5,7 +5,7 @@ import javax.persistence.Entity
 
 @Entity
 class Club(
-    var name: Long,
+    var name: String,
     var description: String,
     var maximumNumber: Long
 ) : BaseEntity() {
