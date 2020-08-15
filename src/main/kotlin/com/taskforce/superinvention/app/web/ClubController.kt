@@ -10,14 +10,24 @@ class ClubController(
         val clubService : ClubService
 ) {
 
-    @GetMapping("/{seq}")
-    fun getClubInfoBySeq(@PathVariable seq : Long): Club?{
-        return clubService.getClubInfo(seq)
+    @GetMapping
+    fun getAllClubs(): List<Club>? {
+        return clubService.getAllClubs()
     }
 
     @GetMapping
     fun retrieveClubs(@RequestParam("keyword") keyword : String): List<Club>?{
-        return clubService.retrieveClubList(keyword)
+        return clubService.retrieveClubs(keyword)
     }
-    
+
+    @GetMapping("/{seq}")
+    fun getClubBySeq(@PathVariable seq : Long): Club? {
+        return clubService.getClubBySeq(seq)
+    }
+
+    @GetMapping("/{seq}")
+    fun getClubUser(@PathVariable seq : Long): Club? {
+        return clubService.getClubBySeq(seq)
+    }
+
 }

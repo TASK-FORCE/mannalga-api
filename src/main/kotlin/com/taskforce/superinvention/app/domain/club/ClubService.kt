@@ -15,11 +15,15 @@ class ClubService(
         private var clubUserRepository: ClubUserRepository,
         private var clubUserRepositorySupport: ClubUserRepositorySupport
 ) {
-    fun getClubInfo(seq: Long): Club? {
+    fun getClubBySeq(seq: Long): Club? {
         return clubRepositorySupport.findBySeq(seq)
     }
 
-    fun retrieveClubList(keyword: String): List<Club>? {
+    fun getAllClubs(): List<Club>? {
+        return clubRepository.findAll()
+    }
+
+    fun retrieveClubs(keyword: String): List<Club>? {
         return clubRepositorySupport.findByKeyword(keyword)
     }
 }
