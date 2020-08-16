@@ -11,21 +11,19 @@ endif::[]
 
 === Request
 ==== [Request Request]
-include::{sub-snippet}/state-all/http-request.adoc[]
+include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
 
 ==== [Request Headers]
 ....
-    요구 Request Header 없음
+요구 Request Header 없음
 ....
 
 ==== [Request Body]
-....
-    요구 Request Body 없음
-....
+include::{sub-snippet}/saveKakaoToken/request-body.adoc[]
 
 === Response
 ==== [Response Fields]
-include::{sub-snippet}/state-all/response-fields.adoc[]
+include::{sub-snippet}/saveKakaoToken//response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{sub-snippet}/state-all/http-response.adoc[]
+include::{sub-snippet}/saveKakaoToken//http-response.adoc[]

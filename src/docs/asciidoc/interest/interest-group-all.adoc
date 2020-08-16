@@ -11,7 +11,7 @@ endif::[]
 
 === Request
 ==== [Request Request]
-include::{sub-snippet}/state-all/http-request.adoc[]
+include::{sub-snippet}/interest/http-request.adoc[]
 
 ==== [Request Headers]
 ....
@@ -25,7 +25,7 @@ include::{sub-snippet}/state-all/http-request.adoc[]
 
 === Response
 ==== [Response Fields]
-include::{sub-snippet}/state-all/response-fields.adoc[]
+include::{sub-snippet}/interest/response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{sub-snippet}/state-all/http-response.adoc[]
+include::{sub-snippet}/interest/http-response.adoc[]

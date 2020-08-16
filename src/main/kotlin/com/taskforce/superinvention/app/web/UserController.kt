@@ -11,31 +11,25 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/users")
 class UserController(
         private val userService: UserService,
         private val stateService: StateService
 ) {
-
-    @GetMapping("/profile")
-    @PreAuthorize("isAuthenticated()")
-    fun getUserInfo(@AuthUser user: User): String? {
-//        var test = userService.getUserInfo(auth.user.userId)
-        return ""
-    }
 
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
         return userService.publishAppToken(token)
     }
 
-    @PostMapping("/register")
-    fun registerUser() {
-
+    @GetMapping("/profile")
+    fun getUserProfile(@AuthUser user:User): User {
+        return user;
     }
+
 
     @GetMapping("/states/user/{userSeq}")
     fun getUserStateList(@PathVariable("userSeq") userSeq: Long): UserStateDto {
         return stateService.findUserStateList(userSeq)
     }
 }
-
