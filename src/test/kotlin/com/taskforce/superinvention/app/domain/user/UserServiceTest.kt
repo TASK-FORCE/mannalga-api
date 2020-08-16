@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
+import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider

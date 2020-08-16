@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.common.util
 
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import org.slf4j.Logger

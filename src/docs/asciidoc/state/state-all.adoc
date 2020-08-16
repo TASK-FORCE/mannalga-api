@@ -1,0 +1,31 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+=== Request
+==== [Request Request]
+include::{sub-snippet}/state-all/http-request.adoc[]
+
+==== [Request Headers]
+....
+    요구 Request Header 없음
+....
+
+==== [Request Body]
+....
+    요구 Request Body 없음
+....
+
+=== Response
+==== [Response Fields]
+include::{sub-snippet}/state-all/response-fields.adoc[]
+
+==== [Response HTTP Example]
+include::{sub-snippet}/state-all/http-response.adoc[]

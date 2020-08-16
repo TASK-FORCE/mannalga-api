@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.common.config.security
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
