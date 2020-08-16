@@ -10,8 +10,8 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request Request]
-include::{sub-snippet}/interest/http-request.adoc[]
+==== [Request HTTP]
+include::{sub-snippet}/interest-group-all/http-request.adoc[]
 
 ==== [Request Headers]
 ....
@@ -25,7 +25,7 @@ include::{sub-snippet}/interest/http-request.adoc[]
 
 === Response
 ==== [Response Fields]
-include::{sub-snippet}/interest/response-fields.adoc[]
+include::{sub-snippet}/interest-group-all/response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{sub-snippet}/interest/http-response.adoc[]
+include::{sub-snippet}/interest-group-all/http-response.adoc[]

@@ -10,7 +10,7 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request Request]
+==== [Request HTTP]
 include::{sub-snippet}/userRegist/http-request.adoc[]
 
 ==== [curl example]

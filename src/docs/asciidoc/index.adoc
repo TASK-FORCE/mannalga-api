@@ -33,6 +33,9 @@ include::{root}/state/state-all.adoc[]
 == 앱 토큰 발급
 include::{root}/user/saveKakaoToken.adoc[]
 
+== 회원가입
+include::{root}/user/userRegist.adoc[]
+
 
 = 관심사
 == 관심 목록 조회
