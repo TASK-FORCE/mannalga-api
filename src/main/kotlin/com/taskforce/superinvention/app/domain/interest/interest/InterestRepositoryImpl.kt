@@ -17,18 +17,4 @@ class InterestRepositoryImpl(
                 .where(interest.seq.eq(seq))
                 .fetchOne()
     }
-
-//    override fun getInterestList(): List<InterestDto> {
-//        return query
-//                .select(
-//                    Projections.constructor (
-//                        InterestDto::class.java,
-//                            interest.name, interest.seq, interestGroup.seq, interestGroup.name
-//                ))
-//                .from(interest)
-//                    .innerJoin(interestGroup)
-//                    .on(interestGroup.seq.eq(interest.interestGroup.seq))
-//                    .groupBy(interestGroup.seq)
-//                .fetch()
-//    }
 }
