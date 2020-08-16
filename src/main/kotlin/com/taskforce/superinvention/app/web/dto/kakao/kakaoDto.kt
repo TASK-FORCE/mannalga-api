@@ -1,10 +1,12 @@
 package com.taskforce.superinvention.app.web.dto.kakao
 
+import java.time.LocalDate
+
 class KakaoToken (
         val access_token: String? = "",
         val expireds_in  : Int? = 0,
         val refresh_token: String? = "",
-        val refresh_token_expires_in: String? = ""
+        val refresh_token_expires_in: Int? = 0
 )
 
 
@@ -27,6 +29,6 @@ class KakaoUserInfo (
 )
 
 class KakaoUserRegistRequest (
-        val id: String,
+        val kakaoUserid: String,
         val kakaoToken: KakaoToken
 )

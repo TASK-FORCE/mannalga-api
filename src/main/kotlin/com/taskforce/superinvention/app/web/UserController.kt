@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("users")
 class UserController(
         private val userService: UserService,
         private val stateService: StateService
@@ -30,14 +31,13 @@ class UserController(
         return userService.publishAppToken(token)
     }
 
-    @PostMapping("/register")
+    @PostMapping("/regist")
     fun registerUser(@RequestBody request: KakaoUserRegistRequest): ResponseEntity<User> {
-        val id: String = request.id
         val kakaoToken: KakaoToken = request.kakaoToken
-        val user: User =  User(id, kakaoToken)
+        val user: User =  User(request.kakaoUserid, kakaoToken)
         userService.regist(user);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(user)
     }
 
     @GetMapping("/states/user/{userSeq}")
