@@ -1,14 +1,18 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
+@JsonIdentityInfo(property = "userId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class User: BaseEntity, UserDetails {
 
     var userId: String
@@ -22,10 +26,18 @@ class User: BaseEntity, UserDetails {
     var accessToken: String?  = ""
     var refrestToken: String? = ""
 
-    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>) {
+    var userName: String? = ""
+
+    var birthday: LocalDate? = null
+
+    var profileImageLink: String? = null
+
+    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>, userName:String, birthday: LocalDate) {
         this.userId = userId
         this.userType = userType
         this.userRoles = userRoles
+        this.userName = userName
+        this.birthday = birthday
     }
 
     constructor(userId: String) {

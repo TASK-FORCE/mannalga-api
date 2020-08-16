@@ -52,4 +52,9 @@ class UserService(
                 jwtTokenProvider.createAppToken(user.userId, user.userRoles)
         )
     }
+
+    @Transactional
+    fun save(user: User) {
+        userRepository.save(user);
+    }
 }
