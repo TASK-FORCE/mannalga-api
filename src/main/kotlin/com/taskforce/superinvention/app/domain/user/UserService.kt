@@ -52,7 +52,7 @@ class UserService(
     }
 
     @Transactional
-    fun regist(user: User) {
+    fun save(user: User) {
         userRepository.save(user);
     }
 }

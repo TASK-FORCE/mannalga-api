@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.kakao
 
+import com.taskforce.superinvention.app.model.AppToken
+import org.apache.tomcat.jni.Local
 import java.time.LocalDate
 
 class KakaoToken (
@@ -29,6 +31,7 @@ class KakaoUserInfo (
 )
 
 class KakaoUserRegistRequest (
-        val kakaoUserid: String,
-        val kakaoToken: KakaoToken
+        val userName: String?,
+        val birthday: LocalDate?,
+        val profileImageLink: String?
 )

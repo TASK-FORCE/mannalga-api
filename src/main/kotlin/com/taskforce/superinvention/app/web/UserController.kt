@@ -21,9 +21,8 @@ class UserController(
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
-    fun getUserInfo(@AuthUser user: User): String? {
-//        var test = userService.getUserInfo(auth.user.userId)
-        return ""
+    fun getUserInfo(@AuthUser user: User): User? {
+        return user
     }
 
     @PostMapping("/saveKakaoToken")
@@ -32,13 +31,18 @@ class UserController(
     }
 
     @PostMapping("/regist")
-    fun registerUser(@RequestBody request: KakaoUserRegistRequest): ResponseEntity<User> {
-        val kakaoToken: KakaoToken = request.kakaoToken
-        val user: User =  User(request.kakaoUserid, kakaoToken)
-        userService.regist(user);
+    @PreAuthorize("isAuthenticated()")
+    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user:User): ResponseEntity<User> {
+        user.birthday = request.birthday
+        user.userName = request.userName
+        user.profileImageLink = request.profileImageLink
+
+        userService.save(user)
 
         return ResponseEntity.ok(user)
     }
+
+
 
     @GetMapping("/states/user/{userSeq}")
     fun getUserStateList(@PathVariable("userSeq") userSeq: Long): UserStateDto {
