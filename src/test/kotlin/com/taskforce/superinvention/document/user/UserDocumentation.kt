@@ -2,30 +2,27 @@ package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
-import com.taskforce.superinvention.app.domain.user.UserRegisterDto
-import com.taskforce.superinvention.config.ApiDocumentUtil
+import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.*
 import org.mockito.BDDMockito.*
-import org.mockito.Mockito
 import org.springframework.http.MediaType
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.LocalDate
 
 class UserDocumentation : ApiDocumentationTest() {
 
@@ -73,13 +70,41 @@ class UserDocumentation : ApiDocumentationTest() {
     }
 
     @Test
+//    @WithUserDetails("1451001649")
+    @WithMockUser
     fun `유저 등록`() {
-        // path => /register
-
-        val postBody = UserRegisterDto(
-                profile = "sight",
-                selectedLocations = arrayListOf("서울시 관악구", "서울시 성북구"),
-                selectedInterests = arrayListOf("")
+        val kakaoUserRegisterDto = KakaoUserRegistRequest(
+                userName = "에릭",
+                birthday = LocalDate.parse("1995-12-27"),
+                profileImageLink = "",
+                userStates = listOf<StateRequestDto>(StateRequestDto(seq = 201, priority = 1), StateRequestDto(seq = 202, priority = 2)),
+                userInterests = listOf<InterestRequestDto>(InterestRequestDto(seq = 1, priority = 1), InterestRequestDto(seq = 2, priority = 2))
         )
+
+        // when
+        val result = this.mockMvc.perform(
+                post("/users/regist")
+                        .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
+                        .content(objectMapper.writeValueAsString(kakaoUserRegisterDto))
+                        .characterEncoding("utf-8")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(document("userRegist", getDocumentRequest(), getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("userName").type(JsonFieldType.STRING).description("유저 이름(닉네임)"),
+                                fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저 생년월일"),
+                                fieldWithPath("profileImageLink").type(JsonFieldType.STRING).description("프로필 사진 링크"),
+                                fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저 관심지역들"),
+                                fieldWithPath("userStates[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("지역 관심 우선순위"),
+                                fieldWithPath("userInterests").type(JsonFieldType.ARRAY).description("유저 관심사"),
+                                fieldWithPath("userInterests[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                                fieldWithPath("userInterests[].priority").type(JsonFieldType.NUMBER).description("유저 관심사 우선순위")
+                        )
+                ))
     }
 }

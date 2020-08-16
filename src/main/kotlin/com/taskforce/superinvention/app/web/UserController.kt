@@ -34,7 +34,7 @@ class UserController(
 
     @PostMapping("/regist")
     @PreAuthorize("isAuthenticated()")
-    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user:User): ResponseEntity<User> {
+    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user:User) {
         user.birthday = request.birthday
         user.userName = request.userName
         user.profileImageLink = request.profileImageLink
@@ -46,8 +46,6 @@ class UserController(
         val userInterests = request.userInterests
 
         interestService.changeUserInterest(user, userInterests)
-
-        return ResponseEntity.ok(user)
     }
 
 

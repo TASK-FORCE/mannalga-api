@@ -29,7 +29,7 @@ class StateService(
         val findByUserSeq: List<UserState> = userStateRepositorySupport.findByUserSeq(user.seq!!)
         userStateRepository.deleteAll(findByUserSeq);
 
-        val toAdd = states.map { e -> UserState(user, stateRepository.findById(e.stateSeq).orElseThrow { NullPointerException() }, e.priolity) }.toMutableList()
+        val toAdd = states.map { e -> UserState(user, stateRepository.findById(e.seq).orElseThrow { NullPointerException() }, e.priority) }.toMutableList()
         userStateRepository.saveAll(toAdd)
     }
 }

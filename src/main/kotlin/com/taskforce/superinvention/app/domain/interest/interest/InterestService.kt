@@ -20,7 +20,7 @@ class InterestService(
         userInterestRepository.deleteAll(toDelete)
 
         val toAdd: List<UserInterest> = userInterests.map { e ->
-                val interest = interestRepository.findById(e.interestSeq).orElseThrow{NullPointerException()}
+                val interest = interestRepository.findById(e.seq).orElseThrow{NullPointerException()}
                 UserInterest(user = user, interest = interest, priority = e.priority)
         }.toList()
 

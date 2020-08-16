@@ -16,7 +16,7 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class InterestGrouptDocumentation: ApiDocumentationTest() {
+class InterestGroupDocumentation: ApiDocumentationTest() {
 
     @Test
     fun `관심사 조회 기능`() {

@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.web.dto.interest
 
 class InterestRequestDto(
-        val interestSeq: Long,
+        val seq: Long,
         val priority: Long
 )
