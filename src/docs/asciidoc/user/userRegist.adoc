@@ -13,6 +13,9 @@ endif::[]
 ==== [Request HTTP]
 include::{sub-snippet}/userRegist/http-request.adoc[]
 
+=== [Request Fields]
+include::{sub-snippet}/userRegist/request-fields.adoc[]
+
 ==== [curl example]
 include::{sub-snippet}/userRegist/curl-request.adoc[]
 
