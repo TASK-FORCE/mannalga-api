@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.NullPointerException
 
 @Service
 class InterestService(
@@ -19,7 +20,7 @@ class InterestService(
         userInterestRepository.deleteAll(toDelete)
 
         val toAdd: List<UserInterest> = userInterests.map { e ->
-                val interest = interestRepository.findById(e.interestSeq)
+                val interest = interestRepository.findById(e.interestSeq).orElseThrow{NullPointerException()}
                 UserInterest(user = user, interest = interest, priority = e.priority)
         }.toList()
 
