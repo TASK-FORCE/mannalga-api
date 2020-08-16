@@ -10,7 +10,7 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request Request]
+==== [Request HTTP]
 include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
 
 ==== [Request Headers]
@@ -23,7 +23,7 @@ include::{sub-snippet}/saveKakaoToken/request-body.adoc[]
 
 === Response
 ==== [Response Fields]
-include::{sub-snippet}/saveKakaoToken//response-fields.adoc[]
+include::{sub-snippet}/saveKakaoToken/response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{sub-snippet}/saveKakaoToken//http-response.adoc[]
+include::{sub-snippet}/saveKakaoToken/http-response.adoc[]
