@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 class UserController(
         private val userService: UserService,
         private val stateService: StateService
@@ -41,6 +41,7 @@ class UserController(
 
         return ResponseEntity.ok(user)
     }
+
 
 
 
