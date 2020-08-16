@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.UserType
@@ -10,6 +12,7 @@ import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
+@JsonIdentityInfo(property = "userId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class User: BaseEntity, UserDetails {
 
     var userId: String

@@ -11,7 +11,6 @@ class UserDetailsService(
         private val userRepository: UserRepository
 ): UserDetailsService {
 
-    @Cacheable(value= ["loadUserByUsername"], key = "#{userId}")
     override fun loadUserByUsername(userId: String): UserDetails {
         val user: User? = userRepository.findByUserId(userId)
 

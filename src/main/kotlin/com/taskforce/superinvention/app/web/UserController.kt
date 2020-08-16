@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.web
 
+import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserService
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/users")
 class UserController(
         private val userService: UserService,
-        private val stateService: StateService
+        private val stateService: StateService,
+        private val interestService: InterestService
 ) {
 
     @GetMapping("/profile")
@@ -39,10 +41,14 @@ class UserController(
 
         userService.save(user)
 
+        val userStates = request.userStates
+        stateService.changeUserState(user, userStates)
+        val userInterests = request.userInterests
+
+        interestService.changeUserInterest(user, userInterests)
+
         return ResponseEntity.ok(user)
     }
-
-
 
 
     @GetMapping("/states/user/{userSeq}")
