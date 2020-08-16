@@ -49,4 +49,6 @@ abstract class ApiDocumentationTest {
     @MockBean
     lateinit var interestService: InterestService
 
+    @MockBean
+    lateinit var jwtTokenProvider: JwtTokenProvider
    }

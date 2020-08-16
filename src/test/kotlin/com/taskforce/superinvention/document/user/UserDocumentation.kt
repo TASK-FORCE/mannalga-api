@@ -70,7 +70,6 @@ class UserDocumentation : ApiDocumentationTest() {
     }
 
     @Test
-//    @WithUserDetails("1451001649")
     @WithMockUser
     fun `유저 등록`() {
         val kakaoUserRegisterDto = KakaoUserRegistRequest(
