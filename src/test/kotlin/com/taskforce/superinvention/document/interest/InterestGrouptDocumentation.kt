@@ -2,14 +2,11 @@ package com.taskforce.superinvention.document.interest
 
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
-import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
-import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.config.ApiDocumentationTest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders

@@ -28,3 +28,12 @@ endif::[]
 == 지역 조회 API
 include::{root}/state/state-all.adoc[]
 
+
+= 유저
+== 앱 토큰 발급
+include::{root}/user/saveKakaoToken.adoc[]
+
+
+= 관심사
+== 관심 목록 조회
+include::{root}/interest/interest-group-all.adoc[]

@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.common.security
 
-import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.domain.user.user.UserDetailsService
+import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.Test

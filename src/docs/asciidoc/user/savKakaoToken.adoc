@@ -1,5 +1,5 @@
 ifndef::snippets[]
-:interest-group-all-snippet: ../../../../build/generated-snippets/saveKakaoToken
+:sub-snippet: ../../../../build/generated-snippets
 endif::[]
 :doctype: book
 :icons: font
@@ -10,21 +10,20 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-
-==== [Request URL]
-include::{interest-group-all-snippet}/http-request.adoc[]
+==== [Request Request]
+include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
 
 ==== [Request Headers]
 ....
 요구 Request Header 없음
 ....
 
-==== [Request HTTP Example]
-include::{interest-group-all-snippet}/http-request.adoc[]
+==== [Request Body]
+include::{sub-snippet}/saveKakaoToken/request-body.adoc[]
 
 === Response
 ==== [Response Fields]
-include::{interest-group-all-snippet}/response-fields.adoc[]
+include::{sub-snippet}/saveKakaoToken//response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{interest-group-all-snippet}/http-response.adoc[]
+include::{sub-snippet}/saveKakaoToken//http-response.adoc[]

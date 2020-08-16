@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.common.config.security
 
-import com.taskforce.superinvention.app.domain.user.user.UserDetailsService
+import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.common.exception.BizException
 import io.jsonwebtoken.*

@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.common.config.security
 
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 class SecurityUser {
 
     var user: User

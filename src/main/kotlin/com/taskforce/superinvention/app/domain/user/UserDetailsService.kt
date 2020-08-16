@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.domain.user.user
+package com.taskforce.superinvention.app.domain.user
 
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.core.userdetails.UserDetails

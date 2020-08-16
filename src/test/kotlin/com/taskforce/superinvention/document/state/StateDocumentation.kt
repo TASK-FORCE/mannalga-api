@@ -1,10 +1,10 @@
 package com.taskforce.superinvention.document.state
 
 import com.taskforce.superinvention.app.domain.state.State
-import com.taskforce.superinvention.app.domain.state.StateDto
-import com.taskforce.superinvention.config.ApiDocumentationTest
+import com.taskforce.superinvention.app.web.dto.state.StateDto
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.http.MediaType
@@ -24,11 +24,12 @@ class StateDocumentation: ApiDocumentationTest() {
         // given
         val state = State(
                 level = 1,
-                name = "name",
+                name = "서울특별시",
                 superStateRoot = "서울특별시",
                 subStates = emptyList(),
                 superState = null
         )
+        state.seq=1
 
         given(stateService.findAllStateDtoList())
                 .willReturn(listOf(StateDto(state)))
@@ -44,7 +45,7 @@ class StateDocumentation: ApiDocumentationTest() {
         result.andExpect(status().isOk)
                .andDo( document("state-all", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("[].seq").type(JsonFieldType.STRING).description("지역 "),
+                                fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("시퀀스"),
                                 fieldWithPath("[].name").type(JsonFieldType.STRING).description("지역 "),
                                 fieldWithPath("[].superStateRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
                                 fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("지역 레벨"),
