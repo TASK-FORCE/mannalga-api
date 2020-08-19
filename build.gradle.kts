@@ -78,6 +78,7 @@ tasks {
         doFirst {
             println("===== START asciidoctor GENERATE=======")
             delete(file("src/main/resources/static/docs"))
+            println("===== asciidoctor refresh success")
         }
 
         doLast {
@@ -98,11 +99,11 @@ tasks {
     }
 
     bootJar {
-
         dependsOn(asciidoctor)
         from ("${asciidoctor.get().outputDir}/html5") {
             into("BOOT-INF/classes/static/docs")
         }
+        archiveFileName.set("app.jar")
     }
 
     compileKotlin {

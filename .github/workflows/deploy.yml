@@ -1,7 +1,5 @@
-name: Spring Boot CI/CD with Gradle
+name: Deploy Super-Invention Server
 
-#향후 1.0 version이 완성되어 배포되어야 한다면 master 브랜치로 변경
-#branch 단위 외에, tag나 cron식 사용가능
 on:
   push:
     branches: [ develop ]
@@ -23,9 +21,9 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle
-      run: ./gradlew build --exclude-task test
+      run: ./gradlew clean build
 
-    - name: Testing SSH connection(${{ secrets.SSH_HOST }})
+    - name: Testing SSH connection
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -35,12 +33,25 @@ jobs:
           whoami
           stat app/*.jar
           
-    - name: Deploy to server(${{ secrets.SSH_HOST }})
+    - name: Deploy to server
       uses: appleboy/scp-action@master
       env:
         HOST: ${{ secrets.SSH_HOST }}
+        PORT: 22
         USERNAME: ${{ secrets.SSH_USER }}
         KEY: ${{ secrets.SSH_KEY }}
       with:
-        source: "./target/*.jar"
-        target: "./app/*.jar"
+        source: "./build/libs/app.jar"
+        target: "./app/temp"
+        strip_components: 3
+
+    - name: Launch Script in Remote Server
+      if: ${{ success() }}
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd ~/app && sh deploy.sh
+        host: ${{ secrets.SSH_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        key:  ${{ secrets.SSH_KEY }}
+        args: "-tt"
