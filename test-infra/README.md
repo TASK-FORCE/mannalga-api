@@ -7,3 +7,7 @@
   - mysql : DB
   - nginx : 리버스 프록시용 ( /api - > 서버로 )
   - redis : 캐시, 단일 노드
+  
+  
+- script
+~/app/scripts 폴더 내에 위치해있으며, 서버 가동, 정지 등의 스크립트를 담고 있습니다. 
