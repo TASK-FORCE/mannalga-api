@@ -1,9 +1,7 @@
 package com.taskforce.superinvention.app.domain.state
 
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.state.StateDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
-import com.taskforce.superinvention.app.web.dto.state.UserStateDto
+import com.taskforce.superinvention.app.web.dto.state.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,9 +16,9 @@ class StateService(
         return stateRepositorySupport.findByLevel(1).map { e -> StateDto(e) }.toList()
     }
 
-    fun findUserStateList(userSeq: Long): UserStateDto {
-        val userStates = userStateRepositorySupport.findByUserSeq(userSeq)
-        return UserStateDto(userStates.get(0).user, userStates.map { e -> StateDto(e.state) }.toList());
+    fun findUserStateList(user: User): UserStateDto {
+        val userStates = userStateRepositorySupport.findByUserSeq(user.seq!!)
+        return UserStateDto(userStates.get(0).user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
     }
 
     @Transactional

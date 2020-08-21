@@ -27,7 +27,8 @@ endif::[]
 = 지역
 == 지역 조회 API
 include::{root}/state/state-all.adoc[]
-
+== 유저 지역조회
+include::{root}/state/userStates.adoc[]
 
 = 유저
 == 앱 토큰 발급
