@@ -1,0 +1,29 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/user-states
+
+=== Request
+==== [Request HTTP]
+include::{sub-snippet}/user-states/http-request.adoc[]
+
+=== [Request Fields]
+....
+요구 Request Fields 없음
+....
+
+==== [curl example]
+include::{sub-snippet}/userStates/curl-request.adoc[]
+
+=== Response
+==== [Response HTTP Example]
+include::{sub-snippet}/userStates/http-response.adoc[]
+
+==== [Response body]
+include::{sub-snippet}/userStates/response-body.adoc[]

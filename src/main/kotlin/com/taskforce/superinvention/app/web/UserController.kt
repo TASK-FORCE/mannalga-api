@@ -49,9 +49,11 @@ class UserController(
     }
 
 
-    @GetMapping("/states/user/{userSeq}")
-    fun getUserStateList(@PathVariable("userSeq") userSeq: Long): UserStateDto {
-        return stateService.findUserStateList(userSeq)
+    @GetMapping("/states")
+    @PreAuthorize("isAuthenticated()")
+    fun getUserStateList(@AuthUser user: User): UserStateDto {
+        val findUserStateList = stateService.findUserStateList(user.seq!!)
+        return findUserStateList
     }
 }
 

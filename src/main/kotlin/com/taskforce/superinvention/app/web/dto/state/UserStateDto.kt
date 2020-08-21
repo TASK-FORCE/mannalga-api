@@ -2,10 +2,10 @@ package com.taskforce.superinvention.app.web.dto.state
 
 import com.taskforce.superinvention.app.domain.user.User
 
-class UserStateDto(user: User, states: List<StateDto>) {
-    var userSeq: Long?
-    var userId: String
-    var states: List<StateDto>
+class UserStateDto(user: User, states: List<StateWithPriorityDto>) {
+    val userSeq: Long?
+    val userId: String
+    val states: List<StateWithPriorityDto>
 
     init {
         this.userSeq = user.seq
