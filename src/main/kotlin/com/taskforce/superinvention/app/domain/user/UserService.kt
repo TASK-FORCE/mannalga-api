@@ -9,6 +9,7 @@ import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
@@ -57,4 +58,6 @@ class UserService(
     fun save(user: User) {
         userRepository.save(user);
     }
+
+    fun getKakaoUserInfo(user: User) = kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
 }

@@ -6,12 +6,15 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.state.UserStateDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.client.RestTemplate
+import java.lang.NullPointerException
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +28,12 @@ class UserController(
     @PreAuthorize("isAuthenticated()")
     fun getUserInfo(@AuthUser user: User): User? {
         return user
+    }
+
+    @GetMapping("/kakao-profile")
+    @PreAuthorize("isAuthenticated()")
+    fun getKakaoUserInfo(@AuthUser user: User): KakaoUserInfo {
+        return userService.getKakaoUserInfo(user)
     }
 
     @PostMapping("/saveKakaoToken")

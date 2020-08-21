@@ -4,9 +4,8 @@ import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.app.web.dto.state.*
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
@@ -166,5 +165,53 @@ class UserDocumentation : ApiDocumentationTest() {
                         )
                 ))
 
+    }
+
+    @Test
+    @WithMockUser(username = "eric")
+    fun `카카오 유저 정보 조회`() {
+
+        `when`(userService.getKakaoUserInfo(MockitoHelper.anyObject())).thenReturn(KakaoUserInfo(
+                id = "123123",
+                properties = KakaoUserProperties(
+                        nickname = "정준_ERIC",
+                        profile_image = "http://k.kakaocdn.net/dn/A1cab/btqGe6M1iji/MJsLWEwrqX72PLOtCxnCkk/img_640x640.jpg",
+                        thumbnail_image = "http://k.kakaocdn.net/dn/A1cab/btqGe6M1iji/MJsLWEwrqX72PLOtCxnCkk/img_110x110.jpg"),
+                kakao_account = KakaoUserAccount(
+                        profile_needs_agreement = false,
+                        profile = KakaoUserProfile(
+                                nickname = "정준_ERIC",
+                                profile_image_url = "http://k.kakaocdn.net/dn/A1cab/btqGe6M1iji/MJsLWEwrqX72PLOtCxnCkk/img_640x640.jpg",
+                                thumbnail_image_url = "http://k.kakaocdn.net/dn/A1cab/btqGe6M1iji/MJsLWEwrqX72PLOtCxnCkk/img_110x110.jpg"
+                        ),
+                        hasGender = false,
+                        gender_needs_agreement = false
+                )
+        ))
+
+
+        val result = this.mockMvc.perform(
+                get("/users/kakao-profile")
+                        .characterEncoding("utf-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+                .andDo(document("kakaoUserProfileInfo", getDocumentRequest(), getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.STRING).description("카카오 고유 유저 ID값"),
+                                fieldWithPath("properties").type(JsonFieldType.OBJECT).description("추가 정보"),
+                                fieldWithPath("properties.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
+                                fieldWithPath("properties.profile_image").type(JsonFieldType.STRING).description("현재 프로필 이미지"),
+                                fieldWithPath("properties.thumbnail_image").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일)"),
+                                fieldWithPath("kakao_account").type(JsonFieldType.OBJECT).description("계정 정보"),
+                                fieldWithPath("kakao_account.profile_needs_agreement").type(JsonFieldType.BOOLEAN).description("사용자의 개인정보 제 3자 동의가 필요한지 여부"),
+                                fieldWithPath("kakao_account.profile").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("kakao_account.profile.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
+                                fieldWithPath("kakao_account.profile.thumbnail_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일) 링크"),
+                                fieldWithPath("kakao_account.profile.profile_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지 링크"),
+                                fieldWithPath("kakao_account.hasGender").type(JsonFieldType.BOOLEAN).description("성별 조회 여부"),
+                                fieldWithPath("kakao_account.gender_needs_agreement").type(JsonFieldType.BOOLEAN).description("성별 조회를 위해 동이가 필요한지 여부")
+                        )
+                ))
     }
 }
