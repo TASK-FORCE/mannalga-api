@@ -34,6 +34,9 @@ include::{root}/state/userStates.adoc[]
 == 앱 토큰 발급
 include::{root}/user/saveKakaoToken.adoc[]
 
+== 카카오 유저 정보 조회
+include::{root}/user/kakaoUserProfileInfo.adoc[]
+
 == 회원가입
 include::{root}/user/userRegist.adoc[]
 

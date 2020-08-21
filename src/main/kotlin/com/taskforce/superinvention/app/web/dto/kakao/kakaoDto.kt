@@ -26,8 +26,8 @@ class KakaoTokenRefreshResponse (
 
 class KakaoUserInfo (
         val id: String,
-        val properties: Map<String, Any>,
-        val kakao_account: Map<String, Any>
+        val properties: KakaoUserProperties,
+        val kakao_account: KakaoUserAccount
 )
 
 class KakaoUserRegistRequest (
@@ -36,4 +36,23 @@ class KakaoUserRegistRequest (
         val profileImageLink: String?,
         val userStates: List<StateRequestDto>,
         val userInterests: List<InterestRequestDto>
+)
+
+class KakaoUserProperties (
+        val nickname: String,
+        val profile_image: String,
+        val thumbnail_image: String
+)
+
+class KakaoUserProfile(
+        val nickname: String,
+        val thumbnail_image_url: String,
+        val profile_image_url: String
+)
+
+class KakaoUserAccount (
+        val profile_needs_agreement: Boolean,
+        val profile: KakaoUserProfile,
+        val hasGender: Boolean,
+        val gender_needs_agreement: Boolean
 )

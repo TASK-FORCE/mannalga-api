@@ -46,6 +46,20 @@ class KakaoOAuth(
         }
     }
 
+    fun getKakaoUserProfile(accessToken: String): KakaoUserInfo {
+        val headers = HttpHeaders()
+        headers.set("Authorization", "Bearer ${accessToken}")
+
+        val request = HttpEntity<MultiValueMap<String, String>>(headers)
+        val userProfile = restTemplate.exchange(
+                USER_INFO_URI,
+                HttpMethod.GET,
+                request,
+                KakaoUserInfo::class.java
+        )
+        return userProfile.body!!
+    }
+
     fun refreshKakoToken(user: User): String {
         if(user.userType != UserType.KAKAO) {
             throw Exception()
