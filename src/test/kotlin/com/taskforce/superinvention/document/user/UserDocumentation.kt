@@ -2,13 +2,12 @@ package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
-import com.taskforce.superinvention.app.web.dto.state.StateDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
-import com.taskforce.superinvention.app.web.dto.state.UserStateDto
+import com.taskforce.superinvention.app.web.dto.state.*
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
@@ -24,12 +23,14 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.lang.IllegalArgumentException
 import java.time.LocalDate
 
 class UserDocumentation : ApiDocumentationTest() {
@@ -116,10 +117,31 @@ class UserDocumentation : ApiDocumentationTest() {
     }
 
     @Test
+    @WithMockUser(username = "eric", roles = ["USER", "ADMIN"])
     fun `유저 지역 조회`() {
-        // when
-        `when`(userRepository.findByUserId(MockitoHelper.anyObject())).thenReturn(User("mock id"));
+        // given
+        val state1 = State(superState = null, name = "성남시", superStateRoot = "경기도/성남시", level = 2, subStates = listOf())
+        val state2 = State(superState = null, name = "수원시", superStateRoot = "경기도/수원시", level = 2, subStates = listOf())
+        state1.seq = 1001L
+        state2.seq = 1002L
 
+        val stateWithPriorityDto1 = StateWithPriorityDto(
+                stateDto = SimpleStateDto(state1)
+                , priority = 1L)
+
+        val stateWithPriorityDto2 = StateWithPriorityDto(
+                stateDto = SimpleStateDto(state2)
+                , priority = 2L)
+
+        val user = User("eric")
+        user.seq = 1L
+
+        `when`(stateService.findUserStateList(MockitoHelper.anyObject())).thenReturn(UserStateDto(
+                user, listOf(
+                    stateWithPriorityDto1,
+                    stateWithPriorityDto2
+                )
+        ))
 
         val result = this.mockMvc.perform(
                 get("/users/states")
@@ -127,18 +149,20 @@ class UserDocumentation : ApiDocumentationTest() {
                         .characterEncoding("utf-8")
         ).andDo(print())
 
+
+
         result.andExpect(status().isOk)
                 .andDo(document("userStates", getDocumentRequest(), getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("states").type(JsonFieldType.ARRAY).description("유저 지역들"),
-                                fieldWithPath("states[].stateDto").type(JsonFieldType.OBJECT).description("유저 지역"),
-                                fieldWithPath("states[].stateDto[].seq").type(JsonFieldType.STRING).description("지역 시퀀스"),
-                                fieldWithPath("states[].stateDto[].name").type(JsonFieldType.STRING).description("지역 이름"),
-                                fieldWithPath("states[].stateDto[].superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
-                                fieldWithPath("states[].stateDto[].level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
-                                fieldWithPath("states[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
+                        responseFields(
+                                fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저 지역들"),
+                                fieldWithPath("userStates[].stateDto").type(JsonFieldType.OBJECT).description("유저 지역"),
+                                fieldWithPath("userStates[].stateDto.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("userStates[].stateDto.name").type(JsonFieldType.STRING).description("지역 이름"),
+                                fieldWithPath("userStates[].stateDto.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
+                                fieldWithPath("userStates[].stateDto.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
+                                fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
                                 fieldWithPath("userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
-                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디")
+                                fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디")
                         )
                 ))
 

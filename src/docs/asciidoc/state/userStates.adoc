@@ -11,7 +11,7 @@ endif::[]
 
 === Request
 ==== [Request HTTP]
-include::{sub-snippet}/user-states/http-request.adoc[]
+include::{sub-snippet}/userStates/http-request.adoc[]
 
 === [Request Fields]
 ....

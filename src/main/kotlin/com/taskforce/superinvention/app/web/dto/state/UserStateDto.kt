@@ -5,11 +5,11 @@ import com.taskforce.superinvention.app.domain.user.User
 class UserStateDto(user: User, states: List<StateWithPriorityDto>) {
     val userSeq: Long?
     val userId: String
-    val states: List<StateWithPriorityDto>
+    val userStates: List<StateWithPriorityDto>
 
     init {
         this.userSeq = user.seq
         this.userId = user.userId
-        this.states = states
+        this.userStates = states
     }
 }

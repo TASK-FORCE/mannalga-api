@@ -16,8 +16,8 @@ class StateService(
         return stateRepositorySupport.findByLevel(1).map { e -> StateDto(e) }.toList()
     }
 
-    fun findUserStateList(userSeq: Long): UserStateDto {
-        val userStates = userStateRepositorySupport.findByUserSeq(userSeq)
+    fun findUserStateList(user: User): UserStateDto {
+        val userStates = userStateRepositorySupport.findByUserSeq(user.seq!!)
         return UserStateDto(userStates.get(0).user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
     }
 
