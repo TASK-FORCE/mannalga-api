@@ -26,7 +26,7 @@ class User: BaseEntity, UserDetails {
         this.userRoles = userRoles
     }
 
-    constructor(userId: String) {
+    constructor(userId: User) {
         this.userId = userId
         this.userType =  UserType.KAKAO
         this.userRoles = hashSetOf()

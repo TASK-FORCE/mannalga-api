@@ -3,9 +3,7 @@ package com.taskforce.superinvention.common.security
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
-import com.taskforce.superinvention.common.config.security.SecurityUser
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks

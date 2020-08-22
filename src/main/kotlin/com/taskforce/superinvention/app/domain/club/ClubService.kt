@@ -1,12 +1,8 @@
 package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 
 @Service
 class ClubService(
@@ -21,6 +17,11 @@ class ClubService(
 
     fun getAllClubs(): List<Club>? {
         return clubRepository.findAll()
+    }
+
+    fun getClubUserList(clubSeq: Long): ClubUserDto {
+        val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
+        return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> User(e.user)}.toList() )
     }
 
     fun retrieveClubs(keyword: String): List<Club>? {
