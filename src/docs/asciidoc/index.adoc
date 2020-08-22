@@ -17,11 +17,11 @@ endif::[]
 |===
 | 환경 | Domain
 
-| 개발서버
+| 로컬서버
 | `http://localhost:8080`
 
-| 운영서버
-| `http://ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com:8080`
+| 개발서버 (prefix로 /api 가 반드시 있어야합니다)
+| `http://52.78.18.217/api`
 |===
 
 = 지역

@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class StateDocumentation: ApiDocumentationTest() {
@@ -36,10 +36,10 @@ class StateDocumentation: ApiDocumentationTest() {
 
         // when
         val result: ResultActions = this.mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/states")
+                get("/states")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
-        ).andDo(MockMvcResultHandlers.print())
+        ).andDo(print())
 
         // then
         result.andExpect(status().isOk)
