@@ -10,8 +10,8 @@ object ApiDocumentUtil {
         return preprocessRequest(
             modifyUris()
                     .scheme("http")
-                    .host("ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com")
-                    .port(8080),
+                    .host("52.78.18.217")
+                    .removePort(),
                 prettyPrint()
         )
     }
