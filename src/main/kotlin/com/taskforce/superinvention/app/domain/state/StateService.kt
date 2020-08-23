@@ -22,12 +22,13 @@ class StateService(
     }
 
     @Transactional
-    fun changeUserState(user: User, states: List<StateRequestDto>) {
+    fun changeUserState(user: User, states: List<StateRequestDto>): UserStateDto {
         if (user.seq == null) throw NullPointerException()
         val findByUserSeq: List<UserState> = userStateRepositorySupport.findByUserSeq(user.seq!!)
         userStateRepository.deleteAll(findByUserSeq);
 
         val toAdd = states.map { e -> UserState(user, stateRepository.findById(e.seq).orElseThrow { NullPointerException() }, e.priority) }.toMutableList()
         userStateRepository.saveAll(toAdd)
+        return findUserStateList(user);
     }
 }
