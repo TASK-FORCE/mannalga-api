@@ -1,5 +1,5 @@
 ifndef::snippets[]
-:state-all-snippet: ../../../../build/generated-snippets/state-all
+:sub-snippet: ../../../../build/generated-snippets
 endif::[]
 :doctype: book
 :icons: font
@@ -10,21 +10,22 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-
-==== [Request URL]
-include::{state-all-snippet}/http-request.adoc[]
+==== [Request HTTP]
+include::{sub-snippet}/state-all/http-request.adoc[]
 
 ==== [Request Headers]
 ....
-요구 Request Header 없음
+    요구 Request Header 없음
 ....
 
-==== [Request HTTP Example]
-include::{state-all-snippet}/http-request.adoc[]
+==== [Request Body]
+....
+    요구 Request Body 없음
+....
 
 === Response
 ==== [Response Fields]
-include::{state-all-snippet}/response-fields.adoc[]
+include::{sub-snippet}/state-all/response-fields.adoc[]
 
 ==== [Response HTTP Example]
-include::{state-all-snippet}/http-response.adoc[]
+include::{sub-snippet}/state-all/http-response.adoc[]

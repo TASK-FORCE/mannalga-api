@@ -1,6 +1,7 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.userRole
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.security.core.GrantedAuthority
 import javax.persistence.Entity
 import javax.persistence.JoinColumn

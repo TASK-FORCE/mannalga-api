@@ -1,30 +1,25 @@
 package com.taskforce.superinvention.document.state
 
 import com.taskforce.superinvention.app.domain.state.State
-import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.web.dto.state.StateDto
-import com.taskforce.superinvention.document.AbstractApiDocumentation
-import com.taskforce.superinvention.document.ApiDocumentUtil.getDocumentRequest
-import com.taskforce.superinvention.document.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
+import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class StateDocumentation: AbstractApiDocumentation() {
-
-    @MockBean
-    lateinit var stateService: StateService
+class StateDocumentation: ApiDocumentationTest() {
 
     @Test
-    fun states() {
+    fun `State 조회 기능`() {
 
         // given
         val state = State(
@@ -41,10 +36,10 @@ class StateDocumentation: AbstractApiDocumentation() {
 
         // when
         val result: ResultActions = this.mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/states")
+                get("/states")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
-        ).andDo(MockMvcResultHandlers.print())
+        ).andDo(print())
 
         // then
         result.andExpect(status().isOk)

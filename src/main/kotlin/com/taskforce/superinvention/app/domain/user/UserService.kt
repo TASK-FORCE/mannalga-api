@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
+import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
@@ -7,6 +9,7 @@ import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
@@ -50,4 +53,11 @@ class UserService(
                 jwtTokenProvider.createAppToken(user.userId, user.userRoles)
         )
     }
+
+    @Transactional
+    fun save(user: User) {
+        userRepository.save(user);
+    }
+
+    fun getKakaoUserInfo(user: User) = kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
 }

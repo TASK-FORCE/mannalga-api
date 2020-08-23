@@ -8,9 +8,9 @@ import javax.persistence.ManyToOne
 @Entity
 class ClubState(
         @ManyToOne
-        var club: Club,
+        var club:Club,
         @ManyToOne
         var state: State,
-        var priority: Long
-) : BaseEntity() {
+        var priority: Int
+) : BaseEntity(){
 }

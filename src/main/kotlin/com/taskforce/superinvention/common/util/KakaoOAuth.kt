@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.common.util
 
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import org.slf4j.Logger
@@ -45,6 +44,20 @@ class KakaoOAuth(
             HttpStatus.OK -> userProfileRequest.body!!.id
             else -> ""
         }
+    }
+
+    fun getKakaoUserProfile(accessToken: String): KakaoUserInfo {
+        val headers = HttpHeaders()
+        headers.set("Authorization", "Bearer ${accessToken}")
+
+        val request = HttpEntity<MultiValueMap<String, String>>(headers)
+        val userProfile = restTemplate.exchange(
+                USER_INFO_URI,
+                HttpMethod.GET,
+                request,
+                KakaoUserInfo::class.java
+        )
+        return userProfile.body!!
     }
 
     fun refreshKakoToken(user: User): String {
