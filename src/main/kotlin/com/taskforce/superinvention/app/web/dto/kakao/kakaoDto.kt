@@ -40,14 +40,14 @@ class KakaoUserRegistRequest (
 
 class KakaoUserProperties (
         val nickname: String,
-        val profile_image: String,
-        val thumbnail_image: String
+        val profile_image: String = "",
+        val thumbnail_image: String = ""
 )
 
 class KakaoUserProfile(
         val nickname: String,
-        val thumbnail_image_url: String,
-        val profile_image_url: String
+        val profile_image_url: String = "",
+        val thumbnail_image_url: String = ""
 )
 
 class KakaoUserAccount (
