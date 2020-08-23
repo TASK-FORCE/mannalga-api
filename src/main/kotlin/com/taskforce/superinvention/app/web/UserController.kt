@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.web
 
-import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserService
@@ -11,18 +10,14 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.UserStateDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.RestTemplate
-import java.lang.NullPointerException
 
 @RestController
 @RequestMapping("/users")
 class UserController(
         private val userService: UserService,
-        private val stateService: StateService,
-        private val interestService: InterestService
+        private val stateService: StateService
 ) {
 
     @GetMapping("/profile")
@@ -44,20 +39,9 @@ class UserController(
 
     @PostMapping("/regist")
     @PreAuthorize("isAuthenticated()")
-    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user:User) {
-        user.birthday = request.birthday
-        user.userName = request.userName
-        user.profileImageLink = request.profileImageLink
-
-        userService.save(user)
-
-        val userStates = request.userStates
-        stateService.changeUserState(user, userStates)
-        val userInterests = request.userInterests
-
-        interestService.changeUserInterest(user, userInterests)
+    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user: User) {
+        userService.registerUser(request, user)
     }
-
 
     @GetMapping("/states")
     @PreAuthorize("isAuthenticated()")

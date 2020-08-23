@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository
 interface StateRepository : JpaRepository<State, Long>, StateRepositoryCustom
 
 interface StateRepositoryCustom {
-
     fun findByLevel(level: Long): List<State>
 }
 
