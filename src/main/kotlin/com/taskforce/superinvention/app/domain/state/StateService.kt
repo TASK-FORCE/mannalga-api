@@ -7,18 +7,18 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class StateService(
-        var stateRepositorySupport: StateRepositorySupport,
+        var stateRepositoryImpl: StateRepositoryImpl,
         var userStateRepositorySupport: UserStateRepositorySupport,
         var userStateRepository: UserStateRepository,
         var stateRepository: StateRepository
 ) {
     fun findAllStateDtoList(): List<StateDto> {
-        return stateRepositorySupport.findByLevel(1).map { e -> StateDto(e) }.toList()
+        return stateRepositoryImpl.findByLevel(1).map { e -> StateDto(e) }.toList()
     }
 
     fun findUserStateList(user: User): UserStateDto {
         val userStates = userStateRepositorySupport.findByUserSeq(user.seq!!)
-        return UserStateDto(userStates.get(0).user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
+        return UserStateDto(userStates[0].user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
     }
 
     @Transactional
