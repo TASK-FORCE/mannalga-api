@@ -13,13 +13,9 @@ import com.taskforce.superinvention.app.web.UserController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
-import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationConfigurer
-import org.springframework.restdocs.templates.TemplateFormats
 import org.springframework.test.web.servlet.MockMvc
 
 
