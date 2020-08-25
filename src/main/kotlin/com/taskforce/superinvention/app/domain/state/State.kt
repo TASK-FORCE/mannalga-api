@@ -16,7 +16,7 @@ class State(
         var superStateRoot: String,
         var level: Long,
 
-        @OneToMany(mappedBy = "superState", fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "superState", fetch = FetchType.LAZY)
         var subStates: List<State>
 ): BaseEntity() {
 }

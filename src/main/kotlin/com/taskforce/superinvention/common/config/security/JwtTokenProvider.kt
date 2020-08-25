@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.common.config.security
 
 import com.taskforce.superinvention.app.domain.user.UserDetailsService
-import com.taskforce.superinvention.app.domain.user.UserRole
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.common.exception.BizException
 import io.jsonwebtoken.*
 import org.springframework.beans.factory.annotation.Value
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
-import javax.servlet.http.HttpServletRequest
 
 
 @Component
@@ -54,7 +53,8 @@ class JwtTokenProvider(
     }
 
     fun getAuthentication(token: String): Authentication {
-        val userDetails = userDetailsService.loadUserByUsername(getUserId(token))
+        val userId = getUserId(token)
+        val userDetails = userDetailsService.loadUserByUsername(userId)
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
