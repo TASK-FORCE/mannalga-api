@@ -48,3 +48,7 @@ include::{root}/user/userRegist.adoc[]
 = 관심사
 == 관심 목록 조회
 include::{root}/interest/interest-group-all.adoc[]
+
+= 모임
+== 모임 생성
+include::{root}/club/addClub.adoc[]
