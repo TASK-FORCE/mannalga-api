@@ -12,11 +12,5 @@ class ClubDto (
         var maximumNumber: Long,
         var userCount: Long
 ){
-    constructor(club : Club, userCount: Long){
-        this.seq = club.seq
-        this.name = club.name
-        this.description = club.description
-        this.maximumNumber = club.maximumNumber
-        this.userCount = userCount
-    }
+    constructor(club : Club, userCount: Long): this(club.seq, club.name, club.description, club.maximumNumber, userCount)
 }
