@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.state.StateService
@@ -58,4 +59,7 @@ abstract class ApiDocumentationTest {
 
     @MockBean
     lateinit var userDetailsService: UserDetailsService
+
+    @MockBean
+    lateinit var clubService: ClubService
 }
