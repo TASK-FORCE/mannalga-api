@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ClubUserRepository : JpaRepository<ClubUser, Long> {
+    fun findByClub(club: Club): List<ClubUser>
 }
