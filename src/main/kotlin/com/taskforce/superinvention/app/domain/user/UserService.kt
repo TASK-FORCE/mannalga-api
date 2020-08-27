@@ -28,15 +28,11 @@ class UserService(
         val log: Logger = LoggerFactory.getLogger(UserService::class.java)
     }
 
-    fun getUserInfo(userId: String): User? {
-        return userRepository.findByUserId(userId)
-    }
-
     fun getKakaoUserInfo(user: User): KakaoUserInfo {
         return kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional
     fun publishAppToken(token: KakaoToken): AppToken {
         val kakaoId = kakaoOAuth.getKakaoUserId(token)
 
@@ -49,10 +45,13 @@ class UserService(
         var isFirst = false
 
         if (user == null) {
-            isFirst = true
             user = User(kakaoId, token)
             userRepository.save(user)
             userRoleRepository.save(UserRole(user, "USER"))
+        }
+
+        if(user.isRegistered != 0) {
+            isFirst = true
         }
 
         return kakaoOAuth.publishAppToken(isFirst, user)
@@ -63,12 +62,13 @@ class UserService(
         user.birthday = request.birthday
         user.userName = request.userName
         user.profileImageLink = request.profileImageLink
+        user.isRegistered = 1
+
+        val userStates    = request.userStates
+        val userInterests = request.userInterests
 
         userRepository.save(user)
-
-        val userStates = request.userStates
         stateService.changeUserState(user, userStates)
-        val userInterests = request.userInterests
         interestService.changeUserInterest(user, userInterests)
     }
 }
