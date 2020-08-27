@@ -1,74 +1,58 @@
 package com.taskforce.superinvention.document.club
 
-import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.config.ApiDocumentationTest
-import java.time.LocalDateTime
-
-import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
+import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserDetailsService
-import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.kakao.*
-import com.taskforce.superinvention.app.web.dto.state.*
+import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
-import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.BDDMockito.*
-import org.springframework.context.annotation.Profile
+import org.junit.jupiter.api.Test
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
-import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.test.web.servlet.ResultActions
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.codec.Utf8
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.ResultActions
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.lang.IllegalArgumentException
-import java.time.LocalDate
 
 class ClubDocumentation: ApiDocumentationTest() {
 
     @Test
-    fun `State 조회 기능`() {
+    @WithMockUser
+    fun `모임 생성`() {
+        val clubAddRequestDto = ClubAddRequestDto(
+                name = "땔감 스터디"
+                , description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디"
+                , maximumNumber = 5L)
 
-        // given
-        var club: Club = Club(
-                name ="네카라스터디",
-                description = "네카라에 가는 모임",
-                maximumNumber = 50L
-        )
-        club.seq = 9999
-
-        `when`(clubService.getClubBySeq(9999)).thenReturn(club)
-
-        // when
-        val result: ResultActions = this.mockMvc.perform(
-                get("/clubs/9999")
-                        .characterEncoding("utf-8")
+        val result = mockMvc.perform(
+                post("/clubs")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+                        .content(objectMapper.writeValueAsString(clubAddRequestDto))
         ).andDo(print())
 
-        // then
         result.andExpect(status().isOk)
-                .andDo(document("select-club", getDocumentRequest(), getDocumentResponse(),
-                        
-                        responseFields(
-                                fieldWithPath("seq").type(JsonFieldType.NUMBER).description("모임의 고유 시퀀스"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("모임의 이름"),
-                                fieldWithPath("description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
-                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임의 최대 인원")
+                .andDo(
+                        document("addClub", getDocumentRequest(), getDocumentResponse(),
+                                requestFields(
+                                        fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
+                                        fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
+                                        fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)")
+                                )
                         )
-                
-                ))
+                )
+
+
     }
 }

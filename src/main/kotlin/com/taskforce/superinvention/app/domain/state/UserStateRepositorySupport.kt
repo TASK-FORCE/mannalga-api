@@ -11,6 +11,9 @@ class UserStateRepositorySupport(
 ) : QuerydslRepositorySupport(UserState::class.java) {
 
     fun findByUserSeq(userSeq: Long):List<UserState> =
-            queryFactory.selectFrom(userState).where(userState.user.seq.eq(userSeq)).fetch()
+            queryFactory.selectFrom(userState)
+                    .where(userState.user.seq.eq(userSeq))
+                    .orderBy(userState.priority.asc())
+                    .fetch()
 
 }

@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.UserDetailsService
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.UserService
+import com.taskforce.superinvention.app.web.ClubController
 import com.taskforce.superinvention.app.web.InterestGroupController
 import com.taskforce.superinvention.app.web.StateController
 import com.taskforce.superinvention.app.web.UserController
@@ -29,7 +30,8 @@ import org.springframework.test.web.servlet.MockMvc
 @WebMvcTest(controllers = [
     StateController::class,
     UserController::class,
-    InterestGroupController::class
+    InterestGroupController::class,
+    ClubController::class
 ])
 abstract class ApiDocumentationTest {
 

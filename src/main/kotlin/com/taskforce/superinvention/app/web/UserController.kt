@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.UserStateDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.http.ResponseEntity
@@ -63,6 +64,12 @@ class UserController(
     fun getUserStateList(@AuthUser user: User): UserStateDto {
         val findUserStateList = stateService.findUserStateList(user)
         return findUserStateList
+    }
+
+    @PutMapping("/states")
+    @PreAuthorize("isAuthenticated()")
+    fun changeUserStates(@AuthUser user: User, @RequestBody stateRequestDto: List<StateRequestDto>): UserStateDto {
+        return stateService.changeUserState(user, stateRequestDto)
     }
 }
 
