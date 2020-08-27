@@ -14,7 +14,7 @@ class ClubRepositorySupport : QuerydslRepositorySupport(Club::class.java) {
 
     fun findByKeyword(keyword: String): List<Club>? {
         return from(QClub.club)
-                .where(QClub.club.name.like(keyword))
+                .where(QClub.club.name.contains(keyword))
                 .fetch()
     }
 }

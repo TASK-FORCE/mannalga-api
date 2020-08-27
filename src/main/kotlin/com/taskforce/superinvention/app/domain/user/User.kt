@@ -40,7 +40,7 @@ class User: BaseEntity, UserDetails {
         this.birthday = birthday
     }
 
-    constructor(userId: User) {
+    constructor(userId: String) {
         this.userId = userId
         this.userType = UserType.KAKAO
         this.userRoles = hashSetOf()
