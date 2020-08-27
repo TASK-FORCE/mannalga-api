@@ -41,7 +41,7 @@ class UserServiceTest {
         val kakaoToken = KakaoToken()
         val user: User = User("13141")
 
-        given(kakaoOAuth.getKakaoId(kakaoToken)).willReturn(user.userId)
+        given(kakaoOAuth.getKakaoUserId(kakaoToken)).willReturn(user.userId)
         given(userRepository.findByUserId(user.userId)).willReturn(null)
 
         // when
@@ -59,7 +59,7 @@ class UserServiceTest {
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_USER"))
 
-        `when`(kakaoOAuth.getKakaoId(kakaoToken)).thenReturn(user.userId)
+        `when`(kakaoOAuth.getKakaoUserId(kakaoToken)).thenReturn(user.userId)
         `when`(userRepository.findByUserId(user.userId)).thenReturn(user)
         `when`(jwtTokenProvider.createAppToken(user.userId, user.userRoles)).thenReturn("hased-mock-token")
 

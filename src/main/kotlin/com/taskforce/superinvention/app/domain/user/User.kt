@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
-import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -31,6 +30,8 @@ class User: BaseEntity, UserDetails {
     var birthday: LocalDate? = null
 
     var profileImageLink: String? = null
+
+    var isRegistered: Int? =0
 
     constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>, userName:String, birthday: LocalDate) {
         this.userId = userId

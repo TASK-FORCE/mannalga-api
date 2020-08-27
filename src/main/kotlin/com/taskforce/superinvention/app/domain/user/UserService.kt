@@ -1,15 +1,17 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.interest.interest.InterestService
+import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
-import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
+import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
 import java.lang.Exception
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
@@ -18,20 +20,21 @@ import javax.transaction.Transactional
 class UserService(
         private var userRepository: UserRepository,
         private var userRoleRepository: UserRoleRepository,
-        private var kakaoOAuth: KakaoOAuth,
-        private var jwtTokenProvider: JwtTokenProvider
+        private var stateService: StateService,
+        private var interestService: InterestService,
+        private var kakaoOAuth: KakaoOAuth
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(UserService::class.java)
     }
 
-    fun getUserInfo(userId: String): User? {
-        return userRepository.findByUserId(userId)
+    fun getKakaoUserInfo(user: User): KakaoUserInfo {
+        return kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional
     fun publishAppToken(token: KakaoToken): AppToken {
-        val kakaoId = kakaoOAuth.getKakaoId(token)
+        val kakaoId = kakaoOAuth.getKakaoUserId(token)
 
         if(kakaoId.isBlank()) {
             log.error("unknown kakao token received")
@@ -42,22 +45,30 @@ class UserService(
         var isFirst = false
 
         if (user == null) {
-            isFirst = true
             user = User(kakaoId, token)
             userRepository.save(user)
             userRoleRepository.save(UserRole(user, "USER"))
         }
 
-        return AppToken (
-                isFirst,
-                jwtTokenProvider.createAppToken(user.userId, user.userRoles)
-        )
+        if(user.isRegistered != 0) {
+            isFirst = true
+        }
+
+        return kakaoOAuth.publishAppToken(isFirst, user)
     }
 
     @Transactional
-    fun save(user: User) {
-        userRepository.save(user);
-    }
+    fun registerUser(request: KakaoUserRegistRequest, user: User) {
+        user.birthday = request.birthday
+        user.userName = request.userName
+        user.profileImageLink = request.profileImageLink
+        user.isRegistered = 1
 
-    fun getKakaoUserInfo(user: User) = kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
+        val userStates    = request.userStates
+        val userInterests = request.userInterests
+
+        userRepository.save(user)
+        stateService.changeUserState(user, userStates)
+        interestService.changeUserInterest(user, userInterests)
+    }
 }
