@@ -8,7 +8,6 @@ import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
-import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,8 +22,7 @@ class UserService(
         private var userRoleRepository: UserRoleRepository,
         private var stateService: StateService,
         private var interestService: InterestService,
-        private var kakaoOAuth: KakaoOAuth,
-        private var jwtTokenProvider: JwtTokenProvider
+        private var kakaoOAuth: KakaoOAuth
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -40,7 +38,7 @@ class UserService(
 
     @Transactional(rollbackOn = [Exception::class])
     fun publishAppToken(token: KakaoToken): AppToken {
-        val kakaoId = kakaoOAuth.getKakaoId(token)
+        val kakaoId = kakaoOAuth.getKakaoUserId(token)
 
         if(kakaoId.isBlank()) {
             log.error("unknown kakao token received")
@@ -57,10 +55,7 @@ class UserService(
             userRoleRepository.save(UserRole(user, "USER"))
         }
 
-        return AppToken (
-                isFirst,
-                jwtTokenProvider.createAppToken(user.userId, user.userRoles)
-        )
+        return kakaoOAuth.publishAppToken(isFirst, user)
     }
 
     @Transactional
@@ -74,7 +69,6 @@ class UserService(
         val userStates = request.userStates
         stateService.changeUserState(user, userStates)
         val userInterests = request.userInterests
-
         interestService.changeUserInterest(user, userInterests)
     }
 }
