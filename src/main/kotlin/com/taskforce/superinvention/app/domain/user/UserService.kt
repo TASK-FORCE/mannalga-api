@@ -8,11 +8,11 @@ import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
 
@@ -22,7 +22,8 @@ class UserService(
         private var userRoleRepository: UserRoleRepository,
         private var stateService: StateService,
         private var interestService: InterestService,
-        private var kakaoOAuth: KakaoOAuth
+        private var kakaoOAuth: KakaoOAuth,
+        private var jwtTokenProvider: JwtTokenProvider
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -33,7 +34,7 @@ class UserService(
     }
 
     @Transactional
-    fun publishAppToken(token: KakaoToken): AppToken {
+    fun saveKakaoToken(token: KakaoToken): AppToken {
         val kakaoId = kakaoOAuth.getKakaoUserId(token)
 
         if(kakaoId.isBlank()) {
@@ -42,7 +43,7 @@ class UserService(
         }
 
         var user: User? = userRepository.findByUserId(kakaoId)
-        var isFirst = false
+        var isRegistered = false
 
         if (user == null) {
             user = User(kakaoId, token)
@@ -51,10 +52,14 @@ class UserService(
         }
 
         if(user.isRegistered != 0) {
-            isFirst = true
+            isRegistered = true;
         }
 
-        return kakaoOAuth.publishAppToken(isFirst, user)
+        return AppToken(
+                isRegistered,
+                jwtTokenProvider.createAppToken(user.userId)
+        )
+//        kakaoOAuth.publishAppToken(isRegistered, user.userId)
     }
 
     @Transactional

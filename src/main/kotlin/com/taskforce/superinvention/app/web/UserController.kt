@@ -34,7 +34,7 @@ class UserController(
 
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
-        return userService.publishAppToken(token)
+        return userService.saveKakaoToken(token)
     }
 
     @PostMapping("/regist")

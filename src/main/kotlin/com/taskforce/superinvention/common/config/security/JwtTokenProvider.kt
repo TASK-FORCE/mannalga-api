@@ -32,15 +32,13 @@ class JwtTokenProvider(
         var expireDay: Long = 365
     }
 
-    fun createAppToken(userId: String, roles: Set<UserRole>): String {
+    fun createAppToken(userId: String): String {
         val payloads: Claims  = Jwts.claims()
-        val authList = roles.map { role -> SimpleGrantedAuthority(role.authority) }.toList()
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
         val issuedDate  = Date.from(now.toInstant())
         val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
 
-        payloads["auth"]   = authList.toString()
         payloads["userId"] = userId
 
         return Jwts.builder()

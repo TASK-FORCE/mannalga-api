@@ -25,7 +25,7 @@ class JwtTokenPrividerTest {
 
         // given
         val user  = User("test-user-id")
-        val appToken: String = jwtTokenProvider.createAppToken(user.userId, user.userRoles)
+        val appToken: String = jwtTokenProvider.createAppToken(user.userId)
 
         `when`(userDetailsService.loadUserByUsername(user.userId)).thenReturn(user)
 
