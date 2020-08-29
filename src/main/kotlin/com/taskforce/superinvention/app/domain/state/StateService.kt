@@ -16,6 +16,8 @@ class StateService(
 
     fun findUserStateList(user: User): UserStateDto {
         val userStates = userStateRepository.findByUserSeq(user.seq!!)
+
+        // TODO 데이터가 없을 떄 에러남
         return UserStateDto(userStates[0].user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
     }
 
