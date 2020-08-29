@@ -12,7 +12,7 @@ import javax.persistence.*
 
 @Entity
 @JsonIdentityInfo(property = "userId", generator = ObjectIdGenerators.StringIdGenerator::class)
-class User: BaseEntity, UserDetails {
+class User: BaseEntity {
 
     var userId: String
 
@@ -53,33 +53,5 @@ class User: BaseEntity, UserDetails {
         this.userRoles = hashSetOf()
         this.accessToken = token.access_token
         this.refrestToken = token.refresh_token
-    }
-
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return this.userRoles
-    }
-
-    override fun isEnabled(): Boolean {
-        return true
-    }
-
-    override fun getUsername(): String {
-        return userId
-    }
-
-    override fun isCredentialsNonExpired(): Boolean {
-       return true
-    }
-
-    override fun getPassword(): String {
-        return ""
-    }
-
-    override fun isAccountNonExpired(): Boolean {
-        return true
-    }
-
-    override fun isAccountNonLocked(): Boolean {
-        return true
     }
 }

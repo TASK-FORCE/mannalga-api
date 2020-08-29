@@ -15,14 +15,14 @@ class StateService(
     }
 
     fun findUserStateList(user: User): UserStateDto {
-        val userStates = userStateRepository.findAllByUserSeq(user.seq!!)
+        val userStates = userStateRepository.findByUserSeq(user.seq!!)
         return UserStateDto(userStates[0].user, userStates.map { e -> StateWithPriorityDto(SimpleStateDto(e.state), e.priority) }.toList())
     }
 
     @Transactional
     fun changeUserState(user: User, states: List<StateRequestDto>): UserStateDto {
         if (user.seq == null) throw NullPointerException()
-        val findByUserSeq: List<UserState> = userStateRepository.findAllByUserSeq(user.seq!!)
+        val findByUserSeq: List<UserState> = userStateRepository.findByUserSeq(user.seq!!)
         userStateRepository.deleteAll(findByUserSeq)
 
         val toAdd = states.map { e -> UserState(user, stateRepository.findById(e.seq).orElseThrow { NullPointerException() }, e.priority) }.toMutableList()

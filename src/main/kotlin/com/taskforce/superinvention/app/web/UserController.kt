@@ -10,7 +10,7 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.UserStateDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,40 +19,40 @@ class UserController(
         private val userService: UserService,
         private val stateService: StateService
 ) {
-
-    @GetMapping("/profile")
-    @PreAuthorize("isAuthenticated()")
-    fun getUserInfo(@AuthUser user: User): User? {
-        return user
-    }
-
-    @GetMapping("/kakao-profile")
-    @PreAuthorize("isAuthenticated()")
-    fun getKakaoUserInfo(@AuthUser user: User): KakaoUserInfo {
-        return userService.getKakaoUserInfo(user)
-    }
-
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
         return userService.saveKakaoToken(token)
     }
 
+    @Secured("ROLE_USER")
+    @GetMapping("/profile")
+    fun getUserInfo(@AuthUser user: User): User {
+        return user
+    }
+
+    @Secured("ROLE_USER")
+    @GetMapping("/kakao-profile")
+    fun getKakaoUserInfo(@AuthUser user: User): KakaoUserInfo {
+        return userService.getKakaoUserInfo(user)
+    }
+
+    @Secured("ROLE_USER")
     @PostMapping("/regist")
-    @PreAuthorize("isAuthenticated()")
     fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user: User) {
         userService.registerUser(request, user)
     }
 
+    @Secured("ROLE_USER")
     @GetMapping("/states")
-    @PreAuthorize("isAuthenticated()")
-    fun getUserStateList(@AuthUser user: User): UserStateDto {
+    fun getUserStateList(@AuthUser user: User): UserStateDto? {
         val findUserStateList = stateService.findUserStateList(user)
         return findUserStateList
     }
 
+    @Secured("ROLE_USER")
     @PutMapping("/states")
-    @PreAuthorize("isAuthenticated()")
-    fun changeUserStates(@AuthUser user: User, @RequestBody stateRequestDto: List<StateRequestDto>): UserStateDto {
+    fun changeUserStates(@AuthUser user: User,
+                         @RequestBody stateRequestDto: List<StateRequestDto>): UserStateDto {
         return stateService.changeUserState(user, stateRequestDto)
     }
 }

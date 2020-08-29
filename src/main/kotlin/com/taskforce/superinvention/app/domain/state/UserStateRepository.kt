@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserStateRepository : JpaRepository<UserState, Long> {
 
-    fun findAllByUserSeq(userSeq: Long): List<UserState>
+    fun findByUserSeq(userSeq: Long): List<UserState>
 }

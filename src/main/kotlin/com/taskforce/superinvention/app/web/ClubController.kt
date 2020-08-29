@@ -6,7 +6,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -29,11 +29,10 @@ class ClubController(
         return clubService.getClubUserList(seq)
     }
 
-    @PostMapping()
-    @PreAuthorize("isAuthenticated()")
-    fun addClub(@AuthUser user:User, @RequestBody request: ClubAddRequestDto) {
+    @Secured("ROLE_USER")
+    @PostMapping
+    fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto) {
         val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber)
         clubService.addClub(club, user)
     }
-
 }

@@ -48,19 +48,23 @@ class UserService(
         if (user == null) {
             user = User(kakaoId, token)
             userRepository.save(user)
-            userRoleRepository.save(UserRole(user, "USER"))
+            userRoleRepository.save(UserRole(user, "UNREGISTERED"))
         }
 
         if(user.isRegistered != 0) {
-            isRegistered = true;
+            isRegistered = true
         }
 
         return AppToken(
                 isRegistered,
                 jwtTokenProvider.createAppToken(user.userId)
         )
-//        kakaoOAuth.publishAppToken(isRegistered, user.userId)
     }
+
+//    @Transactional
+//    fun getAppToken(): AppToken{
+//
+//    }
 
     @Transactional
     fun registerUser(request: KakaoUserRegistRequest, user: User) {
@@ -73,6 +77,7 @@ class UserService(
         val userInterests = request.userInterests
 
         userRepository.save(user)
+        userRoleRepository.save(UserRole(user, "USER"))
         stateService.changeUserState(user, userStates)
         interestService.changeUserInterest(user, userInterests)
     }
