@@ -29,6 +29,13 @@ class ClubController(
         return clubService.getClubUserList(seq)
     }
 
+    @PostMapping("/{clubSeq}/users")
+    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long) {
+        val club = clubService.getClubBySeq(clubSeq)
+        if (club == null) throw NullPointerException("존재하지 않는 모임입니다")
+        clubService.addClubUser(club, user);
+    }
+
     @Secured("ROLE_USER")
     @PostMapping
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto) {
