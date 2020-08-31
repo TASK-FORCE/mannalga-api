@@ -12,5 +12,4 @@ class ClubState(
         @ManyToOne
         var state: State,
         var priority: Int
-) : BaseEntity(){
-}
+) : BaseEntity()

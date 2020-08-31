@@ -1,8 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.user.User
-import javax.swing.plaf.nimbus.State
+import com.taskforce.superinvention.app.domain.user.user.User
 
 class ClubUserDto(
         club: Club,

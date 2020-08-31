@@ -2,7 +2,7 @@ package com.taskforce.superinvention.app.web
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
-import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser

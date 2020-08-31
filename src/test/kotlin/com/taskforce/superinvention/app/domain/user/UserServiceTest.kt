@@ -2,8 +2,14 @@ package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.state.StateService
+import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.user.UserRepository
+import com.taskforce.superinvention.app.domain.user.user.UserService
+import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
+import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
@@ -12,16 +18,11 @@ import org.junit.Assert.assertEquals
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.BDDMockito.*
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.MockBeans
-import org.springframework.boot.test.mock.mockito.SpyBean
-import org.springframework.context.annotation.Bean
 
 @ExtendWith(MockitoExtension::class)
 class UserServiceTest {
@@ -29,23 +30,24 @@ class UserServiceTest {
     @InjectMocks
     lateinit var userService: UserService
 
+
     @Mock
     lateinit var userRepository: UserRepository
 
     @Mock
-    lateinit var userRoleRepository: UserRoleRepository
+    lateinit var userRoleService: UserRoleService
+
+    @Mock
+    lateinit var userStateService: UserStateService
+
+    @Mock
+    lateinit var userInterestService: UserInterestService
 
     @Mock
     lateinit var jwtTokenProvider: JwtTokenProvider
 
     @Mock
     lateinit var kakaoOAuth: KakaoOAuth
-
-    @Mock
-    lateinit var stateService: StateService
-
-    @Mock
-    lateinit var interestService: InterestService
 
     @Test
     fun `AppToken 발행 - 신규 가입 유저`() {

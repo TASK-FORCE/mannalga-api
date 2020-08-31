@@ -1,8 +1,8 @@
 package com.taskforce.superinvention.app.web
 
-import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserService
+import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.user.UserService
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/users")
 class UserController(
         private val userService: UserService,
-        private val stateService: StateService
+        private val userStateService: UserStateService
 ) {
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
@@ -45,7 +45,7 @@ class UserController(
     @Secured("ROLE_USER")
     @GetMapping("/states")
     fun getUserStateList(@AuthUser user: User): UserStateDto? {
-        val findUserStateList = stateService.findUserStateList(user)
+        val findUserStateList = userStateService.findUserStateList(user)
         return findUserStateList
     }
 
@@ -53,7 +53,7 @@ class UserController(
     @PutMapping("/states")
     fun changeUserStates(@AuthUser user: User,
                          @RequestBody stateRequestDto: List<StateRequestDto>): UserStateDto {
-        return stateService.changeUserState(user, stateRequestDto)
+        return userStateService.changeUserState(user, stateRequestDto)
     }
 }
 

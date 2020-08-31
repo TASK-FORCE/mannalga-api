@@ -4,6 +4,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ClubUserRoleRepository : JpaRepository<ClubUserRole, Long> {
-
-}
+interface ClubUserRoleRepository : JpaRepository<ClubUserRole, Long>

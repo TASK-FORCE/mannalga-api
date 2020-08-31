@@ -1,9 +1,8 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.user
 
-import com.taskforce.superinvention.app.domain.interest.interest.InterestService
-import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.app.domain.user.userRole.UserRole
-import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
+import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
+import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
@@ -19,9 +18,9 @@ import javax.transaction.Transactional
 @Service
 class UserService(
         private var userRepository: UserRepository,
-        private var userRoleRepository: UserRoleRepository,
-        private var stateService: StateService,
-        private var interestService: InterestService,
+        private var userRoleService: UserRoleService,
+        private var userStateService: UserStateService,
+        private var userInterestService: UserInterestService,
         private var kakaoOAuth: KakaoOAuth,
         private var jwtTokenProvider: JwtTokenProvider
 ) {
@@ -48,7 +47,7 @@ class UserService(
         if (user == null) {
             user = User(kakaoId, token)
             userRepository.save(user)
-            userRoleRepository.save(UserRole(user, "UNREGISTERED"))
+            userRoleService.addRoleToUser(user, "UNREGISTERED")
         }
 
         if(user.isRegistered != 0) {
@@ -61,11 +60,6 @@ class UserService(
         )
     }
 
-//    @Transactional
-//    fun getAppToken(): AppToken{
-//
-//    }
-
     @Transactional
     fun registerUser(request: KakaoUserRegistRequest, user: User) {
         user.birthday = request.birthday
@@ -77,8 +71,8 @@ class UserService(
         val userInterests = request.userInterests
 
         userRepository.save(user)
-        userRoleRepository.save(UserRole(user, "USER"))
-        stateService.changeUserState(user, userStates)
-        interestService.changeUserInterest(user, userInterests)
+        userRoleService.addRoleToUser(user, "USER")
+        userStateService.changeUserState(user, userStates)
+        userInterestService.changeUserInterest(user, userInterests)
     }
 }

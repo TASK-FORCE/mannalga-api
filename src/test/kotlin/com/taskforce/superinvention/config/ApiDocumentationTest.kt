@@ -5,9 +5,10 @@ import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.app.domain.user.UserDetailsProvider
-import com.taskforce.superinvention.app.domain.user.UserRepository
-import com.taskforce.superinvention.app.domain.user.UserService
+import com.taskforce.superinvention.app.domain.user.user.UserDetailsProvider
+import com.taskforce.superinvention.app.domain.user.user.UserRepository
+import com.taskforce.superinvention.app.domain.user.user.UserService
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.ClubController
 import com.taskforce.superinvention.app.web.InterestGroupController
 import com.taskforce.superinvention.app.web.StateController
@@ -39,6 +40,9 @@ abstract class ApiDocumentationTest {
 
     @MockBean
     lateinit var userRepository: UserRepository
+
+    @MockBean
+    lateinit var userStateService: UserStateService
 
     @MockBean
     lateinit var stateService: StateService

@@ -1,12 +1,11 @@
-package com.taskforce.superinvention.app.domain.user
+package com.taskforce.superinvention.app.domain.user.user
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDate
 import javax.persistence.*
 
