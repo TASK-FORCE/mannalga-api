@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.UserClubDto
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,12 +16,12 @@ class ClubService(
         private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService
 ) {
-    fun getClubBySeq(seq: Long): Club? {
+    fun getClubByClubSeq(seq: Long): Club? {
         return clubRepositorySupport.findBySeq(seq)
     }
 
-    fun getAllClubs(): List<Club>? {
-        return clubRepository.findAll()
+    fun retrieveClubs(page: Long, keyword: String): List<Club>? {
+        return clubRepositorySupport.findByKeyword(page, keyword)
     }
 
     fun getClubUserList(clubSeq: Long): ClubUserDto {
@@ -28,8 +29,10 @@ class ClubService(
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
-    fun retrieveClubs(keyword: String): List<Club>? {
-        return clubRepositorySupport.findByKeyword(keyword)
+    // 유저 컨트롤러에서 호출(가입한 클럽 리스트)
+    fun getClubByUserSeq(userSeq: Long): UserClubDto? {
+        val clubUsers = clubUserRepositorySupport.findByUserSeq(userSeq)
+        return UserClubDto( clubUsers[0].user, clubUsers.map{ e -> e.club}.toList() )
     }
 
     /**

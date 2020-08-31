@@ -9,7 +9,6 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
 ==== [Request HTTP]
 include::{sub-snippet}/select-club/http-request.adoc[]
 
@@ -23,7 +22,6 @@ include::{sub-snippet}/select-club/http-request.adoc[]
     요구 Request Body 없음
 ....
 
-=== Response
 ==== [Response Fields]
 include::{sub-snippet}/state-all/response-fields.adoc[]
 
