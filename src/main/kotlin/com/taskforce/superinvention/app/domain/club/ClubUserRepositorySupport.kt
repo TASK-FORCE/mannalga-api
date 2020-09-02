@@ -2,7 +2,6 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClubUser.*
-import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
@@ -17,10 +16,10 @@ class ClubUserRepositorySupport(
                 .fetchOne()
     }
 
-    fun findByClubSeq(club: Club): List<ClubUser> =
-            queryFactory.selectFrom(clubUser).where(clubUser.club.seq.eq(club.seq)).fetch()
+    fun findByClubSeq(clubSeq: Long): List<ClubUser> =
+            queryFactory.selectFrom(clubUser).where(clubUser.club.seq.eq(clubSeq)).fetch()
 
-    fun findByUserSeq(user: User): List<ClubUser> =
-            queryFactory.selectFrom(clubUser).where(clubUser.user.seq.eq(user.seq)).fetch()
+    fun findByUserSeq(userSeq: Long): List<ClubUser> =
+            queryFactory.selectFrom(clubUser).where(clubUser.user.seq.eq(userSeq)).fetch()
 
 }
