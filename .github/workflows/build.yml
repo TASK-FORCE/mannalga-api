@@ -1,4 +1,4 @@
-name: [Build] Super-Invention
+name: Build--Super-Invention
 
 on:
   push:
