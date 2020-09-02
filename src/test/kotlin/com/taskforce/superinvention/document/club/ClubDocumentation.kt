@@ -45,13 +45,13 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         result.andExpect(status().isOk)
                 .andDo(
-                        document("addClub", getDocumentRequest(), getDocumentResponse(),
-                                requestFields(
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
-                                        fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
-                                        fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)")
-                                )
+                    document("addClub", getDocumentRequest(), getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
+                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)")
                         )
+                    )
                 )
 
 
