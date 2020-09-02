@@ -24,12 +24,6 @@ class ClubService(
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
-    // 유저 컨트롤러에서 호출(가입한 클럽 리스트)
-    fun getClubByUser(user: User): UserClubDto? {
-        val clubUsers = clubUserRepositorySupport.findByUserSeq(user)
-        return UserClubDto( clubUsers[0].user, clubUsers.map{ e -> e.club}.toList() )
-    }
-
     fun retrieveClubs(keyword: String): List<Club>? {
         return clubRepositorySupport.findByKeyword(keyword)
     }
