@@ -10,24 +10,17 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/changeUserStates/http-request.adoc[]
 
-=== [Request Fields]
 include::{sub-snippet}/changeUserStates/request-fields.adoc[]
 
-==== [curl example]
 include::{sub-snippet}/changeUserStates/curl-request.adoc[]
 
-==== [Request Body]
 include::{sub-snippet}/changeUserStates/request-body.adoc[]
 
 === Response
-==== [ResponseFields]
 include::{sub-snippet}/changeUserStates/response-fields.adoc[]
 
-==== [Response HTTP Example]
 include::{sub-snippet}/changeUserStates/http-response.adoc[]
 
-==== [Response body]
 include::{sub-snippet}/changeUserStates/response-body.adoc[]

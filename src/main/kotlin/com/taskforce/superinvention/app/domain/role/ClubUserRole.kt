@@ -8,8 +8,7 @@ import javax.persistence.ManyToOne
 @Entity
 class ClubUserRole(
         @ManyToOne
-    var clubUser: ClubUser,
+        var clubUser: ClubUser,
         @ManyToOne
-    var role: Role
-): BaseEntity() {
-}
+        var role: Role
+): BaseEntity()

@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.role.RoleService
-import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

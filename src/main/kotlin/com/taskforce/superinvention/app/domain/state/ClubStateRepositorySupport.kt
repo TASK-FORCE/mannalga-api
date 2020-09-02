@@ -4,5 +4,4 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
 @Repository
-class ClubStateRepositorySupport : QuerydslRepositorySupport(ClubState::class.java){
-}
+class ClubStateRepositorySupport : QuerydslRepositorySupport(ClubState::class.java)

@@ -10,23 +10,16 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/kakaoUserProfileInfo/http-request.adoc[]
 
-==== [curl example]
 include::{sub-snippet}/kakaoUserProfileInfo/curl-request.adoc[]
-
-==== [Request Body]
 ....
 요구 Request Header 없음
 ....
 
 === Response
-==== [Response HTTP Example]
 include::{sub-snippet}/kakaoUserProfileInfo/http-response.adoc[]
 
-==== [Response body]
 include::{sub-snippet}/kakaoUserProfileInfo/response-body.adoc[]
 
-==== [Response field]
 include::{sub-snippet}/kakaoUserProfileInfo/response-fields.adoc[]

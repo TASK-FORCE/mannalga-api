@@ -1,8 +1,8 @@
 package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.state.State
-import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserDetailsService
+import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
@@ -11,24 +11,19 @@ import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
+import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.*
-import org.springframework.context.annotation.Profile
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.lang.IllegalArgumentException
 import java.time.LocalDate
 
 class UserDocumentation : ApiDocumentationTest() {
@@ -45,11 +40,11 @@ class UserDocumentation : ApiDocumentationTest() {
         )
 
         val appToken = AppToken(
-                isFirst = true,
+                isRegistered = true,
                 appToken = "xxxxxxxxxx"
         )
 
-        `when`(userService.publishAppToken(MockitoHelper.anyObject())).thenReturn(appToken)
+        `when`(userService.saveKakaoToken(anyObject())).thenReturn(appToken)
 
         // when
         val result: ResultActions = this.mockMvc.perform(
@@ -70,7 +65,7 @@ class UserDocumentation : ApiDocumentationTest() {
                                 fieldWithPath("refresh_token_expires_in").type(JsonFieldType.NUMBER).description("리프래스 토큰 TTL (초)")
                         ),
                         responseFields(
-                                fieldWithPath("isFirst").type(JsonFieldType.BOOLEAN).description("최초 회원가입 여부"),
+                                fieldWithPath("isRegistered").type(JsonFieldType.BOOLEAN).description("최초 회원가입 여부"),
                                 fieldWithPath("appToken").type(JsonFieldType.STRING).description("앱 JWT 토큰")
                         )
                 ))
@@ -134,7 +129,7 @@ class UserDocumentation : ApiDocumentationTest() {
         val user = User("eric")
         user.seq = 1L
 
-        `when`(stateService.findUserStateList(MockitoHelper.anyObject())).thenReturn(UserStateDto(
+        `when`(userStateService.findUserStateList(anyObject())).thenReturn(UserStateDto(
                 user, listOf(
                     stateWithPriorityDto1,
                     stateWithPriorityDto2
@@ -170,7 +165,7 @@ class UserDocumentation : ApiDocumentationTest() {
     @WithMockUser(username = "eric")
     fun `카카오 유저 정보 조회`() {
 
-        `when`(userService.getKakaoUserInfo(MockitoHelper.anyObject())).thenReturn(KakaoUserInfo(
+        `when`(userService.getKakaoUserInfo(anyObject())).thenReturn(KakaoUserInfo(
                 id = "123123",
                 properties = KakaoUserProperties(
                         nickname = "정준_ERIC",
@@ -242,7 +237,7 @@ class UserDocumentation : ApiDocumentationTest() {
         val stateRequest = listOf(StateRequestDto(seq = 101L, priority = 1L), StateRequestDto(seq = 102L, priority = 2L))
         val userStateDto = UserStateDto(user = mockUser, states = userStates)
 
-        `when`(stateService.changeUserState(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(userStateDto)
+        `when`(userStateService.changeUserState(anyObject(), anyObject())).thenReturn(userStateDto)
 
         // when
         val result = this.mockMvc.perform(

@@ -10,21 +10,15 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/userRegist/http-request.adoc[]
 
-=== [Request Fields]
 include::{sub-snippet}/userRegist/request-fields.adoc[]
 
-==== [curl example]
 include::{sub-snippet}/userRegist/curl-request.adoc[]
 
-==== [Request Body]
 include::{sub-snippet}/userRegist/request-body.adoc[]
 
 === Response
-==== [Response HTTP Example]
 include::{sub-snippet}/userRegist//http-response.adoc[]
 
-==== [Response body]
 include::{sub-snippet}/userRegist//response-body.adoc[]

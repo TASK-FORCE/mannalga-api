@@ -10,20 +10,15 @@ endif::[]
 :site-url: /build/asciidoc/html5/user-states
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/userStates/http-request.adoc[]
 
-=== [Request Fields]
 ....
 요구 Request Fields 없음
 ....
 
-==== [curl example]
 include::{sub-snippet}/userStates/curl-request.adoc[]
 
 === Response
-==== [Response HTTP Example]
 include::{sub-snippet}/userStates/http-response.adoc[]
 
-==== [Response body]
 include::{sub-snippet}/userStates/response-body.adoc[]

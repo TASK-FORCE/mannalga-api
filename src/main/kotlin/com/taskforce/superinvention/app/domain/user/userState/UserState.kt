@@ -1,7 +1,8 @@
-package com.taskforce.superinvention.app.domain.state
+package com.taskforce.superinvention.app.domain.user.userState
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.user.user.User
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 

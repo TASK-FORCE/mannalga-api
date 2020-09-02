@@ -10,22 +10,17 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/interest-group-all/http-request.adoc[]
 
-==== [Request Headers]
 ....
     요구 Request Header 없음
 ....
 
-==== [Request Body]
 ....
     요구 Request Body 없음
 ....
 
 === Response
-==== [Response Fields]
 include::{sub-snippet}/interest-group-all/response-fields.adoc[]
 
-==== [Response HTTP Example]
 include::{sub-snippet}/interest-group-all/http-response.adoc[]

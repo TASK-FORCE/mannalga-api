@@ -1,9 +1,6 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.user.User
-import java.time.LocalDateTime
-import javax.swing.plaf.nimbus.State
 
 class ClubDto (
         var seq: Long?,

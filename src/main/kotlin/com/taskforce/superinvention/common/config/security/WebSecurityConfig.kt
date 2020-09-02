@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled=true, securedEnabled = true)
 class WebSecurityConfig(
     private val jwtTokenProvider: JwtTokenProvider
 ): WebSecurityConfigurerAdapter() {
@@ -30,7 +30,7 @@ class WebSecurityConfig(
 
     override fun configure(web: WebSecurity) {
         web.ignoring()
-           .antMatchers("/resources/**"); // #3
+           .antMatchers("/resources/**")
     }
 
     override fun configure(http: HttpSecurity) {
