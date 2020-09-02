@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("clubs")
 class ClubController(
-        private val clubService : ClubService
+        val clubService : ClubService
 ) {
     @GetMapping
-    fun retrieveClubs(
-            @RequestParam("offset", defaultValue = "10") offset : Long,
-            @RequestParam("page", defaultValue = "1") page : Long,
-            @RequestParam("keyword") keyword : String): List<Club>?{
-        return clubService.retrieveClubs(offset, page, keyword)
+    fun retrieveClubs(@RequestParam("keyword") keyword : String): List<Club>?{
+        return clubService.retrieveClubs(keyword)
     }
 
     @GetMapping("/{seq}")

@@ -3,7 +3,6 @@ package com.taskforce.superinvention.app.domain.club
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.UserClubDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.RuntimeException
@@ -17,7 +16,7 @@ class ClubService(
         private var roleService: RoleService
 ) {
     fun getClubBySeq(seq: Long): Club? {
-        return clubRepository.findBySeq(seq)
+        return clubRepositorySupport.findBySeq(seq)
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUserDto? {
@@ -31,8 +30,8 @@ class ClubService(
         return UserClubDto( clubUsers[0].user, clubUsers.map{ e -> e.club}.toList() )
     }
 
-    fun retrieveClubs(offset: Long, page: Long, keyword: String): List<Club>? {
-        return clubRepositorySupport.findByKeyword(offset, page, keyword)
+    fun retrieveClubs(keyword: String): List<Club>? {
+        return clubRepositorySupport.findByKeyword(keyword)
     }
 
     /**
