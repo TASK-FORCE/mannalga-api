@@ -16,23 +16,23 @@ class ClubService(
         private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService
 ) {
-    fun getClubByClubSeq(seq: Long): Club? {
-        return clubRepositorySupport.findBySeq(seq)
+    fun getClubBySeq(seq: Long): Club? {
+        return clubRepository.findBySeq(seq)
     }
 
-    fun retrieveClubs(page: Long, keyword: String): List<Club>? {
-        return clubRepositorySupport.findByKeyword(page, keyword)
-    }
-
-    fun getClubUserList(clubSeq: Long): ClubUserDto {
+    fun getClubUserList(clubSeq: Long): ClubUserDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
     // 유저 컨트롤러에서 호출(가입한 클럽 리스트)
-    fun getClubByUserSeq(userSeq: Long): UserClubDto? {
-        val clubUsers = clubUserRepositorySupport.findByUserSeq(userSeq)
+    fun getClubByUser(user: User): UserClubDto? {
+        val clubUsers = clubUserRepositorySupport.findByUserSeq(user)
         return UserClubDto( clubUsers[0].user, clubUsers.map{ e -> e.club}.toList() )
+    }
+
+    fun retrieveClubs(offset: Long, page: Long, keyword: String): List<Club>? {
+        return clubRepositorySupport.findByKeyword(offset, page, keyword)
     }
 
     /**

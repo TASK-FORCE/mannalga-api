@@ -15,13 +15,16 @@ class ClubController(
         private val clubService : ClubService
 ) {
     @GetMapping
-    fun retrieveClubs(@RequestParam("page") page : Long, @RequestParam("keyword") keyword : String): List<Club>?{
-        return clubService.retrieveClubs(page, keyword)
+    fun retrieveClubs(
+            @RequestParam("offset", defaultValue = "10") offset : Long,
+            @RequestParam("page", defaultValue = "1") page : Long,
+            @RequestParam("keyword") keyword : String): List<Club>?{
+        return clubService.retrieveClubs(offset, page, keyword)
     }
 
     @GetMapping("/{seq}")
     fun getClubBySeq(@PathVariable seq : Long): Club? {
-        return clubService.getClubByClubSeq(seq)
+        return clubService.getClubBySeq(seq)
     }
 
     @GetMapping("/{seq}/users")
