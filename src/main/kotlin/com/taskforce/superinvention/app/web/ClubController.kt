@@ -26,7 +26,7 @@ class ClubController(
 
     @GetMapping("/{seq}/users")
     fun getClubUser(@PathVariable seq : Long): ClubUserDto? {
-        return clubService.getClubUserList(seq)
+        return clubService.getClubUserDto(seq)
     }
 
     @PostMapping("/{clubSeq}/users")

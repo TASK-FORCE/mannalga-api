@@ -1,13 +1,10 @@
 package com.taskforce.superinvention.app.domain.club
 
-import com.taskforce.superinvention.app.domain.role.ClubUserRole
-import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.lang.NullPointerException
 import java.lang.RuntimeException
 
 @Service
@@ -22,17 +19,15 @@ class ClubService(
         return clubRepositorySupport.findBySeq(seq)
     }
 
-    fun getAllClubs(): List<Club>? {
-        return clubRepository.findAll()
-    }
-
-    fun getClubUserList(clubSeq: Long): ClubUserDto {
+    fun getClubUserDto(clubSeq: Long): ClubUserDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
-    fun getClubUserList(club: Club): List<ClubUser> {
-        return clubUserRepository.findByClub(club);
+    // 유저 컨트롤러에서 호출(가입한 클럽 리스트)
+    fun getClubByUser(user: User): UserClubDto? {
+        val clubUsers = clubUserRepositorySupport.findByUserSeq(user)
+        return UserClubDto( clubUsers[0].user, clubUsers.map{ e -> e.club}.toList() )
     }
 
     fun retrieveClubs(keyword: String): List<Club>? {
@@ -52,6 +47,11 @@ class ClubService(
         clubUserRepository.save(superUserClub)
 
         // TODO:: 3. 생성한 유저에게 모임장 권한을 줌
+    }
+
+    @Transactional
+    fun getClubUserList(club: Club): List<ClubUser> {
+        return clubUserRepository.findByClub(club);
     }
 
     @Transactional
