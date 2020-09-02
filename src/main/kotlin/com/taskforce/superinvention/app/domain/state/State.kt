@@ -18,5 +18,4 @@ class State(
 
         @OneToMany(mappedBy = "superState", fetch = FetchType.LAZY)
         var subStates: List<State>
-): BaseEntity() {
-}
+): BaseEntity()

@@ -12,5 +12,4 @@ class UserState(
         @ManyToOne
         var state: State,
         var priority: Long
-) : BaseEntity() {
-}
+) : BaseEntity()

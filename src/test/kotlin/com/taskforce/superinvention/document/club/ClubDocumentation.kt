@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.document.club
 
+import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
 import com.taskforce.superinvention.app.domain.user.User
@@ -51,6 +52,33 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)")
                                 )
                         )
+                )
+
+
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임 가입`() {
+
+        `when`(clubService.getClubBySeq(232))
+                .thenReturn(Club(
+                "가상 모임",
+                "가상 모임에 대한 설명",
+                100L
+        ))
+
+        val result = mockMvc.perform(
+                post("/clubs/232/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+                .andDo(
+                        document("addClubUser", getDocumentRequest(), getDocumentResponse())
                 )
 
 

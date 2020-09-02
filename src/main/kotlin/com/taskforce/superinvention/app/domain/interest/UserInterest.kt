@@ -13,5 +13,4 @@ class UserInterest(
     @ManyToOne
     var interest: Interest,
     var priority: Long
-) : BaseEntity(){
-}
+) : BaseEntity()

@@ -52,3 +52,6 @@ include::{root}/interest/interest-group-all.adoc[]
 = 모임
 == 모임 생성
 include::{root}/club/addClub.adoc[]
+
+== 모임 가입
+include::{root}/club/addClubUser.adoc[]
