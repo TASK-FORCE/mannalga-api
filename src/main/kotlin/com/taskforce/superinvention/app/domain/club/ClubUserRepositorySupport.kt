@@ -17,8 +17,8 @@ class ClubUserRepositorySupport(
                 .fetchOne()
     }
 
-    fun findByClubSeq(clubSeq: Long): List<ClubUser> =
-            queryFactory.selectFrom(clubUser).where(clubUser.club.seq.eq(clubSeq)).fetch()
+    fun findByClubSeq(club: Club): List<ClubUser> =
+            queryFactory.selectFrom(clubUser).where(clubUser.club.seq.eq(club.seq)).fetch()
 
     fun findByUserSeq(user: User): List<ClubUser> =
             queryFactory.selectFrom(clubUser).where(clubUser.user.seq.eq(user.seq)).fetch()

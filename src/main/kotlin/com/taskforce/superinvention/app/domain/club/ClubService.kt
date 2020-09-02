@@ -23,8 +23,8 @@ class ClubService(
         return clubRepository.findBySeq(seq)
     }
 
-    fun getClubUserList(clubSeq: Long): ClubUserDto? {
-        val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
+    fun getClubUserList(club: Club): ClubUserDto? {
+        val clubUsers = clubUserRepositorySupport.findByClubSeq(club)
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
