@@ -11,6 +11,10 @@ class KakaoToken (
         val refresh_token_expires_in: Int? = 0
 )
 
+class KakaoOAuthResponse (
+    val msg: String,
+    val code: Integer
+)
 
 class KakaoTokenRefreshRequest (
         val grant_type: String? = "refresh_token",

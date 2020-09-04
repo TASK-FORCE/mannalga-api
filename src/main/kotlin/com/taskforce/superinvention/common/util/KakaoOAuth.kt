@@ -50,7 +50,6 @@ class KakaoOAuth(
     fun getKakaoUserProfile(accessToken: String): KakaoUserInfo {
         val headers = HttpHeaders()
         headers.set("Authorization", "Bearer $accessToken")
-
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
         val userProfile = restTemplate.exchange(
                 USER_INFO_URI,
@@ -58,6 +57,7 @@ class KakaoOAuth(
                 request,
                 KakaoUserInfo::class.java
         )
+
         return userProfile.body!!
     }
 

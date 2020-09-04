@@ -24,19 +24,4 @@ class WebMvcConfig(
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(authorizeArgumentResolver)
     }
-
-    @Bean
-    fun restTemplate(): RestTemplate {
-        val factory = HttpComponentsClientHttpRequestFactory()
-        val httpClient: HttpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(50)
-                .setMaxConnPerRoute(30)
-                .build()
-
-        factory.httpClient = httpClient
-        factory.setConnectTimeout(2000)
-        factory.setReadTimeout(3000)
-
-        return RestTemplate(factory)
-    }
 }
