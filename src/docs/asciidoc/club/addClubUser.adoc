@@ -10,30 +10,23 @@ endif::[]
 :site-url: /build/asciidoc/html5/state
 
 === Request
-==== [Request HTTP]
 include::{sub-snippet}/addClub/http-request.adoc[]
 
-=== [Request Fields]
 ....
 Request Fields 없음
 ....
 
-==== [curl example]
 include::{sub-snippet}/addClub/curl-request.adoc[]
 
-==== [Request Body]
 ....
 Request Body 없음
 ....
 
 === Response
-==== [Response Fields]
 ....
 Response Fields 없음
 ....
 
-==== [Response HTTP Example]
 include::{sub-snippet}/addClub/http-response.adoc[]
 
-==== [Response body]
 include::{sub-snippet}/addClub/response-body.adoc[]

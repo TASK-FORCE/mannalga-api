@@ -2,7 +2,12 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.web.dto.club.ClubDto
+import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.RuntimeException
@@ -59,5 +64,12 @@ class ClubService(
         }
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
+    }
+
+
+    fun search(request: ClubSearchRequestDto): List<ClubDto> {
+        val pageable:Pageable = PageRequest.of(request.offset.toInt(), request.size.toInt())
+        val result = clubRepositorySupport.search(request.searchOptions, pageable)
+        return result.map { e -> ClubDto(club = e, userCount = clubRepositorySupport.getUserCount(e.seq!!)) }.toList()
     }
 }

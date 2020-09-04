@@ -7,7 +7,8 @@ class ClubDto (
         var name: String,
         var description: String,
         var maximumNumber: Long,
-        var userCount: Long
+        var userCount: Long,
+        var mainImageUrl: String?
 ){
-    constructor(club : Club, userCount: Long): this(club.seq, club.name, club.description, club.maximumNumber, userCount)
+    constructor(club : Club, userCount: Long): this(club.seq, club.name, club.description, club.maximumNumber, userCount, club.mainImageUrl)
 }

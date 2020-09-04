@@ -7,7 +7,8 @@ import javax.persistence.Entity
 class Club(
     var name: String,
     var description: String,
-    var maximumNumber: Long
+    var maximumNumber: Long,
+    var mainImageUrl: String?
 ) : BaseEntity() {
 
 }
