@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClub.club
 import com.taskforce.superinvention.app.domain.club.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.clubInterest
+import com.taskforce.superinvention.app.domain.state.QClubState.clubState
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
@@ -17,12 +18,6 @@ import org.springframework.util.ObjectUtils
 
 @Repository
 class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslRepositorySupport(Club::class.java) {
-    fun findBySeq(seq: Long): Club {
-        return from(club)
-                .where(club.seq.eq(seq))
-                .fetchOne()
-    }
-
     fun findByKeyword(keyword: String): List<Club>? {
         return from(club)
                 .where(club.name.like(keyword))
@@ -30,17 +25,19 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
     }
 
     fun search(clubSearchOptions: ClubSearchOptions, pageable:Pageable): Page<Club> {
-        val fetchResult = queryFactory
-                .selectFrom(club)
-                .leftJoin(clubInterest.club, club)
+        val fetchResult = from(club)
+                .leftJoin(club.clubInterests, clubInterest)
+                .leftJoin(club.clubStates, clubState)
                 .where(
-                    eqInterests(clubSearchOptions.interestList)
-                    , eqStates(clubSearchOptions.stateList)
+//                    eqInterests(clubSearchOptions.interestList)
+//                            , eqStates(clubSearchOptions.stateList)
                 )
+                .groupBy(club)
                 .orderBy()
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
                 .fetchResults()
+
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
     }
 
@@ -57,7 +54,7 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
     fun getUserCount(clubSeq: Long): Long {
         return queryFactory.select(clubUser.user.count())
                 .from(club)
-                .leftJoin(clubUser.club, club)
+                .leftJoin(club.clubUser, clubUser)
                 .where(club.seq.eq(clubSeq))
                 .fetchCount()
     }

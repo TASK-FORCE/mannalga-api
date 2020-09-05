@@ -5,10 +5,7 @@ import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubDto
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
@@ -51,7 +48,7 @@ class ClubController(
      * @author eric
      */
     @GetMapping
-    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubDto> {
+    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
         if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
             val userStateDto = userStateService.findUserStateList(user)
             request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.stateDto.seq, e.priority) }.toList()
