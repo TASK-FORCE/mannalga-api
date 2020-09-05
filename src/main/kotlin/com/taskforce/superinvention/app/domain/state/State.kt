@@ -2,10 +2,7 @@ package com.taskforce.superinvention.app.domain.state
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.taskforce.superinvention.app.domain.BaseEntity
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
 class State(
