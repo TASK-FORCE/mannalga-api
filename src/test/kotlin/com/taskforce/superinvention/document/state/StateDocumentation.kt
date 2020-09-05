@@ -2,6 +2,7 @@ package com.taskforce.superinvention.document.state
 
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.web.dto.state.StateDto
+import com.taskforce.superinvention.app.web.dto.state.of
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
@@ -32,7 +33,7 @@ class StateDocumentation: ApiDocumentationTest() {
         state.seq=1
 
         given(stateService.findAllStateDtoList())
-                .willReturn(listOf(StateDto(state)))
+                .willReturn(listOf(of(state, 1)))
 
         // when
         val result: ResultActions = this.mockMvc.perform(

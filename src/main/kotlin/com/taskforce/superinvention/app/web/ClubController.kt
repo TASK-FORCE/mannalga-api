@@ -3,22 +3,22 @@ package com.taskforce.superinvention.app.web
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
+import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("clubs")
 class ClubController(
-        val clubService : ClubService
+        val clubService : ClubService,
+        val userStateService: UserStateService,
+        val userInterestService: UserInterestService
 ) {
-    @GetMapping
-    fun retrieveClubs(@RequestParam("keyword") keyword : String): List<Club>?{
-        return clubService.retrieveClubs(keyword)
-    }
-
     @GetMapping("/{seq}")
     fun getClubBySeq(@PathVariable seq : Long): Club? {
         return clubService.getClubBySeq(seq)
@@ -39,7 +39,26 @@ class ClubController(
     @Secured("ROLE_USER")
     @PostMapping
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto) {
-        val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber)
+        val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber, mainImageUrl = request.mainImageUrl)
         clubService.addClub(club, user)
+    }
+
+    /**
+     * 모임리스트 검색
+     * @author eric
+     */
+    @GetMapping
+    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
+        if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
+            val userStateDto = userStateService.findUserStateList(user)
+            request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.stateDto.seq, e.priority) }.toList()
+        }
+
+        if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {
+            // TODO: UserInterest 조회 메서드 생성이 끝나면 여기 완성하자
+            // val userInterestDto = userInterestService.findUserInterestList(user);
+        }
+
+        return clubService.search(request)
     }
 }

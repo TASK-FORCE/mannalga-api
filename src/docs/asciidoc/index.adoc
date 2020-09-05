@@ -55,3 +55,6 @@ include::{root}/club/addClub.adoc[]
 
 == 모임 가입
 include::{root}/club/addClubUser.adoc[]
+
+== 모임 검색
+include::{root}/club/searchClub.adoc[]

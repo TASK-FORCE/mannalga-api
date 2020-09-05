@@ -1,7 +1,7 @@
 name: Build--Super-Invention
 
 on:
-  push:
+  pull_request:
     branches: [ develop ]
 
 jobs:

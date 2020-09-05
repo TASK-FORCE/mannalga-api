@@ -5,7 +5,7 @@ import com.taskforce.superinvention.app.domain.club.Club
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 
-@Entity
+@Entity(name = "club_state")
 class ClubState(
         @ManyToOne
         var club:Club,
