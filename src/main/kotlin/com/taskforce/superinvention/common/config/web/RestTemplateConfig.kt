@@ -8,7 +8,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.web.client.RestTemplate
 
 @Configuration
-class RestTemplateConfig {
+class RestTemplateConfig (
+
+) {
 
     @Bean
     fun restTemplate(): RestTemplate {
@@ -20,7 +22,7 @@ class RestTemplateConfig {
 
         factory.httpClient = httpClient
         factory.setConnectTimeout(2000)
-        factory.setReadTimeout(3000)
+        factory.setReadTimeout(2000)
 
         return RestTemplate(factory)
     }

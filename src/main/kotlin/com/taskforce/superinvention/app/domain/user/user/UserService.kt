@@ -29,13 +29,39 @@ class UserService(
     }
 
     fun getKakaoUserInfo(user: User): KakaoUserInfo {
-        return kakaoOAuth.getKakaoUserProfile(user.accessToken!!)
+        val kakaoToken = KakaoToken(
+                refresh_token = user.refreshToken,
+                access_token  = user.accessToken
+        )
+
+        val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
+
+        // 토큰이 만료되었을 때,
+        if(token.access_token != kakaoToken.access_token) {
+            KakaoOAuth.LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
+            updateUserToken(user, token)
+        }
+
+        return kakaoOAuth.getKakaoUserProfile(token)
+    }
+
+    @Transactional
+    fun updateUserToken(user: User, token: KakaoToken) {
+        val user = userRepository.findByUserId(user.userId)!!
+        user.accessToken = token.access_token
+
+        if(token.refresh_token?.isNotBlank()!!) {
+            user.refreshToken = token.refresh_token
+        }
+
+        userRepository.save(user)
     }
 
     @Transactional
     fun saveKakaoToken(token: KakaoToken): AppToken {
-        val kakaoId = kakaoOAuth.getKakaoUserId(token)
+        val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
 
+        // [1] kakao 유저 존재 x
         if(kakaoId.isBlank()) {
             log.error("unknown kakao token received")
             throw IllegalArgumentException()
@@ -44,6 +70,7 @@ class UserService(
         var user: User? = userRepository.findByUserId(kakaoId)
         var isRegistered = false
 
+        // [2] 유저 최초 가입시
         if (user == null) {
             user = User(kakaoId, token)
             userRepository.save(user)
@@ -71,7 +98,10 @@ class UserService(
         val userInterests = request.userInterests
 
         userRepository.save(user)
+
         userRoleService.addRoleToUser(user, "USER")
+        userRoleService.removeRoleFromUser(user, "UNREGISTERED")
+
         userStateService.changeUserState(user, userStates)
         userInterestService.changeUserInterest(user, userInterests)
     }
