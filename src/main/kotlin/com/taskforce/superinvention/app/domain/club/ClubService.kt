@@ -1,8 +1,18 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.taskforce.superinvention.app.domain.interest.ClubInterest
+import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.web.dto.club.ClubDto
+import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
+import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
+import com.taskforce.superinvention.app.web.dto.state.StateDto
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.RuntimeException
@@ -16,7 +26,7 @@ class ClubService(
         private var roleService: RoleService
 ) {
     fun getClubBySeq(seq: Long): Club? {
-        return clubRepositorySupport.findBySeq(seq)
+        return clubRepository.findById(seq).orElse(null)
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUserDto? {
@@ -59,5 +69,18 @@ class ClubService(
         }
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
+    }
+
+
+    @Transactional
+    fun search(request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
+        val pageable:Pageable = PageRequest.of(request.offset.toInt(), request.size.toInt())
+        val result = clubRepositorySupport.search(request.searchOptions, pageable)
+        return result.map { e -> ClubWithStateInterestDto(
+            club = e,
+            userCount = e.clubUser.size.toLong(),
+            interests = e.clubInterests.map { ci -> InterestDto(ci.interest.seq, ci.interest.name) }.toList(),
+            states = e.clubStates.map { cs -> SimpleStateDto(cs.state.seq!!, cs.state.name, cs.state.superStateRoot, cs.state.level) }.toList()
+        ) }.toList()
     }
 }
