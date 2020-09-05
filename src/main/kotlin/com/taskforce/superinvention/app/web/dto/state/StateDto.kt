@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.state
 
 import com.taskforce.superinvention.app.domain.state.State
-import java.util.stream.Collectors
+import kotlin.streams.toList
 
 
 class StateDto {
@@ -10,15 +10,6 @@ class StateDto {
     var superStateRoot: String
     var level: Long
     var subStates: List<StateDto>
-
-
-    constructor(state: State) {
-        this.seq = state.seq
-        this.name = state.name
-        this.superStateRoot = state.superStateRoot
-        this.level = state.level
-        this.subStates = state.subStates.stream().map { e -> StateDto(e) }.collect(Collectors.toList())
-    }
 
     constructor(
             seq: Long?,
@@ -34,3 +25,15 @@ class StateDto {
         this.subStates = subStates
     }
 }
+
+
+fun of(state: State, findDepth: Long): StateDto
+ {
+     return StateDto(
+        seq = state.seq,
+             name = state.name,
+             superStateRoot = state.superStateRoot,
+             level = state.level,
+             subStates = if (findDepth > 0) state.subStates.stream().map { e -> of(e, findDepth - 1) }.toList() else ArrayList()
+     )
+ }
