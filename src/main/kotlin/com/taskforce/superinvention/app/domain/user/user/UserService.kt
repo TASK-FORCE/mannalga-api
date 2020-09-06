@@ -36,7 +36,7 @@ class UserService(
 
         val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
 
-        // 토큰이 만료되었을 때,
+        // 토큰이 만료되었을 때
         if(token.access_token != kakaoToken.access_token) {
             KakaoOAuth.LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
@@ -47,18 +47,19 @@ class UserService(
 
     @Transactional
     fun updateUserToken(user: User, token: KakaoToken) {
-        val user = userRepository.findByUserId(user.userId)!!
-        user.accessToken = token.access_token
+        val targetUser = userRepository.findByUserId(user.userId)!!
+        targetUser.accessToken = token.access_token
 
         if(token.refresh_token?.isNotBlank()!!) {
-            user.refreshToken = token.refresh_token
+            targetUser.refreshToken = token.refresh_token
         }
 
-        userRepository.save(user)
+        userRepository.save(targetUser)
     }
 
     @Transactional
-    fun saveKakaoToken(token: KakaoToken): AppToken {
+    fun saveKakaoToken(kakaoToken: KakaoToken): AppToken {
+        val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
         val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
 
         // [1] kakao 유저 존재 x
@@ -79,6 +80,12 @@ class UserService(
 
         if(user.isRegistered != 0) {
             isRegistered = true
+        }
+
+        // 토큰이 만료되었을 때
+        if(token.access_token != kakaoToken.access_token) {
+            KakaoOAuth.LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
+            updateUserToken(user, token)
         }
 
         return AppToken(

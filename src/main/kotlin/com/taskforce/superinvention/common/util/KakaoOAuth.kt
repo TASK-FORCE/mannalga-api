@@ -22,9 +22,9 @@ class KakaoOAuth(
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(KakaoOAuth::class.java)
-        const val KAPI_USER_INFO  = "/v2/user/me"
-        const val KAPI_TOKEN_INFO = "/v1/user/access_token_info"
-        const val KAUTH_TOKEN     = "/oauth/token"
+        const val KAPI_USER_PROFILE = "/v2/user/me"
+        const val KAPI_TOKEN_INFO   = "/v1/user/access_token_info"
+        const val KAUTH_TOKEN       = "/oauth/token"
 
     }
 
@@ -46,11 +46,12 @@ class KakaoOAuth(
 
     fun getKakaoUserProfile(kakaoToken: KakaoToken): KakaoUserInfo {
         val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
         headers.set("Authorization", "Bearer ${kakaoToken.access_token}")
-        val request = HttpEntity<MultiValueMap<String, String>>(headers)
-        val userProfile: ResponseEntity<KakaoUserInfo>
 
-        userProfile = kakaoApi.exchange( KAPI_USER_INFO, HttpMethod.GET, request, KakaoUserInfo::class.java)
+        val request = HttpEntity<MultiValueMap<String, String>>(headers)
+        val userProfile = kakaoApi.exchange( KAPI_USER_PROFILE, HttpMethod.GET, request, KakaoUserInfo::class.java)
+
         return userProfile.body!!
     }
 

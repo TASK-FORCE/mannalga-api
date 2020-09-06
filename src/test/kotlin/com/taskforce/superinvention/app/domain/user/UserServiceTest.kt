@@ -75,6 +75,7 @@ class UserServiceTest {
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_UNREGISTERED"))
 
+        `when`(kakaoOAuth.refreshIfTokenExpired(kakaoToken)).thenReturn(kakaoToken)
         `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)
         `when`(userRepository.findByUserId(user.userId)).thenReturn(null)   // user not registered and not logined
         `when`(jwtTokenProvider.createAppToken(anyString())).thenReturn("example-jwt-token")
@@ -115,6 +116,7 @@ class UserServiceTest {
         user.userRoles.add(UserRole(user, "ROLE_USER"))
         user.isRegistered = 1
 
+        `when`(kakaoOAuth.refreshIfTokenExpired(kakaoToken)).thenReturn(kakaoToken)
         `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)
         `when`(userRepository.findByUserId(user.userId)).thenReturn(user)       // user loged in and registered
         `when`(jwtTokenProvider.createAppToken(user.userId)).thenReturn("example-jwt-token")
