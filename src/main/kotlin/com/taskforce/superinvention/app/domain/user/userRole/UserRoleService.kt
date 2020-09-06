@@ -11,4 +11,9 @@ class UserRoleService(
     fun addRoleToUser(user: User, roleName: String) {
         userRoleRepository.save(UserRole(user, "ROLE_$roleName"))
     }
+
+    fun removeRoleFromUser(user: User, roleName: String) {
+        val userRole = userRoleRepository.findByUser_SeqAndRoleName(user.seq!!, roleName)
+        userRoleRepository.delete(userRole!!)
+    }
 }

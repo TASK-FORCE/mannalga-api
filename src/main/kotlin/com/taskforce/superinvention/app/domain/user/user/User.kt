@@ -22,7 +22,7 @@ class User: BaseEntity {
     var userRoles: MutableSet<UserRole>
 
     var accessToken: String?  = ""
-    var refrestToken: String? = ""
+    var refreshToken: String? = ""
 
     var userName: String? = ""
 
@@ -51,6 +51,6 @@ class User: BaseEntity {
         this.userType = UserType.KAKAO
         this.userRoles = hashSetOf()
         this.accessToken = token.access_token
-        this.refrestToken = token.refresh_token
+        this.refreshToken = token.refresh_token
     }
 }

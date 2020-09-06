@@ -33,6 +33,7 @@ class UserDocumentation : ApiDocumentationTest() {
 
         // given
         val kakoToken = KakaoToken(
+                token_type    = "",
                 access_token  = "xxxxxxxxx",
                 expireds_in   = 3600, // 초 단위
                 refresh_token = "xxxxxxxxx",
@@ -59,6 +60,7 @@ class UserDocumentation : ApiDocumentationTest() {
         result.andExpect(status().isOk)
                 .andDo(document("saveKakaoToken", getDocumentRequest(), getDocumentResponse(),
                         requestFields(
+                                fieldWithPath("token_type").type(JsonFieldType.STRING).description("[optional] 토큰 타입 (사용x)"),
                                 fieldWithPath("access_token").type(JsonFieldType.STRING).description("oauth 엑세스 토큰"),
                                 fieldWithPath("expireds_in").type(JsonFieldType.NUMBER).description("엑세스 토큰 TTL (초)"),
                                 fieldWithPath("refresh_token").type(JsonFieldType.STRING).description("oauth 리프래스 토큰"),

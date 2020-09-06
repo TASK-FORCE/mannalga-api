@@ -2,7 +2,7 @@ package com.taskforce.superinvention.common.exception
 
 import org.springframework.http.HttpStatus
 
-class BizException(
+open class BizException(
         override val message: String,
         val httpStatus: HttpStatus
 ) : RuntimeException() {

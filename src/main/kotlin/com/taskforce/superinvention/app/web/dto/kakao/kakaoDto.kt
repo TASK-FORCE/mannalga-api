@@ -5,23 +5,16 @@ import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import java.time.LocalDate
 
 class KakaoToken (
-        val access_token: String? = "",
+        val token_type   : String? = "",
+        val access_token : String? = "",
         val expireds_in  : Int? = 0,
         val refresh_token: String? = "",
         val refresh_token_expires_in: Int? = 0
 )
 
-
-class KakaoTokenRefreshRequest (
-        val grant_type: String? = "refresh_token",
-        val client_id: String,
-        val refresh_token: String
-)
-
-class KakaoTokenRefreshResponse (
-        val expires_in: Long,
-        val token_type: String,
-        val access_token: String
+class KakaoOAuthResponse (
+    val msg: String,
+    val code: Int
 )
 
 class KakaoUserInfo (
@@ -44,15 +37,16 @@ class KakaoUserProperties (
         val thumbnail_image: String = ""
 )
 
-class KakaoUserProfile(
-        val nickname: String,
-        val profile_image_url: String = "",
-        val thumbnail_image_url: String = ""
-)
-
 class KakaoUserAccount (
         val profile_needs_agreement: Boolean,
         val profile: KakaoUserProfile,
         val hasGender: Boolean,
         val gender_needs_agreement: Boolean
 )
+
+class KakaoUserProfile(
+        val nickname: String,
+        val profile_image_url: String = "",
+        val thumbnail_image_url: String = ""
+)
+

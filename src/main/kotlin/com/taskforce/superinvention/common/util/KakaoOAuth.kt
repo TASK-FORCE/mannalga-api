@@ -1,23 +1,20 @@
 package com.taskforce.superinvention.common.util
 
-import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.web.dto.kakao.*
+import com.taskforce.superinvention.common.exception.auth.AccessTokenExpiredException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.*
 import org.springframework.stereotype.Component
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
-import java.lang.Exception
 
 @Component
 class KakaoOAuth(
-        private var restTemplate: RestTemplate,
+        private val kakaoApi: RestTemplate,
+        private val kakaoAuth: RestTemplate,
 
         @Value("\${oauth.kakao.client-id}")
         var client_id: String
@@ -25,54 +22,52 @@ class KakaoOAuth(
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(KakaoOAuth::class.java)
-        const val USER_INFO_URI = "https://kapi.kakao.com/v2/user/me"
-        const val TOKEN_URI = "https://kauth.kakao.com/oauth/token"
+        const val KAPI_USER_INFO  = "/v2/user/me"
+        const val KAPI_TOKEN_INFO = "/v1/user/access_token_info"
+        const val KAUTH_TOKEN     = "/oauth/token"
+
     }
 
-    fun getKakaoUserId(token: KakaoToken): String {
+    fun refreshIfTokenExpired(kakaoToken: KakaoToken): KakaoToken {
         val headers = HttpHeaders()
-        headers.set("Authorization", "Bearer ${token.access_token}")
+        headers.set("Authorization", "Bearer ${kakaoToken.access_token}")
 
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
-        val userProfileRequest = restTemplate.exchange(
-                USER_INFO_URI,
-                HttpMethod.GET,
-                request,
-                KakaoUserInfo::class.java
-        )
+        var token = kakaoToken
 
-        return when (userProfileRequest.statusCode) {
-            HttpStatus.OK -> userProfileRequest.body!!.id
-            else -> ""
+        try {
+            kakaoApi.exchange( KAPI_TOKEN_INFO, HttpMethod.GET, request, Any::class.java)
+        } catch (e: AccessTokenExpiredException) {
+            token = refreshKakaoToken(kakaoToken)
         }
+
+        return token
     }
 
-    fun getKakaoUserProfile(accessToken: String): KakaoUserInfo {
+    fun getKakaoUserProfile(kakaoToken: KakaoToken): KakaoUserInfo {
         val headers = HttpHeaders()
-        headers.set("Authorization", "Bearer $accessToken")
-
+        headers.set("Authorization", "Bearer ${kakaoToken.access_token}")
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
-        val userProfile = restTemplate.exchange(
-                USER_INFO_URI,
-                HttpMethod.GET,
-                request,
-                KakaoUserInfo::class.java
-        )
+        val userProfile: ResponseEntity<KakaoUserInfo>
+
+        userProfile = kakaoApi.exchange( KAPI_USER_INFO, HttpMethod.GET, request, KakaoUserInfo::class.java)
         return userProfile.body!!
     }
 
-    fun refreshKakaoToken(user: User): String {
-        if (user.userType != UserType.KAKAO) {
-            throw Exception()
-        }
+    private fun refreshKakaoToken(token: KakaoToken): KakaoToken {
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
 
-        val param = KakaoTokenRefreshRequest(client_id = client_id, refresh_token = user.refrestToken!!)
-        val response = restTemplate.postForEntity(TOKEN_URI, param, KakaoTokenRefreshResponse::class.java)
+        val body = LinkedMultiValueMap(
+            mapOf(
+                "client_id"     to listOf(client_id),
+                "refresh_token" to listOf(token.refresh_token!!),
+                "grant_type"    to listOf("refresh_token")
+            )
+        )
 
-        if (response.statusCode != HttpStatus.OK) {
-            LOG.error("[Refresh Token Error]")
-            throw Exception()
-        }
-        return response.body!!.access_token
+        val request = HttpEntity<LinkedMultiValueMap<String, String>>(body, headers)
+        val response = kakaoAuth.postForEntity(KAUTH_TOKEN, request, KakaoToken::class.java)
+        return response.body!!
     }
 }

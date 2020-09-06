@@ -1,17 +1,14 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.taskforce.superinvention.app.domain.interest.interest.InterestService
-import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.domain.user.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
-import com.taskforce.superinvention.app.domain.user.userRole.UserRoleRepository
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
-import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
+import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.KakaoOAuth
 import org.junit.Assert.assertEquals
@@ -49,15 +46,37 @@ class UserServiceTest {
     @Mock
     lateinit var kakaoOAuth: KakaoOAuth
 
+
     @Test
     fun `AppToken 발행 - 신규 가입 유저`() {
 
         // given
         val kakaoToken = KakaoToken()
-        val user: User = User("13141")
+        val kakaoUserInfo = KakaoUserInfo(
+                id = "13141",
+                properties = KakaoUserProperties(
+                    nickname = "nickname",
+                    profile_image = "",
+                    thumbnail_image =""
 
-        `when`(kakaoOAuth.getKakaoUserId(kakaoToken)).thenReturn(user.userId)
-        `when`(userRepository.findByUserId(user.userId)).thenReturn(null)
+                ),
+                kakao_account = KakaoUserAccount(
+                    profile_needs_agreement = true,
+                    hasGender = true,
+                    gender_needs_agreement = true,
+                    profile = KakaoUserProfile(
+                        nickname = "nickname",
+                        profile_image_url   = "" ,
+                        thumbnail_image_url = ""
+                    )
+                )
+        )
+
+        val user: User = User("13141")
+        user.userRoles.add(UserRole(user, "ROLE_UNREGISTERED"))
+
+        `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)
+        `when`(userRepository.findByUserId(user.userId)).thenReturn(null)   // user not registered and not logined
         `when`(jwtTokenProvider.createAppToken(anyString())).thenReturn("example-jwt-token")
 
         // when
@@ -72,12 +91,32 @@ class UserServiceTest {
 
         // given
         val kakaoToken = KakaoToken()
+        val kakaoUserInfo = KakaoUserInfo(
+                id = "13141",
+                properties = KakaoUserProperties(
+                        nickname = "nickname",
+                        profile_image = "",
+                        thumbnail_image =""
+
+                ),
+                kakao_account = KakaoUserAccount(
+                        profile_needs_agreement = true,
+                        hasGender = true,
+                        gender_needs_agreement = true,
+                        profile = KakaoUserProfile(
+                                nickname = "nickname",
+                                profile_image_url   = "" ,
+                                thumbnail_image_url = ""
+                        )
+                )
+        )
+
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_USER"))
         user.isRegistered = 1
 
-        `when`(kakaoOAuth.getKakaoUserId(kakaoToken)).thenReturn(user.userId)
-        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)
+        `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)
+        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)       // user loged in and registered
         `when`(jwtTokenProvider.createAppToken(user.userId)).thenReturn("example-jwt-token")
 
         // when
