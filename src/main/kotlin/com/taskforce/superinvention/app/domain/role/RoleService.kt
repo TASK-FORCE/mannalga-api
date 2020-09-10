@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class RoleService(
-        roleRepository: RoleRepository,
-        roleGroupRepository: RoleGroupRepository
+        var roleRepository: RoleRepository,
+        var roleGroupRepository: RoleGroupRepository
 ) {
+    fun findByRole(roleName: Role.RoleName) :Role = roleRepository.findByName(roleName);
 
 }

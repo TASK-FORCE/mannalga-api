@@ -1,20 +1,28 @@
 package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
+import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
+import com.taskforce.superinvention.app.domain.interest.interest.InterestService
+import com.taskforce.superinvention.app.domain.role.ClubUserRole
+import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
+import com.taskforce.superinvention.app.domain.state.ClubState
+import com.taskforce.superinvention.app.domain.state.ClubStateRepository
+import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
-import com.taskforce.superinvention.app.web.dto.state.StateDto
+import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 
 @Service
@@ -23,7 +31,12 @@ class ClubService(
         private var clubRepositorySupport: ClubRepositorySupport,
         private var clubUserRepository: ClubUserRepository,
         private var clubUserRepositorySupport: ClubUserRepositorySupport,
-        private var roleService: RoleService
+        private var roleService: RoleService,
+        private var interestService: InterestService,
+        private var stateService: StateService,
+        private var clubInterestRepository: ClubInterestRepository,
+        private var clubStateRepository: ClubStateRepository,
+        private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
     fun getClubBySeq(seq: Long): Club? {
         return clubRepository.findById(seq).orElse(null)
@@ -40,17 +53,35 @@ class ClubService(
 
     /**
      * 새로운 모임을 생성한다.
-     * 1. 모임 생성
-     * 2. 생성한 유저가 해당 모임에 들어감
-     * 3. 생성한 유저에게 모임장 권한을 줌 (Todo)
      */
     @Transactional
-    fun addClub(club:Club, superUser: User) {
-        val savedClub = clubRepository.save(club)   // 1. 모임 생성
-        val superUserClub = ClubUser(savedClub, superUser)   // 2. 생성한 유저가 해당 모임에 들어감
-        clubUserRepository.save(superUserClub)
+    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, stateList: List<StateRequestDto>) {
+        // validation
+        if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+            throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
 
-        // TODO:: 3. 생성한 유저에게 모임장 권한을 줌
+        if (stateList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+            throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
+
+        // 1. 모임 생성
+        val savedClub = clubRepository.save(club)
+
+        // 2. 생성한 유저가 해당 모임에 들어감
+        val superUserClub = ClubUser(savedClub, superUser)
+        val savedClubUser = clubUserRepository.save(superUserClub)
+
+        // 3. 해당 클럽에 관심사 부여
+        val clubInterestList = interestList.map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }.toList()
+        clubInterestRepository.saveAll(clubInterestList)
+
+        // 4. 해당 클럽에 지역 부여
+        val clubStateList = stateList.map { e -> ClubState(savedClub, stateService.findBySeq(e.seq), e.priority) }
+        clubStateRepository.saveAll(clubStateList)
+
+        // 5. 생성한 유저에게 모임장 권한을 부여
+        val masterRole = roleService.findByRole(Role.RoleName.MASTER)
+        val clubUserRole = ClubUserRole(savedClubUser, masterRole)
+        clubUserRoleRepository.save(clubUserRole)
     }
 
     @Transactional
