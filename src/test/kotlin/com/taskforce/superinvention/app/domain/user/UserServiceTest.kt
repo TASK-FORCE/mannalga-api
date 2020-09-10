@@ -10,7 +10,7 @@ import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
-import com.taskforce.superinvention.common.util.KakaoOAuth
+import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.junit.Assert.assertEquals
 
 import org.junit.jupiter.api.Test

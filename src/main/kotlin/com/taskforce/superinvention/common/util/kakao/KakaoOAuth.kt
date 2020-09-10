@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.common.util
+package com.taskforce.superinvention.common.util.kakao
 
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.exception.auth.AccessTokenExpiredException

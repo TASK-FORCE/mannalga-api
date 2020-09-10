@@ -8,7 +8,7 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
-import com.taskforce.superinvention.common.util.KakaoOAuth
+import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -45,7 +45,7 @@ class UserService(
         return kakaoOAuth.getKakaoUserProfile(token)
     }
 
-    @Transactional
+    @Transactional(rollbackOn = [Exception::class])
     fun updateUserToken(user: User, token: KakaoToken) {
         val targetUser = userRepository.findByUserId(user.userId)!!
         targetUser.accessToken = token.access_token
@@ -57,7 +57,7 @@ class UserService(
         userRepository.save(targetUser)
     }
 
-    @Transactional
+    @Transactional(rollbackOn = [Exception::class])
     fun saveKakaoToken(kakaoToken: KakaoToken): AppToken {
         val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
         val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
@@ -94,7 +94,7 @@ class UserService(
         )
     }
 
-    @Transactional
+    @Transactional(rollbackOn = [Exception::class])
     fun registerUser(request: KakaoUserRegistRequest, user: User) {
         user.birthday = request.birthday
         user.userName = request.userName
