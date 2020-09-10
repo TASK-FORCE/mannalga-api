@@ -36,11 +36,15 @@ class ClubController(
         clubService.addClubUser(club, user);
     }
 
+    /**
+     * 모임 생성
+     * @author eric
+     */
     @Secured("ROLE_USER")
     @PostMapping
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto) {
         val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber, mainImageUrl = request.mainImageUrl)
-        clubService.addClub(club, user)
+        clubService.addClub(club, user, request.interestList, request.stateList)
     }
 
     /**

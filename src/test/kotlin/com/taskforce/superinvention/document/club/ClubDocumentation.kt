@@ -28,7 +28,13 @@ class ClubDocumentation: ApiDocumentationTest() {
     @WithMockUser
     fun `모임 생성`() {
         val clubAddRequestDto = ClubAddRequestDto(
-                name = "땔감 스터디", description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디", maximumNumber = 5L, mainImageUrl = "s3urlhost/d2e4dxxadf2E.png")
+                name = "땔감 스터디",
+                description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                maximumNumber = 5L,
+                mainImageUrl = "s3urlhost/d2e4dxxadf2E.png",
+                interestList = listOf(InterestRequestDto(3L, 1L), InterestRequestDto(6L, 2L)),
+                stateList = listOf(StateRequestDto(101L, 1L), StateRequestDto(102L, 2L))
+        )
 
         val result = mockMvc.perform(
                 post("/clubs")
@@ -46,7 +52,15 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
                                         fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
                                         fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)"),
-                                        fieldWithPath("mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 url (Nullable)")
+                                        fieldWithPath("mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 url (Nullable)"),
+                                        fieldWithPath("interestList").type(JsonFieldType.ARRAY)
+                                                .description("모임 관심사. 반드시 1개 이상이어야 하며 우선순위가 1인 관심사가 하나 있어야한다. 0개 또는 2개 이상일 수 없다."),
+                                        fieldWithPath("interestList[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                                        fieldWithPath("interestList[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위. 우선순위가 1인 관심사가 반드시 하나 필요하다."),
+                                        fieldWithPath("stateList").type(JsonFieldType.ARRAY)
+                                                .description("모임이 활동하는 지역. 1개 이상이어야하며 우선순위가 1인 지역이 하나 있어야한다."),
+                                        fieldWithPath("stateList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                        fieldWithPath("stateList[].priority").type(JsonFieldType.NUMBER).description("활동 지역 우선순위")
                                 )
                         )
                 )

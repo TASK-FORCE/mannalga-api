@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.state
 import com.taskforce.superinvention.app.web.dto.state.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.IllegalArgumentException
 
 @Service
 class StateService(
@@ -12,4 +13,6 @@ class StateService(
     fun findAllStateDtoList(): List<StateDto> {
         return stateRepository.findByLevel(1).map { e -> of(e, 1) }.toList()
     }
+
+    fun findBySeq(seq: Long): State = stateRepository.findById(seq).orElseThrow{IllegalArgumentException()}
 }
