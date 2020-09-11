@@ -10,18 +10,16 @@ import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.CopyObjectRequest
 import com.amazonaws.services.s3.model.DeleteObjectRequest
 import com.amazonaws.services.s3.model.PutObjectRequest
+import com.taskforce.superinvention.common.util.file.FileMo
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
-import java.io.FileOutputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.annotation.PostConstruct
 
 @Component
-class S3Mo (
+class AwsS3Mo (
         @Value("\${aws.s3.bucketName}")
         private val bucketName: String? = null,
 
@@ -34,7 +32,7 @@ class S3Mo (
         @Value("\${aws.s3.secretAccessKey}")
         private val secretKey: String?  = null
 ){
-    lateinit var s3client: AmazonS3
+    private lateinit var s3client: AmazonS3
 
     @PostConstruct
     private fun initAmazonS3() {
@@ -47,13 +45,20 @@ class S3Mo (
     }
 
     // AWS S3 파일 업로드
-    fun uploadFile(multipartFile: MultipartFile, dirPath: String): S3Path {
-        val file = convertMultiPartToFile(multipartFile)
-        val fileName= generateFileName(multipartFile)
-        val filePath     = "$dirPath/$fileName"
-        val absolutePath = "$endpointUrl/$bucketName/$filePath"
+    fun uploadFile(multipartFile: MultipartFile, dirPath: String, day: Int = 0): S3Path {
+        val file      = FileMo.convertMultiPartToFile(multipartFile)
+        val fileName= FileMo.generateUUID(multipartFile)
+        val filePath       = "$dirPath/$fileName"
+        val absolutePath   = "$endpointUrl/$bucketName/$filePath"
 
-        uploadFileToS3bucket(filePath, file)
+        // @Todo TTL 쓰기
+
+        /**
+         * val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
+         * val issuedDate  = Date.from(now.toInstant())
+         * val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
+         */
+        uploadFileToBucket(filePath, file)
         file.delete()
 
         return S3Path(
@@ -70,7 +75,7 @@ class S3Mo (
         s3client.copyObject(copyObjRequest)
 
         val filePath = s3client.getUrl(bucketName, s3PathTo).path
-        deleteFileFromS3Bucket(s3PathFrom.bucketPath!!)
+        deleteFile(s3PathFrom.bucketPath!!)
 
         return S3Path(
                 absolutePath = endpointUrl + filePath,
@@ -80,29 +85,17 @@ class S3Mo (
     }
 
     // AWS S3 파일 삭제 함수
-    fun deleteFileFromS3Bucket(bucketPath: String) {
+    fun deleteFile(bucketPath: String) {
         s3client.deleteObject(DeleteObjectRequest(bucketName, bucketPath))
     }
 
-    private fun convertMultiPartToFile(file: MultipartFile): File {
-        val convFile = File(file.originalFilename)
-        val fos = FileOutputStream(convFile)
-        fos.write(file.bytes)
-        fos.close()
-        return convFile
+    private fun uploadFileToBucket(filePath: String, file: File) {
+        val putObject = s3client.putObject(PutObjectRequest(bucketName, filePath, file)
+                                                .withCannedAcl(CannedAccessControlList.PublicRead))
+        putObject.expirationTime
     }
 
-    private fun generateFileName(multiPart: MultipartFile): String {
-        return String.format("%s_%s", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_hh_mm_ss_SSSSS")),
-                multiPart.originalFilename!!.replace(" ".toRegex(), "_"))
-    }
-
-    private fun uploadFileToS3bucket(filePath: String, file: File) {
-        s3client.putObject(PutObjectRequest(bucketName, filePath, file)
-                .withCannedAcl(CannedAccessControlList.PublicRead))
-    }
-
-    private fun uploadFileToS3bucket(filePath: String, file: File, date: Date) {
+    private fun uploadFile(filePath: String, file: File, date: Date) {
         s3client.putObject(PutObjectRequest(bucketName, filePath, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead))
                 .expirationTime=date
