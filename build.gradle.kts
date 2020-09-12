@@ -40,6 +40,10 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.apache.httpcomponents:httpclient")
 
+    // AWS
+    implementation("com.amazonaws:aws-java-sdk-bom:1.11.857")
+    implementation("com.amazonaws:aws-java-sdk-s3control:1.11.857")
+
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-jpa:${queryDsl}")
