@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
+import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.user.UserDetailsProvider
 import com.taskforce.superinvention.app.domain.user.user.UserRepository
@@ -68,4 +69,7 @@ abstract class ApiDocumentationTest {
 
     @MockBean
     lateinit var userInterestService: UserInterestService
+
+    @MockBean
+    lateinit var roleService: RoleService
 }

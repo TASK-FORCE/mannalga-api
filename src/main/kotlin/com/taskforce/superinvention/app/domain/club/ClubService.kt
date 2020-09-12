@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
@@ -39,16 +40,13 @@ class ClubService(
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
     fun getClubBySeq(seq: Long): Club {
-        return clubRepository.findById(seq).orElseThrow{NullPointerException()}
+        val club = clubRepository.findById(seq).orElseThrow { NullPointerException() }
+        return club
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUserDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
-    }
-
-    fun retrieveClubs(keyword: String): List<Club>? {
-        return clubRepositorySupport.findByKeyword(keyword)
     }
 
     /**
@@ -114,8 +112,10 @@ class ClubService(
     }
 
     @Transactional
-    fun changeClubInterests(user: User, club: Club, interests: Set<InterestRequestDto>) {
-        if (!roleService.hasClubManagerAuth(club, user)) throw RuntimeException("권한이 없습니다")
+    fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
+        val club = getClubBySeq(clubSeq)
+        val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw RuntimeException("권한이 없습니다")
         
         // 기존 관심사 삭제
         val toDelete: List<ClubInterest> = clubInterestRepository.findByClub(club)
@@ -124,5 +124,13 @@ class ClubService(
         // 신규 관심사 등록
         val toAdd: List<ClubInterest> = interests.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
         clubInterestRepository.saveAll(toAdd)
+
+        return club
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
+        val club = getClubBySeq(clubSeq)
+        return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
     }
 }

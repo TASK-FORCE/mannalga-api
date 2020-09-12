@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.domain.role
 
 import com.taskforce.superinvention.app.domain.club.Club
+import com.taskforce.superinvention.app.domain.club.ClubUser
 import com.taskforce.superinvention.app.domain.user.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,8 +18,9 @@ class RoleService(
      * @author eric
      * @return 매니저, 마스터 권한중 하나라도 있으면 true
      */
-    fun hasClubManagerAuth(club: Club, user: User): Boolean {
-        val clubUserRoles = getClubUserRoles(club, user)
+    fun hasClubManagerAuth(clubUser: ClubUser): Boolean {
+
+        val clubUserRoles = getClubUserRoles(clubUser)
         val managerAuth = setOf(Role.RoleName.MASTER, Role.RoleName.MANAGER)
         return clubUserRoles.stream().map { clubUserRole -> clubUserRole.role.name }.anyMatch{roleName -> managerAuth.contains(roleName)}
     }
@@ -28,8 +30,8 @@ class RoleService(
     /**
      * 모임원이 가지고 있는 모든 권한을 조회한다
      */
-    fun getClubUserRoles(club: Club, user: User): Set<ClubUserRole> {
-        val clubUserRoles: Set<ClubUserRole> = clubUserRoleRepository.findByClubAndUser(club, user)
+    fun getClubUserRoles(clubUser: ClubUser): Set<ClubUserRole> {
+        val clubUserRoles: Set<ClubUserRole> = clubUserRoleRepository.findByClubUser(clubUser)
         return clubUserRoles
     }
 }

@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
 
@@ -33,7 +34,6 @@ class ClubController(
     @PostMapping("/{clubSeq}/users")
     fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long) {
         val club = clubService.getClubBySeq(clubSeq)
-        if (club == null) throw NullPointerException("존재하지 않는 모임입니다")
         clubService.addClubUser(club, user);
     }
 
@@ -67,12 +67,13 @@ class ClubController(
         return clubService.search(request)
     }
 
-    @PutMapping("/{seq}/interests")
-    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ClubDto {
-        var club = clubService.getClubBySeq(clubSeq)
-        clubService.changeClubInterests(user, club, clubInterests)
-
-        club = clubService.getClubBySeq(clubSeq)
-        return ClubDto(clubService.getClubBySeq(clubSeq), club.clubUser.size.toLong())
+    /**
+     * 모임 관심사 변경
+     * @author eric
+     */
+    @PutMapping("/{clubSeq}/interests")
+    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ClubWithStateInterestDto {
+        clubService.changeClubInterests(user, clubSeq, clubInterests)
+        return clubService.getClubWithPriorityDto(clubSeq)
     }
 }
