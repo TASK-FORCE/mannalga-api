@@ -19,13 +19,12 @@ class FileMo {
         }
 
         fun generateUUID(multiPart: MultipartFile): String {
-            val datetimeStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_hh_mm_ss"))
+            val datetimeStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"))
 
-            val uuid = "${datetimeStr}_${UUID.randomUUID()}"
-            val fileName = multiPart.originalFilename!!.replace(" ".toRegex(), "_")
+            val uuid = "${datetimeStr}-${UUID.randomUUID()}"
+            val fileName = multiPart.originalFilename!!.replace(" ".toRegex(), "-")
 
-            return "${uuid}_${fileName}"
+            return "${uuid}-${fileName}"
         }
-
     }
 }

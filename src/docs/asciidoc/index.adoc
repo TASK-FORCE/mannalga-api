@@ -24,6 +24,11 @@ endif::[]
 | `http://52.78.18.217/api`
 |===
 
+
+= 공통
+== 파일 임시저장
+include::{root}/common/temp-file-upload.adoc[]
+
 = 지역
 == 지역 조회 API
 include::{root}/state/state-all.adoc[]
