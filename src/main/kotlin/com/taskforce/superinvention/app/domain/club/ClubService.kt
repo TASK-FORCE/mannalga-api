@@ -38,8 +38,8 @@ class ClubService(
         private var clubStateRepository: ClubStateRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
-    fun getClubBySeq(seq: Long): Club? {
-        return clubRepository.findById(seq).orElse(null)
+    fun getClubBySeq(seq: Long): Club {
+        return clubRepository.findById(seq).orElseThrow{NullPointerException()}
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUserDto? {
@@ -79,7 +79,7 @@ class ClubService(
         clubStateRepository.saveAll(clubStateList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
-        val masterRole = roleService.findByRole(Role.RoleName.MASTER)
+        val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)
         val clubUserRole = ClubUserRole(savedClubUser, masterRole)
         clubUserRoleRepository.save(clubUserRole)
     }
@@ -109,9 +109,20 @@ class ClubService(
         val result = clubRepositorySupport.search(request.searchOptions, pageable)
         return result.map { e -> ClubWithStateInterestDto(
             club = e,
-            userCount = e.clubUser.size.toLong(),
-            interests = e.clubInterests.map { ci -> InterestDto(ci.interest.seq, ci.interest.name) }.toList(),
-            states = e.clubStates.map { cs -> SimpleStateDto(cs.state.seq!!, cs.state.name, cs.state.superStateRoot, cs.state.level) }.toList()
+            userCount = e.clubUser.size.toLong()
         ) }.toList()
+    }
+
+    @Transactional
+    fun changeClubInterests(user: User, club: Club, interests: Set<InterestRequestDto>) {
+        if (!roleService.hasClubManagerAuth(club, user)) throw RuntimeException("권한이 없습니다")
+        
+        // 기존 관심사 삭제
+        val toDelete: List<ClubInterest> = clubInterestRepository.findByClub(club)
+        clubInterestRepository.deleteAll(toDelete)
+
+        // 신규 관심사 등록
+        val toAdd: List<ClubInterest> = interests.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
+        clubInterestRepository.saveAll(toAdd)
     }
 }

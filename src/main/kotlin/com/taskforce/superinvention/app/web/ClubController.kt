@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
@@ -55,14 +56,23 @@ class ClubController(
     fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
         if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
             val userStateDto = userStateService.findUserStateList(user)
-            request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.stateDto.seq, e.priority) }.toList()
+            request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.state.seq, e.priority) }.toList()
         }
 
         if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {
             // TODO: UserInterest 조회 메서드 생성이 끝나면 여기 완성하자
-            // val userInterestDto = userInterestService.findUserInterestList(user);
+//             val userInterestDto = userInterestService.findUserInterestList(user);
         }
 
         return clubService.search(request)
+    }
+
+    @PutMapping("/{seq}/interests")
+    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ClubDto {
+        var club = clubService.getClubBySeq(clubSeq)
+        clubService.changeClubInterests(user, club, clubInterests)
+
+        club = clubService.getClubBySeq(clubSeq)
+        return ClubDto(clubService.getClubBySeq(clubSeq), club.clubUser.size.toLong())
     }
 }

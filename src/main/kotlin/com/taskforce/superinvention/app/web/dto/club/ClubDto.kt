@@ -4,8 +4,10 @@ import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.state.ClubState
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateDto
+import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
 
 class ClubDto (
         var seq: Long?,
@@ -25,19 +27,17 @@ class ClubWithStateInterestDto (
         var maximumNumber: Long,
         var userCount: Long,
         var mainImageUrl: String?,
-        var interests: List<InterestDto>,
-        var states: List<SimpleStateDto>
+        var interests: List<InterestWithPriorityDto>,
+        var states: List<StateWithPriorityDto>
 ) {
     constructor(club : Club,
-                userCount: Long,
-                interests: List<InterestDto>,
-                states: List<SimpleStateDto>):
+                userCount: Long):
             this(club.seq,
                     club.name,
                     club.description,
                     club.maximumNumber,
                     userCount,
                     club.mainImageUrl,
-                    interests,
-                    states)
+                    club.clubInterests.map { e -> InterestWithPriorityDto(e) },
+                    club.clubStates.map { e -> StateWithPriorityDto(e) })
 }

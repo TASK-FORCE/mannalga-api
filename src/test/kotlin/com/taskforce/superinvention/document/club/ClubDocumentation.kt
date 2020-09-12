@@ -4,8 +4,10 @@ import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
@@ -106,12 +108,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 42L,
                         mainImageUrl = "taskforce-file-server/Exv2Es.png",
                         interests = listOf(
-                                InterestDto(seq = 1, name = "운동"),
-                                InterestDto(seq = 2, name = "건강")
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
                         states = listOf(
-                                SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2),
-                                SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2)
+                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
+                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 ),
                 ClubWithStateInterestDto(
@@ -123,12 +125,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 1L,
                         mainImageUrl = "taskforce-file-server/0xV12v2Es.png",
                         interests = listOf(
-                                InterestDto(seq = 1, name = "운동"),
-                                InterestDto(seq = 2, name = "건강")
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
                         states = listOf(
-                                SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2),
-                                SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2)
+                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
+                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 )
         )
@@ -191,13 +193,17 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("[].userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
                                         fieldWithPath("[].mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
                                         fieldWithPath("[].interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
-                                        fieldWithPath("[].interests[].seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
-                                        fieldWithPath("[].interests[].name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("[].interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                                        fieldWithPath("[].interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                                        fieldWithPath("[].interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("[].interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
                                         fieldWithPath("[].states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
-                                        fieldWithPath("[].states[].seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
-                                        fieldWithPath("[].states[].name").type(JsonFieldType.STRING).description("모임 지역 이름"),
-                                        fieldWithPath("[].states[].superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
-                                        fieldWithPath("[].states[].level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨")
+                                        fieldWithPath("[].states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                                        fieldWithPath("[].states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                                        fieldWithPath("[].states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                                        fieldWithPath("[].states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                                        fieldWithPath("[].states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                                        fieldWithPath("[].states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
                                 )
                         )
                 )
