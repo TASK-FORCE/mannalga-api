@@ -1,4 +1,4 @@
-name: Deploy--Super-Invention
+name: '[Deploy] Super-Invention Server'
 
 on:
   workflow_dispatch:

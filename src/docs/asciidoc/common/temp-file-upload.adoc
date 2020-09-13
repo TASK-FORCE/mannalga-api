@@ -10,9 +10,6 @@ endif::[]
 :site-url: /build/asciidoc/html5/common
 
 === Request
-....
-    요구 Request Header 없음
-....
 include::{sub-snippet}/temp-file-upload/request-parts.adoc[]
 
 include::{sub-snippet}/temp-file-upload/curl-request.adoc[]
