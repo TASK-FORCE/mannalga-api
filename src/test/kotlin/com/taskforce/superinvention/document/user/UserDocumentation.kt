@@ -2,7 +2,6 @@ package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
@@ -10,11 +9,9 @@ import com.taskforce.superinvention.app.web.dto.state.*
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
-import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
@@ -121,11 +118,11 @@ class UserDocumentation : ApiDocumentationTest() {
         state2.seq = 1002L
 
         val stateWithPriorityDto1 = StateWithPriorityDto(
-                stateDto = SimpleStateDto(state1)
+                state = SimpleStateDto(state1)
                 , priority = 1L)
 
         val stateWithPriorityDto2 = StateWithPriorityDto(
-                stateDto = SimpleStateDto(state2)
+                state = SimpleStateDto(state2)
                 , priority = 2L)
 
         val user = User("eric")
@@ -150,11 +147,11 @@ class UserDocumentation : ApiDocumentationTest() {
                 .andDo(document("userStates", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저 지역들"),
-                                fieldWithPath("userStates[].stateDto").type(JsonFieldType.OBJECT).description("유저 지역"),
-                                fieldWithPath("userStates[].stateDto.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                fieldWithPath("userStates[].stateDto.name").type(JsonFieldType.STRING).description("지역 이름"),
-                                fieldWithPath("userStates[].stateDto.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
-                                fieldWithPath("userStates[].stateDto.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
+                                fieldWithPath("userStates[].state").type(JsonFieldType.OBJECT).description("유저 지역"),
+                                fieldWithPath("userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
+                                fieldWithPath("userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
+                                fieldWithPath("userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
                                 fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
                                 fieldWithPath("userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
                                 fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디")
@@ -231,8 +228,8 @@ class UserDocumentation : ApiDocumentationTest() {
         state2.seq = 102L
 
         val userStates = listOf(
-                StateWithPriorityDto(stateDto = SimpleStateDto(state = state1), priority = 1L),
-                StateWithPriorityDto(stateDto = SimpleStateDto(state = state2), priority = 2L)
+                StateWithPriorityDto(state = SimpleStateDto(state = state1), priority = 1L),
+                StateWithPriorityDto(state = SimpleStateDto(state = state2), priority = 2L)
         )
 
 
@@ -263,11 +260,11 @@ class UserDocumentation : ApiDocumentationTest() {
                     fieldWithPath("userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
                     fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디"),
                     fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저의 변경 후 지역들"),
-                    fieldWithPath("userStates[].stateDto").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
-                    fieldWithPath("userStates[].stateDto.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                    fieldWithPath("userStates[].stateDto.name").type(JsonFieldType.STRING).description("지역 이름"),
-                    fieldWithPath("userStates[].stateDto.superStateRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
-                    fieldWithPath("userStates[].stateDto.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
+                    fieldWithPath("userStates[].state").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
+                    fieldWithPath("userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                    fieldWithPath("userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
+                    fieldWithPath("userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
+                    fieldWithPath("userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
                     fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 지역 우선순위")
                 )))
 

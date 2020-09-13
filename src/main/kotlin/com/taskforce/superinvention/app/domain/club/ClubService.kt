@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
@@ -38,17 +39,14 @@ class ClubService(
         private var clubStateRepository: ClubStateRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
-    fun getClubBySeq(seq: Long): Club? {
-        return clubRepository.findById(seq).orElse(null)
+    fun getClubBySeq(seq: Long): Club {
+        val club = clubRepository.findById(seq).orElseThrow { NullPointerException() }
+        return club
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUserDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
         return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
-    }
-
-    fun retrieveClubs(keyword: String): List<Club>? {
-        return clubRepositorySupport.findByKeyword(keyword)
     }
 
     /**
@@ -79,7 +77,7 @@ class ClubService(
         clubStateRepository.saveAll(clubStateList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
-        val masterRole = roleService.findByRole(Role.RoleName.MASTER)
+        val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)
         val clubUserRole = ClubUserRole(savedClubUser, masterRole)
         clubUserRoleRepository.save(clubUserRole)
     }
@@ -109,9 +107,30 @@ class ClubService(
         val result = clubRepositorySupport.search(request.searchOptions, pageable)
         return result.map { e -> ClubWithStateInterestDto(
             club = e,
-            userCount = e.clubUser.size.toLong(),
-            interests = e.clubInterests.map { ci -> InterestDto(ci.interest.seq, ci.interest.name) }.toList(),
-            states = e.clubStates.map { cs -> SimpleStateDto(cs.state.seq!!, cs.state.name, cs.state.superStateRoot, cs.state.level) }.toList()
+            userCount = e.clubUser.size.toLong()
         ) }.toList()
+    }
+
+    @Transactional
+    fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
+        val club = getClubBySeq(clubSeq)
+        val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw RuntimeException("권한이 없습니다")
+        
+        // 기존 관심사 삭제
+        val toDelete: List<ClubInterest> = clubInterestRepository.findByClub(club)
+        clubInterestRepository.deleteAll(toDelete)
+
+        // 신규 관심사 등록
+        val toAdd: List<ClubInterest> = interests.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
+        clubInterestRepository.saveAll(toAdd)
+
+        return club
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
+        val club = getClubBySeq(clubSeq)
+        return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
     }
 }

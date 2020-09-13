@@ -6,9 +6,11 @@ import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
 
@@ -32,7 +34,6 @@ class ClubController(
     @PostMapping("/{clubSeq}/users")
     fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long) {
         val club = clubService.getClubBySeq(clubSeq)
-        if (club == null) throw NullPointerException("존재하지 않는 모임입니다")
         clubService.addClubUser(club, user);
     }
 
@@ -55,14 +56,24 @@ class ClubController(
     fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
         if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
             val userStateDto = userStateService.findUserStateList(user)
-            request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.stateDto.seq, e.priority) }.toList()
+            request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.state.seq, e.priority) }.toList()
         }
 
         if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {
             // TODO: UserInterest 조회 메서드 생성이 끝나면 여기 완성하자
-            // val userInterestDto = userInterestService.findUserInterestList(user);
+//             val userInterestDto = userInterestService.findUserInterestList(user);
         }
 
         return clubService.search(request)
+    }
+
+    /**
+     * 모임 관심사 변경
+     * @author eric
+     */
+    @PutMapping("/{clubSeq}/interests")
+    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ClubWithStateInterestDto {
+        clubService.changeClubInterests(user, clubSeq, clubInterests)
+        return clubService.getClubWithPriorityDto(clubSeq)
     }
 }

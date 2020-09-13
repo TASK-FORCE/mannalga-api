@@ -1,11 +1,20 @@
 package com.taskforce.superinvention.document.club
 
 import com.taskforce.superinvention.app.domain.club.Club
+import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.interest.ClubInterest
+import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
+import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.state.ClubState
+import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.ApiDocumentationTest
@@ -14,10 +23,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.request.RequestDocumentation
+import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -106,12 +116,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 42L,
                         mainImageUrl = "taskforce-file-server/Exv2Es.png",
                         interests = listOf(
-                                InterestDto(seq = 1, name = "운동"),
-                                InterestDto(seq = 2, name = "건강")
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
                         states = listOf(
-                                SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2),
-                                SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2)
+                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
+                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 ),
                 ClubWithStateInterestDto(
@@ -123,12 +133,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 1L,
                         mainImageUrl = "taskforce-file-server/0xV12v2Es.png",
                         interests = listOf(
-                                InterestDto(seq = 1, name = "운동"),
-                                InterestDto(seq = 2, name = "건강")
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
                         states = listOf(
-                                SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2),
-                                SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2)
+                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
+                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 )
         )
@@ -191,15 +201,148 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("[].userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
                                         fieldWithPath("[].mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
                                         fieldWithPath("[].interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
-                                        fieldWithPath("[].interests[].seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
-                                        fieldWithPath("[].interests[].name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("[].interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                                        fieldWithPath("[].interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                                        fieldWithPath("[].interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("[].interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
                                         fieldWithPath("[].states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
-                                        fieldWithPath("[].states[].seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
-                                        fieldWithPath("[].states[].name").type(JsonFieldType.STRING).description("모임 지역 이름"),
-                                        fieldWithPath("[].states[].superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
-                                        fieldWithPath("[].states[].level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨")
+                                        fieldWithPath("[].states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                                        fieldWithPath("[].states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                                        fieldWithPath("[].states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                                        fieldWithPath("[].states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                                        fieldWithPath("[].states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                                        fieldWithPath("[].states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
                                 )
                         )
                 )
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임 관심사 변경`() {
+        // given
+        val requestBody: Set<InterestRequestDto> = setOf(
+                InterestRequestDto(seq = 3, priority = 1),
+                InterestRequestDto(seq = 5, priority = 2)
+        )
+
+        val clubSeq = 57231L
+
+        val club = Club(
+                name = "땔감 스터디",
+                description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                maximumNumber = 5L,
+                mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
+        )
+        club.seq = clubSeq
+
+        val interest3 = Interest(
+                "헬스",
+                interestGroup = InterestGroup(
+                        "건강",
+                        listOf()
+                )
+        )
+        val interest5 = Interest(
+                "운동",
+                interestGroup = InterestGroup(
+                        "건강",
+                        listOf()
+                )
+        )
+
+        val clubInterest1 = ClubInterest(
+                club = club,
+                interest = interest3,
+                priority = 1
+        )
+        val clubInterest2 = ClubInterest(
+                club = club,
+                interest = interest5,
+                priority = 1
+        )
+        clubInterest1.seq = 12451
+        interest3.seq = 3
+        clubInterest2.seq = 12466
+        interest5.seq = 5
+
+        club.clubInterests = listOf(
+                clubInterest1,
+                clubInterest2
+        )
+
+
+        val state1 = State(
+                superState = null,
+                name = "성남시",
+                superStateRoot = "경기도/성남시",
+                level = 2,
+                subStates = listOf()
+        )
+        state1.seq = 401
+
+        val clubState = ClubState(club, state1, 1)
+        clubState.seq = 41231
+
+
+        club.clubStates = listOf(
+                clubState
+        )
+
+
+        club.clubUser = listOf(
+                ClubUser(club, User("유저 1")),
+                ClubUser(club, User("유저 2")),
+                ClubUser(club, User("유저 3")),
+                ClubUser(club, User("유저 4")),
+                ClubUser(club, User("유저 5"))
+        )
+
+
+        `when`(clubService.getClubWithPriorityDto(clubSeq))
+                .thenReturn(ClubWithStateInterestDto(club, 5L))
+
+        `when`(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).thenReturn(true)
+
+        // when
+        val result = mockMvc.perform(
+                put("/clubs/{clubSeq}/interests", clubSeq)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+                        .content(objectMapper.writeValueAsString(requestBody))
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document(
+                    "changeClubInterests", getDocumentRequest(), getDocumentResponse(),
+                    pathParameters(parameterWithName("clubSeq").description("모임 시퀀스. 해당 유저는 이 모임에 대해 매니저 이상의 권한을 가지고 있어야 한다.")),
+                    requestFields(
+                            fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                            fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("관심사에 대한 우선순위")
+                    ),
+                    responseFields(
+                            fieldWithPath("seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
+                            fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
+                            fieldWithPath("description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
+                            fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
+                            fieldWithPath("userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
+                            fieldWithPath("mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
+                            fieldWithPath("interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
+                            fieldWithPath("interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                            fieldWithPath("interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                            fieldWithPath("interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                            fieldWithPath("interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
+                            fieldWithPath("states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
+                            fieldWithPath("states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                            fieldWithPath("states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                            fieldWithPath("states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                            fieldWithPath("states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                            fieldWithPath("states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                            fieldWithPath("states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
+                    )
+            ))
     }
 }
