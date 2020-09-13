@@ -1,12 +1,10 @@
 package com.taskforce.superinvention.config
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.Import
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
-@DataJpaTest
+@SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(TestConfig::class)
-abstract class DataJpaRepoTest: BaseTest
+abstract class IntegrationTest: BaseTest

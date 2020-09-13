@@ -2,6 +2,7 @@ package com.taskforce.superinvention.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.role.RoleService
@@ -11,11 +12,9 @@ import com.taskforce.superinvention.app.domain.user.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.web.ClubController
-import com.taskforce.superinvention.app.web.InterestGroupController
-import com.taskforce.superinvention.app.web.StateController
-import com.taskforce.superinvention.app.web.UserController
+import com.taskforce.superinvention.app.web.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -30,9 +29,10 @@ import org.springframework.test.web.servlet.MockMvc
     StateController::class,
     UserController::class,
     InterestGroupController::class,
-    ClubController::class
+    ClubController::class,
+    CommonController::class
 ])
-abstract class ApiDocumentationTest {
+abstract class ApiDocumentationTest: BaseTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -72,4 +72,10 @@ abstract class ApiDocumentationTest {
 
     @MockBean
     lateinit var roleService: RoleService
+  
+    @MockBean
+    lateinit var fileService: FileService
+
+    @MockBean
+    lateinit var awsS3Mo: AwsS3Mo
 }
