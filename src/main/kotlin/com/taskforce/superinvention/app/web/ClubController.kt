@@ -52,7 +52,7 @@ class ClubController(
      * 모임리스트 검색
      * @author eric
      */
-    @GetMapping
+    @PostMapping("/search")
     fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
         if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
             val userStateDto = userStateService.findUserStateList(user)
