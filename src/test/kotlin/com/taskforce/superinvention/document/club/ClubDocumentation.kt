@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGr
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
@@ -21,6 +22,9 @@ import com.taskforce.superinvention.config.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
@@ -55,7 +59,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                         .content(objectMapper.writeValueAsString(clubAddRequestDto))
         ).andDo(print())
 
-        result.andExpect(status().isOk)
+        result.andExpect(status().isCreated)
                 .andDo(
                         document("addClub", getDocumentRequest(), getDocumentResponse(),
                                 requestFields(
@@ -96,7 +100,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                         .characterEncoding("UTF-8")
         ).andDo(print())
 
-        result.andExpect(status().isOk)
+        result.andExpect(status().isCreated)
                 .andDo(
                         document("addClubUser", getDocumentRequest(), getDocumentResponse())
                 )
@@ -166,7 +170,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
         )
 
-        `when`(clubService.search(MockitoHelper.anyObject())).thenReturn(searchResult)
+        `when`(clubService.search(MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 10), 203L))
 
         // when
         val result = mockMvc.perform(
@@ -194,24 +198,57 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("searchOptions.interestList[].priority").type(JsonFieldType.NUMBER).description("검색할 관심사의 우선순위. 높을수록 해당 관심사의 우선순위를 높게 설정하여 상단에 노출된다.")
                                 ),
                                 responseFields(
-                                        fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
-                                        fieldWithPath("[].name").type(JsonFieldType.STRING).description("모임명"),
-                                        fieldWithPath("[].description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
-                                        fieldWithPath("[].maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
-                                        fieldWithPath("[].userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
-                                        fieldWithPath("[].mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
-                                        fieldWithPath("[].interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
-                                        fieldWithPath("[].interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
-                                        fieldWithPath("[].interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
-                                        fieldWithPath("[].interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
-                                        fieldWithPath("[].interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
-                                        fieldWithPath("[].states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
-                                        fieldWithPath("[].states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
-                                        fieldWithPath("[].states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
-                                        fieldWithPath("[].states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
-                                        fieldWithPath("[].states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
-                                        fieldWithPath("[].states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
-                                        fieldWithPath("[].states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+
+                                        fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("데이터 본문"),
+                                        fieldWithPath("data.content[].seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
+                                        fieldWithPath("data.content[].name").type(JsonFieldType.STRING).description("모임명"),
+                                        fieldWithPath("data.content[].description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
+                                        fieldWithPath("data.content[].maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
+                                        fieldWithPath("data.content[].userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
+                                        fieldWithPath("data.content[].mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
+                                        fieldWithPath("data.content[].interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
+                                        fieldWithPath("data.content[].interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                                        fieldWithPath("data.content[].interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                                        fieldWithPath("data.content[].interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("data.content[].interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
+                                        fieldWithPath("data.content[].states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
+                                        fieldWithPath("data.content[].states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                                        fieldWithPath("data.content[].states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                                        fieldWithPath("data.content[].states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                                        fieldWithPath("data.content[].states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                                        fieldWithPath("data.content[].states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                                        fieldWithPath("data.content[].states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위"),
+
+                                        fieldWithPath("data.pageable").type(JsonFieldType.OBJECT).description("페이징 정보"),
+
+                                        fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
+                                        fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 안했는지 여부"),
+                                        fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("빈 데이터인지 여부"),
+
+                                        fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER).description("요청한 오프셋(몇 페이지인지, 0부터 시작)"),
+                                        fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description("몇 번째 페이지인지"),
+                                        fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description("요청한 페이지의 사이즈"),
+                                        fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이징을 하지 않았는지 여부"),
+                                        fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이징 여부"),
+
+                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("총 데이터 개수"),
+                                        fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
+                                        fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("요청한 오프셋으로 페이징할 때 총 페이지 개수"),
+                                        fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 페이지 넘버"),
+                                        fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("페이징된 데이터 개수"),
+                                        fieldWithPath("data.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
+                                        fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
+                                        fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 안했는지 여부"),
+                                        fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN).description("빈 데이터인지 여부"),
+
+                                        fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("응답 데이터 개수"),
+                                        fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫번째 페이지인지 여부"),
+                                        fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("페이지가 비어있는지 여부"),
+
+
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
                                 )
                         )
                 )
@@ -324,24 +361,29 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("관심사에 대한 우선순위")
                     ),
                     responseFields(
-                            fieldWithPath("seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
-                            fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
-                            fieldWithPath("description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
-                            fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
-                            fieldWithPath("userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
-                            fieldWithPath("mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
-                            fieldWithPath("interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
-                            fieldWithPath("interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
-                            fieldWithPath("interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
-                            fieldWithPath("interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
-                            fieldWithPath("interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
-                            fieldWithPath("states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
-                            fieldWithPath("states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
-                            fieldWithPath("states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
-                            fieldWithPath("states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
-                            fieldWithPath("states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
-                            fieldWithPath("states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
-                            fieldWithPath("states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
+                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+
+                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("데이터 본문"),
+                            fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
+                            fieldWithPath("data.name").type(JsonFieldType.STRING).description("모임명"),
+                            fieldWithPath("data.description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
+                            fieldWithPath("data.maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
+                            fieldWithPath("data.userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
+                            fieldWithPath("data.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
+                            fieldWithPath("data.interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
+                            fieldWithPath("data.interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                            fieldWithPath("data.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                            fieldWithPath("data.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                            fieldWithPath("data.interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
+                            fieldWithPath("data.states").type(JsonFieldType.ARRAY).description("모임 참여지역"),
+                            fieldWithPath("data.states[].state").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                            fieldWithPath("data.states[].state.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                            fieldWithPath("data.states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                            fieldWithPath("data.states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                            fieldWithPath("data.states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                            fieldWithPath("data.states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위"),
+
+                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
                     )
             ))
     }
