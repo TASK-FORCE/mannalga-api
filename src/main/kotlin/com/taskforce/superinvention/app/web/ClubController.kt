@@ -5,12 +5,14 @@ import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.user.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import org.springframework.data.domain.Page
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
 
@@ -22,19 +24,23 @@ class ClubController(
         val userInterestService: UserInterestService
 ) {
     @GetMapping("/{seq}")
-    fun getClubBySeq(@PathVariable seq : Long): Club? {
-        return clubService.getClubBySeq(seq)
+    fun getClubBySeq(@PathVariable seq : Long): ResponseDto<Club?> {
+        val data = clubService.getClubBySeq(seq)
+        return ResponseDto(data = data)
     }
 
     @GetMapping("/{seq}/users")
-    fun getClubUser(@PathVariable seq : Long): ClubUserDto? {
-        return clubService.getClubUserDto(seq)
+    fun getClubUser(@PathVariable seq : Long): ResponseDto<ClubUserDto?> {
+        val data = clubService.getClubUserDto(seq)
+        return ResponseDto(data = data)
     }
 
     @PostMapping("/{clubSeq}/users")
-    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long) {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any?> {
         val club = clubService.getClubBySeq(clubSeq)
         clubService.addClubUser(club, user);
+        return ResponseDto(data = null, message = "")
     }
 
     /**
@@ -43,9 +49,11 @@ class ClubController(
      */
     @Secured("ROLE_USER")
     @PostMapping
-    fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto): ResponseDto<Any?> {
         val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber, mainImageUrl = request.mainImageUrl)
         clubService.addClub(club, user, request.interestList, request.stateList)
+        return ResponseDto(data = null, message = "")
     }
 
     /**
@@ -53,7 +61,7 @@ class ClubController(
      * @author eric
      */
     @PostMapping("/search")
-    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
+    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): ResponseDto<Page<ClubWithStateInterestDto>> {
         if (ObjectUtils.isEmpty(request.searchOptions.stateList)) {
             val userStateDto = userStateService.findUserStateList(user)
             request.searchOptions.stateList = userStateDto.userStates.map { e -> StateRequestDto(e.state.seq, e.priority) }.toList()
@@ -64,7 +72,8 @@ class ClubController(
 //             val userInterestDto = userInterestService.findUserInterestList(user);
         }
 
-        return clubService.search(request)
+        val data = clubService.search(request)
+        return ResponseDto(data = data)
     }
 
     /**
@@ -72,8 +81,9 @@ class ClubController(
      * @author eric
      */
     @PutMapping("/{clubSeq}/interests")
-    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ClubWithStateInterestDto {
+    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ResponseDto<ClubWithStateInterestDto> {
         clubService.changeClubInterests(user, clubSeq, clubInterests)
-        return clubService.getClubWithPriorityDto(clubSeq)
+        val data = clubService.getClubWithPriorityDto(clubSeq)
+        return ResponseDto(data = data)
     }
 }

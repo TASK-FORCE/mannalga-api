@@ -18,6 +18,8 @@ import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -102,13 +104,14 @@ class ClubService(
 
 
     @Transactional
-    fun search(request: ClubSearchRequestDto): List<ClubWithStateInterestDto> {
+    fun search(request: ClubSearchRequestDto): Page<ClubWithStateInterestDto> {
         val pageable:Pageable = PageRequest.of(request.offset.toInt(), request.size.toInt())
         val result = clubRepositorySupport.search(request.searchOptions, pageable)
-        return result.map { e -> ClubWithStateInterestDto(
-            club = e,
-            userCount = e.clubUser.size.toLong()
-        ) }.toList()
+        val mappingContents = result.content.map { e ->  ClubWithStateInterestDto(
+                club = e,
+                userCount = e.clubUser.size.toLong()
+        )}.toList()
+        return PageImpl(mappingContents, result.pageable, result.totalElements)
     }
 
     @Transactional
