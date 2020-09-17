@@ -1,10 +1,7 @@
 package com.taskforce.superinvention.app.domain.role
 
-import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubUser
-import com.taskforce.superinvention.app.domain.user.user.User
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RoleService(

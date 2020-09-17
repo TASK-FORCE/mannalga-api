@@ -2,7 +2,6 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
-import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
@@ -11,12 +10,11 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.ClubStateRepository
 import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

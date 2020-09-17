@@ -14,7 +14,6 @@ class KakaoAuthResponseErrorHandler: ResponseErrorHandler {
         val LOG: Logger = LoggerFactory.getLogger(KakaoAuthResponseErrorHandler::class.java)
     }
 
-
     override fun hasError(response: ClientHttpResponse): Boolean {
         return (
             response.statusCode.series()    == CLIENT_ERROR // 400 번대

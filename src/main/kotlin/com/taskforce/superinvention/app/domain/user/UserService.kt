@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.domain.user.user
+package com.taskforce.superinvention.app.domain.user
 
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService

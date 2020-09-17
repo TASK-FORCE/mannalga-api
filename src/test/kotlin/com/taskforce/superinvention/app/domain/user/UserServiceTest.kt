@@ -1,8 +1,5 @@
 package com.taskforce.superinvention.app.domain.user
 
-import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.domain.user.user.UserRepository
-import com.taskforce.superinvention.app.domain.user.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
@@ -11,22 +8,19 @@ import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
+import com.taskforce.superinvention.config.test.MockTest
 import org.junit.Assert.assertEquals
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
-class UserServiceTest {
+class UserServiceTest: MockTest() {
 
     @InjectMocks
     lateinit var userService: UserService
-
 
     @Mock
     lateinit var userRepository: UserRepository

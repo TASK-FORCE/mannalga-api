@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.domain.user.user
+package com.taskforce.superinvention.app.domain.user
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.UserDetails
