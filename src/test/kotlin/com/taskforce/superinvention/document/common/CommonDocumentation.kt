@@ -1,9 +1,9 @@
 package com.taskforce.superinvention.document.common
 
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
-import com.taskforce.superinvention.config.ApiDocumentationTest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -48,7 +48,7 @@ class CommonDocumentation: ApiDocumentationTest() {
         ).andDo(print())
 
         // then
-        val andDo: ResultActions = result.andExpect(status().isOk)
+        result.andExpect(status().isOk)
                 .andDo(
                         document("temp-file-upload", getDocumentRequest(), getDocumentResponse(),
                                 requestParts(

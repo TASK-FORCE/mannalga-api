@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.web.dto.state
 
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 
 class UserStateDto(user: User, states: List<StateWithPriorityDto>) {
     val userSeq: Long?

@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 
 class ClubUserDto(
         club: Club,

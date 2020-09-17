@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.common.config.argument.auth
 
-import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.domain.user.user.UserRepository
+import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserRepository
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder

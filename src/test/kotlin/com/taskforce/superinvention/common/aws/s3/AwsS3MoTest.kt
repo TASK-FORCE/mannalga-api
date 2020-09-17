@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.common.aws.s3
 
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
-import com.taskforce.superinvention.config.IntegrationTest
+import com.taskforce.superinvention.config.test.IntegrationTest
 import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

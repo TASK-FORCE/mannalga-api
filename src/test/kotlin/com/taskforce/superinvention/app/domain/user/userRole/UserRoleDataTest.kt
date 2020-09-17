@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.domain.user.userRole
 
-import com.taskforce.superinvention.config.DataJpaRepoTest
+import com.taskforce.superinvention.config.test.DataJpaRepoTest
 import org.springframework.beans.factory.annotation.Autowired
 
 

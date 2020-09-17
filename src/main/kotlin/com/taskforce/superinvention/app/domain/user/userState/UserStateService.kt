@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.user.userState
 
 import com.taskforce.superinvention.app.domain.state.StateRepository
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto

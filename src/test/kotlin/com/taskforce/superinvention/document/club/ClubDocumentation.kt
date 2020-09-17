@@ -8,21 +8,21 @@ import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.State
-import com.taskforce.superinvention.app.domain.user.user.User
-import com.taskforce.superinvention.app.web.common.response.ResponseDto
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
-import com.taskforce.superinvention.config.ApiDocumentationTest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
@@ -30,7 +30,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
-import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
@@ -93,7 +92,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 ))
 
         val result = mockMvc.perform(
-                post("/clubs/232/users")
+                post("/clubs/{clubSeq}/users", 232)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
@@ -102,7 +101,9 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         result.andExpect(status().isCreated)
                 .andDo(
-                        document("addClubUser", getDocumentRequest(), getDocumentResponse())
+                        document("addClubUser", getDocumentRequest(), getDocumentResponse(),
+                                pathParameters(parameterWithName("clubSeq").description("모임 시퀀스. 해당 유저는 이 모임에 대해 매니저 이상의 권한을 가지고 있어야 한다."))
+                        )
                 )
     }
 
@@ -198,7 +199,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("searchOptions.interestList[].priority").type(JsonFieldType.NUMBER).description("검색할 관심사의 우선순위. 높을수록 해당 관심사의 우선순위를 높게 설정하여 상단에 노출된다.")
                                 ),
                                 responseFields(
-                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                                        *commonResponseField(),
 
                                         fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("데이터 본문"),
                                         fieldWithPath("data.content[].seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
@@ -220,35 +221,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.content[].states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
                                         fieldWithPath("data.content[].states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위"),
 
-                                        fieldWithPath("data.pageable").type(JsonFieldType.OBJECT).description("페이징 정보"),
-
-                                        fieldWithPath("data.pageable.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
-                                        fieldWithPath("data.pageable.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
-                                        fieldWithPath("data.pageable.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 안했는지 여부"),
-                                        fieldWithPath("data.pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("빈 데이터인지 여부"),
-
-                                        fieldWithPath("data.pageable.offset").type(JsonFieldType.NUMBER).description("요청한 오프셋(몇 페이지인지, 0부터 시작)"),
-                                        fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER).description("몇 번째 페이지인지"),
-                                        fieldWithPath("data.pageable.pageSize").type(JsonFieldType.NUMBER).description("요청한 페이지의 사이즈"),
-                                        fieldWithPath("data.pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이징을 하지 않았는지 여부"),
-                                        fieldWithPath("data.pageable.paged").type(JsonFieldType.BOOLEAN).description("페이징 여부"),
-
-                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("총 데이터 개수"),
-                                        fieldWithPath("data.last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지 여부"),
-                                        fieldWithPath("data.totalPages").type(JsonFieldType.NUMBER).description("요청한 오프셋으로 페이징할 때 총 페이지 개수"),
-                                        fieldWithPath("data.number").type(JsonFieldType.NUMBER).description("현재 페이지 넘버"),
-                                        fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("페이징된 데이터 개수"),
-                                        fieldWithPath("data.sort").type(JsonFieldType.OBJECT).description("정렬 정보"),
-                                        fieldWithPath("data.sort.sorted").type(JsonFieldType.BOOLEAN).description("정렬 여부"),
-                                        fieldWithPath("data.sort.unsorted").type(JsonFieldType.BOOLEAN).description("정렬 안했는지 여부"),
-                                        fieldWithPath("data.sort.empty").type(JsonFieldType.BOOLEAN).description("빈 데이터인지 여부"),
-
-                                        fieldWithPath("data.numberOfElements").type(JsonFieldType.NUMBER).description("응답 데이터 개수"),
-                                        fieldWithPath("data.first").type(JsonFieldType.BOOLEAN).description("첫번째 페이지인지 여부"),
-                                        fieldWithPath("data.empty").type(JsonFieldType.BOOLEAN).description("페이지가 비어있는지 여부"),
-
-
-                                        fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
+                                        *pageFieldDescriptor()
                                 )
                         )
                 )
@@ -361,9 +334,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("관심사에 대한 우선순위")
                     ),
                     responseFields(
-                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                            *commonResponseField(),
 
-                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("데이터 본문"),
                             fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
                             fieldWithPath("data.name").type(JsonFieldType.STRING).description("모임명"),
                             fieldWithPath("data.description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
@@ -381,9 +353,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("data.states[].state.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
                             fieldWithPath("data.states[].state.superStateRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
                             fieldWithPath("data.states[].state.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
-                            fieldWithPath("data.states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위"),
-
-                            fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
+                            fieldWithPath("data.states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
                     )
             ))
     }

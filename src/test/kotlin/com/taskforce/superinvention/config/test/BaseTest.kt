@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.config
+package com.taskforce.superinvention.config.test
 
 import java.nio.file.Path
 import java.nio.file.Paths

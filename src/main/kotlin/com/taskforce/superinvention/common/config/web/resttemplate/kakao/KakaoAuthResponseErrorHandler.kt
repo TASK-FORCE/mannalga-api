@@ -14,7 +14,6 @@ class KakaoAuthResponseErrorHandler: ResponseErrorHandler {
         val LOG: Logger = LoggerFactory.getLogger(KakaoAuthResponseErrorHandler::class.java)
     }
 
-
     override fun hasError(response: ClientHttpResponse): Boolean {
         return (
             response.statusCode.series()    == CLIENT_ERROR // 400 번대
@@ -23,12 +22,16 @@ class KakaoAuthResponseErrorHandler: ResponseErrorHandler {
     }
 
     override fun handleError(response: ClientHttpResponse) {
-        LOG.error(response.toString())
+        val msg = "${response.statusCode}\n${response.rawStatusCode}\n${response.statusText}"
+        LOG.error(msg)
 
         when(response.statusCode.series()) {
-            // SERVER_ERROR -> {}
-            // CLIENT_ERROR -> {}
-            else -> throw Exception()
+            SERVER_ERROR -> {}
+            CLIENT_ERROR -> {}
+            else -> {
+                LOG.error("알 수 없는 에러입니다.")
+                throw Exception()
+            }
         }
     }
 }
