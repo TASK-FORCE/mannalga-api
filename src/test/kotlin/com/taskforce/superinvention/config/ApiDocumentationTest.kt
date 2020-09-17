@@ -12,7 +12,11 @@ import com.taskforce.superinvention.app.domain.user.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.web.*
+import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.CommonController
+import com.taskforce.superinvention.app.web.controller.InterestGroupController
+import com.taskforce.superinvention.app.web.controller.StateController
+import com.taskforce.superinvention.app.web.controller.UserController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired

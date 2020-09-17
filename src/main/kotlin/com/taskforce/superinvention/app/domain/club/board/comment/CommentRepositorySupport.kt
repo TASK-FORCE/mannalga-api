@@ -1,5 +1,6 @@
-package com.taskforce.superinvention.app.domain.board
+package com.taskforce.superinvention.app.domain.club.board.comment
 
+import com.taskforce.superinvention.app.domain.board.QComment
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 

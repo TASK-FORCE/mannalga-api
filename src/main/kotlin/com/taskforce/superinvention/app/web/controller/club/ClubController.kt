@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web
+package com.taskforce.superinvention.app.web.controller.club
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
@@ -37,7 +37,7 @@ class ClubController(
 
     @PostMapping("/{clubSeq}/users")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any?> {
+    fun addClubUser(@AuthUser user: User, @PathVariable clubSeq: Long): ResponseDto<Any?> {
         val club = clubService.getClubBySeq(clubSeq)
         clubService.addClubUser(club, user);
         return ResponseDto(data = null, message = "")

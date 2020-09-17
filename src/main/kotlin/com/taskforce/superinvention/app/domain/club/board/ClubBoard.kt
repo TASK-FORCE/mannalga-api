@@ -1,7 +1,7 @@
-package com.taskforce.superinvention.app.domain.board
+package com.taskforce.superinvention.app.domain.club.board
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import javax.persistence.Entity
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
@@ -16,5 +16,4 @@ class ClubBoard(
         var topFixedFlag: Boolean,
         var deleteFlag: Boolean,
         var notificationFlag: Boolean
-): BaseEntity() {
-}
+): BaseEntity()

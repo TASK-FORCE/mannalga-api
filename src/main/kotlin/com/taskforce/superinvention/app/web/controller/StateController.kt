@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web
+package com.taskforce.superinvention.app.web.controller
 
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.web.dto.state.StateDto

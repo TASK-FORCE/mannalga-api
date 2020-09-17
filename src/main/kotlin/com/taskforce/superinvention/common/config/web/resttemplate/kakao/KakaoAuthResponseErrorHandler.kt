@@ -16,6 +16,7 @@ class KakaoAuthResponseErrorHandler: ResponseErrorHandler {
 
 
     override fun hasError(response: ClientHttpResponse): Boolean {
+
         return (
             response.statusCode.series()    == CLIENT_ERROR // 400 번대
             || response.statusCode.series() == SERVER_ERROR // 500 번대
@@ -26,8 +27,8 @@ class KakaoAuthResponseErrorHandler: ResponseErrorHandler {
         LOG.error(response.toString())
 
         when(response.statusCode.series()) {
-            // SERVER_ERROR -> {}
-            // CLIENT_ERROR -> {}
+             SERVER_ERROR -> {}
+             CLIENT_ERROR -> {}
             else -> throw Exception()
         }
     }
