@@ -1,8 +1,8 @@
 package com.taskforce.superinvention.app.domain.club.board
 
-import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import org.springframework.stereotype.Service
 

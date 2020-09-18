@@ -2,7 +2,7 @@ package com.taskforce.superinvention.app.web.controller.club
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
@@ -81,7 +81,7 @@ class ClubController(
      * @author eric
      */
     @PutMapping("/{clubSeq}/interests")
-    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long,  @RequestBody clubInterests: Set<InterestRequestDto>): ResponseDto<ClubWithStateInterestDto> {
+    fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long, @RequestBody clubInterests: Set<InterestRequestDto>): ResponseDto<ClubWithStateInterestDto> {
         clubService.changeClubInterests(user, clubSeq, clubInterests)
         val data = clubService.getClubWithPriorityDto(clubSeq)
         return ResponseDto(data = data)

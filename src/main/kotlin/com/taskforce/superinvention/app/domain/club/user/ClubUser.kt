@@ -1,8 +1,7 @@
-package com.taskforce.superinvention.app.domain.club.user
+package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn

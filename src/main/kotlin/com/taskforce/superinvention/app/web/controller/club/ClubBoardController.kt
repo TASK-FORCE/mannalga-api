@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.web.controller.club
 
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser

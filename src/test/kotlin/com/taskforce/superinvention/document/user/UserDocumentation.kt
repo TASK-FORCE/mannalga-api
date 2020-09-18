@@ -1,14 +1,14 @@
 package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.state.State
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.app.web.dto.state.*
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentRequest
-import com.taskforce.superinvention.config.ApiDocumentUtil.getDocumentResponse
-import com.taskforce.superinvention.config.ApiDocumentationTest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
+import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*

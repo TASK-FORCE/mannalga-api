@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.domain.user.user
+package com.taskforce.superinvention.app.domain.user
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
@@ -28,7 +28,7 @@ class User: BaseEntity {
 
     var birthday: LocalDate? = null
 
-    var profileImageLink: String? = null
+    var profileImageLink: String? = ""
 
     var isRegistered: Int? =0
 

@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.role
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.ClubUser
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
 

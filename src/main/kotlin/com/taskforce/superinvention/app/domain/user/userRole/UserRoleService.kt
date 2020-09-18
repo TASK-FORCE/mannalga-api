@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.domain.user.userRole
 
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +14,8 @@ class UserRoleService(
 
     fun removeRoleFromUser(user: User, roleName: String) {
         val userRole = userRoleRepository.findByUser_SeqAndRoleName(user.seq!!, "ROLE_$roleName")
-        userRoleRepository.delete(userRole!!)
+        if(userRole != null) {
+            userRoleRepository.delete(userRole!!)
+        }
     }
 }

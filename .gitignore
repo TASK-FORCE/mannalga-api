@@ -32,3 +32,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Spring RestDocs 파일 제외 - 각자 gradle task에서 빌드해서 쓰세요##
+/src/main/resources/static/docs/

@@ -1,7 +1,8 @@
 package com.taskforce.superinvention.app.domain.club.user
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

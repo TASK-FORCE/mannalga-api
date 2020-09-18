@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.domain.user.userInterest
 
 import com.taskforce.superinvention.app.domain.interest.interest.InterestRepository
-import com.taskforce.superinvention.app.domain.user.user.User
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

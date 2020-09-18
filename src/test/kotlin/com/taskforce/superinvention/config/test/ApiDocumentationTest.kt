@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.config
+package com.taskforce.superinvention.config.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
@@ -7,16 +7,17 @@ import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.state.StateService
-import com.taskforce.superinvention.app.domain.user.user.UserDetailsProvider
-import com.taskforce.superinvention.app.domain.user.user.UserRepository
-import com.taskforce.superinvention.app.domain.user.user.UserService
+import com.taskforce.superinvention.app.domain.user.UserDetailsProvider
+import com.taskforce.superinvention.app.domain.user.UserRepository
+import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
 import com.taskforce.superinvention.app.web.controller.StateController
-import com.taskforce.superinvention.app.web.controller.UserController
+import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.user.UserController
+import com.taskforce.superinvention.app.web.controller.user.UserStateController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,10 +31,11 @@ import org.springframework.test.web.servlet.MockMvc
 @Import(JwtTokenProvider::class, UserDetailsProvider::class)
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = [
-    StateController::class,
     UserController::class,
-    InterestGroupController::class,
+    UserStateController::class,
     ClubController::class,
+    StateController::class,
+    InterestGroupController::class,
     CommonController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {

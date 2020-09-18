@@ -36,7 +36,7 @@ class KakaoOAuth(
         var token = kakaoToken
 
         try {
-            kakaoApi.exchange( KAPI_TOKEN_INFO, HttpMethod.GET, request, Any::class.java)
+            kakaoApi.exchange(KAPI_TOKEN_INFO, HttpMethod.GET, request, Any::class.java)
         } catch (e: AccessTokenExpiredException) {
             token = refreshKakaoToken(kakaoToken)
         }
