@@ -2,7 +2,7 @@ package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.app.web.dto.state.*

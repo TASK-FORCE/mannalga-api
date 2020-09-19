@@ -1,20 +1,21 @@
 package com.taskforce.superinvention.app.domain.club.board.comment
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.ManyToOne
 
 @Entity
 class Comment(
         var content: String,
-        @ManyToOne
+        @ManyToOne( fetch = FetchType.LAZY)
         var clubBoard: ClubBoard,
-        @ManyToOne
+        @ManyToOne( fetch = FetchType.LAZY)
         var topComment: Comment,
         var deleteFlag: Boolean,
-        @ManyToOne
+        @ManyToOne( fetch = FetchType.LAZY)
         var clubUser: ClubUser
 ) : BaseEntity() {
 }

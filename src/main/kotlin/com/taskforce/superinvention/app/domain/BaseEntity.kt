@@ -14,9 +14,8 @@ open class BaseEntity {
     var seq: Long? = null
 
     @CreatedDate
-    protected  val createdAt: LocalDateTime? = LocalDateTime.now()
+    val createdAt: LocalDateTime? = LocalDateTime.now()
 
     @LastModifiedDate
-    protected  val updatedAt: LocalDateTime? = LocalDateTime.now()
-
+    val updatedAt: LocalDateTime? = LocalDateTime.now()
 }

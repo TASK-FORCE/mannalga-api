@@ -10,4 +10,6 @@ open class BizException(
     companion object {
         private const val serialVersionUID = 1L
     }
+    
+    constructor(message: String) : this(message, HttpStatus.INTERNAL_SERVER_ERROR)
 }

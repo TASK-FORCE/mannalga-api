@@ -2,6 +2,7 @@ package com.taskforce.superinvention.config.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
@@ -15,6 +16,7 @@ import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
 import com.taskforce.superinvention.app.web.controller.StateController
+import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserStateController
@@ -34,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc
     UserController::class,
     UserStateController::class,
     ClubController::class,
+    ClubBoardController::class,
     StateController::class,
     InterestGroupController::class,
     CommonController::class

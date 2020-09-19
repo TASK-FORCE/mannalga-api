@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
@@ -12,8 +12,8 @@ import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
-import javax.transaction.Transactional
 
 @Service
 class UserService(
@@ -45,7 +45,7 @@ class UserService(
         return kakaoOAuth.getKakaoUserProfile(token)
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional(rollbackFor = [Exception::class])
     fun updateUserToken(user: User, token: KakaoToken) {
         val targetUser = userRepository.findByUserId(user.userId)!!
         targetUser.accessToken = token.access_token
@@ -57,7 +57,7 @@ class UserService(
         userRepository.save(targetUser)
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional(rollbackFor = [Exception::class])
     fun saveKakaoToken(kakaoToken: KakaoToken): AppToken {
         val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
         val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
@@ -94,7 +94,7 @@ class UserService(
         )
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional(rollbackFor = [Exception::class])
     fun registerUser(request: KakaoUserRegistRequest, user: User) {
         user.birthday = request.birthday
         user.userName = request.userName
