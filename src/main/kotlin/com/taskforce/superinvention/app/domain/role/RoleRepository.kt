@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RoleRepository : JpaRepository<Role, Long> {
     fun findByName(roleName: Role.RoleName): Role
+    fun findBySeqIn(roleSeqList: Set<Long>): Set<Role>
 }

@@ -147,4 +147,12 @@ class ClubService(
                 roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
         )
     }
+
+    fun getClubUser(clubSeq: Long, userSeq: Long): ClubUser? {
+        return clubUserRepository.findByClubSeqAndUserSeq(clubSeq, userSeq)
+    }
+
+    fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
+       return  clubUserRepository.findById(clubUserSeq).get()
+    }
 }
