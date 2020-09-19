@@ -96,12 +96,12 @@ class ClubController(
 
 
     /**
-     * 클럽 내부 내 정보 조회
+     * 모임 내부 내 정보 조회
      */
     @GetMapping("/{clubSeq}/my-info")
     @Secured("ROLE_USER")
     fun getCurrentClubUserInfo(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<ClubUserDto> {
-        val clubUserInfo = clubService.getClubUserInfo(clubSeq, user.seq!!)
+        val clubUserInfo = clubService.getClubUserInfo(clubSeq, user)
         return ResponseDto(data = clubUserInfo)
     }
 

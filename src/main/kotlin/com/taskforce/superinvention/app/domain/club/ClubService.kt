@@ -135,15 +135,15 @@ class ClubService(
     }
 
     @Transactional
-    fun getClubUserInfo(clubSeq: Long, userSeq: Long): ClubUserDto {
-        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, userSeq)
+    fun getClubUserInfo(clubSeq: Long, user: User): ClubUserDto {
+        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
         if (clubUser == null) throw RuntimeException("모임원이 아닙니다. 접근 권한이 없습니다.")
 
         val clubUserRoles = roleService.getClubUserRoles(clubUser)
         return ClubUserDto(
                 seq = clubUser.seq!!,
                 userSeq = clubUser.user.seq!!,
-                clubDto = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
                 roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
         )
     }

@@ -17,6 +17,6 @@ class ClubUsersDto(
 class ClubUserDto(
         val seq: Long,
         val userSeq: Long,
-        val clubDto: ClubDto,
+        val club: ClubDto,
         val roles: Set<RoleDto>
 )

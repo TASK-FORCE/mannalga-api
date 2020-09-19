@@ -6,12 +6,14 @@ import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
@@ -19,10 +21,13 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyLong
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
@@ -356,5 +361,54 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("data.states[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
                     )
             ))
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임내 내 정보 조회`() {
+        `when`(clubService.getClubUserInfo(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
+                .thenReturn(ClubUserDto(
+                        seq = 5615,
+                        userSeq = 1,
+                        club = ClubDto(
+                                seq = 1231,
+                                name = "떡볶이를 좋아하는 사람들의 모임",
+                                userCount = 15,
+                                description = "떡볶이가 좋아요",
+                                maximumNumber = 100,
+                                mainImageUrl = "asdasdasd/fc.jpeg"
+                        ),
+                        roles = setOf(RoleDto(Role.RoleName.MASTER, "USER_TYPE"))
+                ))
+
+        val result = mockMvc.perform(
+                get("/clubs/{clubSeq}/my-info", 1231)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+            .andDo(
+                document("getMyClubUserInfo", getDocumentRequest(), getDocumentResponse(),
+                        pathParameters(parameterWithName("clubSeq").description("모임 시퀀스")),
+                        responseFields(
+                                *commonResponseField(),
+                                fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
+                                fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                                fieldWithPath("data.club").type(JsonFieldType.OBJECT).description("모임 정보"),
+                                fieldWithPath("data.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
+                                fieldWithPath("data.club.name").type(JsonFieldType.STRING).description("모임 이름"),
+                                fieldWithPath("data.club.description").type(JsonFieldType.STRING).description("모임 설명"),
+                                fieldWithPath("data.club.maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원"),
+                                fieldWithPath("data.club.userCount").type(JsonFieldType.NUMBER).description("모임 현재 인원"),
+                                fieldWithPath("data.club.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지"),
+                                fieldWithPath("data.roles").type(JsonFieldType.ARRAY).description("모임원이 가진 권한"),
+                                fieldWithPath("data.roles[].name").type(JsonFieldType.STRING).description("권한 이름"),
+                                fieldWithPath("data.roles[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름")
+                        )
+                )
+            )
     }
 }
