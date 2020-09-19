@@ -11,10 +11,9 @@ import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.ClubStateRepository
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
+import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -44,9 +43,9 @@ class ClubService(
         return club
     }
 
-    fun getClubUserDto(clubSeq: Long): ClubUserDto? {
+    fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
-        return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
+        return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
     /**
@@ -133,5 +132,19 @@ class ClubService(
     fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
         val club = getClubBySeq(clubSeq)
         return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
+    }
+
+    @Transactional
+    fun getClubUserInfo(clubSeq: Long, userSeq: Long): ClubUserDto {
+        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, userSeq)
+        if (clubUser == null) throw RuntimeException("모임원이 아닙니다. 접근 권한이 없습니다.")
+
+        val clubUserRoles = roleService.getClubUserRoles(clubUser)
+        return ClubUserDto(
+                seq = clubUser.seq!!,
+                userSeq = clubUser.user.seq!!,
+                clubDto = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+        )
     }
 }

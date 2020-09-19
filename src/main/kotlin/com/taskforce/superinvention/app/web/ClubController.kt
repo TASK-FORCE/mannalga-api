@@ -30,7 +30,7 @@ class ClubController(
     }
 
     @GetMapping("/{seq}/users")
-    fun getClubUser(@PathVariable seq : Long): ResponseDto<ClubUserDto?> {
+    fun getClubUser(@PathVariable seq : Long): ResponseDto<ClubUsersDto?> {
         val data = clubService.getClubUserDto(seq)
         return ResponseDto(data = data)
     }
@@ -81,9 +81,21 @@ class ClubController(
      * @author eric
      */
     @PutMapping("/{clubSeq}/interests")
+    @Secured("ROLE_USER")
     fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long, @RequestBody clubInterests: Set<InterestRequestDto>): ResponseDto<ClubWithStateInterestDto> {
         clubService.changeClubInterests(user, clubSeq, clubInterests)
         val data = clubService.getClubWithPriorityDto(clubSeq)
         return ResponseDto(data = data)
+    }
+
+
+    /**
+     * 클럽 내부 내 정보 조회
+     */
+    @GetMapping("/{clubSeq}/users/my-info")
+    @Secured("ROLE_USER")
+    fun getCurrentClubUserInfo(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<ClubUserDto> {
+        val clubUserInfo = clubService.getClubUserInfo(clubSeq, user.seq!!)
+        return ResponseDto(data = clubUserInfo)
     }
 }
