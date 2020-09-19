@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.domain.role
 
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import org.springframework.stereotype.Service
 
 @Service

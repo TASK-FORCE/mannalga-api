@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.document.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
@@ -188,7 +188,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 .andDo(
                         document("searchClub", getDocumentRequest(), getDocumentResponse(),
                                 requestFields(
-                                        fieldWithPath("offset").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
+                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
                                         fieldWithPath("size").type(JsonFieldType.NUMBER).description("한번에 조회할 모임 개수"),
                                         fieldWithPath("searchOptions").type(JsonFieldType.OBJECT).description("검색할 조건들(현재는 지역, 관심사를 검색 조건에 넣을 수 있음)"),
                                         fieldWithPath("searchOptions.stateList").type(JsonFieldType.ARRAY).description("검색할 지역 리스트 (비어있어도 된다)"),

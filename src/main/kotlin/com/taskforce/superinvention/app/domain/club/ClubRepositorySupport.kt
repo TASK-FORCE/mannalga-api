@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.domain.club
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClub.club
-import com.taskforce.superinvention.app.domain.club.QClubUser.clubUser
+import com.taskforce.superinvention.app.domain.club.user.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.clubInterest
 import com.taskforce.superinvention.app.domain.state.QClubState.clubState
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions

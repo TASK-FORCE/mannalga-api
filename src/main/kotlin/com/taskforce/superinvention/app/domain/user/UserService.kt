@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest

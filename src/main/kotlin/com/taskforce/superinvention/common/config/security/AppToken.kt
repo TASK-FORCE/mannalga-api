@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.model
+package com.taskforce.superinvention.common.config.security
 
 class AppToken(
         var isRegistered: Boolean?,

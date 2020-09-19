@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositorySupport
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
@@ -98,6 +99,7 @@ class ClubService(
         if (clubUserList.map { cu -> cu.user }.contains(user)) {
             throw RuntimeException("이미 가입한 모임입니다.")
         }
+
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
     }
