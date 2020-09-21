@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.web.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.*
 class UserStateController(
         private val userStateService: UserStateService
 ) {
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping
     fun getUserStateList(@AuthUser user: User): UserStateDto? {
         val findUserStateList = userStateService.findUserStateList(user)
         return findUserStateList
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @PutMapping
     fun changeUserStates(@AuthUser user: User,
                          @RequestBody stateRequestDto: List<StateRequestDto>): UserStateDto {

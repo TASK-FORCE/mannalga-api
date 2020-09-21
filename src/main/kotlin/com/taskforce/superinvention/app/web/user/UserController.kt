@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.web.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.model.AppToken
@@ -21,19 +22,19 @@ class UserController(
         return userService.saveKakaoToken(token)
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/profile")
     fun getUserInfo(@AuthUser user: User): User {
         return user
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/kakao-profile")
     fun getKakaoUserInfo(@AuthUser user: User): KakaoUserInfo {
         return userService.getKakaoUserInfo(user)
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @PostMapping("/regist")
     fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user: User) {
         userService.registerUser(request, user)

@@ -19,7 +19,10 @@ class RoleService(
 
         val clubUserRoles = getClubUserRoles(clubUser)
         val managerAuth = setOf(Role.RoleName.MASTER, Role.RoleName.MANAGER)
-        return clubUserRoles.stream().map { clubUserRole -> clubUserRole.role.name }.anyMatch{roleName -> managerAuth.contains(roleName)}
+
+        return clubUserRoles
+                .map { clubUserRole -> clubUserRole.role.name }
+                .any { roleName -> managerAuth.contains(roleName) }
     }
 
     fun findByRoleName(roleName: Role.RoleName) :Role = roleRepository.findByName(roleName)
