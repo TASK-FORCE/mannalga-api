@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.web
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
@@ -47,7 +48,7 @@ class ClubController(
      * 모임 생성
      * @author eric
      */
-    @Secured("ROLE_USER")
+    @Secured(Role.MEMBER)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto): ResponseDto<Any?> {

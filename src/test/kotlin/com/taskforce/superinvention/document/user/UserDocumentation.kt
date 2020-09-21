@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.document.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.model.AppToken
@@ -109,8 +110,9 @@ class UserDocumentation : ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser(username = "eric", roles = ["USER", "ADMIN"])
+    @WithMockUser(username = "eric", authorities = [Role.MEMBER])
     fun `유저 지역 조회`() {
+
         // given
         val state1 = State(superState = null, name = "성남시", superStateRoot = "경기도/성남시", level = 2, subStates = listOf())
         val state2 = State(superState = null, name = "수원시", superStateRoot = "경기도/수원시", level = 2, subStates = listOf())
@@ -141,8 +143,6 @@ class UserDocumentation : ApiDocumentationTest() {
                         .characterEncoding("utf-8")
         ).andDo(print())
 
-
-
         result.andExpect(status().isOk)
                 .andDo(document("userStates", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
@@ -157,11 +157,10 @@ class UserDocumentation : ApiDocumentationTest() {
                                 fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디")
                         )
                 ))
-
     }
 
     @Test
-    @WithMockUser(username = "eric")
+    @WithMockUser(username = "eric", authorities = [Role.NONE, Role.MEMBER])
     fun `카카오 유저 정보 조회`() {
 
         `when`(userService.getKakaoUserInfo(anyObject())).thenReturn(KakaoUserInfo(
@@ -213,8 +212,9 @@ class UserDocumentation : ApiDocumentationTest() {
 
 
     @Test
-    @WithMockUser(username = "eric")
+    @WithMockUser(authorities = [Role.NONE, Role.MEMBER]) //username = "eric"
     fun `유저 지역 변경`() {
+
         // given
         val mockUser = User("eric")
         mockUser.seq = 1L
