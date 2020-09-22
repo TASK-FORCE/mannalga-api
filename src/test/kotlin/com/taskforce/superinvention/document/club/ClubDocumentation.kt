@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
@@ -38,7 +39,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ClubDocumentation: ApiDocumentationTest() {
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 생성`() {
         val clubAddRequestDto = ClubAddRequestDto(
                 name = "땔감 스터디",

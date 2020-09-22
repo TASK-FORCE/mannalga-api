@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
@@ -25,7 +26,7 @@ class UserService(
         private var jwtTokenProvider: JwtTokenProvider
 ) {
     companion object {
-        val log: Logger = LoggerFactory.getLogger(UserService::class.java)
+        val LOG: Logger = LoggerFactory.getLogger(UserService::class.java)
     }
 
     fun getKakaoUserInfo(user: User): KakaoUserInfo {
@@ -38,7 +39,7 @@ class UserService(
 
         // 토큰이 만료되었을 때
         if(token.access_token != kakaoToken.access_token) {
-            KakaoOAuth.LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
+            LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
         }
 
@@ -64,7 +65,7 @@ class UserService(
 
         // [1] kakao 유저 존재 x
         if(kakaoId.isBlank()) {
-            log.error("unknown kakao token received")
+            LOG.error("unknown kakao token received")
             throw IllegalArgumentException()
         }
 
@@ -75,7 +76,7 @@ class UserService(
         if (user == null) {
             user = User(kakaoId, token)
             userRepository.save(user)
-            userRoleService.addRoleToUser(user, "UNREGISTERED")
+            userRoleService.addRole(user, Role.RoleName.NONE)
         }
 
         if(user.isRegistered != 0) {
@@ -84,7 +85,7 @@ class UserService(
 
         // 토큰이 만료되었을 때
         if(token.access_token != kakaoToken.access_token) {
-            KakaoOAuth.LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
+            LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
         }
 
@@ -106,8 +107,8 @@ class UserService(
 
         userRepository.save(user)
 
-        userRoleService.addRoleToUser(user, "USER")
-        userRoleService.removeRoleFromUser(user, "UNREGISTERED")
+        userRoleService.addRole(user, Role.RoleName.MEMBER)
+        userRoleService.removeRoleIfExist(user, Role.RoleName.NONE)
 
         userStateService.changeUserState(user, userStates)
         userInterestService.changeUserInterest(user, userInterests)

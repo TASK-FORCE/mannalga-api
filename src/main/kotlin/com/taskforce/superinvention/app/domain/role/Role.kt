@@ -11,13 +11,24 @@ class Role (
         @ManyToOne(fetch = FetchType.LAZY)
         var roleGroup: RoleGroup
 ): BaseEntity() {
+
+
+        companion object {
+                const val NONE        = "ROLE_NONE"
+                const val MEMBER      = "ROLE_MEMBER"
+                const val CLUB_MEMBER = "ROLE_CLUB_MEMBER"
+                const val MANAGER     = "ROLE_MANAGER"
+                const val MASTER      = "ROLE_MASTER"
+        }
+
         enum class RoleName(
-                label: String
+                val label: String,
+                val role : String
         ) {
-                NONE("비회원"),
-                MEMBER("회원"),
-                CLUB_MEMBER("모임원"),
-                MANAGER("매니저"),
-                MASTER("모임장")
+                NONE("비회원", Role.NONE),
+                MEMBER("회원", Role.MEMBER),
+                CLUB_MEMBER("모임원", Role.CLUB_MEMBER),
+                MANAGER("매니저", Role.MANAGER),
+                MASTER("모임장",Role.MASTER)
         }
 }
