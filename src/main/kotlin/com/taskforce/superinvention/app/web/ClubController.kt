@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("clubs")
 class ClubController(
-        val clubService : ClubService,
+        val clubService: ClubService,
         val userStateService: UserStateService,
         val userInterestService: UserInterestService
 ) {
@@ -38,10 +38,10 @@ class ClubController(
 
     @PostMapping("/{clubSeq}/users")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any?> {
+    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any> {
         val club = clubService.getClubBySeq(clubSeq)
         clubService.addClubUser(club, user);
-        return ResponseDto(data = null, message = "")
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 
     /**
@@ -54,7 +54,8 @@ class ClubController(
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto): ResponseDto<Any?> {
         val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber, mainImageUrl = request.mainImageUrl)
         clubService.addClub(club, user, request.interestList, request.stateList)
-        return ResponseDto(data = null, message = "")
+
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 
     /**
