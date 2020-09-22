@@ -23,8 +23,8 @@ class RoleService(
                 .map { clubUserRole -> clubUserRole.role.name }
                 .any { roleName -> managerAuth.contains(roleName) }
     }
-
-    fun findByRoleName(roleName: Role.RoleName) :Role = roleRepository.findByName(roleName)
+    
+    fun findByRoleName(roleName: Role.RoleName): Role = roleRepository.findByName(roleName)
 
     /**
      * 모임원이 가지고 있는 모든 권한을 조회한다

@@ -12,7 +12,6 @@ class Role (
         var roleGroup: RoleGroup
 ): BaseEntity() {
 
-
         companion object {
                 const val NONE        = "ROLE_NONE"
                 const val MEMBER      = "ROLE_MEMBER"

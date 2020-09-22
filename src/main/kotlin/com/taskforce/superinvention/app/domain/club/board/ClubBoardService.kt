@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.domain.club.board
 
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubBoardService(
+        private val roleService: RoleService,
         private val clubBoardRepository: ClubBoardRepository,
         private val clubUserRepository: ClubUserRepository
 ) {
@@ -34,8 +36,8 @@ class ClubBoardService(
         val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
 
         val clubBoard = ClubBoard (
-                title   = body.title,
-                content = body.content,
+                title    = body.title,
+                content  = body.content,
                 clubUser = writer,
                 topFixedFlag = false,
                 deleteFlag   = false,
@@ -48,11 +50,11 @@ class ClubBoardService(
     @Transactional
     fun removeClubBoard(user: User, clubBoardSeq: Long) {
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)
-        val club = clubBoard.club
+        val clubUser = clubBoard.clubUser
 
-//        if(user.userRole) {
-//            throw InsufficientAuthenticationException("충분한 권한이 없습니다.")
-//        }
+        if(roleService.hasClubManagerAuth(clubUser)) {
+            throw InsufficientAuthenticationException("충분한 권한이 없습니다.")
+        }
 
         clubBoard.deleteFlag = false;
         clubBoardRepository.save(clubBoard)
