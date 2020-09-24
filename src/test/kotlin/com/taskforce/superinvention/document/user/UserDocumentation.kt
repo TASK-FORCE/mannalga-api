@@ -11,6 +11,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
 import org.springframework.http.MediaType
@@ -65,15 +66,18 @@ class UserDocumentation : ApiDocumentationTest() {
                                 fieldWithPath("refresh_token_expires_in").type(JsonFieldType.NUMBER).description("리프래스 토큰 TTL (초)")
                         ),
                         responseFields(
-                                fieldWithPath("isRegistered").type(JsonFieldType.BOOLEAN).description("최초 회원가입 여부"),
-                                fieldWithPath("appToken").type(JsonFieldType.STRING).description("앱 JWT 토큰")
+                                *commonResponseField(),
+                                fieldWithPath("data.isRegistered").type(JsonFieldType.BOOLEAN).description("최초 회원가입 여부"),
+                                fieldWithPath("data.appToken").type(JsonFieldType.STRING).description("앱 JWT 토큰")
                         )
                 ))
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.NONE])
     fun `유저 등록`() {
+
+        // given
         val kakaoUserRegisterDto = KakaoUserRegistRequest(
                 userName = "에릭",
                 birthday = LocalDate.parse("1995-12-27"),
@@ -93,7 +97,7 @@ class UserDocumentation : ApiDocumentationTest() {
         ).andDo(print())
 
         // then
-        result.andExpect(status().isOk)
+        result.andExpect(status().isCreated)
                 .andDo(document("userRegist", getDocumentRequest(), getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("userName").type(JsonFieldType.STRING).description("유저 이름(닉네임)"),
@@ -105,6 +109,9 @@ class UserDocumentation : ApiDocumentationTest() {
                                 fieldWithPath("userInterests").type(JsonFieldType.ARRAY).description("유저 관심사"),
                                 fieldWithPath("userInterests[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
                                 fieldWithPath("userInterests[].priority").type(JsonFieldType.NUMBER).description("유저 관심사 우선순위")
+                        ),
+                        responseFields(
+                                *commonResponseField()
                         )
                 ))
     }
@@ -146,15 +153,16 @@ class UserDocumentation : ApiDocumentationTest() {
         result.andExpect(status().isOk)
                 .andDo(document("userStates", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저 지역들"),
-                                fieldWithPath("userStates[].state").type(JsonFieldType.OBJECT).description("유저 지역"),
-                                fieldWithPath("userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                fieldWithPath("userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
-                                fieldWithPath("userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
-                                fieldWithPath("userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
-                                fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
-                                fieldWithPath("userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
-                                fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디")
+                                *commonResponseField(),
+                                fieldWithPath("data.userStates").type(JsonFieldType.ARRAY).description("유저 지역들"),
+                                fieldWithPath("data.userStates[].state").type(JsonFieldType.OBJECT).description("유저 지역"),
+                                fieldWithPath("data.userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("data.userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
+                                fieldWithPath("data.userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
+                                fieldWithPath("data.userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
+                                fieldWithPath("data.userStates[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
+                                fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                                fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디")
                         )
                 ))
     }
@@ -193,19 +201,20 @@ class UserDocumentation : ApiDocumentationTest() {
         result.andExpect(status().isOk)
                 .andDo(document("kakaoUserProfileInfo", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("id").type(JsonFieldType.STRING).description("카카오 고유 유저 ID값"),
-                                fieldWithPath("properties").type(JsonFieldType.OBJECT).description("추가 정보"),
-                                fieldWithPath("properties.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
-                                fieldWithPath("properties.profile_image").type(JsonFieldType.STRING).description("현재 프로필 이미지"),
-                                fieldWithPath("properties.thumbnail_image").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일)"),
-                                fieldWithPath("kakao_account").type(JsonFieldType.OBJECT).description("계정 정보"),
-                                fieldWithPath("kakao_account.profile_needs_agreement").type(JsonFieldType.BOOLEAN).description("사용자의 개인정보 제 3자 동의가 필요한지 여부"),
-                                fieldWithPath("kakao_account.profile").type(JsonFieldType.OBJECT).description("유저 정보"),
-                                fieldWithPath("kakao_account.profile.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
-                                fieldWithPath("kakao_account.profile.thumbnail_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일) 링크"),
-                                fieldWithPath("kakao_account.profile.profile_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지 링크"),
-                                fieldWithPath("kakao_account.hasGender").type(JsonFieldType.BOOLEAN).description("성별 조회 여부"),
-                                fieldWithPath("kakao_account.gender_needs_agreement").type(JsonFieldType.BOOLEAN).description("성별 조회를 위해 동이가 필요한지 여부")
+                                *commonResponseField(),
+                                fieldWithPath("data.id").type(JsonFieldType.STRING).description("카카오 고유 유저 ID값"),
+                                fieldWithPath("data.properties").type(JsonFieldType.OBJECT).description("추가 정보"),
+                                fieldWithPath("data.properties.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
+                                fieldWithPath("data.properties.profile_image").type(JsonFieldType.STRING).description("현재 프로필 이미지"),
+                                fieldWithPath("data.properties.thumbnail_image").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일)"),
+                                fieldWithPath("data.kakao_account").type(JsonFieldType.OBJECT).description("계정 정보"),
+                                fieldWithPath("data.kakao_account.profile_needs_agreement").type(JsonFieldType.BOOLEAN).description("사용자의 개인정보 제 3자 동의가 필요한지 여부"),
+                                fieldWithPath("data.kakao_account.profile").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("data.kakao_account.profile.nickname").type(JsonFieldType.STRING).description("유저 닉네임(아이디)"),
+                                fieldWithPath("data.kakao_account.profile.thumbnail_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지(썸네일) 링크"),
+                                fieldWithPath("data.kakao_account.profile.profile_image_url").type(JsonFieldType.STRING).description("현재 프로필 이미지 링크"),
+                                fieldWithPath("data.kakao_account.hasGender").type(JsonFieldType.BOOLEAN).description("성별 조회 여부"),
+                                fieldWithPath("data.kakao_account.gender_needs_agreement").type(JsonFieldType.BOOLEAN).description("성별 조회를 위해 동이가 필요한지 여부")
                         )
                 ))
     }
@@ -257,17 +266,16 @@ class UserDocumentation : ApiDocumentationTest() {
                         fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("지역 우선순위")
                 ),
                 responseFields(
-                    fieldWithPath("userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
-                    fieldWithPath("userId").type(JsonFieldType.STRING).description("유저 아이디"),
-                    fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저의 변경 후 지역들"),
-                    fieldWithPath("userStates[].state").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
-                    fieldWithPath("userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                    fieldWithPath("userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
-                    fieldWithPath("userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
-                    fieldWithPath("userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
-                    fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 지역 우선순위")
+                    *commonResponseField(),
+                    fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                    fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디"),
+                    fieldWithPath("data.userStates").type(JsonFieldType.ARRAY).description("유저의 변경 후 지역들"),
+                    fieldWithPath("data.userStates[].state").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
+                    fieldWithPath("data.userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                    fieldWithPath("data.userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
+                    fieldWithPath("data.userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
+                    fieldWithPath("data.userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
+                    fieldWithPath("data.userStates[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 지역 우선순위")
                 )))
-
-
     }
 }
