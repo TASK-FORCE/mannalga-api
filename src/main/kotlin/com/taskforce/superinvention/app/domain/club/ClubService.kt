@@ -95,11 +95,18 @@ class ClubService(
         if (clubUserList.size >= club.maximumNumber) {
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
-        if (clubUserList.map { cu -> cu.user }.contains(user)) {
+        if (clubUserList.map { cu -> cu.user.seq }.contains(user.seq)) {
             throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
         }
+
+        // 모임 가입처리
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
+
+        // 디폴트로 모임원 권한 주기
+        val memberRole = roleService.findByRoleName(Role.RoleName.MEMBER)
+        val clubUserRole = ClubUserRole(clubUser, memberRole)
+        clubUserRoleRepository.save(clubUserRole)
     }
 
 
