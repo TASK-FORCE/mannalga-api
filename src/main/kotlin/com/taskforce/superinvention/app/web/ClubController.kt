@@ -4,7 +4,6 @@ import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.club.ClubUser
-import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
@@ -118,7 +117,7 @@ class ClubController(
                            @PathVariable clubUserSeq: Long,
                            @RequestBody roleSeqList: Set<Long>): ResponseDto<Set<RoleDto>> {
         // 현재 유저가 모임에 가입은 했는지
-        val currentClubUser = clubService.getClubUser(clubSeq, user.seq!!) ?: throw RuntimeException("권한이 없습니다.")
+        val currentClubUser = clubService.getClubUser(clubSeq, user) ?: throw RuntimeException("권한이 없습니다.")
 
         // 모임장인지
         val hasClubManagerAuth = roleService.hasClubMasterAuth(currentClubUser)

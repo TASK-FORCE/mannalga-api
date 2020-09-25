@@ -7,9 +7,11 @@ import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
@@ -26,8 +28,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonR
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.anyLong
+import org.mockito.Mockito.*
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
@@ -90,7 +91,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 가입`() {
 
         `when`(clubService.getClubBySeq(232))
@@ -125,7 +126,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 리스트 조회`() {
         // given
         val searchResult = listOf(
@@ -245,7 +246,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 관심사 변경`() {
         // given
         val requestBody: Set<InterestRequestDto> = setOf(
@@ -376,7 +377,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임내 내 정보 조회`() {
         `when`(clubService.getClubUserInfo(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
                 .thenReturn(ClubUserDto(
@@ -422,5 +423,72 @@ class ClubDocumentation: ApiDocumentationTest() {
                         )
                 )
             )
+    }
+    
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `모임원 권한 변경`() {
+        // given
+        val requestBody = setOf<Long>(4)    // MANAGER
+
+        val currentUser = ClubUser(
+                Club(
+                        name = "땔감 스터디",
+                        description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                        maximumNumber = 5L,
+                        mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
+                ),
+                User("eric")
+        )
+
+        val targetClub = Club(
+                name = "땔감 스터디",
+                description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                maximumNumber = 5L,
+                mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
+        )
+        targetClub.seq = 91L
+
+        val targetUser = ClubUser(
+                targetClub,
+                User("sight studio")
+        )
+
+        `when`(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
+                .thenReturn(currentUser
+            )
+
+        `when`(roleService.hasClubMasterAuth(currentUser)).thenReturn(true)
+        `when`(roleService.hasClubMasterAuth(targetUser)).thenReturn(false)
+
+        `when`(clubService.getClubUserByClubUserSeq(ArgumentMatchers.anyLong()))
+                .thenReturn(targetUser)
+
+        `when`(roleService.findBySeqList(MockitoHelper.anyObject()))
+                .thenReturn(setOf(Role(Role.RoleName.CLUB_MEMBER, RoleGroup("USER_AUTH", "USER_AUTH"))))
+
+        val result = mockMvc.perform(
+                put("/clubs/{clubSeq}/users/{clubUserSeq}/roles", 91, 3123)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+                        .content(objectMapper.writeValueAsString(requestBody))
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+                .andDo(
+                        document("changeClubUserRole", getDocumentRequest(), getDocumentResponse(),
+                                pathParameters(parameterWithName("clubSeq").description("모임 시퀀스"),
+                                        parameterWithName("clubUserSeq").description("모임원 시퀀스")),
+                                responseFields(
+                                        *commonResponseField(),
+                                        fieldWithPath("data[].name").type(JsonFieldType.STRING).description("권한 이름"),
+                                        fieldWithPath("data[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름")
+                                )
+                        )
+                )
+
+
     }
 }

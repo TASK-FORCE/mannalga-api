@@ -148,10 +148,12 @@ class ClubService(
         )
     }
 
-    fun getClubUser(clubSeq: Long, userSeq: Long): ClubUser? {
-        return clubUserRepository.findByClubSeqAndUserSeq(clubSeq, userSeq)
+    @Transactional
+    fun getClubUser(clubSeq: Long, user: User): ClubUser? {
+        return clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
     }
 
+    @Transactional
     fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
        return  clubUserRepository.findById(clubUserSeq).get()
     }
