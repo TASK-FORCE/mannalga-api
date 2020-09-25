@@ -11,6 +11,7 @@ import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.ClubStateRepository
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 
 @Service
 class ClubService(
@@ -86,7 +86,7 @@ class ClubService(
 
     @Transactional
     fun getClubUserList(club: Club): List<ClubUser> {
-        return clubUserRepository.findByClub(club);
+        return clubUserRepository.findByClub(club)
     }
 
     @Transactional
@@ -159,5 +159,21 @@ class ClubService(
     @Transactional
     fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
        return  clubUserRepository.findById(clubUserSeq).get()
+    }
+
+    @Transactional
+    fun getUserClubList(user: User, searchOptions: PageOption): Page<ClubUserDto> {
+        val pageable:Pageable = PageRequest.of(searchOptions.page, searchOptions.size)
+//        val result = clubRepositorySupport.findByUser(user, pageable)
+        val result: Page<ClubUser> = clubUserRepositorySupport.findByUser(user, pageable)
+        val mappingContents = result.map { e ->
+            ClubUserDto(
+                seq = e.seq!!,
+                userSeq = e.user.seq!!,
+                club = ClubDto(e.club, clubUserRepository.countByClubSeq(e.club.seq!!)),
+                roles = e.clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+            )
+        }.toList()
+        return PageImpl(mappingContents, result.pageable, result.totalElements)
     }
 }

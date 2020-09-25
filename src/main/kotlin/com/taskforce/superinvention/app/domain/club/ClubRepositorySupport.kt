@@ -6,6 +6,9 @@ import com.taskforce.superinvention.app.domain.club.QClub.club
 import com.taskforce.superinvention.app.domain.club.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.clubInterest
 import com.taskforce.superinvention.app.domain.state.QClubState.clubState
+import com.taskforce.superinvention.app.domain.user.QUser
+import com.taskforce.superinvention.app.domain.user.QUser.user
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
@@ -57,5 +60,17 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
                 .leftJoin(club.clubUser, clubUser)
                 .where(club.seq.eq(clubSeq))
                 .fetchCount()
+    }
+
+    fun findByUser(userInfo: User, pageable: Pageable): Page<Club> {
+        val fetchResults = queryFactory.select(club)
+                .from(clubUser)
+                .leftJoin(clubUser.club, club)
+                .where(clubUser.user.seq.eq(userInfo.seq))
+                .offset(pageable.offset)
+                .limit(pageable.pageSize.toLong())
+                .fetchResults()
+
+        return PageImpl(fetchResults.results, pageable, fetchResults.total)
     }
 }

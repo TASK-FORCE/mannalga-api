@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -20,7 +21,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
-import java.lang.RuntimeException
 
 @RestController
 @RequestMapping("clubs")
@@ -46,7 +46,7 @@ class ClubController(
     @ResponseStatus(HttpStatus.CREATED)
     fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any> {
         val club = clubService.getClubBySeq(clubSeq)
-        clubService.addClubUser(club, user);
+        clubService.addClubUser(club, user)
         return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 
@@ -140,5 +140,11 @@ class ClubController(
         roleService.changeClubUserRoles(targetClubUser, roles)
 
         return ResponseDto(data = roles.map { role -> RoleDto(role) }.toSet())
+    }
+
+    @GetMapping("/my")
+    @Secured(Role.MEMBER)
+    fun getMyClubList(@AuthUser user: User, @RequestBody searchOptions: PageOption): ResponseDto<Page<ClubUserDto>> {
+        return ResponseDto(data = clubService.getUserClubList(user, searchOptions))
     }
 }

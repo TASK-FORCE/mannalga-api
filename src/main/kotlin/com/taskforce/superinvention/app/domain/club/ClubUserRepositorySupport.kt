@@ -2,6 +2,12 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClubUser.*
+import com.taskforce.superinvention.app.domain.user.QUser
+import com.taskforce.superinvention.app.domain.user.QUser.user
+import com.taskforce.superinvention.app.domain.user.User
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
@@ -11,8 +17,8 @@ class ClubUserRepositorySupport(
 ) : QuerydslRepositorySupport(ClubUser::class.java) {
 
     fun findBySeq(seq: Long): ClubUser {
-        return from(QClubUser.clubUser)
-                .where(QClubUser.clubUser.seq.eq(seq))
+        return from(clubUser)
+                .where(clubUser.seq.eq(seq))
                 .fetchOne()
     }
 
@@ -22,4 +28,13 @@ class ClubUserRepositorySupport(
     fun findByUserSeq(userSeq: Long): List<ClubUser> =
             queryFactory.selectFrom(clubUser).where(clubUser.user.seq.eq(userSeq)).fetch()
 
+    fun findByUser(userInfo: User, pageable: Pageable): Page<ClubUser> {
+        val result = from(clubUser)
+                .leftJoin(clubUser.user, user)
+                .where(user.seq.eq(userInfo.seq))
+                .offset(pageable.offset)
+                .limit(pageable.pageSize.toLong())
+                .fetchResults()
+        return PageImpl(result.results, pageable, result.total)
+    }
 }

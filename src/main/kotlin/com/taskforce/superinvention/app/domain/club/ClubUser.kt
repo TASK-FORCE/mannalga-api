@@ -1,11 +1,9 @@
 package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
 class ClubUser(
@@ -16,4 +14,8 @@ class ClubUser(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_seq")
         var user: User
-) : BaseEntity()
+) : BaseEntity() {
+        @OneToMany(fetch = FetchType.LAZY)
+        @JoinColumn(name = "club_user_seq")
+        lateinit var clubUserRoles: Set<ClubUserRole>
+}
