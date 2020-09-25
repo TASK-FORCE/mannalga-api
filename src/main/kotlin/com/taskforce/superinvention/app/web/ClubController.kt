@@ -14,6 +14,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
@@ -117,21 +118,21 @@ class ClubController(
                            @PathVariable clubUserSeq: Long,
                            @RequestBody roleSeqList: Set<Long>): ResponseDto<Set<RoleDto>> {
         // 현재 유저가 모임에 가입은 했는지
-        val currentClubUser = clubService.getClubUser(clubSeq, user) ?: throw RuntimeException("권한이 없습니다.")
+        val currentClubUser = clubService.getClubUser(clubSeq, user) ?: throw BizException("권한이 없습니다.", HttpStatus.FORBIDDEN)
 
         // 모임장인지
         val hasClubManagerAuth = roleService.hasClubMasterAuth(currentClubUser)
 
-        if (!hasClubManagerAuth) throw RuntimeException("모임원 권한 변경은 모임장만 가능합니다.")
+        if (!hasClubManagerAuth) throw BizException("모임원 권한 변경은 모임장만 가능합니다.", HttpStatus.FORBIDDEN)
 
         // 타겟으로 잡은 대상이 현재 모임원인지
         val targetClubUser: ClubUser = clubService.getClubUserByClubUserSeq(clubUserSeq)
-                ?: throw RuntimeException("존재하지 않는 모임원입니다.")
-        if (targetClubUser.club.seq != clubSeq) throw RuntimeException("조회한 모임의 모임원이 아닙니다")
+                ?: throw BizException("존재하지 않는 모임원입니다.", HttpStatus.NOT_FOUND)
+        if (targetClubUser.club.seq != clubSeq) throw BizException("조회한 모임의 모임원이 아닙니다", HttpStatus.FORBIDDEN)
 
         // 타겟으로 잡은 대상이 모임장이라면, 예외처리하자 (모임장은 고정되어있어야함, 양도만 가능)
         if (roleService.hasClubMasterAuth(targetClubUser)) {
-            throw RuntimeException("모임장의 권한을 변경할 수 없습니다")
+            throw BizException("모임장의 권한을 변경할 수 없습니다", HttpStatus.CONFLICT)
         }
 
 
