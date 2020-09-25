@@ -11,15 +11,16 @@ import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.domain.state.ClubStateRepository
 import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
+import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -44,9 +45,10 @@ class ClubService(
         return club
     }
 
-    fun getClubUserDto(clubSeq: Long): ClubUserDto? {
+    fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
-        return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
+        if (clubUsers.isEmpty()) throw BizException("모임에 유저가 한명도 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR)
+        return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
     /**
@@ -94,7 +96,7 @@ class ClubService(
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
         if (clubUserList.map { cu -> cu.user }.contains(user)) {
-            throw RuntimeException("이미 가입한 모임입니다.")
+            throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
         }
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
@@ -116,7 +118,7 @@ class ClubService(
     fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
-        if (!roleService.hasClubManagerAuth(clubUser)) throw RuntimeException("권한이 없습니다")
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
         
         // 기존 관심사 삭제
         val toDelete: List<ClubInterest> = clubInterestRepository.findByClub(club)
@@ -133,5 +135,29 @@ class ClubService(
     fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
         val club = getClubBySeq(clubSeq)
         return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
+    }
+
+    @Transactional
+    fun getClubUserInfo(clubSeq: Long, user: User): ClubUserDto {
+        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+        if (clubUser == null) throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
+
+        val clubUserRoles = roleService.getClubUserRoles(clubUser)
+        return ClubUserDto(
+                seq = clubUser.seq!!,
+                userSeq = clubUser.user.seq!!,
+                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+        )
+    }
+
+    @Transactional
+    fun getClubUser(clubSeq: Long, user: User): ClubUser? {
+        return clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+    }
+
+    @Transactional
+    fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
+       return  clubUserRepository.findById(clubUserSeq).get()
     }
 }
