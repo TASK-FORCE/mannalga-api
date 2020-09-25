@@ -164,7 +164,6 @@ class ClubService(
     @Transactional
     fun getUserClubList(user: User, searchOptions: PageOption): Page<ClubUserDto> {
         val pageable:Pageable = PageRequest.of(searchOptions.page, searchOptions.size)
-//        val result = clubRepositorySupport.findByUser(user, pageable)
         val result: Page<ClubUser> = clubUserRepositorySupport.findByUser(user, pageable)
         val mappingContents = result.map { e ->
             ClubUserDto(
