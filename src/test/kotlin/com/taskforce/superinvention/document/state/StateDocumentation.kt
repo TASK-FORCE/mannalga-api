@@ -2,6 +2,7 @@ package com.taskforce.superinvention.document.state
 
 import com.taskforce.superinvention.app.domain.state.State
 import com.taskforce.superinvention.app.web.dto.state.of
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -45,11 +46,12 @@ class StateDocumentation: ApiDocumentationTest() {
         result.andExpect(status().isOk)
                .andDo( document("state-all", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("시퀀스"),
-                                fieldWithPath("[].name").type(JsonFieldType.STRING).description("지역 "),
-                                fieldWithPath("[].superStateRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
-                                fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("지역 레벨"),
-                                fieldWithPath("[].subStates").type(JsonFieldType.ARRAY).description("하위 지역")
+                                *commonResponseField(),
+                                fieldWithPath("data.[].seq").type(JsonFieldType.NUMBER).description("시퀀스"),
+                                fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("지역 "),
+                                fieldWithPath("data.[].superStateRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
+                                fieldWithPath("data.[].level").type(JsonFieldType.NUMBER).description("지역 레벨"),
+                                fieldWithPath("data.[].subStates").type(JsonFieldType.ARRAY).description("하위 지역")
                         )
                ))
     }

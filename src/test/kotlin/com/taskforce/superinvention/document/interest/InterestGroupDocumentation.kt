@@ -2,6 +2,7 @@ package com.taskforce.superinvention.document.interest
 
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -45,11 +46,12 @@ class InterestGroupDocumentation: ApiDocumentationTest() {
         result.andExpect(status().isOk)
                .andDo( document("interest-group-all", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("[].interestList").type(JsonFieldType.ARRAY).description("지역 "),
-                                fieldWithPath("[].interestList[].seq").type(JsonFieldType.NUMBER).description("관심 pk"),
-                                fieldWithPath("[].interestList[].name").type(JsonFieldType.STRING).description("세부 관심 pk"),
-                                fieldWithPath("[].name").type(JsonFieldType.STRING).description("관심 그룹"),
-                                fieldWithPath("[].groupSeq").type(JsonFieldType.NUMBER).description("관심 그룹 pk")
+                                *commonResponseField(),
+                                fieldWithPath("data.[].interestList").type(JsonFieldType.ARRAY).description("지역 "),
+                                fieldWithPath("data.[].interestList[].seq").type(JsonFieldType.NUMBER).description("관심 pk"),
+                                fieldWithPath("data.[].interestList[].name").type(JsonFieldType.STRING).description("세부 관심 pk"),
+                                fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("관심 그룹"),
+                                fieldWithPath("data.[].groupSeq").type(JsonFieldType.NUMBER).description("관심 그룹 pk")
                         )
                ))
     }

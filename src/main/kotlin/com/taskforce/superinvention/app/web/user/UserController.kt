@@ -1,12 +1,15 @@
 package com.taskforce.superinvention.app.web.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
@@ -17,26 +20,30 @@ class UserController(
 ) {
 
     @PostMapping("/saveKakaoToken")
-    fun saveKakaoToken(@RequestBody token: KakaoToken): AppToken {
-        return userService.saveKakaoToken(token)
+    fun saveKakaoToken(@RequestBody token: KakaoToken): ResponseDto<AppToken> {
+        return ResponseDto(data = userService.saveKakaoToken(token))
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/profile")
-    fun getUserInfo(@AuthUser user: User): User {
-        return user
+    fun getUserInfo(@AuthUser user: User): ResponseDto<User> {
+        return ResponseDto(data = user)
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/kakao-profile")
-    fun getKakaoUserInfo(@AuthUser user: User): KakaoUserInfo {
-        return userService.getKakaoUserInfo(user)
+    fun getKakaoUserInfo(@AuthUser user: User): ResponseDto<KakaoUserInfo> {
+        return ResponseDto(data = userService.getKakaoUserInfo(user))
     }
 
-    @Secured("ROLE_USER", "ROLE_UNREGISTERED")
+    @Secured(Role.NONE, Role.MEMBER)
     @PostMapping("/regist")
-    fun registerUser(@RequestBody request: KakaoUserRegistRequest, @AuthUser user: User) {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun registerUser(@AuthUser user: User,
+                     @RequestBody request: KakaoUserRegistRequest): ResponseDto<Any> {
+
         userService.registerUser(request, user)
+        return ResponseDto(data = ResponseDto.EMPTY)
     }
 }
 

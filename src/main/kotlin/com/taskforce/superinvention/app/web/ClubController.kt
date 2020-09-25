@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.web
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.club.ClubUser
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
@@ -24,7 +25,7 @@ import java.lang.RuntimeException
 @RestController
 @RequestMapping("clubs")
 class ClubController(
-        val clubService : ClubService,
+        val clubService: ClubService,
         val userStateService: UserStateService,
         val userInterestService: UserInterestService,
         val roleService: RoleService
@@ -43,23 +44,24 @@ class ClubController(
 
     @PostMapping("/{clubSeq}/users")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any?> {
+    fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any> {
         val club = clubService.getClubBySeq(clubSeq)
         clubService.addClubUser(club, user);
-        return ResponseDto(data = null, message = "")
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 
     /**
      * 모임 생성
      * @author eric
      */
-    @Secured("ROLE_USER")
+    @Secured(Role.MEMBER)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto): ResponseDto<Any?> {
         val club = Club(name = request.name, description = request.description, maximumNumber = request.maximumNumber, mainImageUrl = request.mainImageUrl)
         clubService.addClub(club, user, request.interestList, request.stateList)
-        return ResponseDto(data = null, message = "")
+
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 
     /**
@@ -87,7 +89,7 @@ class ClubController(
      * @author eric
      */
     @PutMapping("/{clubSeq}/interests")
-    @Secured("ROLE_USER")
+    @Secured(Role.MEMBER)
     fun changeClubInterest(@AuthUser user: User, @PathVariable clubSeq: Long, @RequestBody clubInterests: Set<InterestRequestDto>): ResponseDto<ClubWithStateInterestDto> {
         clubService.changeClubInterests(user, clubSeq, clubInterests)
         val data = clubService.getClubWithPriorityDto(clubSeq)
@@ -99,7 +101,7 @@ class ClubController(
      * 모임 내부 내 정보 조회
      */
     @GetMapping("/{clubSeq}/my-info")
-    @Secured("ROLE_USER")
+    @Secured(Role.MEMBER)
     fun getCurrentClubUserInfo(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<ClubUserDto> {
         val clubUserInfo = clubService.getClubUserInfo(clubSeq, user)
         return ResponseDto(data = clubUserInfo)
@@ -110,7 +112,7 @@ class ClubController(
      *
      */
     @PutMapping("/{clubSeq}/users/{clubUserSeq}/roles")
-    @Secured("ROLE_USER")
+    @Secured(Role.MEMBER)
     fun changeClubUserRole(@AuthUser user: User,
                            @PathVariable clubSeq: Long,
                            @PathVariable clubUserSeq: Long,

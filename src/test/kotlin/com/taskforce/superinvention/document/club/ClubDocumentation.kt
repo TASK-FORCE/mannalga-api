@@ -43,7 +43,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class ClubDocumentation: ApiDocumentationTest() {
 
     @Test
-    @WithMockUser
+    @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 생성`() {
         val clubAddRequestDto = ClubAddRequestDto(
                 name = "땔감 스터디",
@@ -65,7 +65,9 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         result.andExpect(status().isCreated)
                 .andDo(
-                        document("addClub", getDocumentRequest(), getDocumentResponse(),
+                        document("addClub",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
                                 requestFields(
                                         fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
                                         fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
@@ -79,6 +81,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                                                 .description("모임이 활동하는 지역. 1개 이상이어야하며 우선순위가 1인 지역이 하나 있어야한다."),
                                         fieldWithPath("stateList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
                                         fieldWithPath("stateList[].priority").type(JsonFieldType.NUMBER).description("활동 지역 우선순위")
+                                ),
+                                responseFields(
+                                        *commonResponseField()
                                 )
                         )
                 )
@@ -106,8 +111,15 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         result.andExpect(status().isCreated)
                 .andDo(
-                        document("addClubUser", getDocumentRequest(), getDocumentResponse(),
-                                pathParameters(parameterWithName("clubSeq").description("모임 시퀀스. 해당 유저는 이 모임에 대해 매니저 이상의 권한을 가지고 있어야 한다."))
+                        document("addClubUser",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
+                                pathParameters(
+                                        parameterWithName("clubSeq").description("모임 시퀀스.")
+                                ),
+                                responseFields(
+                                        *commonResponseField()
+                                )
                         )
                 )
     }

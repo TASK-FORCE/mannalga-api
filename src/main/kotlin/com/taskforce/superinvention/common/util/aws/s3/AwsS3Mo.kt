@@ -46,7 +46,7 @@ class AwsS3Mo(
         val file      = FileMo.convertMultiPartToFile(multipartFile)
         val fileName= FileMo.generateUUID(multipartFile)
         val filePath       = "$s3DirPath/$fileName"
-        val absolutePath   = "$endpointUrl/$bucketName/$filePath"
+        val absolutePath   = "$endpointUrl/$filePath"
 
         uploadFileToBucket(filePath, file)
         file.delete()

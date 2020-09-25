@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.state.ClubState
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.JoinColumn
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
 @JsonIdentityInfo(property = "seq", generator = ObjectIdGenerators.StringIdGenerator::class)
@@ -20,10 +17,12 @@ class Club(
 ) : BaseEntity() {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_seq")
+    @OrderBy("priority")
     lateinit var clubInterests: List<ClubInterest>
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_seq")
+    @OrderBy("priority")
     lateinit var clubStates: List<ClubState>
 
     @OneToMany(fetch = FetchType.LAZY)
