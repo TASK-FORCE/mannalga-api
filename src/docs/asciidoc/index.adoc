@@ -68,3 +68,6 @@ include::{root}/club/changeClubInterests.adoc[]
 
 == 모임원 정보 조회 - 내 정보
 include::{root}/club/getMyClubUserInfo.adoc[]
+
+== 모임원 권한 변경
+include::{root}/club/changeClubUserRole.adoc[]
