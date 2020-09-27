@@ -167,7 +167,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
 
         val searchRequest = ClubSearchRequestDto(
-                offset = 0L,
+                page = 0L,
                 size = 10L,
                 searchOptions = ClubSearchOptions(
                         stateList = listOf(
@@ -206,7 +206,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 .andDo(
                         document("searchClub", getDocumentRequest(), getDocumentResponse(),
                                 requestFields(
-                                        fieldWithPath("offset").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
+                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
                                         fieldWithPath("size").type(JsonFieldType.NUMBER).description("한번에 조회할 모임 개수"),
                                         fieldWithPath("searchOptions").type(JsonFieldType.OBJECT).description("검색할 조건들(현재는 지역, 관심사를 검색 조건에 넣을 수 있음)"),
                                         fieldWithPath("searchOptions.stateList").type(JsonFieldType.ARRAY).description("검색할 지역 리스트 (비어있어도 된다)"),

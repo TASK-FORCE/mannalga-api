@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
 class ClubSearchRequestDto(
-        val offset:Long = 0,
+        val page:Long = 0,
         val size:Long = 10,
         val searchOptions: ClubSearchOptions
 )
