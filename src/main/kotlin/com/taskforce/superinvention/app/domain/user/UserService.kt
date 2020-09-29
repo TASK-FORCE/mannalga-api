@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
@@ -20,7 +20,7 @@ import javax.transaction.Transactional
 class UserService(
         private var userRepository: UserRepository,
         private var userRoleService: UserRoleService,
-        private var userStateService: UserStateService,
+        private var userRegionService: UserRegionService,
         private var userInterestService: UserInterestService,
         private var kakaoOAuth: KakaoOAuth,
         private var jwtTokenProvider: JwtTokenProvider
@@ -102,7 +102,7 @@ class UserService(
         user.profileImageLink = request.profileImageLink
         user.isRegistered = 1
 
-        val userStates    = request.userStates
+        val userRegions    = request.userRegions
         val userInterests = request.userInterests
 
         userRepository.save(user)
@@ -110,7 +110,7 @@ class UserService(
         userRoleService.addRole(user, Role.RoleName.MEMBER)
         userRoleService.removeRoleIfExist(user, Role.RoleName.NONE)
 
-        userStateService.changeUserState(user, userStates)
+        userRegionService.changeUserRegion(user, userRegions)
         userInterestService.changeUserInterest(user, userInterests)
     }
 }

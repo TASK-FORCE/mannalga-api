@@ -2,7 +2,6 @@ package com.taskforce.superinvention.app.domain.interest.interestGroup
 
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
-import com.taskforce.superinvention.app.domain.state.State
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.OneToMany

@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.domain.role
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import com.taskforce.superinvention.app.domain.club.ClubUser
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

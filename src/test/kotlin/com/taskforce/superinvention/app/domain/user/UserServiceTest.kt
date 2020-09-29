@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
@@ -29,7 +29,7 @@ class UserServiceTest: MockTest() {
     lateinit var userRoleService: UserRoleService
 
     @Mock
-    lateinit var userStateService: UserStateService
+    lateinit var userRegionService: UserRegionService
 
     @Mock
     lateinit var userInterestService: UserInterestService

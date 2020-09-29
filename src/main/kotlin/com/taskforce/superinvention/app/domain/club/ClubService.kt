@@ -7,15 +7,15 @@ import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
-import com.taskforce.superinvention.app.domain.state.ClubState
-import com.taskforce.superinvention.app.domain.state.ClubStateRepository
-import com.taskforce.superinvention.app.domain.state.StateService
+import com.taskforce.superinvention.app.domain.region.ClubRegion
+import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
+import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -35,9 +35,9 @@ class ClubService(
         private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService,
         private var interestService: InterestService,
-        private var stateService: StateService,
+        private var regionService: RegionService,
         private var clubInterestRepository: ClubInterestRepository,
-        private var clubStateRepository: ClubStateRepository,
+        private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
     fun getClubBySeq(seq: Long): Club {
@@ -55,12 +55,12 @@ class ClubService(
      * 새로운 모임을 생성한다.
      */
     @Transactional
-    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, stateList: List<StateRequestDto>) {
+    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
         // validation
         if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
 
-        if (stateList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (regionList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
 
         // 1. 모임 생성
@@ -75,8 +75,8 @@ class ClubService(
         clubInterestRepository.saveAll(clubInterestList)
 
         // 4. 해당 클럽에 지역 부여
-        val clubStateList = stateList.map { e -> ClubState(savedClub, stateService.findBySeq(e.seq), e.priority) }
-        clubStateRepository.saveAll(clubStateList)
+        val clubRegionList = regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
+        clubRegionRepository.saveAll(clubRegionList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
         val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)
@@ -95,19 +95,26 @@ class ClubService(
         if (clubUserList.size >= club.maximumNumber) {
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
-        if (clubUserList.map { cu -> cu.user }.contains(user)) {
+        if (clubUserList.map { cu -> cu.user.seq }.contains(user.seq)) {
             throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
         }
+
+        // 모임 가입처리
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
+
+        // 디폴트로 모임원 권한 주기
+        val memberRole = roleService.findByRoleName(Role.RoleName.MEMBER)
+        val clubUserRole = ClubUserRole(clubUser, memberRole)
+        clubUserRoleRepository.save(clubUserRole)
     }
 
 
     @Transactional
-    fun search(request: ClubSearchRequestDto): Page<ClubWithStateInterestDto> {
-        val pageable:Pageable = PageRequest.of(request.offset.toInt(), request.size.toInt())
+    fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
+        val pageable:Pageable = PageRequest.of(request.page.toInt(), request.size.toInt())
         val result = clubRepositorySupport.search(request.searchOptions, pageable)
-        val mappingContents = result.content.map { e ->  ClubWithStateInterestDto(
+        val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()
         )}.toList()
@@ -132,9 +139,9 @@ class ClubService(
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
+    fun getClubWithPriorityDto(clubSeq: Long): ClubWithRegionInterestDto {
         val club = getClubBySeq(clubSeq)
-        return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
+        return ClubWithRegionInterestDto(club, club.clubUser.size.toLong())
     }
 
     @Transactional
@@ -158,7 +165,7 @@ class ClubService(
 
     @Transactional
     fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
-       return  clubUserRepository.findById(clubUserSeq).get()
+        return  clubUserRepository.findById(clubUserSeq).get()
     }
 
     @Transactional
