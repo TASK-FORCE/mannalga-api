@@ -5,13 +5,13 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClub.club
 import com.taskforce.superinvention.app.domain.club.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.clubInterest
-import com.taskforce.superinvention.app.domain.state.QClubState.clubState
+import com.taskforce.superinvention.app.domain.region.QClubRegion.clubRegion
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.domain.user.QUser.user
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -30,7 +30,7 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
     fun search(clubSearchOptions: ClubSearchOptions, pageable:Pageable): Page<Club> {
         val fetchResult = from(club)
                 .leftJoin(club.clubInterests, clubInterest)
-                .leftJoin(club.clubStates, clubState)
+                .leftJoin(club.clubRegions, clubRegion)
                 .where(
 //                    eqInterests(clubSearchOptions.interestList)
 //                            , eqStates(clubSearchOptions.stateList)
@@ -49,9 +49,9 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
         return clubInterest.interest.seq.`in`(interestList.map { e -> e.seq })
     }
 
-    private fun eqStates(stateList:List<StateRequestDto>): BooleanExpression? {
-        if (ObjectUtils.isEmpty(stateList)) return null
-        return clubInterest.interest.seq.`in`(stateList.map { e -> e.seq })
+    private fun eqRegions(regionList:List<RegionRequestDto>): BooleanExpression? {
+        if (ObjectUtils.isEmpty(regionList)) return null
+        return clubInterest.interest.seq.`in`(regionList.map { e -> e.seq })
     }
 
     fun getUserCount(clubSeq: Long): Long {
