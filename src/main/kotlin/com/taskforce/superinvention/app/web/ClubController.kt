@@ -64,8 +64,8 @@ class ClubController(
     @PostMapping("/search")
     fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): ResponseDto<Page<ClubWithRegionInterestDto>> {
         if (ObjectUtils.isEmpty(request.searchOptions.regionList)) {
-            val userStateDto = userRegionService.findUserRegionList(user)
-            request.searchOptions.regionList = userStateDto.userRegions.map { e -> RegionRequestDto(e.region.seq, e.priority) }.toList()
+            val userRegionDto = userRegionService.findUserRegionList(user)
+            request.searchOptions.regionList = userRegionDto.userRegions.map { e -> RegionRequestDto(e.region.seq, e.priority) }.toList()
         }
 
         if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {

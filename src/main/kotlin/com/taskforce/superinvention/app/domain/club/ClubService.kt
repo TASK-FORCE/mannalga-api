@@ -73,8 +73,8 @@ class ClubService(
         clubInterestRepository.saveAll(clubInterestList)
 
         // 4. 해당 클럽에 지역 부여
-        val clubStateList = regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
-        clubRegionRepository.saveAll(clubStateList)
+        val clubRegionList = regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
+        clubRegionRepository.saveAll(clubRegionList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
         val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)

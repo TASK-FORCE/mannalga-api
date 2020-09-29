@@ -47,9 +47,9 @@ class RegionDocumentation: ApiDocumentationTest() {
                         responseFields(
                                 fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("시퀀스"),
                                 fieldWithPath("[].name").type(JsonFieldType.STRING).description("지역 "),
-                                fieldWithPath("[].superStateRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
+                                fieldWithPath("[].superRegionRoot").type(JsonFieldType.STRING).description("상위 지역 명"),
                                 fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("지역 레벨"),
-                                fieldWithPath("[].subStates").type(JsonFieldType.ARRAY).description("하위 지역")
+                                fieldWithPath("[].subRegions").type(JsonFieldType.ARRAY).description("하위 지역")
                         )
                ))
     }

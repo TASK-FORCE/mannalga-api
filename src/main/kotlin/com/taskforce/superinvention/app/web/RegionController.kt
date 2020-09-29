@@ -11,7 +11,7 @@ class RegionController(
 ) {
 
     @GetMapping("/regions")
-    fun getAllStateList(): List<RegionDto> {
+    fun getAllRegionList(): List<RegionDto> {
         val findByLevel = regionService.findAllRegionDtoList()
         return findByLevel
     }

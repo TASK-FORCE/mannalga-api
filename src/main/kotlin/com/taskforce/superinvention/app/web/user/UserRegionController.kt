@@ -10,7 +10,7 @@ import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/users/states")
+@RequestMapping("/users/regions")
 class UserRegionController(
         private val userRegionService: UserRegionService
 ) {
