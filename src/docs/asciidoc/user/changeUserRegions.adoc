@@ -1,0 +1,26 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+=== Request
+include::{sub-snippet}/changeUserRegion/http-request.adoc[]
+
+include::{sub-snippet}/changeUserRegion/request-fields.adoc[]
+
+include::{sub-snippet}/changeUserRegion/curl-request.adoc[]
+
+include::{sub-snippet}/changeUserRegion/request-body.adoc[]
+
+=== Response
+include::{sub-snippet}/changeUserRegion/response-fields.adoc[]
+
+include::{sub-snippet}/changeUserRegion/http-response.adoc[]
+
+include::{sub-snippet}/changeUserRegion/response-body.adoc[]

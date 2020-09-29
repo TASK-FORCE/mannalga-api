@@ -1,12 +1,12 @@
 package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.role.Role
-import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
-import com.taskforce.superinvention.app.web.dto.state.*
+import com.taskforce.superinvention.app.web.dto.region.*
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -78,7 +78,7 @@ class UserDocumentation : ApiDocumentationTest() {
                 userName = "에릭",
                 birthday = LocalDate.parse("1995-12-27"),
                 profileImageLink = "",
-                userStates = listOf<StateRequestDto>(StateRequestDto(seq = 201, priority = 1), StateRequestDto(seq = 202, priority = 2)),
+                userRegions = listOf<RegionRequestDto>(RegionRequestDto(seq = 201, priority = 1), RegionRequestDto(seq = 202, priority = 2)),
                 userInterests = listOf<InterestRequestDto>(InterestRequestDto(seq = 1, priority = 1), InterestRequestDto(seq = 2, priority = 2))
         )
 
@@ -114,23 +114,23 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 지역 조회`() {
 
         // given
-        val state1 = State(superState = null, name = "성남시", superStateRoot = "경기도/성남시", level = 2, subStates = listOf())
-        val state2 = State(superState = null, name = "수원시", superStateRoot = "경기도/수원시", level = 2, subStates = listOf())
+        val state1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2, subRegions = listOf())
+        val state2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2, subRegions = listOf())
         state1.seq = 1001L
         state2.seq = 1002L
 
-        val stateWithPriorityDto1 = StateWithPriorityDto(
-                state = SimpleStateDto(state1)
+        val stateWithPriorityDto1 = RegionWithPriorityDto(
+                region = SimpleRegionDto(state1)
                 , priority = 1L)
 
-        val stateWithPriorityDto2 = StateWithPriorityDto(
-                state = SimpleStateDto(state2)
+        val stateWithPriorityDto2 = RegionWithPriorityDto(
+                region = SimpleRegionDto(state2)
                 , priority = 2L)
 
         val user = User("eric")
         user.seq = 1L
 
-        `when`(userStateService.findUserStateList(anyObject())).thenReturn(UserStateDto(
+        `when`(userRegionService.findUserRegionList(anyObject())).thenReturn(UserRegionDto(
                 user, listOf(
                     stateWithPriorityDto1,
                     stateWithPriorityDto2
@@ -220,23 +220,23 @@ class UserDocumentation : ApiDocumentationTest() {
         mockUser.seq = 1L
         mockUser.userId = "12313"
 
-        val superState= State(name="서울특별시", superStateRoot = "서울특별시", level = 2L, superState = null, subStates = listOf())
+        val superState= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf())
         superState.seq  = 1
-        val state1 = State(name="종로구", superStateRoot = "서울특별시/종로구", level = 2L, superState = superState, subStates = listOf())
+        val state1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superState, subRegions = listOf())
         state1.seq = 101L
-        val state2 = State(name="중구", superStateRoot = "서울특별시/중구", level = 2L, superState = superState, subStates = listOf())
+        val state2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superState, subRegions = listOf())
         state2.seq = 102L
 
         val userStates = listOf(
-                StateWithPriorityDto(state = SimpleStateDto(state = state1), priority = 1L),
-                StateWithPriorityDto(state = SimpleStateDto(state = state2), priority = 2L)
+                RegionWithPriorityDto(region = SimpleRegionDto(region = state1), priority = 1L),
+                RegionWithPriorityDto(region = SimpleRegionDto(region = state2), priority = 2L)
         )
 
 
-        val stateRequest = listOf(StateRequestDto(seq = 101L, priority = 1L), StateRequestDto(seq = 102L, priority = 2L))
-        val userStateDto = UserStateDto(user = mockUser, states = userStates)
+        val stateRequest = listOf(RegionRequestDto(seq = 101L, priority = 1L), RegionRequestDto(seq = 102L, priority = 2L))
+        val userStateDto = UserRegionDto(user = mockUser, regions = userStates)
 
-        `when`(userStateService.changeUserState(anyObject(), anyObject())).thenReturn(userStateDto)
+        `when`(userRegionService.changeUserRegion(anyObject(), anyObject())).thenReturn(userStateDto)
 
         // when
         val result = this.mockMvc.perform(

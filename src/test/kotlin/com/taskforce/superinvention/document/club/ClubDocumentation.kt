@@ -7,15 +7,15 @@ import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
 import com.taskforce.superinvention.app.domain.role.Role
-import com.taskforce.superinvention.app.domain.state.ClubState
-import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.region.ClubRegion
+import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
-import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -47,7 +47,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 maximumNumber = 5L,
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png",
                 interestList = listOf(InterestRequestDto(3L, 1L), InterestRequestDto(6L, 2L)),
-                stateList = listOf(StateRequestDto(101L, 1L), StateRequestDto(102L, 2L))
+                regionList = listOf(RegionRequestDto(101L, 1L), RegionRequestDto(102L, 2L))
         )
 
         val result = mockMvc.perform(
@@ -113,7 +113,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     fun `모임 리스트 조회`() {
         // given
         val searchResult = listOf(
-                ClubWithStateInterestDto(
+                ClubWithRegionInterestDto(
                         seq = 6023L,
                         name = "산타 아저씨들",
                         description = "산이 너무 좋은 사람들의 모임입니다. 매주 정모 필참! 정모 후 뒷풀이는 선택." +
@@ -125,12 +125,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
                                 InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
-                        states = listOf(
-                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
-                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
+                        regions = listOf(
+                                RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1),
+                                RegionWithPriorityDto(SimpleRegionDto(seq = 102, name = "강서구", superRegionRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 ),
-                ClubWithStateInterestDto(
+                ClubWithRegionInterestDto(
                         seq = 45128989L,
                         name = "헬린이에서 근돼까지",
                         description = "와우 친구들 헬스장 아저씨야. " +
@@ -142,9 +142,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
                                 InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
                         ),
-                        states = listOf(
-                                StateWithPriorityDto(SimpleStateDto(seq = 101, name = "강남구", superStateRoot = "서울특별시/강남구", level = 2), 1),
-                                StateWithPriorityDto(SimpleStateDto(seq = 102, name = "강서구", superStateRoot = "서울특별시/강서구", level = 2), 2)
+                        regions = listOf(
+                                RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1),
+                                RegionWithPriorityDto(SimpleRegionDto(seq = 102, name = "강서구", superRegionRoot = "서울특별시/강서구", level = 2), 2)
                         )
                 )
         )
@@ -153,8 +153,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                 offset = 0L,
                 size = 10L,
                 searchOptions = ClubSearchOptions(
-                        stateList = listOf(
-                                StateRequestDto(
+                        regionList = listOf(
+                                RegionRequestDto(
                                         seq = 102L,
                                         priority = 1L
                                 )
@@ -283,20 +283,20 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
 
 
-        val state1 = State(
-                superState = null,
+        val state1 = Region(
+                superRegion = null,
                 name = "성남시",
-                superStateRoot = "경기도/성남시",
+                superRegionRoot = "경기도/성남시",
                 level = 2,
-                subStates = listOf()
+                subRegions = listOf()
         )
         state1.seq = 401
 
-        val clubState = ClubState(club, state1, 1)
+        val clubState = ClubRegion(club, state1, 1)
         clubState.seq = 41231
 
 
-        club.clubStates = listOf(
+        club.clubRegions = listOf(
                 clubState
         )
 
@@ -311,7 +311,7 @@ class ClubDocumentation: ApiDocumentationTest() {
 
 
         `when`(clubService.getClubWithPriorityDto(clubSeq))
-                .thenReturn(ClubWithStateInterestDto(club, 5L))
+                .thenReturn(ClubWithRegionInterestDto(club, 5L))
 
         `when`(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).thenReturn(true)
 
