@@ -42,6 +42,9 @@ class ClubController(
         return ResponseDto(data = data)
     }
 
+    /**
+     * 모임 가입
+     */
     @PostMapping("/{clubSeq}/users")
     @ResponseStatus(HttpStatus.CREATED)
     fun addClubUser(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long): ResponseDto<Any> {
