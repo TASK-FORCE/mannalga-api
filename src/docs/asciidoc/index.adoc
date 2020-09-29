@@ -71,3 +71,6 @@ include::{root}/club/getMyClubUserInfo.adoc[]
 
 == 모임원 권한 변경
 include::{root}/club/changeClubUserRole.adoc[]
+
+== 내 모임 조회
+include::{root}/club/myClubList.adoc[]

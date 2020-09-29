@@ -1,0 +1,24 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+=== Request
+include::{sub-snippet}/myClubList/http-request.adoc[]
+
+include::{sub-snippet}/myClubList/curl-request.adoc[]
+
+include::{sub-snippet}/myClubList/request-body.adoc[]
+
+=== Response
+include::{sub-snippet}/myClubList/http-response.adoc[]
+
+include::{sub-snippet}/myClubList/response-fields.adoc[]
+
+include::{sub-snippet}/myClubList/response-body.adoc[]
