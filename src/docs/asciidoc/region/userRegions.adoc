@@ -10,15 +10,15 @@ endif::[]
 :site-url: /build/asciidoc/html5/user-states
 
 === Request
-include::{sub-snippet}/userStates/http-request.adoc[]
+include::{sub-snippet}/userRegions/http-request.adoc[]
 
 ....
 요구 Request Fields 없음
 ....
 
-include::{sub-snippet}/userStates/curl-request.adoc[]
+include::{sub-snippet}/userRegions/curl-request.adoc[]
 
 === Response
-include::{sub-snippet}/userStates/http-response.adoc[]
+include::{sub-snippet}/userRegions/http-response.adoc[]
 
-include::{sub-snippet}/userStates/response-body.adoc[]
+include::{sub-snippet}/userRegions/response-body.adoc[]

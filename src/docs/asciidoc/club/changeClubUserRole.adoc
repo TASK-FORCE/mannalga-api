@@ -12,8 +12,6 @@ endif::[]
 === Request
 include::{sub-snippet}/changeClubUserRole/http-request.adoc[]
 
-include::{sub-snippet}/changeClubUserRole/request-fields.adoc[]
-
 include::{sub-snippet}/changeClubUserRole/curl-request.adoc[]
 
 include::{sub-snippet}/changeClubUserRole/request-body.adoc[]

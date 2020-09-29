@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
-import com.taskforce.superinvention.app.domain.state.ClubState
+import com.taskforce.superinvention.app.domain.region.ClubRegion
 import javax.persistence.*
 
 @Entity
@@ -23,7 +23,7 @@ class Club(
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
-    lateinit var clubStates: List<ClubState>
+    lateinit var clubRegions: List<ClubRegion>
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_seq")

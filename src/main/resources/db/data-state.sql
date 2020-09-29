@@ -1,5 +1,5 @@
-INSERT INTO state
-    (seq, name, level, super_state_seq, super_state_root)
+INSERT INTO region
+    (seq, name, level, super_region_seq, super_region_root)
 
 VALUES (1, '서울특별시', 1, null, '서울특별시'),
        (2, '부산광역시', 1, null, '부산광역시'),

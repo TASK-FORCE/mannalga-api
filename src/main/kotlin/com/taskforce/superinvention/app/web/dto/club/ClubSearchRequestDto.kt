@@ -1,9 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 
 class ClubSearchRequestDto(
         val page:Long = 0,
@@ -12,6 +10,6 @@ class ClubSearchRequestDto(
 )
 
 class ClubSearchOptions(
-    var stateList: List<StateRequestDto>,
-    var interestList: List<InterestRequestDto>
+        var regionList: List<RegionRequestDto>,
+        var interestList: List<InterestRequestDto>
 )

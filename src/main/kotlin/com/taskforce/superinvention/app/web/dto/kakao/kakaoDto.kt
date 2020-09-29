@@ -1,7 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.kakao
 
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import java.time.LocalDate
 
 class KakaoToken (
@@ -27,7 +27,7 @@ class KakaoUserRegistRequest (
         val userName: String?,
         val birthday: LocalDate?,
         val profileImageLink: String?,
-        val userStates: List<StateRequestDto>,
+        val userRegions: List<RegionRequestDto>,
         val userInterests: List<InterestRequestDto>
 )
 

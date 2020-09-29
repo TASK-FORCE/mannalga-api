@@ -6,15 +6,15 @@ import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.role.RoleService
-import com.taskforce.superinvention.app.domain.state.StateService
+import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.UserDetailsProvider
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.*
 import com.taskforce.superinvention.app.web.user.UserController
-import com.taskforce.superinvention.app.web.user.UserStateController
+import com.taskforce.superinvention.app.web.user.UserRegionController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,9 +29,9 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = [
     UserController::class,
-    UserStateController::class,
+    UserRegionController::class,
     ClubController::class,
-    StateController::class,
+    RegionController::class,
     InterestGroupController::class,
     CommonController::class
 ])
@@ -47,10 +47,10 @@ abstract class ApiDocumentationTest: BaseTest {
     lateinit var userRepository: UserRepository
 
     @MockBean
-    lateinit var userStateService: UserStateService
+    lateinit var userRegionService: UserRegionService
 
     @MockBean
-    lateinit var stateService: StateService
+    lateinit var regionService: RegionService
 
     @MockBean
     lateinit var interestGroupService: InterestGroupService

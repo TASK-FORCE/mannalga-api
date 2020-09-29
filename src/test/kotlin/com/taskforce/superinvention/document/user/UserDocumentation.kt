@@ -1,12 +1,12 @@
 package com.taskforce.superinvention.document.user
 
 import com.taskforce.superinvention.app.domain.role.Role
-import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
-import com.taskforce.superinvention.app.web.dto.state.*
+import com.taskforce.superinvention.app.web.dto.region.*
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -82,7 +82,7 @@ class UserDocumentation : ApiDocumentationTest() {
                 userName = "에릭",
                 birthday = LocalDate.parse("1995-12-27"),
                 profileImageLink = "",
-                userStates = listOf<StateRequestDto>(StateRequestDto(seq = 201, priority = 1), StateRequestDto(seq = 202, priority = 2)),
+                userRegions = listOf<RegionRequestDto>(RegionRequestDto(seq = 201, priority = 1), RegionRequestDto(seq = 202, priority = 2)),
                 userInterests = listOf<InterestRequestDto>(InterestRequestDto(seq = 1, priority = 1), InterestRequestDto(seq = 2, priority = 2))
         )
 
@@ -103,9 +103,9 @@ class UserDocumentation : ApiDocumentationTest() {
                                 fieldWithPath("userName").type(JsonFieldType.STRING).description("유저 이름(닉네임)"),
                                 fieldWithPath("birthday").type(JsonFieldType.STRING).description("유저 생년월일"),
                                 fieldWithPath("profileImageLink").type(JsonFieldType.STRING).description("프로필 사진 링크"),
-                                fieldWithPath("userStates").type(JsonFieldType.ARRAY).description("유저 관심지역들"),
-                                fieldWithPath("userStates[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                fieldWithPath("userStates[].priority").type(JsonFieldType.NUMBER).description("지역 관심 우선순위"),
+                                fieldWithPath("userRegions").type(JsonFieldType.ARRAY).description("유저 관심지역들"),
+                                fieldWithPath("userRegions[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("userRegions[].priority").type(JsonFieldType.NUMBER).description("지역 관심 우선순위"),
                                 fieldWithPath("userInterests").type(JsonFieldType.ARRAY).description("유저 관심사"),
                                 fieldWithPath("userInterests[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
                                 fieldWithPath("userInterests[].priority").type(JsonFieldType.NUMBER).description("유저 관심사 우선순위")
@@ -121,46 +121,46 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 지역 조회`() {
 
         // given
-        val state1 = State(superState = null, name = "성남시", superStateRoot = "경기도/성남시", level = 2, subStates = listOf())
-        val state2 = State(superState = null, name = "수원시", superStateRoot = "경기도/수원시", level = 2, subStates = listOf())
-        state1.seq = 1001L
-        state2.seq = 1002L
+        val region1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2, subRegions = listOf())
+        val region2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2, subRegions = listOf())
+        region1.seq = 1001L
+        region2.seq = 1002L
 
-        val stateWithPriorityDto1 = StateWithPriorityDto(
-                state = SimpleStateDto(state1)
+        val regionWithPriorityDto1 = RegionWithPriorityDto(
+                region = SimpleRegionDto(region1)
                 , priority = 1L)
 
-        val stateWithPriorityDto2 = StateWithPriorityDto(
-                state = SimpleStateDto(state2)
+        val regionWithPriorityDto2 = RegionWithPriorityDto(
+                region = SimpleRegionDto(region2)
                 , priority = 2L)
 
         val user = User("eric")
         user.seq = 1L
 
-        `when`(userStateService.findUserStateList(anyObject())).thenReturn(UserStateDto(
+        `when`(userRegionService.findUserRegionList(anyObject())).thenReturn(UserRegionDto(
                 user, listOf(
-                    stateWithPriorityDto1,
-                    stateWithPriorityDto2
-                )
+                regionWithPriorityDto1,
+                regionWithPriorityDto2
+        )
         ))
 
         val result = this.mockMvc.perform(
-                get("/users/states")
+                get("/users/regions")
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIiwidXNlcklkIjoiMTQ1MTAwMTY0OSIsInN1YiI6IjE0NTEwMDE2NDkiLCJpYXQiOjE1OTc1NDY1MjYsImV4cCI6MTYyOTA4MjUyNn0.1dc1DK7W2iYOXu6BOlrHAbpKnlMkz4o7c7eFtGOWy5M")
                         .characterEncoding("utf-8")
         ).andDo(print())
 
         result.andExpect(status().isOk)
-                .andDo(document("userStates", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("userRegions", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
                                 *commonResponseField(),
-                                fieldWithPath("data.userStates").type(JsonFieldType.ARRAY).description("유저 지역들"),
-                                fieldWithPath("data.userStates[].state").type(JsonFieldType.OBJECT).description("유저 지역"),
-                                fieldWithPath("data.userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                fieldWithPath("data.userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
-                                fieldWithPath("data.userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트"),
-                                fieldWithPath("data.userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
-                                fieldWithPath("data.userStates[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
+                                fieldWithPath("data.userRegions").type(JsonFieldType.ARRAY).description("유저 지역들"),
+                                fieldWithPath("data.userRegions[].region").type(JsonFieldType.OBJECT).description("유저 지역"),
+                                fieldWithPath("data.userRegions[].region.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("data.userRegions[].region.name").type(JsonFieldType.STRING).description("지역 이름"),
+                                fieldWithPath("data.userRegions[].region.superRegionRoot").type(JsonFieldType.STRING).description("지역 루트"),
+                                fieldWithPath("data.userRegions[].region.level").type(JsonFieldType.NUMBER).description("지역 단계 레벨"),
+                                fieldWithPath("data.userRegions[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
                                 fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
                                 fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디")
                         )
@@ -229,29 +229,29 @@ class UserDocumentation : ApiDocumentationTest() {
         mockUser.seq = 1L
         mockUser.userId = "12313"
 
-        val superState= State(name="서울특별시", superStateRoot = "서울특별시", level = 2L, superState = null, subStates = listOf())
-        superState.seq  = 1
-        val state1 = State(name="종로구", superStateRoot = "서울특별시/종로구", level = 2L, superState = superState, subStates = listOf())
-        state1.seq = 101L
-        val state2 = State(name="중구", superStateRoot = "서울특별시/중구", level = 2L, superState = superState, subStates = listOf())
-        state2.seq = 102L
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf())
+        superRegion.seq  = 1
+        val region1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf())
+        region1.seq = 101L
+        val region2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf())
+        region2.seq = 102L
 
-        val userStates = listOf(
-                StateWithPriorityDto(state = SimpleStateDto(state = state1), priority = 1L),
-                StateWithPriorityDto(state = SimpleStateDto(state = state2), priority = 2L)
+        val userRegions = listOf(
+                RegionWithPriorityDto(region = SimpleRegionDto(region = region1), priority = 1L),
+                RegionWithPriorityDto(region = SimpleRegionDto(region = region2), priority = 2L)
         )
 
 
-        val stateRequest = listOf(StateRequestDto(seq = 101L, priority = 1L), StateRequestDto(seq = 102L, priority = 2L))
-        val userStateDto = UserStateDto(user = mockUser, states = userStates)
+        val regionRequest = listOf(RegionRequestDto(seq = 101L, priority = 1L), RegionRequestDto(seq = 102L, priority = 2L))
+        val userRegionDto = UserRegionDto(user = mockUser, regions = userRegions)
 
-        `when`(userStateService.changeUserState(anyObject(), anyObject())).thenReturn(userStateDto)
+        `when`(userRegionService.changeUserRegion(anyObject(), anyObject())).thenReturn(userRegionDto)
 
         // when
         val result = this.mockMvc.perform(
-                put("/users/states")
+                put("/users/regions")
                         .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
-                        .content(objectMapper.writeValueAsString(stateRequest))
+                        .content(objectMapper.writeValueAsString(regionRequest))
                         .characterEncoding("utf-8")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -260,22 +260,24 @@ class UserDocumentation : ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("changeUserStates", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("changeUserRegions", getDocumentRequest(), getDocumentResponse(),
                 requestFields(
                         fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
                         fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("지역 우선순위")
                 ),
                 responseFields(
-                    *commonResponseField(),
-                    fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
-                    fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디"),
-                    fieldWithPath("data.userStates").type(JsonFieldType.ARRAY).description("유저의 변경 후 지역들"),
-                    fieldWithPath("data.userStates[].state").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
-                    fieldWithPath("data.userStates[].state.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                    fieldWithPath("data.userStates[].state.name").type(JsonFieldType.STRING).description("지역 이름"),
-                    fieldWithPath("data.userStates[].state.superStateRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
-                    fieldWithPath("data.userStates[].state.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
-                    fieldWithPath("data.userStates[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 지역 우선순위")
-                )))
+                        *commonResponseField(),
+                        fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                        fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디"),
+                        fieldWithPath("data.userRegions").type(JsonFieldType.ARRAY).description("유저의 변경 후 지역들"),
+                        fieldWithPath("data.userRegions[].region").type(JsonFieldType.OBJECT).description("변경된 유저 지역 정보"),
+                        fieldWithPath("data.userRegions[].region.seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                        fieldWithPath("data.userRegions[].region.name").type(JsonFieldType.STRING).description("지역 이름"),
+                        fieldWithPath("data.userRegions[].region.superRegionRoot").type(JsonFieldType.STRING).description("지역 루트(최상위부터)"),
+                        fieldWithPath("data.userRegions[].region.level").type(JsonFieldType.NUMBER).description("지역 레벨"),
+                        fieldWithPath("data.userRegions[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 지역 우선순위")
+                )
+            )
+        )
     }
 }
