@@ -4,7 +4,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 
 class ClubSearchRequestDto(
-        val offset:Long = 0,
+        val page:Long = 0,
         val size:Long = 10,
         val searchOptions: ClubSearchOptions
 )

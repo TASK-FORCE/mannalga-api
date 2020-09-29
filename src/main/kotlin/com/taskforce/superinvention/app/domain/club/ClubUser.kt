@@ -10,10 +10,10 @@ import javax.persistence.ManyToOne
 @Entity
 class ClubUser(
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_seq")
+        @JoinColumn(name = "club_seq")
         var club: Club,
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "club_seq")
+        @JoinColumn(name = "user_seq")
         var user: User
 ) : BaseEntity()
