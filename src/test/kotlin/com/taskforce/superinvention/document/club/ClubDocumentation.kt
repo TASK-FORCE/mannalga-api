@@ -6,16 +6,18 @@ import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.region.ClubRegion
+import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.role.Role
-import com.taskforce.superinvention.app.domain.state.ClubState
-import com.taskforce.superinvention.app.domain.state.State
+import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
-import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -23,6 +25,7 @@ import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -125,7 +128,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     fun `모임 리스트 조회`() {
         // given
         val searchResult = listOf(
-                ClubWithStateInterestDto(
+                ClubWithRegionInterestDto(
                         seq = 6023L,
                         name = "산타 아저씨들",
                         description = "산이 너무 좋은 사람들의 모임입니다. 매주 정모 필참! 정모 후 뒷풀이는 선택." +

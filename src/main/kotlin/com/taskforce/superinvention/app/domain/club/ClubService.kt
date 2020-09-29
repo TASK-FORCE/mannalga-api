@@ -11,11 +11,11 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubWithRegionInterestDto
+import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 
 @Service
 class ClubService(
