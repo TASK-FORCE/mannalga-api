@@ -100,6 +100,18 @@ class ClubController(
     }
 
     /**
+     * 모임 지역 변경
+     * @author eric
+     */
+    @PutMapping("{clubSeq}/regions")
+    @Secured(Role.MEMBER)
+    fun changeClubRegion(@AuthUser user: User, @PathVariable clubSeq: Long, @RequestBody clubRegions: Set<RegionRequestDto>): ResponseDto<ClubWithRegionInterestDto> {
+        clubService.changeClubRegions(user, clubSeq, clubRegions)
+        val data = clubService.getClubWithPriorityDto(clubSeq)
+        return ResponseDto(data = data)
+    }
+
+    /**
      * 모임 내부 내 정보 조회
      */
     @GetMapping("/{clubSeq}/my-info")
