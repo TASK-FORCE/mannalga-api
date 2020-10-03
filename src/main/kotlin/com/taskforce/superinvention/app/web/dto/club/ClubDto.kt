@@ -1,13 +1,8 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.interest.ClubInterest
-import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
-import com.taskforce.superinvention.app.domain.state.ClubState
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
-import com.taskforce.superinvention.app.web.dto.state.SimpleStateDto
-import com.taskforce.superinvention.app.web.dto.state.StateDto
-import com.taskforce.superinvention.app.web.dto.state.StateWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 
 class ClubDto (
         var seq: Long?,
@@ -20,7 +15,7 @@ class ClubDto (
     constructor(club : Club, userCount: Long): this(club.seq, club.name, club.description, club.maximumNumber, userCount, club.mainImageUrl)
 }
 
-class ClubWithStateInterestDto (
+class ClubWithRegionInterestDto (
         var seq: Long?,
         var name: String,
         var description: String,
@@ -28,16 +23,18 @@ class ClubWithStateInterestDto (
         var userCount: Long,
         var mainImageUrl: String?,
         var interests: List<InterestWithPriorityDto>,
-        var states: List<StateWithPriorityDto>
+        var regions: List<RegionWithPriorityDto>
 ) {
     constructor(club : Club,
                 userCount: Long):
-            this(club.seq,
+            this(
+                    club.seq,
                     club.name,
                     club.description,
                     club.maximumNumber,
                     userCount,
                     club.mainImageUrl,
                     club.clubInterests.map { e -> InterestWithPriorityDto(e) },
-                    club.clubStates.map { e -> StateWithPriorityDto(e) })
+                    club.clubRegions.map { e -> RegionWithPriorityDto(e) }
+            )
 }

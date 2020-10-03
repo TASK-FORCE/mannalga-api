@@ -3,8 +3,8 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.common.config.security.AppToken
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
+import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
@@ -13,14 +13,14 @@ import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
+import javax.transaction.Transactional
 
 @Service
 class UserService(
         private var userRepository: UserRepository,
         private var userRoleService: UserRoleService,
-        private var userStateService: UserStateService,
+        private var userRegionService: UserRegionService,
         private var userInterestService: UserInterestService,
         private var kakaoOAuth: KakaoOAuth,
         private var jwtTokenProvider: JwtTokenProvider
@@ -46,7 +46,7 @@ class UserService(
         return kakaoOAuth.getKakaoUserProfile(token)
     }
 
-    @Transactional(rollbackFor = [Exception::class])
+    @Transactional(rollbackOn = [Exception::class])
     fun updateUserToken(user: User, token: KakaoToken) {
         val targetUser = userRepository.findByUserId(user.userId)!!
         targetUser.accessToken = token.access_token
@@ -58,7 +58,7 @@ class UserService(
         userRepository.save(targetUser)
     }
 
-    @Transactional(rollbackFor = [Exception::class])
+    @Transactional(rollbackOn = [Exception::class])
     fun saveKakaoToken(kakaoToken: KakaoToken): AppToken {
         val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
         val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
@@ -95,14 +95,14 @@ class UserService(
         )
     }
 
-    @Transactional(rollbackFor = [Exception::class])
+    @Transactional(rollbackOn = [Exception::class])
     fun registerUser(request: KakaoUserRegistRequest, user: User) {
         user.birthday = request.birthday
         user.userName = request.userName
         user.profileImageLink = request.profileImageLink
         user.isRegistered = 1
 
-        val userStates    = request.userStates
+        val userRegions    = request.userRegions
         val userInterests = request.userInterests
 
         userRepository.save(user)
@@ -110,7 +110,7 @@ class UserService(
         userRoleService.addRole(user, Role.RoleName.MEMBER)
         userRoleService.removeRoleIfExist(user, Role.RoleName.NONE)
 
-        userStateService.changeUserState(user, userStates)
+        userRegionService.changeUserRegion(user, userRegions)
         userInterestService.changeUserInterest(user, userInterests)
     }
 }

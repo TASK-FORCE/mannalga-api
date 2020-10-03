@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.web.controller
 
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -11,8 +12,8 @@ class InterestGroupController(
 ) {
 
     @GetMapping("/interestGroup/all")
-    fun getInterestList(): List<InterestGroupDto> {
+    fun getInterestList(): ResponseDto<List<InterestGroupDto>> {
         val result = interestGroupService.getInterestList()
-        return result
+        return ResponseDto(data = result)
     }
 }

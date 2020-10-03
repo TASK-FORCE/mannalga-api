@@ -1,18 +1,18 @@
-package com.taskforce.superinvention.app.domain.state
+package com.taskforce.superinvention.app.domain.region
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.taskforce.superinvention.app.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
-class State(
+class Region(
         @ManyToOne(fetch = FetchType.LAZY)
         @JsonIgnore
-        var superState: State?,
+        var superRegion: Region?,
         var name: String,
-        var superStateRoot: String,
+        var superRegionRoot: String,
         var level: Long,
 
-        @OneToMany(mappedBy = "superState", fetch = FetchType.LAZY)
-        var subStates: List<State>
+        @OneToMany(mappedBy = "superRegion", fetch = FetchType.LAZY)
+        var subRegions: List<Region>
 ): BaseEntity()

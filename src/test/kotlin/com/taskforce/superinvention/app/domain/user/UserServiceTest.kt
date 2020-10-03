@@ -3,8 +3,8 @@ package com.taskforce.superinvention.app.domain.user
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
-import com.taskforce.superinvention.app.domain.user.userState.UserStateService
-import com.taskforce.superinvention.common.config.security.AppToken
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
+import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
@@ -29,7 +29,7 @@ class UserServiceTest: MockTest() {
     lateinit var userRoleService: UserRoleService
 
     @Mock
-    lateinit var userStateService: UserStateService
+    lateinit var userRegionService: UserRegionService
 
     @Mock
     lateinit var userInterestService: UserInterestService
@@ -112,7 +112,7 @@ class UserServiceTest: MockTest() {
 
         `when`(kakaoOAuth.refreshIfTokenExpired(kakaoToken)).thenReturn(kakaoToken)
         `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)
-        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)       // user logged in and registered
+        `when`(userRepository.findByUserId(user.userId)).thenReturn(user)       // user loged in and registered
         `when`(jwtTokenProvider.createAppToken(user.userId)).thenReturn("example-jwt-token")
 
         // when

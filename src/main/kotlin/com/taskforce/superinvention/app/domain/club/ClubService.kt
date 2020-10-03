@@ -1,8 +1,5 @@
 package com.taskforce.superinvention.app.domain.club
 
-import com.taskforce.superinvention.app.domain.club.user.ClubUser
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositorySupport
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -10,24 +7,25 @@ import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
-import com.taskforce.superinvention.app.domain.state.ClubState
-import com.taskforce.superinvention.app.domain.state.ClubStateRepository
-import com.taskforce.superinvention.app.domain.state.StateService
+import com.taskforce.superinvention.app.domain.region.ClubRegion
+import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
+import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchRequestDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubWithStateInterestDto
+import com.taskforce.superinvention.app.web.common.request.PageOption
+import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.state.StateRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 
 @Service
 class ClubService(
@@ -37,9 +35,9 @@ class ClubService(
         private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService,
         private var interestService: InterestService,
-        private var stateService: StateService,
+        private var regionService: RegionService,
         private var clubInterestRepository: ClubInterestRepository,
-        private var clubStateRepository: ClubStateRepository,
+        private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
     fun getClubBySeq(seq: Long): Club {
@@ -47,21 +45,22 @@ class ClubService(
         return club
     }
 
-    fun getClubUserDto(clubSeq: Long): ClubUserDto? {
+    fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
         val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
-        return ClubUserDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
+        if (clubUsers.isEmpty()) throw BizException("모임에 유저가 한명도 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR)
+        return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
     /**
      * 새로운 모임을 생성한다.
      */
     @Transactional
-    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, stateList: List<StateRequestDto>) {
+    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
         // validation
         if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
 
-        if (stateList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (regionList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
 
         // 1. 모임 생성
@@ -76,8 +75,8 @@ class ClubService(
         clubInterestRepository.saveAll(clubInterestList)
 
         // 4. 해당 클럽에 지역 부여
-        val clubStateList = stateList.map { e -> ClubState(savedClub, stateService.findBySeq(e.seq), e.priority) }
-        clubStateRepository.saveAll(clubStateList)
+        val clubRegionList = regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
+        clubRegionRepository.saveAll(clubRegionList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
         val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)
@@ -87,7 +86,7 @@ class ClubService(
 
     @Transactional
     fun getClubUserList(club: Club): List<ClubUser> {
-        return clubUserRepository.findByClub(club);
+        return clubUserRepository.findByClub(club)
     }
 
     @Transactional
@@ -96,20 +95,26 @@ class ClubService(
         if (clubUserList.size >= club.maximumNumber) {
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
-        if (clubUserList.map { cu -> cu.user }.contains(user)) {
-            throw RuntimeException("이미 가입한 모임입니다.")
+        if (clubUserList.map { cu -> cu.user.seq }.contains(user.seq)) {
+            throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
         }
 
+        // 모임 가입처리
         val clubUser = ClubUser(club = club, user = user)
         clubUserRepository.save(clubUser)
+
+        // 디폴트로 모임원 권한 주기
+        val memberRole = roleService.findByRoleName(Role.RoleName.MEMBER)
+        val clubUserRole = ClubUserRole(clubUser, memberRole)
+        clubUserRoleRepository.save(clubUserRole)
     }
 
 
     @Transactional
-    fun search(request: ClubSearchRequestDto): Page<ClubWithStateInterestDto> {
-        val pageable:Pageable = PageRequest.of(request.offset.toInt(), request.size.toInt())
+    fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
+        val pageable:Pageable = PageRequest.of(request.page.toInt(), request.size.toInt())
         val result = clubRepositorySupport.search(request.searchOptions, pageable)
-        val mappingContents = result.content.map { e ->  ClubWithStateInterestDto(
+        val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()
         )}.toList()
@@ -120,7 +125,7 @@ class ClubService(
     fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
-        if (!roleService.hasClubManagerAuth(clubUser)) throw RuntimeException("권한이 없습니다")
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
         
         // 기존 관심사 삭제
         val toDelete: List<ClubInterest> = clubInterestRepository.findByClub(club)
@@ -133,9 +138,63 @@ class ClubService(
         return club
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    fun getClubWithPriorityDto(clubSeq: Long): ClubWithStateInterestDto {
+    @Transactional
+    fun changeClubRegions(user: User, clubSeq: Long, clubRegions: Set<RegionRequestDto>) {
         val club = getClubBySeq(clubSeq)
-        return ClubWithStateInterestDto(club, club.clubUser.size.toLong())
+        val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
+
+        // 기존 모임 지역 삭제
+        val toDelete: List<ClubRegion> = clubRegionRepository.findByClub(club)
+        clubRegionRepository.deleteAll(toDelete)
+
+        // 신규 모임 지역 등록
+        val toAdd: List<ClubRegion> = clubRegions.map { region -> ClubRegion(club, regionService.findBySeq(region.seq), region.priority) }
+        clubRegionRepository.saveAll(toAdd)
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun getClubWithPriorityDto(clubSeq: Long): ClubWithRegionInterestDto {
+        val club = getClubBySeq(clubSeq)
+        return ClubWithRegionInterestDto(club, club.clubUser.size.toLong())
+    }
+
+    @Transactional
+    fun getClubUserInfo(clubSeq: Long, user: User): ClubUserDto {
+        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+        if (clubUser == null) throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
+
+        val clubUserRoles = roleService.getClubUserRoles(clubUser)
+        return ClubUserDto(
+                seq = clubUser.seq!!,
+                userSeq = clubUser.user.seq!!,
+                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+        )
+    }
+
+    @Transactional
+    fun getClubUser(clubSeq: Long, user: User): ClubUser? {
+        return clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+    }
+
+    @Transactional
+    fun getClubUserByClubUserSeq(clubUserSeq: Long): ClubUser? {
+        return  clubUserRepository.findById(clubUserSeq).get()
+    }
+
+    @Transactional
+    fun getUserClubList(user: User, searchOptions: PageOption): Page<ClubUserDto> {
+        val pageable:Pageable = PageRequest.of(searchOptions.page, searchOptions.size)
+        val result: Page<ClubUser> = clubUserRepositorySupport.findByUser(user, pageable)
+        val mappingContents = result.map { e ->
+            ClubUserDto(
+                seq = e.seq!!,
+                userSeq = e.user.seq!!,
+                club = ClubDto(e.club, clubUserRepository.countByClubSeq(e.club.seq!!)),
+                roles = e.clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+            )
+        }.toList()
+        return PageImpl(mappingContents, result.pageable, result.totalElements)
     }
 }
