@@ -138,6 +138,21 @@ class ClubService(
         return club
     }
 
+    @Transactional
+    fun changeClubRegions(user: User, clubSeq: Long, clubRegions: Set<RegionRequestDto>) {
+        val club = getClubBySeq(clubSeq)
+        val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
+
+        // 기존 모임 지역 삭제
+        val toDelete: List<ClubRegion> = clubRegionRepository.findByClub(club)
+        clubRegionRepository.deleteAll(toDelete)
+
+        // 신규 모임 지역 등록
+        val toAdd: List<ClubRegion> = clubRegions.map { region -> ClubRegion(club, regionService.findBySeq(region.seq), region.priority) }
+        clubRegionRepository.saveAll(toAdd)
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun getClubWithPriorityDto(clubSeq: Long): ClubWithRegionInterestDto {
         val club = getClubBySeq(clubSeq)
