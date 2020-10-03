@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.club.board
 
+import com.querydsl.jpa.JPQLQuery
+import com.taskforce.superinvention.app.domain.club.user.QClubUser
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import org.springframework.data.domain.Page

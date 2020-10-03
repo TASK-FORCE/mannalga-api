@@ -8,10 +8,10 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
-import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,6 +27,7 @@ import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import java.util.*
 
 class ClubBoardDocumentation: ApiDocumentationTest() {
 
@@ -82,7 +83,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         )
 
         // when
-        `when`(clubUserRepository.findByClubSeqAndUser(club.seq!!, user)).thenReturn(clubUser)
+        `when`(clubUserRepository.findByClub_SeqAndUser(club.seq!!, user)).thenReturn(clubUser)
         `when`(clubBoardRepository.save(clubBoard)).then {Unit}
 
         val result: ResultActions = this.mockMvc.perform(
@@ -114,7 +115,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
 
         // given
         // when
-        `when`(clubUserRepository.findByClubSeqAndUser(club.seq!!, user)).thenReturn(clubUser)
+        `when`(clubUserRepository.findByClub_SeqAndUser(club.seq!!, user)).thenReturn(clubUser)
         `when`(clubBoardRepository.save(clubBoard)).then {Unit}
 
         val result: ResultActions = this.mockMvc.perform(
@@ -127,7 +128,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         result.andExpect(status().isCreated)
                 .andDo(document("select-club-board", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("clubSeq").description("[path variable] 모임 시퀀스"),
+                                parameterWithName("clubSeq").description("[path variable]모임 시퀀스"),
                                 parameterWithName("page").description("페이지"),
                                 parameterWithName("size").description("조회 개수"),
                                 parameterWithName("title").description("검색 글 제목 - optional"),
@@ -138,8 +139,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
                         ),
                         responseFields(
-                                *commonResponseField(),
-                                *pageFieldDescriptor()
+                                *commonResponseField()
                         )
                 ))
     }

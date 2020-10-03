@@ -2,19 +2,24 @@ package com.taskforce.superinvention.config.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.role.RoleService
-import com.taskforce.superinvention.app.domain.region.RegionService
+import com.taskforce.superinvention.app.domain.state.StateService
 import com.taskforce.superinvention.app.domain.user.UserDetailsProvider
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
-import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
-import com.taskforce.superinvention.app.web.*
-import com.taskforce.superinvention.app.web.user.UserController
-import com.taskforce.superinvention.app.web.user.UserRegionController
+import com.taskforce.superinvention.app.domain.user.userState.UserStateService
+import com.taskforce.superinvention.app.web.controller.CommonController
+import com.taskforce.superinvention.app.web.controller.InterestGroupController
+import com.taskforce.superinvention.app.web.controller.StateController
+import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
+import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.user.UserController
+import com.taskforce.superinvention.app.web.controller.user.UserStateController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,9 +34,10 @@ import org.springframework.test.web.servlet.MockMvc
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = [
     UserController::class,
-    UserRegionController::class,
+    UserStateController::class,
     ClubController::class,
-    RegionController::class,
+    ClubBoardController::class,
+    StateController::class,
     InterestGroupController::class,
     CommonController::class
 ])
@@ -47,10 +53,10 @@ abstract class ApiDocumentationTest: BaseTest {
     lateinit var userRepository: UserRepository
 
     @MockBean
-    lateinit var userRegionService: UserRegionService
+    lateinit var userStateService: UserStateService
 
     @MockBean
-    lateinit var regionService: RegionService
+    lateinit var stateService: StateService
 
     @MockBean
     lateinit var interestGroupService: InterestGroupService
