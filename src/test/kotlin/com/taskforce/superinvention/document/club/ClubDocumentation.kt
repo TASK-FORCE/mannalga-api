@@ -567,4 +567,150 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
 
     }
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `모임 지역 변경`() {
+        // given
+        val requestBody: Set<RegionRequestDto> = setOf(
+                RegionRequestDto(401L, 1L),
+                RegionRequestDto(123L, 2L)
+        )
+
+        val clubSeq = 57231L
+
+        val club = Club(
+                name = "땔감 스터디",
+                description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                maximumNumber = 5L,
+                mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
+        )
+        club.seq = clubSeq
+
+        val interest3= Interest(
+                "헬스",
+                interestGroup = InterestGroup(
+                        "건강",
+                        listOf()
+                )
+        )
+        val interest5 = Interest(
+                "운동",
+                interestGroup = InterestGroup(
+                        "건강",
+                        listOf()
+                )
+        )
+
+        val clubInterest1 = ClubInterest(
+                club = club,
+                interest = interest3,
+                priority = 1
+        )
+        val clubInterest2 = ClubInterest(
+                club = club,
+                interest = interest5,
+                priority = 1
+        )
+        clubInterest1.seq = 12451
+        interest3.seq = 3
+        clubInterest2.seq = 12466
+        interest5.seq = 5
+
+        club.clubInterests = listOf(
+                clubInterest1,
+                clubInterest2
+        )
+
+
+        val region1 = Region(
+                superRegion = null,
+                name = "성남시",
+                superRegionRoot = "경기도/성남시",
+                level = 2,
+                subRegions = listOf()
+        )
+        region1.seq = 401
+
+        val region2 = Region(
+                superRegion = null,
+                name = "강남구",
+                level = 2,
+                subRegions = listOf(),
+                superRegionRoot = "서울특별시/강남구"
+        )
+        region2.seq = 123
+
+
+        val clubRegion = ClubRegion(club, region1, 1)
+        clubRegion.seq = 41231
+        val clubRegion2 = ClubRegion(club, region2, 2)
+        clubRegion2.seq = 41231
+
+
+
+
+        club.clubRegions = listOf(
+                clubRegion,
+                clubRegion2
+        )
+
+
+        club.clubUser = listOf(
+                ClubUser(club, User("유저 1")),
+                ClubUser(club, User("유저 2")),
+                ClubUser(club, User("유저 3")),
+                ClubUser(club, User("유저 4")),
+                ClubUser(club, User("유저 5"))
+        )
+
+
+        `when`(clubService.getClubWithPriorityDto(clubSeq))
+                .thenReturn(ClubWithRegionInterestDto(club, 5L))
+
+        `when`(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).thenReturn(true)
+
+        // when
+        val result = mockMvc.perform(
+                put("/clubs/{clubSeq}/regions", clubSeq)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+                        .content(objectMapper.writeValueAsString(requestBody))
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(document(
+                        "changeClubRegions", getDocumentRequest(), getDocumentResponse(),
+                        pathParameters(parameterWithName("clubSeq").description("모임 시퀀스. 해당 유저는 이 모임에 대해 매니저 이상의 권한을 가지고 있어야 한다.")),
+                        requestFields(
+                                fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("지역에 대한 우선순위")
+                        ),
+                        responseFields(
+                                *commonResponseField(),
+
+                                fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
+                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("모임명"),
+                                fieldWithPath("data.description").type(JsonFieldType.STRING).description("모임에 대한 설명"),
+                                fieldWithPath("data.maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원수"),
+                                fieldWithPath("data.userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
+                                fieldWithPath("data.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 (Nullable)"),
+                                fieldWithPath("data.interests").type(JsonFieldType.ARRAY).description("모임이 추구하는 관심사"),
+                                fieldWithPath("data.interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
+                                fieldWithPath("data.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
+                                fieldWithPath("data.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                fieldWithPath("data.interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
+                                fieldWithPath("data.regions").type(JsonFieldType.ARRAY).description("모임 참여지역"),
+                                fieldWithPath("data.regions[].region").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
+                                fieldWithPath("data.regions[].region.seq").type(JsonFieldType.NUMBER).description("모임 지역 시퀀스"),
+                                fieldWithPath("data.regions[].region.name").type(JsonFieldType.STRING).description("모임 지역 이름"),
+                                fieldWithPath("data.regions[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 지역의 풀네임"),
+                                fieldWithPath("data.regions[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 뎁스 레벨"),
+                                fieldWithPath("data.regions[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선 순위")
+                        )
+                ))
+    }
 }
