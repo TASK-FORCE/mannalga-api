@@ -63,7 +63,7 @@ include::{root}/club/addClubUser.adoc[]
 == 모임 검색
 include::{root}/club/searchClub.adoc[]
 
-== 모임 지역 변경
+== 모임 관심사 변경
 include::{root}/club/changeClubInterests.adoc[]
 
 == 모임원 정보 조회 - 내 정보
