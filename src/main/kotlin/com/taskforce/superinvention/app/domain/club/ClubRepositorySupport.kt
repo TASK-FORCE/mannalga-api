@@ -6,8 +6,6 @@ import com.taskforce.superinvention.app.domain.club.QClub.club
 import com.taskforce.superinvention.app.domain.club.user.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.clubInterest
 import com.taskforce.superinvention.app.domain.region.QClubRegion.clubRegion
-import com.taskforce.superinvention.app.domain.user.QUser
-import com.taskforce.superinvention.app.domain.user.QUser.user
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto

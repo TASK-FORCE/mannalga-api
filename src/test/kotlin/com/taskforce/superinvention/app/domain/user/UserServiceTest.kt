@@ -4,8 +4,8 @@ import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestSer
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
-import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.kakao.*
+import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import com.taskforce.superinvention.config.test.MockTest

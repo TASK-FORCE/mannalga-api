@@ -15,7 +15,9 @@ class Club(
     var description: String,
     var maximumNumber: Long,
     var mainImageUrl: String?
-) : BaseEntity() {
+
+): BaseEntity() {
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")

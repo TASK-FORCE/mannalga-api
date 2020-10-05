@@ -1,11 +1,11 @@
 package com.taskforce.superinvention.app.web.controller.club
 
-import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.data.domain.Page
@@ -25,7 +25,7 @@ class ClubBoardController(
     @GetMapping("/{clubSeq}/boards")
     fun getClubBoardList(@PathVariable clubSeq: Long,
                          pageable: Pageable,
-                         searchRequest: ClubBoardSearchOpt): ResponseDto<Page<ClubBoardDto>> {
+                         searchRequest: ClubBoardSearchOpt): ResponseDto<Page<ClubBoardPreviewDto>> {
 
         val search = clubBoardService.getClubBoardList(pageable, searchRequest, clubSeq)
         return ResponseDto(data = search)
@@ -38,7 +38,7 @@ class ClubBoardController(
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubBoard(@AuthUser user: User,
                           @PathVariable clubSeq: Long,
-                          @RequestBody body: ClubBoardBody): ResponseDto<Any>{
+                          @RequestBody  body: ClubBoardBody): ResponseDto<Any> {
 
         clubBoardService.registerClubBoard(user, clubSeq, body)
         return ResponseDto(data = "")

@@ -1,5 +1,8 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositorySupport
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -55,7 +58,7 @@ class ClubService(
      * 새로운 모임을 생성한다.
      */
     @Transactional
-    fun addClub(club:Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
+    fun addClub(club: Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
         // validation
         if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")

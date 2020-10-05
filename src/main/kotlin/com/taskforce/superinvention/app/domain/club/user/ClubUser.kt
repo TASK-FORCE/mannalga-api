@@ -1,6 +1,7 @@
-package com.taskforce.superinvention.app.domain.club
+package com.taskforce.superinvention.app.domain.club.user
 
 import com.taskforce.superinvention.app.domain.BaseEntity
+import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import javax.persistence.*

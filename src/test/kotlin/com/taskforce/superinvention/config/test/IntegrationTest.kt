@@ -1,9 +1,9 @@
 package com.taskforce.superinvention.config.test
 
-import com.taskforce.superinvention.config.test.BaseTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @ActiveProfiles("test")
