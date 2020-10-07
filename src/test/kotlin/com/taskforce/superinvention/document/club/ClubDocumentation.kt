@@ -537,7 +537,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         val requestBody = PageOption()
 
         val result = mockMvc.perform(
-                get("/clubs/my")
+                post("/clubs/my")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
