@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.web.dto.interest
 
-import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 

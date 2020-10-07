@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.interest.interestGroup.SimpleInterestGroupDto
 import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.role.Role
@@ -140,8 +141,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 42L,
                         mainImageUrl = "taskforce-file-server/Exv2Es.png",
                         interests = listOf(
-                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
-                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동", interestGroup = SimpleInterestGroupDto(1L, "운동/스포츠")), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강", interestGroup = SimpleInterestGroupDto(1L, "운동/스포츠")), 2)
                         ),
                         regions = listOf(
                                 RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1),
@@ -157,8 +158,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                         userCount = 1L,
                         mainImageUrl = "taskforce-file-server/0xV12v2Es.png",
                         interests = listOf(
-                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동"), 1),
-                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강"), 2)
+                                InterestWithPriorityDto(InterestDto(seq = 1, name = "운동", interestGroup = SimpleInterestGroupDto(1L, "운동/스포츠")), 1),
+                                InterestWithPriorityDto(InterestDto(seq = 2, name = "건강", interestGroup = SimpleInterestGroupDto(1L, "운동/스포츠")), 2)
                         ),
                         regions = listOf(
                                 RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1),
@@ -231,6 +232,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.content[].interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
                                         fieldWithPath("data.content[].interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
                                         fieldWithPath("data.content[].interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                        fieldWithPath("data.content[].interests[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
+                                        fieldWithPath("data.content[].interests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 시퀀스"),
+                                        fieldWithPath("data.content[].interests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 이름"),
                                         fieldWithPath("data.content[].interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
                                         fieldWithPath("data.content[].regions").type(JsonFieldType.ARRAY).description("모임 참여지역"),
                                         fieldWithPath("data.content[].regions[].region").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
@@ -265,19 +269,19 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         club.seq = clubSeq
 
+        val interestGroup = InterestGroup(
+                "건강",
+                listOf()
+        )
+        interestGroup.seq = 1
+
         val interest3 = Interest(
                 "헬스",
-                interestGroup = InterestGroup(
-                        "건강",
-                        listOf()
-                )
+                interestGroup = interestGroup
         )
         val interest5 = Interest(
                 "운동",
-                interestGroup = InterestGroup(
-                        "건강",
-                        listOf()
-                )
+                interestGroup = interestGroup
         )
 
         val clubInterest1 = ClubInterest(
@@ -365,6 +369,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("data.interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
                             fieldWithPath("data.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
                             fieldWithPath("data.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                          fieldWithPath("data.interests[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
+                            fieldWithPath("data.interests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 시퀀스"),
+                            fieldWithPath("data.interests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 이름"),
                             fieldWithPath("data.interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
                             fieldWithPath("data.regions").type(JsonFieldType.ARRAY).description("모임 참여지역"),
                             fieldWithPath("data.regions[].region").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
@@ -587,19 +594,19 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         club.seq = clubSeq
 
+        val interestGroup = InterestGroup(
+                "건강",
+                listOf()
+        )
+        interestGroup.seq = 1
+
         val interest3= Interest(
                 "헬스",
-                interestGroup = InterestGroup(
-                        "건강",
-                        listOf()
-                )
+                interestGroup = interestGroup
         )
         val interest5 = Interest(
                 "운동",
-                interestGroup = InterestGroup(
-                        "건강",
-                        listOf()
-                )
+                interestGroup = interestGroup
         )
 
         val clubInterest1 = ClubInterest(
@@ -702,6 +709,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
                                 fieldWithPath("data.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
                                 fieldWithPath("data.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
+                                fieldWithPath("data.interests[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
+                                fieldWithPath("data.interests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 시퀀스"),
+                                fieldWithPath("data.interests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 이름"),
                                 fieldWithPath("data.interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
                                 fieldWithPath("data.regions").type(JsonFieldType.ARRAY).description("모임 참여지역"),
                                 fieldWithPath("data.regions[].region").type(JsonFieldType.OBJECT).description("모임 지역 정보"),
