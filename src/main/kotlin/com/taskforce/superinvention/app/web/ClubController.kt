@@ -155,7 +155,7 @@ class ClubController(
         return ResponseDto(data = roles.map { role -> RoleDto(role) }.toSet())
     }
 
-    @GetMapping("/my")
+    @PostMapping("/my")
     @Secured(Role.MEMBER)
     fun getMyClubList(@AuthUser user: User, @RequestBody searchOptions: PageOption): ResponseDto<Page<ClubUserDto>> {
         return ResponseDto(data = clubService.getUserClubList(user, searchOptions))
