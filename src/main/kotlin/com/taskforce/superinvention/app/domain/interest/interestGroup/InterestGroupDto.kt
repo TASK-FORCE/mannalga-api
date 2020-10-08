@@ -11,7 +11,7 @@ class InterestGroupDto {
     constructor(group: InterestGroup, interestList: List<Interest> ) {
         this.name = group.name
         this.groupSeq = group.seq
-        this.interestList = interestList.map { interest -> InterestDto(interest.seq, interest.name)}.toMutableList()
+        this.interestList = interestList.map { interest -> InterestDto(interest.seq, interest.name, SimpleInterestGroupDto(interest.interestGroup))}.toMutableList()
     }
 
     constructor(groupSeq: Long, name: String, interestList: List<InterestDto> ) {
@@ -19,5 +19,12 @@ class InterestGroupDto {
         this.groupSeq = groupSeq
         this.interestList = interestList
     }
+}
+
+class SimpleInterestGroupDto(
+        val seq: Long,
+        val name: String
+) {
+    constructor(interestGroup:InterestGroup): this(interestGroup.seq!!, interestGroup.name)
 }
 
