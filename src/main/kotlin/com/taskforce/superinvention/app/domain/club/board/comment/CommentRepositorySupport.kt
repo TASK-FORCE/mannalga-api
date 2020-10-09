@@ -1,5 +1,6 @@
-package com.taskforce.superinvention.app.domain.board
+package com.taskforce.superinvention.app.domain.club.board.comment
 
+import com.taskforce.superinvention.app.domain.club.board.comment.QComment.*
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
@@ -7,8 +8,8 @@ import org.springframework.stereotype.Repository
 @Repository
 class CommentRepositorySupport : QuerydslRepositorySupport(Comment::class.java){
     fun findBySeq(seq: Long): Comment {
-        return from(QComment.comment)
-                .where(QComment.comment.seq.eq(seq))
+        return from(comment)
+                .where(comment.seq.eq(seq))
                 .fetchOne()
     }
 }

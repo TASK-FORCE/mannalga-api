@@ -1,7 +1,8 @@
 package com.taskforce.superinvention.document.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
@@ -30,6 +31,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFie
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable

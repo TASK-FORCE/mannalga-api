@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web
+package com.taskforce.superinvention.app.web.controller
 
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto

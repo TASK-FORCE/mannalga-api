@@ -59,13 +59,13 @@ class AwsS3Mo(
     }
 
      // AWS S3 동일 버킷 내 파일 이동
-    fun moveFile(s3PathFrom: S3Path, s3PathTo: String?): S3Path {
+    fun moveFile(s3PathFrom: S3Path, s3PathTo: String): S3Path {
         val copyObjRequest: CopyObjectRequest = CopyObjectRequest(bucketName, s3PathFrom.filePath, bucketName, s3PathTo)
                                                 .withCannedAccessControlList(CannedAccessControlList.PublicRead)
         s3client.copyObject(copyObjRequest)
 
         val filePath = s3client.getUrl(bucketName, s3PathTo).path
-        deleteFile(s3PathFrom.filePath!!)
+        //deleteFile(s3PathFrom.filePath!!)
 
         return S3Path(
                 absolutePath = endpointUrl + filePath,

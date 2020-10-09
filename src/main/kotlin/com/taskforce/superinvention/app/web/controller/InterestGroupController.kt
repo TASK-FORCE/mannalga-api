@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web
+package com.taskforce.superinvention.app.web.controller
 
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
