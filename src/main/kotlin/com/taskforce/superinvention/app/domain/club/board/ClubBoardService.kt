@@ -9,9 +9,11 @@ import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -30,7 +32,7 @@ class ClubBoardService(
     @Transactional
     fun getClubBoardList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoardPreviewDto> {
 
-        val pageRequest: Pageable = PageRequest.of(pageable.pageNumber - 1, pageable.pageSize)
+        val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
         return clubBoardRepository.searchInList(pageRequest, searchOpt, clubSeq)
     }
 
@@ -38,7 +40,7 @@ class ClubBoardService(
      * 클럽 게시판 글 등록
      */
     @Transactional(rollbackFor = [Exception::class])
-    fun registerClubBoard(user: User, clubSeq: Long, body: ClubBoardBody) {
+    fun registerClubBoard(user: User, clubSeq: Long, body: ClubBoardBody): ClubBoard {
         val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
 
         var topFixable = false
@@ -66,8 +68,9 @@ class ClubBoardService(
             val imgList = clubBoardImgService.registerImg(clubBoard, body.imgList)
 
             clubBoard.titleImg = imgList[0]
-            clubBoardRepository.save(clubBoard)
         }
+
+        return clubBoard
     }
 
     @Transactional
@@ -80,17 +83,16 @@ class ClubBoardService(
      * 게시판 글 삭제
      */
     @Transactional
-    fun removeClubBoard(user: User, clubBoardSeq: Long) {
+    fun deleteClubBoard(user: User, clubBoardSeq: Long) {
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)
-        val images = clubBoard.boardImgs
         val clubUser = clubBoard.clubUser
+        val isWriter =  clubBoard.clubUser.user == user
 
-        if(roleService.hasClubManagerAuth(clubUser)) {
-            throw InsufficientAuthenticationException("충분한 권한이 없습니다.")
+        if(!roleService.hasClubManagerAuth(clubUser) && !isWriter) {
+            throw InsufficientAuthException("충분한 권한이 없습니다.", HttpStatus.FORBIDDEN)
         }
 
         clubBoard.deleteFlag = false;
-        clubBoardRepository.save(clubBoard)
         clubBoardImgService.deleteImages(clubBoard)
     }
 }

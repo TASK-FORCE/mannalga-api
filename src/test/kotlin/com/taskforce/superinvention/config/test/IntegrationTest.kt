@@ -7,5 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 abstract class IntegrationTest: BaseTest

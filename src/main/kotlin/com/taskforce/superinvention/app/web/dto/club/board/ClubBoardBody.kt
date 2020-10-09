@@ -50,5 +50,7 @@ data class ClubBoardPreviewDto(
         val userName  : String,
         val createdAt  : String,
         val titleImgUrl: String,
-        val photoCnt: Long
+        val photoCnt: Long,
+        val topFixedFlag    : Boolean,
+        val notificationFlag: Boolean
 )

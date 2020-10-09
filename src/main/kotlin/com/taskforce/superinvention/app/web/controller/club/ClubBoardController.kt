@@ -4,7 +4,6 @@ import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
@@ -41,6 +40,16 @@ class ClubBoardController(
                           @RequestBody  body: ClubBoardBody): ResponseDto<Any> {
 
         clubBoardService.registerClubBoard(user, clubSeq, body)
+        return ResponseDto(data = "")
+    }
+
+    /**
+     * 모임 게시판 글 삭제
+     */
+    @DeleteMapping("/{clubBoardSeq}/boards")
+    fun deleteClubBoard(@AuthUser user: User, @PathVariable clubBoardSeq: Long): ResponseDto<Any> {
+
+        clubBoardService.deleteClubBoard(user, clubBoardSeq)
         return ResponseDto(data = "")
     }
 }

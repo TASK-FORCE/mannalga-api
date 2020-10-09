@@ -38,7 +38,9 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
                     clubBoard.clubUser.user.userName,
                     clubBoard.createdAt,
                     clubBoard.titleImg.imgUrl,
-                    clubBoardImg.count()
+                    clubBoardImg.count(),
+                    clubBoard.topFixedFlag,
+                    clubBoard.notificationFlag
                 )
                 .leftJoin(clubBoard.clubUser.user, user)
                 .leftJoin(clubBoard.titleImg, clubBoardImg)
@@ -46,12 +48,12 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
 
         // 제목 검색
         if(searchOpt.title.isNotBlank()) {
-            jpqlQuery.where(clubBoard.title.likeIgnoreCase("%${searchOpt.title}"))
+            jpqlQuery.where(clubBoard.title.likeIgnoreCase("%${searchOpt.title}%"))
         }
 
         // 내용 검색
         if(searchOpt.content.isNotBlank()) {
-            jpqlQuery.where(clubBoard.content.likeIgnoreCase("%${searchOpt.content}"))
+            jpqlQuery.where(clubBoard.content.likeIgnoreCase("%${searchOpt.content}%"))
         }
 
         // 삭제된 글 필터링
@@ -70,7 +72,9 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
                     userName     = tuple.get(clubBoard.clubUser.user.userName) ?: "",
                     createdAt    = tuple.get(clubBoard.createdAt)!!.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     titleImgUrl  = tuple.get(clubBoard.titleImg.imgUrl) ?: "",
-                    photoCnt     = tuple.get(clubBoardImg.count()) ?: 0
+                    photoCnt     = tuple.get(clubBoardImg.count()) ?: 0,
+                    topFixedFlag = tuple.get(clubBoard.topFixedFlag) ?: false,
+                    notificationFlag = tuple.get(clubBoard.notificationFlag) ?: false
             )
         }
 

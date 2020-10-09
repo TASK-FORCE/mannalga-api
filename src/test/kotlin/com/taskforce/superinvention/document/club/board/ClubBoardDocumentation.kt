@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
@@ -30,6 +31,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -151,7 +153,9 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                 userName = "글 내용",
                 createdAt = "yyyy/mm/dd hh:mm:ss",
                 titleImgUrl = "제목 이미지 URL - 없으면 공백",
-                photoCnt = 3 // 등록된 사진 개수
+                photoCnt = 3, // 등록된 사진 개수
+                topFixedFlag = false,
+                notificationFlag = false
         )
 
         val dummyItemList = listOf(dummyItem, dummyItem,dummyItem)
@@ -187,7 +191,38 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content[].userName").type(JsonFieldType.STRING).description("작성자 명"),
                                 fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING).description("최초 작성 날짜"),
                                 fieldWithPath("data.content[].titleImgUrl").type(JsonFieldType.STRING).description("제목 이미지 url - 없을 시 공백"),
-                                fieldWithPath("data.content[].photoCnt").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수")
+                                fieldWithPath("data.content[].photoCnt").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
+                                fieldWithPath("data.content[].topFixedFlag").type(JsonFieldType.BOOLEAN).description("상단고정 표시여부"),
+                                fieldWithPath("data.content[].notificationFlag").type(JsonFieldType.BOOLEAN).description("알림 여부")
+                        )
+                ))
+    }
+
+    @Test
+    @WithMockUser(username = "sight", authorities = [Role.MEMBER])
+    fun `모임 게시판 글 목록 삭제`() {
+
+        // given
+        val clubSeq =  88L
+
+        //  when
+        `when`(clubBoardService.deleteClubBoard(user, clubSeq)).then{ Unit }
+
+        val result: ResultActions = this.mockMvc.perform(
+                delete("/clubs/{clubBoardSeq}/boards", clubSeq)
+                        .header("Authorization", "Bearer xxxxxxxxxxx")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(document("delete-club-board", getDocumentRequest(), getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("clubBoardSeq").description("[path variable] 모임 게시판 시퀀스")
+                        ),
+                        responseFields(
+                                *commonResponseField()
                         )
                 ))
     }
