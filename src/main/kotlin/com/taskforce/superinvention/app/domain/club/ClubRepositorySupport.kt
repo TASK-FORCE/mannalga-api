@@ -21,19 +21,13 @@ import org.springframework.util.ObjectUtils
 
 @Repository
 class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslRepositorySupport(Club::class.java) {
-    fun findByKeyword(keyword: String): List<Club>? {
-        return from(club)
-                .where(club.name.like(keyword))
-                .fetch()
-    }
-
     fun search(clubSearchOptions: ClubSearchOptions, pageable:Pageable): Page<Club> {
         val fetchResult = from(club)
                 .leftJoin(club.clubInterests, clubInterest)
                 .leftJoin(club.clubRegions, clubRegion)
                 .where(
-//                    eqInterests(clubSearchOptions.interestList)
-//                            , eqStates(clubSearchOptions.stateList)
+                    eqInterests(clubSearchOptions.interestList)
+                            , eqRegions(clubSearchOptions.regionList)
                 )
                 .groupBy(club)
                 .orderBy()
