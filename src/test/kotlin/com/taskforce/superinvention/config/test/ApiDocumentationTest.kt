@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
+import com.taskforce.superinvention.app.web.user.UserInterestController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,7 +41,8 @@ import org.springframework.test.web.servlet.MockMvc
     ClubBoardController::class,
     RegionController::class,
     InterestGroupController::class,
-    CommonController::class
+    CommonController::class,
+    UserInterestController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {
 

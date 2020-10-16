@@ -9,9 +9,9 @@ import javax.persistence.ManyToOne
 
 @Entity
 class UserInterest(
-        @ManyToOne( fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
         var user: User,
-        @ManyToOne( fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.LAZY)
         var interest: Interest,
         var priority: Long
 ) : BaseEntity()

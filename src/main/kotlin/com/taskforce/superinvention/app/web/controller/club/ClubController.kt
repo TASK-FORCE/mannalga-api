@@ -79,8 +79,8 @@ class ClubController(
         }
 
         if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {
-            // TODO: UserInterest 조회 메서드 생성이 끝나면 여기 완성하자
-//             val userInterestDto = userInterestService.findUserInterestList(user);
+             val userInterestDto = userInterestService.findUserInterest(user)
+            request.searchOptions.interestList = userInterestDto.interestList.map { e -> InterestRequestDto(e.interest.seq!!, e.priority) }
         }
 
         val data = clubService.search(request)

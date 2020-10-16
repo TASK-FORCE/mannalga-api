@@ -3,6 +3,8 @@ package com.taskforce.superinvention.app.domain.user.userInterest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestRepository
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.interest.UserInterestDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,8 +17,8 @@ class UserInterestService (
 ){
 
     @Transactional
-    fun changeUserInterest(user: User, userInterests: List<InterestRequestDto>) {
-        val toDelete = userInterestRepository.findByUser(user)
+    fun changeUserInterest(user: User, userInterests: List<InterestRequestDto>): UserInterestDto {
+        val toDelete = userInterestRepository.findByUserOrderByPriority(user)
         userInterestRepository.deleteAll(toDelete)
 
         val toAdd: List<UserInterest> = userInterests.map { e ->
@@ -25,12 +27,19 @@ class UserInterestService (
         }.toList()
 
         userInterestRepository.saveAll(toAdd)
+        return findUserInterest(user)
+    }
+
+    @Transactional
+    fun findUserInterest(user: User): UserInterestDto {
+        val findByUser = userInterestRepository.findByUserOrderByPriority(user)
+        return UserInterestDto(user.seq!!, user.userId, findByUser.map { e -> InterestWithPriorityDto(e) })
     }
 
     @Transactional
     fun findUserInterests(user: User): List<UserInfoInterestDto> {
         return userInterestRepository
-                .findByUser(user)
+                .findByUserOrderByPriority(user)
                 .map { userInterest -> UserInfoInterestDto(userInterest) }
     }
 }
