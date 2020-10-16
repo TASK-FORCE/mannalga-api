@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.app.domain.role
 
-import com.taskforce.superinvention.app.domain.club.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,13 +20,12 @@ class RoleService(
 
         val clubUserRoles = getClubUserRoles(clubUser)
         val managerAuth = setOf(Role.RoleName.MASTER, Role.RoleName.MANAGER)
-
         return clubUserRoles
                 .map { clubUserRole -> clubUserRole.role.name }
                 .any { roleName -> managerAuth.contains(roleName) }
     }
-
-    fun findByRoleName(roleName: Role.RoleName) :Role = roleRepository.findByName(roleName)
+    
+    fun findByRoleName(roleName: Role.RoleName): Role = roleRepository.findByName(roleName)
 
     /**
      * 모임원이 가지고 있는 모든 권한을 조회한다

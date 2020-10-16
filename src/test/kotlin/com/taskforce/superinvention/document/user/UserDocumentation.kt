@@ -5,7 +5,7 @@ import com.taskforce.superinvention.app.domain.interest.interestGroup.SimpleInte
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.model.AppToken
+import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.interest.UserInterestDto

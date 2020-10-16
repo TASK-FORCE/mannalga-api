@@ -1,19 +1,16 @@
 package com.taskforce.superinvention.app.domain.role
 
 import com.taskforce.superinvention.app.domain.BaseEntity
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
 class Role (
         @Enumerated(EnumType.STRING)
         var name: RoleName,
-        @ManyToOne
+
+        @ManyToOne(fetch = FetchType.LAZY)
         var roleGroup: RoleGroup
 ): BaseEntity() {
-
 
         companion object {
                 const val NONE        = "ROLE_NONE"

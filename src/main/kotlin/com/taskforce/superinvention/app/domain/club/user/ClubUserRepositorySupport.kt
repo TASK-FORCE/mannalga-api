@@ -1,8 +1,7 @@
-package com.taskforce.superinvention.app.domain.club
+package com.taskforce.superinvention.app.domain.club.user
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.taskforce.superinvention.app.domain.club.QClubUser.*
-import com.taskforce.superinvention.app.domain.user.QUser
+import com.taskforce.superinvention.app.domain.club.user.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.user.QUser.user
 import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.data.domain.Page
