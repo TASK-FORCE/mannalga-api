@@ -5,18 +5,18 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
-import com.taskforce.superinvention.app.web.dto.region.UserRegionDto
+import com.taskforce.superinvention.app.web.dto.user.UserRegionDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserRegionService(
-        val userRegionRepository: UserRegionRepository,
-        val regionRepository: RegionRepository
+        private val userRegionRepository: UserRegionRepository,
+        private val regionRepository: RegionRepository
 ) {
 
     fun findUserRegionList(user: User): UserRegionDto {
-        val userRegions = userRegionRepository.findByUserSeq(user.seq!!)
+        val userRegions: List<UserRegion> = userRegionRepository.findByUserSeq(user.seq!!)
 
         return when(userRegions.isEmpty()) {
             true -> UserRegionDto(user, emptyList())

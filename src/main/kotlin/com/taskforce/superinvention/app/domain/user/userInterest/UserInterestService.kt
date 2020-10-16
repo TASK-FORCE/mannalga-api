@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.user.userInterest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestRepository
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.NullPointerException
@@ -24,5 +25,12 @@ class UserInterestService (
         }.toList()
 
         userInterestRepository.saveAll(toAdd)
+    }
+
+    @Transactional
+    fun findUserInterests(user: User): List<UserInfoInterestDto> {
+        return userInterestRepository
+                .findByUser(user)
+                .map { userInterest -> UserInfoInterestDto(userInterest) }
     }
 }

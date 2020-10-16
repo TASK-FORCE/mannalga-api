@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web
+package com.taskforce.superinvention.app.web.controller.region
 
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
