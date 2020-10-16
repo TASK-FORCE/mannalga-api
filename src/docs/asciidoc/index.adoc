@@ -33,10 +33,10 @@ include::{root}/common/temp-file-upload.adoc[]
 == 지역 조회 API
 include::{root}/region/region-all.adoc[]
 
-== 유저 지역조회
+== 유저 지역 조회
 include::{root}/region/userRegions.adoc[]
 
-== 지역 변경
+== 유저 지역 변경
 include::{root}/user/changeUserRegions.adoc[]
 
 = 유저
@@ -50,8 +50,14 @@ include::{root}/user/kakaoUserProfileInfo.adoc[]
 include::{root}/user/userRegist.adoc[]
 
 = 관심사
-== 관심 목록 조회
+== 관심사 목록 조회
 include::{root}/interest/interest-group-all.adoc[]
+
+== 유저 관심사 조회
+include::{root}/interest/userInterest.adoc[]
+
+== 유저 관심사 변경
+include::{root}/interest/changeUserInterest.adoc[]
 
 = 모임
 == 모임 생성

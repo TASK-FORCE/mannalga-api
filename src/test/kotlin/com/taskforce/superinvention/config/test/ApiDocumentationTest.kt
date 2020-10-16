@@ -14,6 +14,7 @@ import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestSer
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.*
 import com.taskforce.superinvention.app.web.user.UserController
+import com.taskforce.superinvention.app.web.user.UserInterestController
 import com.taskforce.superinvention.app.web.user.UserRegionController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
@@ -33,7 +34,8 @@ import org.springframework.test.web.servlet.MockMvc
     ClubController::class,
     RegionController::class,
     InterestGroupController::class,
-    CommonController::class
+    CommonController::class,
+    UserInterestController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {
 
