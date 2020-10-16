@@ -14,4 +14,4 @@ include::{sub-snippet}/user-info/http-request.adoc[]
 
 === Response
 include::{sub-snippet}/user-info/http-response.adoc[]
-include::{sub-snippet}/user-info/response-fields.adoc
+include::{sub-snippet}/user-info/response-fields.adoc[]

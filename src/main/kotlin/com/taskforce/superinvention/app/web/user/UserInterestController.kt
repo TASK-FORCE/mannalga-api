@@ -6,8 +6,6 @@ import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestSer
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.UserInterestDto
-import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
-import com.taskforce.superinvention.app.web.dto.region.UserRegionDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
