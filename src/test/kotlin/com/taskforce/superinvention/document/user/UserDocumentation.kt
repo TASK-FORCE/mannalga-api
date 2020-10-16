@@ -1,12 +1,20 @@
 package com.taskforce.superinvention.document.user
 
+import com.taskforce.superinvention.app.domain.interest.interest.Interest
+import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserInfoService
+import com.taskforce.superinvention.app.domain.user.userInterest.UserInterest
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.app.web.dto.region.*
+import com.taskforce.superinvention.app.web.dto.user.UserRegionDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoRegionDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -14,6 +22,8 @@ import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
+import org.mockito.Mock
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
@@ -189,7 +199,6 @@ class UserDocumentation : ApiDocumentationTest() {
                 )
         ))
 
-
         val result = this.mockMvc.perform(
                 get("/users/kakao-profile")
                         .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
@@ -218,7 +227,6 @@ class UserDocumentation : ApiDocumentationTest() {
                         )
                 ))
     }
-
 
     @Test
     @WithMockUser(authorities = [Role.NONE, Role.MEMBER]) //username = "eric"
@@ -279,5 +287,89 @@ class UserDocumentation : ApiDocumentationTest() {
                 )
             )
         )
+    }
+
+    @Test
+    @WithMockUser(authorities = [Role.NONE, Role.MEMBER]) //username = "sight"
+    fun `유저 정보 조회`() {
+
+        // given
+        val mockUser = User("sight")
+        mockUser.seq = 1L
+        mockUser.userId   = "12313"
+        mockUser.birthday = LocalDate.parse("1995-12-12")
+        mockUser.profileImageLink = "https://cdn.kakao/sight-profile-img.gif"
+
+        // given - userInfoRegion Data set
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf())
+        val region1    = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf())
+        val region2    = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf())
+
+        superRegion.seq  = 1
+        region1.seq = 101L
+        region2.seq = 102L
+
+        val userInfoRegions: List<UserInfoRegionDto> = listOf(
+                UserInfoRegionDto(SimpleRegionDto(region1), priority = 1L),
+                UserInfoRegionDto(SimpleRegionDto(region2), priority = 2L)
+        )
+
+        // given - userInfoInterests Data set
+        val interestGroup1 = InterestGroup("여행", emptyList())
+        val interest1      = Interest("국내여행", interestGroup1)
+        val userInterest1 = UserInterest(mockUser, interest1, priority = 1L)
+        interestGroup1.seq = 1
+        interest1.seq      = 2
+        userInterest1.seq  = 3
+
+        val interestGroup2 = InterestGroup("여행", emptyList())
+        val interest2      = Interest("국내여행", interestGroup2)
+        val userInterest2 = UserInterest(mockUser, interest2, priority = 1L)
+        interestGroup2.seq = 4
+        interest2.seq      = 5
+        userInterest2.seq  = 6
+
+        val userInfoInterests: List<UserInfoInterestDto> = listOf(
+                UserInfoInterestDto(userInterest1),
+                UserInfoInterestDto(userInterest2)
+        )
+
+        // given - result
+        val giverResult: UserInfoDto = UserInfoDto(mockUser, userInfoRegions, userInfoInterests)
+        `when`(userInfoService.getUserInfo(anyObject())).thenReturn(giverResult)
+
+        // when
+        val result = this.mockMvc.perform(
+                get("/users/profile")
+                        .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
+                        .characterEncoding("utf-8")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(document("user-info", getDocumentRequest(), getDocumentResponse(),
+                        responseFields(
+                                *commonResponseField(),
+                                fieldWithPath("data.userName").type(JsonFieldType.STRING).description("유저 이름"),
+                                fieldWithPath("data.birthday").type(JsonFieldType.STRING).description("유저 생년월일"),
+                                fieldWithPath("data.profileImageLink").type(JsonFieldType.STRING).description("유저 카카오 프로필 이미지 링크"),
+                                fieldWithPath("data.userRegions[].region").type(JsonFieldType.OBJECT).description("유저 지역"),
+                                fieldWithPath("data.userRegions[].region.seq").type(JsonFieldType.NUMBER).description("유저 지역 seq"),
+                                fieldWithPath("data.userRegions[].region.name").type(JsonFieldType.STRING).description("유저 지역 이름"),
+                                fieldWithPath("data.userRegions[].region.superRegionRoot").type(JsonFieldType.STRING).description("유저 지역 루트(최상위부터)"),
+                                fieldWithPath("data.userRegions[].region.level").type(JsonFieldType.NUMBER).description("유저 지역레벨"),
+                                fieldWithPath("data.userRegions[].priority").type(JsonFieldType.NUMBER).description("유저 지역 우선순위"),
+                                fieldWithPath("data.userInterests[].interest").type(JsonFieldType.OBJECT).description("유저 관심사"),
+                                fieldWithPath("data.userInterests[].interest.seq").type(JsonFieldType.NUMBER).description("관심사 seq"),
+                                fieldWithPath("data.userInterests[].interest.name").type(JsonFieldType.STRING).description("관심사 명"),
+                                fieldWithPath("data.userInterests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 seq"),
+                                fieldWithPath("data.userInterests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 명"),
+                                fieldWithPath("data.userInterests[].priority").type(JsonFieldType.NUMBER).description("유저 관심사 우선순위")
+                        )
+                    )
+                )
     }
 }

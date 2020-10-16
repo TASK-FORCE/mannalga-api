@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.web.dto.club.board
 
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import java.time.format.DateTimeFormatter
 
 data class ClubBoardBody(
@@ -35,8 +36,8 @@ data class ClubBoardDto(
             clubBoard.content,
             clubBoard.clubUser.user.userName!!,
             clubBoard.seq!!,
-            clubBoard.createdAt!!.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-            clubBoard.updatedAt!!.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+            clubBoard.createdAt?.toBaseDateTime() ?: "",
+            clubBoard.updatedAt?.toBaseDateTime() ?: "",
             clubBoard.topFixedFlag,
             clubBoard.notificationFlag
     )

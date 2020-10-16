@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.club.board.img.QClubBoardImg
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -69,8 +70,8 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
                     clubBoardSeq = tuple.get(clubBoard.seq)!!,
                     clubUserSeq  = tuple.get(clubBoard.clubUser.seq)!!,
                     title        = tuple.get(clubBoard.title) ?: "",
-                    userName     = tuple.get(clubBoard.clubUser.user.userName) ?: "",
-                    createdAt    = tuple.get(clubBoard.createdAt)!!.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    userName     = tuple.get(clubBoard.clubUser.user.userName)      ?: "",
+                    createdAt    = tuple.get(clubBoard.createdAt)?.toBaseDateTime() ?: "",
                     titleImgUrl  = tuple.get(clubBoard.titleImg.imgUrl) ?: "",
                     photoCnt     = tuple.get(clubBoardImg.count()) ?: 0,
                     topFixedFlag = tuple.get(clubBoard.topFixedFlag) ?: false,
