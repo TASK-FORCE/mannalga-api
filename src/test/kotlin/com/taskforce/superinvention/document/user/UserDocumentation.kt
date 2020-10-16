@@ -1,10 +1,14 @@
 package com.taskforce.superinvention.document.user
 
+import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
+import com.taskforce.superinvention.app.domain.interest.interestGroup.SimpleInterestGroupDto
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.model.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.interest.UserInterestDto
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.app.web.dto.region.*
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -279,5 +283,72 @@ class UserDocumentation : ApiDocumentationTest() {
                 )
             )
         )
+    }
+
+    @Test
+    @WithMockUser(authorities = [Role.NONE, Role.MEMBER]) //username = "eric"
+    fun `유저 관심사 변경`() {
+
+        // given
+        val mockUser = User("eric")
+        mockUser.seq = 1L
+        mockUser.userId = "12313"
+
+        val request = listOf(InterestRequestDto(1, 1), InterestRequestDto(2, 2))
+
+        val interestList = listOf(
+                InterestWithPriorityDto(
+                        InterestDto(1, "헬스", SimpleInterestGroupDto(1, "운동/건강")), 1
+                ),
+                InterestWithPriorityDto(
+                        InterestDto(2, "등산", SimpleInterestGroupDto(1, "운동/건강")), 2
+                )
+        )
+
+        val userInterestDto = UserInterestDto(
+                userSeq = mockUser.seq!!,
+                userId = mockUser.userId,
+                interestList = interestList
+        )
+
+
+        `when`(userInterestService.changeUserInterest(anyObject(), anyObject())).thenReturn(userInterestDto)
+
+        // when
+        val result = this.mockMvc.perform(
+                put("/users/interests")
+                        .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
+                        .content(objectMapper.writeValueAsString(request))
+                        .characterEncoding("utf-8")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(document("changeUserInterest", getDocumentRequest(), getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                                fieldWithPath("[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위")
+                        ),
+                        responseFields(
+                                *commonResponseField(),
+                                fieldWithPath("data.userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                                fieldWithPath("data.userId").type(JsonFieldType.STRING).description("유저 아이디"),
+                                fieldWithPath("data.userInterestList").type(JsonFieldType.ARRAY).description("유저의 변경 후 관심사들"),
+                                fieldWithPath("data.userInterestList[].interest").type(JsonFieldType.OBJECT).description("변경된 유저 관심사 정보"),
+                                fieldWithPath("data.userInterestList[].interest.seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                                fieldWithPath("data.userInterestList[].interest.name").type(JsonFieldType.STRING).description("관심사 이름"),
+                                fieldWithPath("data.userInterestList[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
+                                fieldWithPath("data.userInterestList[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 시퀀스"),
+                                fieldWithPath("data.userInterestList[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 이름"),
+                                fieldWithPath("data.userInterestList[].priority").type(JsonFieldType.NUMBER).description("유저가 선택한 관심사 우선순위")
+                        )
+                    )
+                )
+
+
+
     }
 }
