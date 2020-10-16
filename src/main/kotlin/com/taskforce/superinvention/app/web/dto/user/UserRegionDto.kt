@@ -1,6 +1,7 @@
-package com.taskforce.superinvention.app.web.dto.region
+package com.taskforce.superinvention.app.web.dto.user
 
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 
 class UserRegionDto(user: User, regions: List<RegionWithPriorityDto>) {
     val userSeq: Long?
@@ -13,3 +14,7 @@ class UserRegionDto(user: User, regions: List<RegionWithPriorityDto>) {
         this.userRegions = regions
     }
 }
+
+
+
+

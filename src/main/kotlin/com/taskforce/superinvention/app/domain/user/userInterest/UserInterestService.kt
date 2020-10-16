@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.interest.UserInterestDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.lang.NullPointerException
@@ -33,5 +34,12 @@ class UserInterestService (
     fun findUserInterest(user: User): UserInterestDto {
         val findByUser = userInterestRepository.findByUserOrderByPriority(user)
         return UserInterestDto(user.seq!!, user.userId, findByUser.map { e -> InterestWithPriorityDto(e) })
+    }
+
+    @Transactional
+    fun findUserInterests(user: User): List<UserInfoInterestDto> {
+        return userInterestRepository
+                .findByUser(user)
+                .map { userInterest -> UserInfoInterestDto(userInterest) }
     }
 }

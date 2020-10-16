@@ -1,12 +1,17 @@
-package com.taskforce.superinvention.app.web.user
+package com.taskforce.superinvention.app.web.controller.user
 
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserInfoService
 import com.taskforce.superinvention.app.domain.user.UserService
+import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
+import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
 import org.springframework.http.HttpStatus
@@ -16,7 +21,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/users")
 class UserController(
-        private val userService: UserService
+        private val userService: UserService,
+        private val userInfoService: UserInfoService
 ) {
 
     @PostMapping("/saveKakaoToken")
@@ -26,8 +32,8 @@ class UserController(
 
     @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/profile")
-    fun getUserInfo(@AuthUser user: User): ResponseDto<User> {
-        return ResponseDto(data = user)
+    fun getUserInfo(@AuthUser user: User): ResponseDto<UserInfoDto> {
+        return ResponseDto(data = userInfoService.getUserInfo(user))
     }
 
     @Secured(Role.NONE, Role.MEMBER)

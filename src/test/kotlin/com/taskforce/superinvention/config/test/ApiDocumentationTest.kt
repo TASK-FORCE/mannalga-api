@@ -9,15 +9,18 @@ import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGr
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.UserDetailsProvider
+import com.taskforce.superinvention.app.domain.user.UserInfoService
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.UserService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
-import com.taskforce.superinvention.app.web.RegionController
+import com.taskforce.superinvention.app.web.controller.region.RegionController
 import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
 import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.user.UserController
+import com.taskforce.superinvention.app.web.controller.user.UserRegionController
 import com.taskforce.superinvention.app.web.user.UserController
 import com.taskforce.superinvention.app.web.user.UserInterestController
 import com.taskforce.superinvention.app.web.user.UserRegionController
@@ -92,4 +95,7 @@ abstract class ApiDocumentationTest: BaseTest {
 
     @MockBean
     lateinit var clubBoardService: ClubBoardService
+
+    @MockBean
+    lateinit var userInfoService: UserInfoService
 }
