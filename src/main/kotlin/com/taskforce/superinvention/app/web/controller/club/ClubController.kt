@@ -69,6 +69,7 @@ class ClubController(
 
     /**
      * 모임리스트 검색
+     * 검색에 관해 논의한 내용 [https://github.com/TASK-FORCE/super-invention/issues/109]
      * @author eric
      */
     @PostMapping("/search")

@@ -20,13 +20,18 @@ import org.springframework.util.ObjectUtils
 @Repository
 class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslRepositorySupport(Club::class.java) {
     fun search(clubSearchOptions: ClubSearchOptions, pageable:Pageable): Page<Club> {
-        val fetchResult = from(club)
+
+        // SELECT FROM
+        val query = from(club)
                 .leftJoin(club.clubInterests, clubInterest)
                 .leftJoin(club.clubRegions, clubRegion)
-                .where(
-                    eqInterests(clubSearchOptions.interestList)
-                            , eqRegions(clubSearchOptions.regionList)
-                )
+
+        // WHERE
+        query.where(eqRegions(clubSearchOptions.regionList))
+        query.where(eqInterests(clubSearchOptions.interestList))
+
+        // PAGING
+        val fetchResult = query
                 .groupBy(club)
                 .orderBy()
                 .offset(pageable.offset)
@@ -43,7 +48,7 @@ class ClubRepositorySupport(val queryFactory:JPAQueryFactory) : QuerydslReposito
 
     private fun eqRegions(regionList:List<RegionRequestDto>): BooleanExpression? {
         if (ObjectUtils.isEmpty(regionList)) return null
-        return clubInterest.interest.seq.`in`(regionList.map { e -> e.seq })
+        return clubRegion.region.seq.`in`(regionList.map { e -> e.seq })
     }
 
     fun getUserCount(clubSeq: Long): Long {
