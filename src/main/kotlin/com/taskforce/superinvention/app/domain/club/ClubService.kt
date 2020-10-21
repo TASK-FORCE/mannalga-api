@@ -14,6 +14,7 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto

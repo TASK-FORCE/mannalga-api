@@ -38,8 +38,7 @@ class UserInterestService (
 
     @Transactional
     fun findUserInterests(user: User): List<UserInfoInterestDto> {
-        return userInterestRepository
-                .findByUserOrderByPriority(user)
+        return userInterestRepository.findUserInterests(user)
                 .map { userInterest -> UserInfoInterestDto(userInterest) }
     }
 }

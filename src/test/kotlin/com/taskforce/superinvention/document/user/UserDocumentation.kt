@@ -7,7 +7,6 @@ import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGr
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserInfoService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterest
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -26,8 +25,6 @@ import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
-import org.mockito.Mock
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
@@ -441,14 +438,14 @@ class UserDocumentation : ApiDocumentationTest() {
         )
 
         // given - userInfoInterests Data set
-        val interestGroup1 = InterestGroup("여행", emptyList())
+        val interestGroup1 = InterestGroup("여행")
         val interest1      = Interest("국내여행", interestGroup1)
         val userInterest1 = UserInterest(mockUser, interest1, priority = 1L)
         interestGroup1.seq = 1
         interest1.seq      = 2
         userInterest1.seq  = 3
 
-        val interestGroup2 = InterestGroup("여행", emptyList())
+        val interestGroup2 = InterestGroup("여행")
         val interest2      = Interest("국내여행", interestGroup2)
         val userInterest2 = UserInterest(mockUser, interest2, priority = 1L)
         interestGroup2.seq = 4

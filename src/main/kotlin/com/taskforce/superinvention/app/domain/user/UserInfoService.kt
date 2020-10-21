@@ -10,12 +10,15 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserInfoService(
+        private val userRepository: UserRepository,
         private val userInterestService : UserInterestService,
         private val userRegionService: UserRegionService
 ){
 
-    @Transactional(readOnly = true)
-    fun getUserInfo(user: User): UserInfoDto {
+    @Transactional
+    fun getUserInfo(userData: User): UserInfoDto {
+
+        val user = userRepository.findByUserId(userData.userId)!!
 
         // [1] 유저 관심사 조회
         val userInfoInterests: List<UserInfoInterestDto> = userInterestService.findUserInterests(user)

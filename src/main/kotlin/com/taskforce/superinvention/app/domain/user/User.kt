@@ -3,7 +3,6 @@ package com.taskforce.superinvention.app.domain.user
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import java.time.LocalDate
@@ -18,8 +17,8 @@ class User: BaseEntity {
     @Enumerated(EnumType.STRING)
     var userType: UserType
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    var userRoles: MutableSet<UserRole>
+    @OneToMany(mappedBy = "user")
+    var userRoles: MutableList<UserRole>
 
     var accessToken: String?  = ""
     var refreshToken: String? = ""
@@ -32,7 +31,7 @@ class User: BaseEntity {
 
     var isRegistered: Int? =0
 
-    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>, userName:String, birthday: LocalDate) {
+    constructor(userId: String, userType: UserType, userRoles: MutableList<UserRole>, userName:String, birthday: LocalDate) {
         this.userId = userId
         this.userType = userType
         this.userRoles = userRoles
@@ -43,13 +42,13 @@ class User: BaseEntity {
     constructor(userId: String) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = hashSetOf()
+        this.userRoles = mutableListOf()
     }
 
     constructor(userId: String, token: KakaoToken) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = hashSetOf()
+        this.userRoles = mutableListOf()
         this.accessToken = token.access_token
         this.refreshToken = token.refresh_token
     }

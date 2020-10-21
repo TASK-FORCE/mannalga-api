@@ -8,8 +8,8 @@ import javax.persistence.OneToMany
 
 @Entity
 class InterestGroup (
-        var name: String,
-
+        var name: String
+) : BaseEntity() {
         @OneToMany(mappedBy = "interestGroup", fetch = FetchType.LAZY)
-        var interesList: List<Interest>
-) : BaseEntity()
+        lateinit var interestList: List<Interest>
+}

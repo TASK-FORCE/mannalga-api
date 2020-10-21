@@ -14,6 +14,4 @@ class Interest(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "interest_group_seq")
         var interestGroup: InterestGroup
-
-) : BaseEntity() {
-}
+) : BaseEntity()

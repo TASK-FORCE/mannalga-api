@@ -15,8 +15,9 @@ class UserRegionService(
         private val regionRepository: RegionRepository
 ) {
 
+    @Transactional
     fun findUserRegionList(user: User): UserRegionDto {
-        val userRegions: List<UserRegion> = userRegionRepository.findByUserSeq(user.seq!!)
+        val userRegions: List<UserRegion> = userRegionRepository.findByUserWithRegion(user.seq!!)
 
         return when(userRegions.isEmpty()) {
             true -> UserRegionDto(user, emptyList())

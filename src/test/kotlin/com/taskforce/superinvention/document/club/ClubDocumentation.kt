@@ -269,10 +269,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         club.seq = clubSeq
 
-        val interestGroup = InterestGroup(
-                "건강",
-                listOf()
-        )
+        val interestGroup = InterestGroup("건강")
         interestGroup.seq = 1
 
         val interest3 = Interest(
@@ -594,10 +591,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         club.seq = clubSeq
 
-        val interestGroup = InterestGroup(
-                "건강",
-                listOf()
-        )
+        val interestGroup = InterestGroup("건강")
         interestGroup.seq = 1
 
         val interest3= Interest(
