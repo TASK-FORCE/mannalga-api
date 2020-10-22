@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.domain.role
 
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -8,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 class RoleService(
         val roleRepository: RoleRepository,
         val roleGroupRepository: RoleGroupRepository,
-        val clubUserRoleRepository: ClubUserRoleRepository
+        val clubUserRoleRepository: ClubUserRoleRepository,
+        val clubUserRepository: ClubUserRepository
 ) {
     /**
      * 모임원의 권한중 매니저 이상의 권한이 있는지 확인한다.
@@ -57,5 +59,11 @@ class RoleService(
             )
         }
         clubUserRoleRepository.saveAll(clubUserRoles)
+    }
+
+    @Transactional
+    fun hasClubMemberAuth(clubSeq: Long, userSeq: Long):Boolean {
+        val clubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, userSeq)
+        return clubUser != null
     }
 }
