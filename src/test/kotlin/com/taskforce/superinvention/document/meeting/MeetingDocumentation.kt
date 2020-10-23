@@ -135,8 +135,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
                 ))
     }
 
-    @Test
-    @WithMockUser
+//    @Test
+//    @WithMockUser
     fun `만남 생성`() {
         val meetingAddRequestDto = MeetingAddRequestDto(
                 title = "test title",
