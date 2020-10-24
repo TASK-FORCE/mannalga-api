@@ -52,10 +52,6 @@ class MeetingController(
             throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
         }
 
-        // check validation
-        if (meetingAddRequestDto.startTimestamp.isBefore(meetingAddRequestDto.endTimestamp))
-            throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
-
         return ResponseDto(meetingService.createMeeting(meetingAddRequestDto, clubUser.seq!!))
     }
 

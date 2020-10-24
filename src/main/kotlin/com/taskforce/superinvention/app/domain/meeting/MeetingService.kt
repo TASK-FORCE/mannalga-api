@@ -28,8 +28,12 @@ class MeetingService(
 
     @Transactional
     fun createMeeting(meetingAddRequestDto: MeetingAddRequestDto, clubUserSeq: Long): MeetingDto {
+        // check validation
         val clubUser = clubService.getClubUserByClubUserSeq(clubUserSeq)
                 ?: throw BizException("존재하지 않는 모임원입니다", HttpStatus.INTERNAL_SERVER_ERROR)
+
+        if (meetingAddRequestDto.startTimestamp.isBefore(meetingAddRequestDto.endTimestamp))
+            throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
 
         val meeting: Meeting = Meeting(
                 title = meetingAddRequestDto.title,
