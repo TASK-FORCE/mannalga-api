@@ -14,15 +14,8 @@ include::{sub-snippet}/addClub/http-request.adoc[]
 
 include::{sub-snippet}/addClub/request-fields.adoc[]
 
-include::{sub-snippet}/addClub/curl-request.adoc[]
-
-include::{sub-snippet}/addClub/request-body.adoc[]
-
 === Response
-....
-Response Fields 없음
-....
+include::{sub-snippet}/addClub/response-fields.adoc[]
 
 include::{sub-snippet}/addClub/http-response.adoc[]
 
-include::{sub-snippet}/addClub/response-body.adoc[]

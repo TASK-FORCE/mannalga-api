@@ -14,13 +14,8 @@ include::{sub-snippet}/searchClub/http-request.adoc[]
 
 include::{sub-snippet}/searchClub/request-fields.adoc[]
 
-include::{sub-snippet}/searchClub/curl-request.adoc[]
-
-include::{sub-snippet}/searchClub/request-body.adoc[]
 
 === Response
 include::{sub-snippet}/searchClub/http-response.adoc[]
 
 include::{sub-snippet}/searchClub/response-fields.adoc[]
-
-include::{sub-snippet}/searchClub/response-body.adoc[]

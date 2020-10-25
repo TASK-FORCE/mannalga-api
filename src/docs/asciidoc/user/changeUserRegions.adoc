@@ -14,13 +14,7 @@ include::{sub-snippet}/changeUserRegions/http-request.adoc[]
 
 include::{sub-snippet}/changeUserRegions/request-fields.adoc[]
 
-include::{sub-snippet}/changeUserRegions/curl-request.adoc[]
-
-include::{sub-snippet}/changeUserRegions/request-body.adoc[]
-
 === Response
 include::{sub-snippet}/changeUserRegions/response-fields.adoc[]
 
 include::{sub-snippet}/changeUserRegions/http-response.adoc[]
-
-include::{sub-snippet}/changeUserRegions/response-body.adoc[]

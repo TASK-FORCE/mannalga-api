@@ -12,11 +12,7 @@ endif::[]
 === Request
 include::{sub-snippet}/getMyClubUserInfo/http-request.adoc[]
 
-include::{sub-snippet}/getMyClubUserInfo/curl-request.adoc[]
-
 === Response
-include::{sub-snippet}/getMyClubUserInfo/http-response.adoc[]
-
 include::{sub-snippet}/getMyClubUserInfo/response-fields.adoc[]
 
-include::{sub-snippet}/getMyClubUserInfo/response-body.adoc[]
+include::{sub-snippet}/getMyClubUserInfo/http-response.adoc[]
