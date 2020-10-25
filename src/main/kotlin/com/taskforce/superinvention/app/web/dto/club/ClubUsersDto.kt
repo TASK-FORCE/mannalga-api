@@ -1,10 +1,8 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
-import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import java.time.LocalDateTime
 
 class ClubUsersDto(
         club: Club,

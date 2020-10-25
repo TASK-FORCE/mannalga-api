@@ -25,7 +25,7 @@ class UserInterestController(
     @Secured(Role.MEMBER)
     @PutMapping
     fun changeUserInterest(@AuthUser user: User,
-                         @RequestBody interestRequestDto: List<InterestRequestDto>): ResponseDto<UserInterestDto> {
+                           @RequestBody interestRequestDto: List<InterestRequestDto>): ResponseDto<UserInterestDto> {
         return  ResponseDto(data = userInterestService.changeUserInterest(user, interestRequestDto))
     }
 }

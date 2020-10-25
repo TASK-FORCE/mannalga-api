@@ -6,7 +6,6 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

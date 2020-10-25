@@ -4,14 +4,11 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserInfoService
 import com.taskforce.superinvention.app.domain.user.UserService
-import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
-import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
-import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
 import org.springframework.http.HttpStatus

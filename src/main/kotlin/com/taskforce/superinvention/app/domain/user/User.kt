@@ -3,7 +3,6 @@ package com.taskforce.superinvention.app.domain.user
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.BaseEntity
-import com.taskforce.superinvention.app.domain.user.UserType
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import java.time.LocalDate
@@ -18,7 +17,7 @@ class User: BaseEntity {
     @Enumerated(EnumType.STRING)
     var userType: UserType
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     var userRoles: MutableSet<UserRole>
 
     var accessToken: String?  = ""
@@ -43,13 +42,13 @@ class User: BaseEntity {
     constructor(userId: String) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = hashSetOf()
+        this.userRoles = mutableSetOf()
     }
 
     constructor(userId: String, token: KakaoToken) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = hashSetOf()
+        this.userRoles = mutableSetOf()
         this.accessToken = token.access_token
         this.refreshToken = token.refresh_token
     }

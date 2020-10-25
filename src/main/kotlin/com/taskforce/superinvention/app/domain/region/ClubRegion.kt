@@ -9,7 +9,6 @@ import javax.persistence.ManyToOne
 
 @Entity
 class ClubRegion(
-
         @ManyToOne(fetch = FetchType.LAZY)
         var club:Club,
 

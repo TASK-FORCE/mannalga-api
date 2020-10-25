@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.user.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.user.QUser.user
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
