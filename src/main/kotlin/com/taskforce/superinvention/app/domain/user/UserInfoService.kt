@@ -14,7 +14,6 @@ class UserInfoService(
         private val userInterestService : UserInterestService,
         private val userRegionService: UserRegionService
 ){
-
     @Transactional
     fun getUserInfo(userData: User): UserInfoDto {
 
@@ -24,8 +23,7 @@ class UserInfoService(
         val userInfoInterests: List<UserInfoInterestDto> = userInterestService.findUserInterests(user)
 
         // [2] 유저 관심 지역 조회
-        val userRegions: List<UserInfoRegionDto> = userRegionService.findUserRegionList(user)
-                .userRegions
+        val userRegions: List<UserInfoRegionDto> = userRegionService.findUserRegionList(user).userRegions
                 .map { userRegions -> UserInfoRegionDto(userRegions.priority, userRegions.region) }
 
         return UserInfoDto(user, userRegions, userInfoInterests)

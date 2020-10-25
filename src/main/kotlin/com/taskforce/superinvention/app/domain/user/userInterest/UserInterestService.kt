@@ -15,7 +15,6 @@ class UserInterestService (
         private val interestRepository: InterestRepository,
         private val userInterestRepository: UserInterestRepository
 ){
-
     @Transactional
     fun changeUserInterest(user: User, userInterests: List<InterestRequestDto>): UserInterestDto {
         val toDelete = userInterestRepository.findByUserOrderByPriority(user)

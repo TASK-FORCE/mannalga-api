@@ -16,7 +16,7 @@ class ClubUser(
         @JoinColumn(name = "user_seq")
         var user: User
 ) : BaseEntity() {
-        @OneToMany(fetch = FetchType.LAZY)
+        @OneToMany
         @JoinColumn(name = "club_user_seq")
         lateinit var clubUserRoles: Set<ClubUserRole>
 }

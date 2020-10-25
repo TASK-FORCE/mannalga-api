@@ -18,7 +18,7 @@ class User: BaseEntity {
     var userType: UserType
 
     @OneToMany(mappedBy = "user")
-    var userRoles: MutableList<UserRole>
+    var userRoles: MutableSet<UserRole>
 
     var accessToken: String?  = ""
     var refreshToken: String? = ""
@@ -31,7 +31,7 @@ class User: BaseEntity {
 
     var isRegistered: Int? =0
 
-    constructor(userId: String, userType: UserType, userRoles: MutableList<UserRole>, userName:String, birthday: LocalDate) {
+    constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>, userName:String, birthday: LocalDate) {
         this.userId = userId
         this.userType = userType
         this.userRoles = userRoles
@@ -42,13 +42,13 @@ class User: BaseEntity {
     constructor(userId: String) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = mutableListOf()
+        this.userRoles = mutableSetOf()
     }
 
     constructor(userId: String, token: KakaoToken) {
         this.userId = userId
         this.userType = UserType.KAKAO
-        this.userRoles = mutableListOf()
+        this.userRoles = mutableSetOf()
         this.accessToken = token.access_token
         this.refreshToken = token.refresh_token
     }
