@@ -12,7 +12,6 @@ import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
@@ -500,7 +499,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     @Test
     @WithMockUser(authorities = [Role.MEMBER])
     fun `내 모임 리스트 조회`() {
-        val pageable:Pageable =  PageRequest.of(0, 10)
+        val pageable:Pageable =  PageRequest.of(0, 20)
         val club = Club(
                 name = "땔감 스터디",
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
@@ -536,15 +535,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
         )
 
-        val requestBody = PageOption()
-
         val result = mockMvc.perform(
-                post("/clubs/my")
+                get("/clubs/my")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(requestBody))
         ).andDo(print())
 
 
