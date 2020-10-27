@@ -15,7 +15,7 @@ endif::[]
 ....
 
 include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
-include::{sub-snippet}/saveKakaoToken/request-body.adoc[]
+include::{sub-snippet}/saveKakaoToken/request-fields.adoc[]
 
 === Response
 include::{sub-snippet}/saveKakaoToken/response-fields.adoc[]

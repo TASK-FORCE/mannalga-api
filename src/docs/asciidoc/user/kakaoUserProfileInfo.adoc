@@ -12,14 +12,9 @@ endif::[]
 === Request
 include::{sub-snippet}/kakaoUserProfileInfo/http-request.adoc[]
 
-include::{sub-snippet}/kakaoUserProfileInfo/curl-request.adoc[]
-....
-요구 Request Header 없음
-....
-
 === Response
+include::{sub-snippet}/kakaoUserProfileInfo/response-fields.adoc[]
+
 include::{sub-snippet}/kakaoUserProfileInfo/http-response.adoc[]
 
-include::{sub-snippet}/kakaoUserProfileInfo/response-body.adoc[]
 
-include::{sub-snippet}/kakaoUserProfileInfo/response-fields.adoc[]

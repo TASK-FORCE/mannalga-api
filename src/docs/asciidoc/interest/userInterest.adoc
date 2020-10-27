@@ -12,15 +12,7 @@ endif::[]
 === Request
 include::{sub-snippet}/userInterest/http-request.adoc[]
 
-include::{sub-snippet}/userInterest/request-fields.adoc[]
-
-include::{sub-snippet}/userInterest/curl-request.adoc[]
-
-include::{sub-snippet}/userInterest/request-body.adoc[]
-
 === Response
 include::{sub-snippet}/userInterest/response-fields.adoc[]
 
 include::{sub-snippet}/userInterest/http-response.adoc[]
-
-include::{sub-snippet}/userInterest/response-body.adoc[]

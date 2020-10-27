@@ -14,13 +14,7 @@ include::{sub-snippet}/changeClubRegions/http-request.adoc[]
 
 include::{sub-snippet}/changeClubRegions/request-fields.adoc[]
 
-include::{sub-snippet}/changeClubRegions/curl-request.adoc[]
-
-include::{sub-snippet}/changeClubRegions/request-body.adoc[]
-
 === Response
-include::{sub-snippet}/changeClubRegions/http-response.adoc[]
-
 include::{sub-snippet}/changeClubRegions/response-fields.adoc[]
 
-include::{sub-snippet}/changeClubRegions/response-body.adoc[]
+include::{sub-snippet}/changeClubRegions/http-response.adoc[]

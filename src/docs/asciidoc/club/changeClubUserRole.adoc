@@ -12,13 +12,10 @@ endif::[]
 === Request
 include::{sub-snippet}/changeClubUserRole/http-request.adoc[]
 
-include::{sub-snippet}/changeClubUserRole/curl-request.adoc[]
-
 include::{sub-snippet}/changeClubUserRole/request-body.adoc[]
 
 === Response
-include::{sub-snippet}/changeClubUserRole/http-response.adoc[]
-
 include::{sub-snippet}/changeClubUserRole/response-fields.adoc[]
 
-include::{sub-snippet}/changeClubUserRole/response-body.adoc[]
+include::{sub-snippet}/changeClubUserRole/http-response.adoc[]
+

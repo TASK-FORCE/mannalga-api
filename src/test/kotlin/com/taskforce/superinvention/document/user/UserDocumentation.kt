@@ -157,7 +157,7 @@ class UserDocumentation : ApiDocumentationTest() {
 
         val result = this.mockMvc.perform(
                 get("/users/regions")
-                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIiwidXNlcklkIjoiMTQ1MTAwMTY0OSIsInN1YiI6IjE0NTEwMDE2NDkiLCJpYXQiOjE1OTc1NDY1MjYsImV4cCI6MTYyOTA4MjUyNn0.1dc1DK7W2iYOXu6BOlrHAbpKnlMkz4o7c7eFtGOWy5M")
+                        .header("Authorization", "Bearer xxxxxxxxxxxxxxxxxxxxxxx")
                         .characterEncoding("utf-8")
         ).andDo(print())
 
