@@ -7,6 +7,4 @@ import javax.persistence.Entity
 class RoleGroup(
     var name: String,
     var role_type: String
-) : BaseEntity() {
-
-}
+) : BaseEntity()

@@ -29,7 +29,6 @@ class ClubBoardService(
      */
     @Transactional
     fun getClubBoardList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoardPreviewDto> {
-
         val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
         return clubBoardRepository.searchInList(pageRequest, searchOpt, clubSeq)
     }

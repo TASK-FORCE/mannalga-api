@@ -2,7 +2,7 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositorySupport
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositoryImpl
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -14,7 +14,6 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
@@ -35,7 +34,6 @@ class ClubService(
         private var clubRepository: ClubRepository,
         private var clubRepositorySupport: ClubRepositorySupport,
         private var clubUserRepository: ClubUserRepository,
-        private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
@@ -49,7 +47,7 @@ class ClubService(
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
-        val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
+        val clubUsers = clubUserRepository.findByClubSeq(clubSeq)
         if (clubUsers.isEmpty()) throw BizException("모임에 유저가 한명도 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR)
         return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
@@ -60,10 +58,10 @@ class ClubService(
     @Transactional
     fun addClub(club: Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
         // validation
-        if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (interestList.stream().filter { e -> e.priority == 1L }.count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
 
-        if (regionList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (regionList.stream().filter { e -> e.priority == 1L }.count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
 
         // 1. 모임 생성
@@ -187,17 +185,10 @@ class ClubService(
     }
 
     @Transactional
-    fun getUserClubList(user: User, searchOptions: PageOption): Page<ClubUserDto> {
-        val pageable:Pageable = PageRequest.of(searchOptions.page, searchOptions.size)
-        val result: Page<ClubUser> = clubUserRepositorySupport.findByUser(user, pageable)
-        val mappingContents = result.map { e ->
-            ClubUserDto(
-                seq = e.seq!!,
-                userSeq = e.user.seq!!,
-                club = ClubDto(e.club, clubUserRepository.countByClubSeq(e.club.seq!!)),
-                roles = e.clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
-            )
-        }.toList()
-        return PageImpl(mappingContents, result.pageable, result.totalElements)
+    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserDto> {
+        val pageRequest:Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
+        val result: Page<ClubUserDto> = clubUserRepository.findByUserWithPaging(user, pageRequest)
+
+        return PageImpl(result.content, result.pageable, result.totalElements)
     }
 }
