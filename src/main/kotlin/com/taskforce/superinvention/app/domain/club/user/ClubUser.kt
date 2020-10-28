@@ -18,5 +18,6 @@ class ClubUser(
 
 ) : BaseEntity() {
         @OneToMany
+        @JoinColumn(name = "club_user_seq")
         lateinit var clubUserRoles: Set<ClubUserRole>
 }

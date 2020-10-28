@@ -1,8 +1,9 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.querydsl.core.QueryResults
+import com.querydsl.core.Tuple
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositoryImpl
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -32,11 +33,10 @@ import java.lang.IllegalArgumentException
 @Service
 class ClubService(
         private var clubRepository: ClubRepository,
-        private var clubRepositorySupport: ClubRepositorySupport,
-        private var clubUserRepository: ClubUserRepository,
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
+        private var clubUserRepository: ClubUserRepository,
         private var clubInterestRepository: ClubInterestRepository,
         private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
@@ -114,7 +114,7 @@ class ClubService(
     @Transactional
     fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
         val pageable:Pageable = PageRequest.of(request.page.toInt(), request.size.toInt())
-        val result = clubRepositorySupport.search(request.searchOptions, pageable)
+        val result = clubRepository.search(request.searchOptions, pageable)
         val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()
@@ -162,8 +162,8 @@ class ClubService(
 
     @Transactional
     fun getClubUserInfo(clubSeq: Long, user: User): ClubUserDto {
-        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
-        if (clubUser == null) throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
+        val clubUser: ClubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+                ?: throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
 
         val clubUserRoles = roleService.getClubUserRoles(clubUser)
         return ClubUserDto(
@@ -186,9 +186,33 @@ class ClubService(
 
     @Transactional
     fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserDto> {
-        val pageRequest:Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
-        val result: Page<ClubUserDto> = clubUserRepository.findByUserWithPaging(user, pageRequest)
+        val query: QueryResults<Tuple> = clubRepository.findUserClubList(user, pageable)
 
-        return PageImpl(result.content, result.pageable, result.totalElements)
+        val result: List<ClubUserDto> = query.results.map { tuple ->
+            ClubUserDto(
+                    seq     = tuple.get(0, Long::class.java)!!,
+                    userSeq = tuple.get(1, Long::class.java)!!,
+                    club    = ClubDto(
+                            tuple.get(2, Club::class.java)!!,
+                            tuple.get(3, Long::class.java)!!
+                    ),
+                    roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
+            )
+        }
+
+        return PageImpl(result, pageable, query.total)
+    }
+
+    private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
+        if(concatedRole == null) return setOf()
+
+        val roleNames= concatedRole.roleName.split(",")
+        val roleGroupNames =  concatedRole.roleGroupName.split(",")
+
+        val roleSet = mutableSetOf<RoleDto>()
+        for(x in roleNames.indices) {
+            roleSet.add(RoleDto("ROLE_${roleNames[x]}", roleGroupNames[x]))
+        }
+        return roleSet
     }
 }

@@ -47,7 +47,6 @@ dependencies {
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-jpa:${queryDsl}")
-    implementation("com.querydsl:querydsl-sql:${queryDsl}")
 
     kapt("com.querydsl:querydsl-apt:${queryDsl}:jpa")
     kaptTest("com.querydsl:querydsl-apt:${queryDsl}:jpa")
