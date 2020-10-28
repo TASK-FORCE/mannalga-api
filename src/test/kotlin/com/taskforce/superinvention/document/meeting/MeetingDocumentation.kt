@@ -28,6 +28,7 @@ import org.mockito.BDDMockito.given
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -53,7 +54,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
     fun `만남 조회 기능`() {
         // given
         val clubSeq = 76L
-        val pageable = PageRequest.of(0, 10)
+        val pageable: Pageable = PageRequest.of(0, 20)
 
         val club = ClubDto(
                 seq = clubSeq,

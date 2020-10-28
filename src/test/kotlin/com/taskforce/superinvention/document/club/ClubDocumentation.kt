@@ -637,14 +637,10 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         region2.seq = 123
 
-
         val clubRegion = ClubRegion(club, region1, 1)
         clubRegion.seq = 41231
         val clubRegion2 = ClubRegion(club, region2, 2)
         clubRegion2.seq = 41231
-
-
-
 
         club.clubRegions = listOf(
                 clubRegion,
