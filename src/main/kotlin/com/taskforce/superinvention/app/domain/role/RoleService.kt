@@ -1,14 +1,18 @@
 package com.taskforce.superinvention.app.domain.role
 
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.sql.SQLException
 
 @Service
 class RoleService(
         val roleRepository: RoleRepository,
         val roleGroupRepository: RoleGroupRepository,
-        val clubUserRoleRepository: ClubUserRoleRepository
+        val clubUserRoleRepository: ClubUserRoleRepository,
+        val clubUserRepository: ClubUserRepository
 ) {
     /**
      * 모임원의 권한중 매니저 이상의 권한이 있는지 확인한다.
@@ -16,6 +20,7 @@ class RoleService(
      * @author eric
      * @return 매니저, 마스터 권한중 하나라도 있으면 true
      */
+    @Transactional
     fun hasClubManagerAuth(clubUser: ClubUser): Boolean {
 
         val clubUserRoles = getClubUserRoles(clubUser)
@@ -57,5 +62,11 @@ class RoleService(
             )
         }
         clubUserRoleRepository.saveAll(clubUserRoles)
+    }
+
+    @Transactional
+    fun hasClubMemberAuth(clubSeq: Long, user: User): Boolean {
+        val clubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+        return clubUser != null
     }
 }

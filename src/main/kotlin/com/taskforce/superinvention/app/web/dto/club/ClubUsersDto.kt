@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club
 
 import com.taskforce.superinvention.app.domain.club.Club
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 
@@ -17,4 +18,11 @@ class ClubUserDto(
         val userSeq: Long,
         val club: ClubDto,
         val roles: Set<RoleDto>
-)
+) {
+    constructor(clubUser: ClubUser): this(
+            seq = clubUser.seq!!,
+            userSeq = clubUser.user.seq!!,
+            club = ClubDto(clubUser.club, null),
+            roles = clubUser.clubUserRoles.map { e -> RoleDto(e.role) }.toSet()
+    )
+}

@@ -9,7 +9,7 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import javax.persistence.*
 
 @Entity
-@JsonIdentityInfo(property = "seq", generator = ObjectIdGenerators.StringIdGenerator::class)
+@JsonIdentityInfo(property = "objId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class Club(
     var name: String,
     var description: String,
