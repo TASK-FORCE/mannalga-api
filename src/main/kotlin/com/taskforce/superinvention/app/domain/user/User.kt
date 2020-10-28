@@ -9,7 +9,7 @@ import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
-@JsonIdentityInfo(property = "userId", generator = ObjectIdGenerators.StringIdGenerator::class)
+@JsonIdentityInfo(property = "objId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class User: BaseEntity {
 
     var userId: String
