@@ -29,6 +29,6 @@ class ClubBoard(
 
 ): BaseEntity() {
 
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "clubBoard")
+        @OneToMany(mappedBy = "clubBoard")
         lateinit var boardImgs: MutableList<ClubBoardImg>
 }

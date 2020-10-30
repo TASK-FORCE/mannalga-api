@@ -5,14 +5,12 @@ import com.taskforce.superinvention.app.domain.meeting.MeetingService
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingAddRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
@@ -30,12 +28,12 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun getAllMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      @ModelAttribute pageOption: PageOption): ResponseDto<Page<MeetingDto>> {
+                      pageable: Pageable): ResponseDto<Page<MeetingDto>> {
+
         if (!roleService.hasClubMemberAuth(clubSeq, user)) {
             throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
         }
 
-        val pageable: Pageable = PageRequest.of(pageOption.page, pageOption.size)
         return ResponseDto(meetingService.getMeeting(clubSeq, pageable))
     }
 

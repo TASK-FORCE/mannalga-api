@@ -1,8 +1,9 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.querydsl.core.QueryResults
+import com.querydsl.core.Tuple
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepositorySupport
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -14,7 +15,6 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
@@ -33,12 +33,10 @@ import java.lang.IllegalArgumentException
 @Service
 class ClubService(
         private var clubRepository: ClubRepository,
-        private var clubRepositorySupport: ClubRepositorySupport,
-        private var clubUserRepository: ClubUserRepository,
-        private var clubUserRepositorySupport: ClubUserRepositorySupport,
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
+        private var clubUserRepository: ClubUserRepository,
         private var clubInterestRepository: ClubInterestRepository,
         private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
@@ -49,7 +47,7 @@ class ClubService(
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
-        val clubUsers = clubUserRepositorySupport.findByClubSeq(clubSeq)
+        val clubUsers = clubUserRepository.findByClubSeq(clubSeq)
         if (clubUsers.isEmpty()) throw BizException("모임에 유저가 한명도 존재하지 않습니다", HttpStatus.INTERNAL_SERVER_ERROR)
         return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
@@ -60,10 +58,10 @@ class ClubService(
     @Transactional
     fun addClub(club: Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
         // validation
-        if (interestList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (interestList.stream().filter { e -> e.priority == 1L }.count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
 
-        if (regionList.stream().filter({e -> e.priority.equals(1L)}).count() != 1L)
+        if (regionList.stream().filter { e -> e.priority == 1L }.count() != 1L)
             throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
 
         // 1. 모임 생성
@@ -116,7 +114,7 @@ class ClubService(
     @Transactional
     fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
         val pageable:Pageable = PageRequest.of(request.page.toInt(), request.size.toInt())
-        val result = clubRepositorySupport.search(request.searchOptions, pageable)
+        val result = clubRepository.search(request.searchOptions, pageable)
         val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()
@@ -164,8 +162,8 @@ class ClubService(
 
     @Transactional
     fun getClubUserInfo(clubSeq: Long, user: User): ClubUserDto {
-        val clubUser: ClubUser? = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
-        if (clubUser == null) throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
+        val clubUser: ClubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
+                ?: throw BizException("모임원이 아닙니다. 접근 권한이 없습니다.", HttpStatus.FORBIDDEN)
 
         val clubUserRoles = roleService.getClubUserRoles(clubUser)
         return ClubUserDto(
@@ -187,17 +185,34 @@ class ClubService(
     }
 
     @Transactional
-    fun getUserClubList(user: User, searchOptions: PageOption): Page<ClubUserDto> {
-        val pageable:Pageable = PageRequest.of(searchOptions.page, searchOptions.size)
-        val result: Page<ClubUser> = clubUserRepositorySupport.findByUser(user, pageable)
-        val mappingContents = result.map { e ->
+    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserDto> {
+        val query: QueryResults<Tuple> = clubRepository.findUserClubList(user, pageable)
+
+        val result: List<ClubUserDto> = query.results.map { tuple ->
             ClubUserDto(
-                seq = e.seq!!,
-                userSeq = e.user.seq!!,
-                club = ClubDto(e.club, clubUserRepository.countByClubSeq(e.club.seq!!)),
-                roles = e.clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
+                    seq     = tuple.get(0, Long::class.java)!!,
+                    userSeq = tuple.get(1, Long::class.java)!!,
+                    club    = ClubDto(
+                            tuple.get(2, Club::class.java)!!,
+                            tuple.get(3, Long::class.java)!!
+                    ),
+                    roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
             )
-        }.toList()
-        return PageImpl(mappingContents, result.pageable, result.totalElements)
+        }
+
+        return PageImpl(result, pageable, query.total)
+    }
+
+    private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
+        if(concatedRole == null) return setOf()
+
+        val roleNames= concatedRole.roleName.split(",")
+        val roleGroupNames =  concatedRole.roleGroupName.split(",")
+
+        val roleSet = mutableSetOf<RoleDto>()
+        for(x in roleNames.indices) {
+            roleSet.add(RoleDto("ROLE_${roleNames[x]}", roleGroupNames[x]))
+        }
+        return roleSet
     }
 }

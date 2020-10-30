@@ -11,4 +11,10 @@ class RoleDto (
                         name = role.name,
                         roleGroupName = role.roleGroup.name
                 )
+
+        constructor(nameStr: String, roleGroupName: String) :
+                this(
+                        name = Role.fromRoleName(nameStr),
+                        roleGroupName = roleGroupName
+                )
 }

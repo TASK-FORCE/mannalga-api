@@ -18,17 +18,17 @@ class Club(
 
 ): BaseEntity() {
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
     lateinit var clubInterests: List<ClubInterest>
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
     lateinit var clubRegions: List<ClubRegion>
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     lateinit var clubUser: List<ClubUser>
 }
