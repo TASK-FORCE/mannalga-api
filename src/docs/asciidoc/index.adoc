@@ -104,3 +104,6 @@ include::{root}/club/meeting/meeting-all.adoc[]
 
 == 만남 생성
 include::{root}/club/meeting/create-meeting.adoc[]
+
+== 만남 변경
+include::{root}/club/meeting/modify-meeting.adoc[]
