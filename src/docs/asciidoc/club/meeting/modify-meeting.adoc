@@ -14,13 +14,7 @@ include::{sub-snippet}/modify-meeting/http-request.adoc[]
 
 include::{sub-snippet}/modify-meeting/request-fields.adoc[]
 
-include::{sub-snippet}/modify-meeting/curl-request.adoc[]
-
-include::{sub-snippet}/modify-meeting/request-body.adoc[]
-
 === Response
-include::{sub-snippet}/modify-meeting/http-response.adoc[]
-
 include::{sub-snippet}/modify-meeting/response-fields.adoc[]
 
-include::{sub-snippet}/modify-meeting/response-body.adoc[]
+include::{sub-snippet}/modify-meeting/http-response.adoc[]

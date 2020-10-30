@@ -17,13 +17,7 @@ include::{sub-snippet}/meeting-all/http-request.adoc[]
 
 include::{sub-snippet}/meeting-all/request-fields.adoc[]
 
-include::{sub-snippet}/meeting-all/curl-request.adoc[]
-
-include::{sub-snippet}/meeting-all/request-body.adoc[]
-
 === Response
-include::{sub-snippet}/meeting-all/http-response.adoc[]
-
 include::{sub-snippet}/meeting-all/response-fields.adoc[]
 
-include::{sub-snippet}/meeting-all/response-body.adoc[]
+include::{sub-snippet}/meeting-all/http-response.adoc[]
