@@ -6,7 +6,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingAddRequestDto
+import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
@@ -41,16 +41,36 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun createMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      @RequestBody meetingAddRequestDto: MeetingAddRequestDto): ResponseDto<MeetingDto> {
+                      @RequestBody meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
 
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
                 ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+
         if (!roleService.hasClubManagerAuth(clubUser)) {
             throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
         }
 
-        return ResponseDto(meetingService.createMeeting(meetingAddRequestDto, clubUser.seq!!))
+        return ResponseDto(meetingService.createMeeting(meetingRequestDto, clubUser.seq!!))
+    }
+
+    @PutMapping("/{meetingSeq}")
+    @Secured(Role.MEMBER)
+    fun modifyMeeting(@AuthUser user: User,
+                      @PathVariable clubSeq: Long,
+                      @PathVariable meetingSeq: Long,
+                      @RequestBody meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
+        // check auth
+        val clubUser = clubService.getClubUser(clubSeq, user)
+                ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+
+        if (!roleService.hasClubManagerAuth(clubUser)) {
+            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
+        }
+
+        meetingService.checkClubMeeting(clubSeq, meetingSeq)
+
+        return ResponseDto(meetingService.modifyMeeting(meetingSeq, meetingRequestDto))
     }
 
 }

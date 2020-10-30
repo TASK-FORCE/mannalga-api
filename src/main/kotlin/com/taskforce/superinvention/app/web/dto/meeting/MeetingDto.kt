@@ -36,7 +36,7 @@ class MeetingDto(
 }
 
 
-class MeetingAddRequestDto(
+class MeetingRequestDto(
         val title: String,
         val content: String,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT, timezone = "Asia/Seoul")
