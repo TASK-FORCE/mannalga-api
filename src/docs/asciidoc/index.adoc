@@ -107,3 +107,6 @@ include::{root}/club/meeting/create-meeting.adoc[]
 
 == 만남 변경
 include::{root}/club/meeting/modify-meeting.adoc[]
+
+== 만남 삭제
+include::{root}/club/meeting/delete-meeting.adoc[]
