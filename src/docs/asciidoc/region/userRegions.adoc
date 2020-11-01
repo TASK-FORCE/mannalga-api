@@ -16,9 +16,5 @@ include::{sub-snippet}/userRegions/http-request.adoc[]
 요구 Request Fields 없음
 ....
 
-include::{sub-snippet}/userRegions/curl-request.adoc[]
-
 === Response
 include::{sub-snippet}/userRegions/http-response.adoc[]
-
-include::{sub-snippet}/userRegions/response-body.adoc[]

@@ -97,3 +97,13 @@ include::{root}/club/board/select-club-board.adoc[]
 
 == 모임 게시판 삭제
 include::{root}/club/board/delete-club-board.adoc[]
+
+= 만남
+== 만남 모두 조회
+include::{root}/club/meeting/meeting-all.adoc[]
+
+== 만남 생성
+include::{root}/club/meeting/create-meeting.adoc[]
+
+== 만남 변경
+include::{root}/club/meeting/modify-meeting.adoc[]

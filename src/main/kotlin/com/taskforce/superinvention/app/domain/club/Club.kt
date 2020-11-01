@@ -9,7 +9,7 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import javax.persistence.*
 
 @Entity
-@JsonIdentityInfo(property = "seq", generator = ObjectIdGenerators.StringIdGenerator::class)
+@JsonIdentityInfo(property = "objId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class Club(
     var name: String,
     var description: String,
@@ -18,17 +18,17 @@ class Club(
 
 ): BaseEntity() {
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
     lateinit var clubInterests: List<ClubInterest>
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
     lateinit var clubRegions: List<ClubRegion>
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     @JoinColumn(name = "club_seq")
     lateinit var clubUser: List<ClubUser>
 }

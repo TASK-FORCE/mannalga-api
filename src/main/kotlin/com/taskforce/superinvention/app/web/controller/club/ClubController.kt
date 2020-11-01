@@ -8,7 +8,6 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -17,6 +16,7 @@ import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.util.ObjectUtils
@@ -156,9 +156,9 @@ class ClubController(
         return ResponseDto(data = roles.map { role -> RoleDto(role) }.toSet())
     }
 
-    @PostMapping("/my")
+    @GetMapping("/my")
     @Secured(Role.MEMBER)
-    fun getMyClubList(@AuthUser user: User, @RequestBody searchOptions: PageOption): ResponseDto<Page<ClubUserDto>> {
-        return ResponseDto(data = clubService.getUserClubList(user, searchOptions))
+    fun getMyClubList(@AuthUser user: User, pageable: Pageable): ResponseDto<Page<ClubUserDto>> {
+        return ResponseDto(data = clubService.getUserClubList(user, pageable))
     }
 }

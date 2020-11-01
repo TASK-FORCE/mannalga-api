@@ -12,7 +12,6 @@ import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.common.request.PageOption
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
@@ -29,7 +28,6 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFie
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -500,7 +498,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     @Test
     @WithMockUser(authorities = [Role.MEMBER])
     fun `내 모임 리스트 조회`() {
-        val pageable:Pageable =  PageRequest.of(0, 10)
+        val pageable:Pageable =  PageRequest.of(0, 20)
         val club = Club(
                 name = "땔감 스터디",
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
@@ -536,15 +534,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
         )
 
-        val requestBody = PageOption()
-
         val result = mockMvc.perform(
-                post("/clubs/my")
+                get("/clubs/my")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(requestBody))
         ).andDo(print())
 
 
@@ -642,14 +637,10 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
         region2.seq = 123
 
-
         val clubRegion = ClubRegion(club, region1, 1)
         clubRegion.seq = 41231
         val clubRegion2 = ClubRegion(club, region2, 2)
         clubRegion2.seq = 41231
-
-
-
 
         club.clubRegions = listOf(
                 clubRegion,

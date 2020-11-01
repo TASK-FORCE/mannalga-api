@@ -15,6 +15,7 @@ class ClubUser(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_seq")
         var user: User
+
 ) : BaseEntity() {
         @OneToMany
         @JoinColumn(name = "club_user_seq")

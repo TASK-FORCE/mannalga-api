@@ -12,19 +12,10 @@ endif::[]
 === Request
 include::{sub-snippet}/addClubUser/http-request.adoc[]
 
-....
-Request Fields 없음
-....
-
-include::{sub-snippet}/addClubUser/curl-request.adoc[]
-
-....
-Request Body 없음
-....
+include::{sub-snippet}/addClubUser/path-parameters.adoc[]
 
 === Response
-....
-Response Fields 없음
-....
+include::{sub-snippet}/addClubUser/response-fields.adoc[]
 
 include::{sub-snippet}/addClubUser/http-response.adoc[]
+

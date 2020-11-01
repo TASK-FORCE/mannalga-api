@@ -14,13 +14,7 @@ include::{sub-snippet}/changeUserInterest/http-request.adoc[]
 
 include::{sub-snippet}/changeUserInterest/request-fields.adoc[]
 
-include::{sub-snippet}/changeUserInterest/curl-request.adoc[]
-
-include::{sub-snippet}/changeUserInterest/request-body.adoc[]
-
 === Response
 include::{sub-snippet}/changeUserInterest/response-fields.adoc[]
 
 include::{sub-snippet}/changeUserInterest/http-response.adoc[]
-
-include::{sub-snippet}/changeUserInterest/response-body.adoc[]

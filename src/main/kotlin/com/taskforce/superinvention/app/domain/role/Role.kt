@@ -9,6 +9,7 @@ class Role (
         var name: RoleName,
 
         @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "role_group_seq")
         var roleGroup: RoleGroup
 ): BaseEntity() {
 
@@ -18,6 +19,9 @@ class Role (
                 const val CLUB_MEMBER = "ROLE_CLUB_MEMBER"
                 const val MANAGER     = "ROLE_MANAGER"
                 const val MASTER      = "ROLE_MASTER"
+
+                private val lookup = RoleName.values().associateBy(RoleName::role)
+                fun fromRoleName(role: String): RoleName = requireNotNull(lookup[role])
         }
 
         enum class RoleName(

@@ -1,0 +1,23 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+ifndef::snippets[]
+:sub-snippet: ../../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+=== Request
+include::{sub-snippet}/meeting-all/http-request.adoc[]
+
+include::{sub-snippet}/meeting-all/request-fields.adoc[]
+
+=== Response
+include::{sub-snippet}/meeting-all/response-fields.adoc[]
+
+include::{sub-snippet}/meeting-all/http-response.adoc[]
