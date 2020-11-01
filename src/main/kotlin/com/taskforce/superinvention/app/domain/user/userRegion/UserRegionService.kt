@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.user.UserRegionDto
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,14 +26,19 @@ class UserRegionService(
         }
     }
 
+    /**
+     * 유저 지역 정보 저장
+     */
     @Transactional
     fun changeUserRegion(user: User, regions: List<RegionRequestDto>): UserRegionDto {
         if (user.seq == null) throw NullPointerException()
-        val findByUserSeq: List<UserRegion> = userRegionRepository.findByUserSeq(user.seq!!)
-        userRegionRepository.deleteAll(findByUserSeq)
 
-        val toAdd = regions.map { e -> UserRegion(user, regionRepository.findById(e.seq).orElseThrow { NullPointerException() }, e.priority) }.toMutableList()
+        val userRegionList: List<UserRegion> = userRegionRepository.findByUserSeq(user.seq!!)
+        userRegionRepository.deleteAll(userRegionList)
+
+        val toAdd = regions.map { e -> UserRegion(user, regionRepository.findByIdOrNull(e.seq) ?: throw NullPointerException(), e.priority) }.toMutableList()
         userRegionRepository.saveAll(toAdd)
+
         return findUserRegionList(user)
     }
 }

@@ -28,6 +28,7 @@ class UserRegionController(
     @PutMapping
     fun changeUserRegion(@AuthUser user: User,
                          @RequestBody regionRequestDto: List<RegionRequestDto>): ResponseDto<UserRegionDto> {
+
         return  ResponseDto(data = userRegionService.changeUserRegion(user, regionRequestDto))
     }
 }
