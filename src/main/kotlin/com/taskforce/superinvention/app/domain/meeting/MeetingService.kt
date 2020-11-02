@@ -66,5 +66,11 @@ class MeetingService(
             throw BizException("해당 클럽의 만남이 아닙니다", HttpStatus.FORBIDDEN)
     }
 
+    @Transactional
+    fun deleteMeeting(meetingSeq: Long) {
+        val meeting = meetingRepository.findById(meetingSeq).orElseThrow { BizException("존재하지 않는 만남입니다", HttpStatus.NOT_FOUND) }
+        meeting.deleteFlag = true;
+    }
+
 
 }
