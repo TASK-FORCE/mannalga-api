@@ -36,6 +36,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.util.MultiValueMap
 import java.time.LocalDateTime
 
 class MeetingDocumentation: ApiDocumentationTest() {
@@ -88,6 +89,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val result: ResultActions = this.mockMvc.perform(
                 get("/clubs/{clubSeq}/meetings", clubSeq)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .queryParam("page", "0")
+                        .queryParam("size", "20")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
