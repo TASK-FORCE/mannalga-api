@@ -10,13 +10,13 @@ import javax.persistence.ManyToOne
 
 @Entity
 class ClubAlbumComment(
-    val content: String,
+        var content: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="club_user_seq")
-    val clubUser: ClubUser,
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name="club_user_seq")
+        var clubUser: ClubUser,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="club_album_seq")
-    val clubAlbum: ClubAlbum
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name="club_album_seq")
+        var clubAlbum: ClubAlbum
 ): BaseEntity()

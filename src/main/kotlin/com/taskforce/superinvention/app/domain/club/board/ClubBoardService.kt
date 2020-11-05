@@ -38,7 +38,7 @@ class ClubBoardService(
      */
     @Transactional(rollbackFor = [Exception::class])
     fun registerClubBoard(user: User, clubSeq: Long, body: ClubBoardBody): ClubBoard {
-        val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
+        val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)!!
 
         var topFixable = false
 
