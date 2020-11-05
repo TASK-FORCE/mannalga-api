@@ -83,7 +83,6 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .offset(pageable.offset)
                         .limit(pageable.pageSize.toLong())
                         .fetchResults()
-
         return query
     }
 

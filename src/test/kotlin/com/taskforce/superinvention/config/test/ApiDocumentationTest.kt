@@ -2,6 +2,9 @@ package com.taskforce.superinvention.config.test
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
+import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentService
+import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeService
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -20,6 +23,9 @@ import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
 import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumCommentController
+import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumController
+import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumLikeController
 import com.taskforce.superinvention.app.web.controller.meeting.MeetingController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
@@ -45,7 +51,10 @@ import org.springframework.test.web.servlet.MockMvc
     InterestGroupController::class,
     CommonController::class,
     UserInterestController::class,
-    MeetingController::class
+    MeetingController::class,
+    ClubAlbumController::class,
+    ClubAlbumLikeController::class,
+    ClubAlbumCommentController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {
 
@@ -102,4 +111,14 @@ abstract class ApiDocumentationTest: BaseTest {
 
     @MockBean
     lateinit var meetingService: MeetingService
+
+
+    @MockBean
+    lateinit var clubAlbumService: ClubAlbumService
+
+    @MockBean
+    lateinit var clubAlbumCommentService: ClubAlbumCommentService
+
+    @MockBean
+    lateinit var clubAlbumLikeService: ClubAlbumLikeService
 }
