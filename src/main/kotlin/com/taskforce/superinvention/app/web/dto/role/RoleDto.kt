@@ -2,7 +2,7 @@ package com.taskforce.superinvention.app.web.dto.role
 
 import com.taskforce.superinvention.app.domain.role.Role
 
-class RoleDto (
+data class RoleDto (
         var name: Role.RoleName,
         var roleGroupName: String
 ) {
