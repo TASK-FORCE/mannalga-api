@@ -77,7 +77,7 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun deleteMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      @PathVariable meetingSeq: Long): ResponseDto<Any> {
+                      @PathVariable meetingSeq: Long): ResponseDto<String> {
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
                 ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)

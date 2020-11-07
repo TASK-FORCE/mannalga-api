@@ -43,7 +43,7 @@ class UserController(
     @PostMapping("/regist")
     @ResponseStatus(HttpStatus.CREATED)
     fun registerUser(@AuthUser user: User,
-                     @RequestBody request: KakaoUserRegistRequest): ResponseDto<Any> {
+                     @RequestBody request: KakaoUserRegistRequest): ResponseDto<String> {
 
         userService.registerUser(request, user)
         return ResponseDto(data = ResponseDto.EMPTY)

@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
+import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -39,6 +40,7 @@ class ClubBoardService(
     @Transactional(rollbackFor = [Exception::class])
     fun registerClubBoard(user: User, clubSeq: Long, body: ClubBoardBody): ClubBoard {
         val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
+                ?: throw UserIsNotClubMemberException()
 
         var topFixable = false
 

@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -130,6 +131,8 @@ class ClubService(
     fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+                ?: throw UserIsNotClubMemberException()
+
         if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
         
         // 기존 관심사 삭제
@@ -147,6 +150,8 @@ class ClubService(
     fun changeClubRegions(user: User, clubSeq: Long, clubRegions: Set<RegionRequestDto>) {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
+                ?: throw UserIsNotClubMemberException()
+
         if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("권한이 없습니다", HttpStatus.FORBIDDEN)
 
         // 기존 모임 지역 삭제
