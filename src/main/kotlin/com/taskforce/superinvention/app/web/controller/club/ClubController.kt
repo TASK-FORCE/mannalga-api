@@ -72,19 +72,9 @@ class ClubController(
      * 검색에 관해 논의한 내용 [https://github.com/TASK-FORCE/super-invention/issues/109]
      * @author eric
      */
-    @PostMapping("/search")
-    fun getClubList(@AuthUser user: User, @RequestBody request: ClubSearchRequestDto): ResponseDto<Page<ClubWithRegionInterestDto>> {
-        if (ObjectUtils.isEmpty(request.searchOptions.regionList)) {
-            val userRegionDto = userRegionService.findUserRegionList(user)
-            request.searchOptions.regionList = userRegionDto.userRegions.map { e -> RegionRequestDto(e.region.seq, e.priority) }.toList()
-        }
-
-        if (ObjectUtils.isEmpty(request.searchOptions.interestList)) {
-             val userInterestDto = userInterestService.findUserInterest(user)
-            request.searchOptions.interestList = userInterestDto.interestList.map { e -> InterestRequestDto(e.interest.seq!!, e.priority) }
-        }
-
-        val data = clubService.search(request)
+    @GetMapping("/search")
+    fun getClubList(@AuthUser user: User, request: ClubSearchRequestDto, pageable: Pageable): ResponseDto<Page<ClubWithRegionInterestDto>> {
+        val data = clubService.search(request, pageable)
         return ResponseDto(data = data)
     }
 

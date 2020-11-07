@@ -11,7 +11,6 @@ import com.taskforce.superinvention.app.domain.interest.QClubInterest
 import com.taskforce.superinvention.app.domain.region.QClubRegion
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubSearchOptions
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import org.springframework.data.domain.Page
@@ -27,7 +26,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 }
 
 interface ClubRepositoryCustom {
-    fun search(clubSearchOptions: ClubSearchOptions, pageable: Pageable): Page<Club>
+    fun search(regionSeq: Long?, interestSeq: Long?, pageable: Pageable): Page<Club>
     fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
 }
 
@@ -35,7 +34,7 @@ interface ClubRepositoryCustom {
 class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCustom,
         QuerydslRepositorySupport(Club::class.java) {
 
-    override fun search(clubSearchOptions: ClubSearchOptions, pageable: Pageable): Page<Club> {
+    override fun search(regionSeq: Long?, interestSeq: Long?, pageable: Pageable): Page<Club> {
 
         // SELECT FROM
         val query = from(QClub.club)
@@ -43,8 +42,8 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                 .leftJoin(QClub.club.clubRegions, QClubRegion.clubRegion)
 
         // WHERE
-        query.where(eqRegions(clubSearchOptions.regionList))
-        query.where(eqInterests(clubSearchOptions.interestList))
+        if (regionSeq != null) query.where(QClubRegion.clubRegion.region.seq.eq(regionSeq))
+        if (interestSeq != null) query.where(QClubInterest.clubInterest.interest.seq.eq(interestSeq))
 
         // PAGING
         val fetchResult = query
