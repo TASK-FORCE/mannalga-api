@@ -33,19 +33,12 @@ class KakaoApiResponseErrorHandler (
         LOG.error(msg)
 
         when (response.statusCode) {
-            HttpStatus.UNAUTHORIZED -> throwIfTokenExpired(response)
+            HttpStatus.UNAUTHORIZED, HttpStatus.BAD_REQUEST -> throw AccessTokenExpiredException("Access Token Expired", HttpStatus.UNAUTHORIZED)
             else -> {
                 val authResponse = objectMapper.readValue(response.body, KakaoOAuthResponse::class.java)
                 LOG.error("[KAKAO-API-ERROR]: 원인 ${authResponse.code}-${authResponse.msg}")
                 throw Exception()
             }
-        }
-    }
-
-    private fun throwIfTokenExpired(response: ClientHttpResponse) {
-        val authResponse = objectMapper.readValue(response.body, KakaoOAuthResponse::class.java)
-        if (authResponse.code == -401) {
-            throw AccessTokenExpiredException("Access Token Expired", HttpStatus.UNAUTHORIZED)
         }
     }
 }

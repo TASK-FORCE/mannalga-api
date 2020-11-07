@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web.user
+package com.taskforce.superinvention.app.web.controller.user
 
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User

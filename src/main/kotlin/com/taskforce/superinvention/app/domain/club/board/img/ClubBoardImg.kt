@@ -17,5 +17,4 @@ class ClubBoardImg(
         var imgUrl : String,
         var imgName: String = "",
         var deleteFlag: Boolean
-
 ): BaseEntity()
