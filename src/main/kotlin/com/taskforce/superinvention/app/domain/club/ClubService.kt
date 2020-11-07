@@ -112,9 +112,8 @@ class ClubService(
 
 
     @Transactional
-    fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
-        val pageable:Pageable = PageRequest.of(request.page.toInt(), request.size.toInt())
-        val result = clubRepository.search(request.searchOptions, pageable)
+    fun search(request: ClubSearchRequestDto, pageable: Pageable): Page<ClubWithRegionInterestDto> {
+        val result = clubRepository.search(request.regionSeq, request.interestSeq, pageable)
         val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()

@@ -167,55 +167,29 @@ class ClubDocumentation: ApiDocumentationTest() {
         )
 
         val searchRequest = ClubSearchRequestDto(
-                page = 0L,
-                size = 10L,
-                searchOptions = ClubSearchOptions(
-                        regionList = listOf(
-                                RegionRequestDto(
-                                        seq = 102L,
-                                        priority = 1L
-                                )
-                        ),
-                        interestList = listOf(
-                            InterestRequestDto(
-                                    seq = 4L,
-                                    priority = 1L
-                            ),
-                            InterestRequestDto(
-                                    seq = 20L,
-                                    priority = 2L
-                            )
-                        )
-                )
+                regionSeq = 101,
+                interestSeq = 1
         )
 
-        `when`(clubService.search(MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 10), 203L))
+        `when`(clubService.search(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 20), 203L))
 
         // when
         val result = mockMvc.perform(
-                post("/clubs/search")
+                get("/clubs/search")
+                        .queryParam("regionSeq", "101")
+                        .queryParam("interestSeq", "1")
+                        .queryParam("page", "0")
+                        .queryParam("size", "20")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(searchRequest))
         ).andDo(print())
 
         // then
         result.andExpect(status().isOk)
                 .andDo(
                         document("searchClub", getDocumentRequest(), getDocumentResponse(),
-                                requestFields(
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("한번에 조회할 모임 개수"),
-                                        fieldWithPath("searchOptions").type(JsonFieldType.OBJECT).description("검색할 조건들(현재는 지역, 관심사를 검색 조건에 넣을 수 있음)"),
-                                        fieldWithPath("searchOptions.regionList").type(JsonFieldType.ARRAY).description("검색할 지역 리스트 (비어있어도 된다)"),
-                                        fieldWithPath("searchOptions.regionList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                        fieldWithPath("searchOptions.regionList[].priority").type(JsonFieldType.NUMBER).description("검색할 지역의 우선순위. 높을수록 해당 지역의 우선순위를 높게 설정하여 상단에 노출된다."),
-                                        fieldWithPath("searchOptions.interestList[]").type(JsonFieldType.ARRAY).description("검색할 관심사 리스트 (비어있어도 된다)"),
-                                        fieldWithPath("searchOptions.interestList[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
-                                        fieldWithPath("searchOptions.interestList[].priority").type(JsonFieldType.NUMBER).description("검색할 관심사의 우선순위. 높을수록 해당 관심사의 우선순위를 높게 설정하여 상단에 노출된다.")
-                                ),
                                 responseFields(
                                         *commonResponseField(),
 
