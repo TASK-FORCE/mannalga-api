@@ -105,7 +105,7 @@ class ClubService(
         clubUserRepository.save(clubUser)
 
         // 디폴트로 모임원 권한 주기
-        val memberRole = roleService.findByRoleName(Role.RoleName.MEMBER)
+        val memberRole = roleService.findByRoleName(Role.RoleName.CLUB_MEMBER)
         val clubUserRole = ClubUserRole(clubUser, memberRole)
         clubUserRoleRepository.save(clubUserRole)
     }
