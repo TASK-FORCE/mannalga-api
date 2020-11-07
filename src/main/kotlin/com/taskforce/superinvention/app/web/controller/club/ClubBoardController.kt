@@ -37,7 +37,7 @@ class ClubBoardController(
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubBoard(@AuthUser user: User,
                           @PathVariable clubSeq: Long,
-                          @RequestBody  body: ClubBoardBody): ResponseDto<Any> {
+                          @RequestBody  body: ClubBoardBody): ResponseDto<String> {
 
         clubBoardService.registerClubBoard(user, clubSeq, body)
         return ResponseDto(data = "")
@@ -47,7 +47,7 @@ class ClubBoardController(
      * 모임 게시판 글 삭제
      */
     @DeleteMapping("/{clubBoardSeq}/boards")
-    fun deleteClubBoard(@AuthUser user: User, @PathVariable clubBoardSeq: Long): ResponseDto<Any> {
+    fun deleteClubBoard(@AuthUser user: User, @PathVariable clubBoardSeq: Long): ResponseDto<String> {
 
         clubBoardService.deleteClubBoard(user, clubBoardSeq)
         return ResponseDto(data = "")
