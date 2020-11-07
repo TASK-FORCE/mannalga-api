@@ -48,8 +48,7 @@ class ClubController(
     @PostMapping("/{clubSeq}/users")
     @ResponseStatus(HttpStatus.CREATED)
     fun addClubUser(@AuthUser user: User, @PathVariable clubSeq: Long): ResponseDto<Any?> {
-        val club = clubService.getClubBySeq(clubSeq)
-        clubService.addClubUser(club, user)
+        clubService.addClubUser(clubSeq, user)
         return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 

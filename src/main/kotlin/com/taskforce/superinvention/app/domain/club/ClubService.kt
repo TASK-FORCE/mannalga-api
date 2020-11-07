@@ -15,6 +15,7 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
@@ -36,6 +37,7 @@ class ClubService(
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
+        private var userRepository: UserRepository,
         private var clubUserRepository: ClubUserRepository,
         private var clubInterestRepository: ClubInterestRepository,
         private var clubRegionRepository: ClubRegionRepository,
@@ -91,25 +93,28 @@ class ClubService(
     }
 
     @Transactional
-    fun addClubUser(club: Club, user: User) {
+    fun addClubUser(clubSeq: Long, user: User) {
+        val club   = clubRepository.findBySeq(clubSeq)
         val clubUserList = getClubUserList(club)
+
         if (clubUserList.size >= club.maximumNumber) {
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
+
         if (clubUserList.map { cu -> cu.user.seq }.contains(user.seq)) {
             throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
         }
 
         // 모임 가입처리
-        val clubUser = ClubUser(club = club, user = user)
+        val clubUser = ClubUser(club, user)
         clubUserRepository.save(clubUser)
 
         // 디폴트로 모임원 권한 주기
         val memberRole = roleService.findByRoleName(Role.RoleName.MEMBER)
         val clubUserRole = ClubUserRole(clubUser, memberRole)
+
         clubUserRoleRepository.save(clubUserRole)
     }
-
 
     @Transactional
     fun search(request: ClubSearchRequestDto): Page<ClubWithRegionInterestDto> {
