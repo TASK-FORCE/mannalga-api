@@ -1,0 +1,11 @@
+### [로컬] 내 클럽 조회
+GET http://localhost:8080/clubs/my
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+
+### [개발] 내 클럽 조회
+GET http://ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com/api/clubs/my
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs

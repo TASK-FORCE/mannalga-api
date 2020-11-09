@@ -7,7 +7,6 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
-import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -19,21 +18,20 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
-import org.springframework.util.ObjectUtils
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("clubs")
 class ClubController(
         val clubService : ClubService,
-        val userRegionService: UserRegionService,
         val userInterestService: UserInterestService,
         val roleService: RoleService
 ) {
+
     @GetMapping("/{seq}")
-    fun getClubBySeq(@PathVariable seq : Long): ResponseDto<Club?> {
-        val data = clubService.getClubBySeq(seq)
-        return ResponseDto(data = data)
+    fun getClubBySeq(@AuthUser user: User?, @PathVariable seq : Long): ResponseDto<ClubInfoDetailsDto> {
+        val clubInfoDto = clubService.getClubInfoDetail(user, seq)
+        return ResponseDto(data = clubInfoDto)
     }
 
     @GetMapping("/{seq}/users")
@@ -113,7 +111,6 @@ class ClubController(
 
     /**
      * 권한 부여 및 회수는 모임장만 할 수 있도록 만든다.
-     *
      */
     @PutMapping("/{clubSeq}/users/{clubUserSeq}/roles")
     @Secured(Role.MEMBER)

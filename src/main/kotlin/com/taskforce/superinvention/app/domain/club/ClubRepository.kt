@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple
 import com.querydsl.core.annotations.QueryProjection
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.user.QClubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest
@@ -28,6 +29,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 interface ClubRepositoryCustom {
     fun search(regionSeq: Long?, interestSeq: Long?, pageable: Pageable): Page<Club>
     fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
+    fun findClubInfo(clubSeq: Long): Tuple?
 }
 
 @Repository
@@ -56,6 +58,24 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
     }
 
+    override fun findClubInfo(clubSeq: Long): Tuple? {
+        val club = QClub.club
+        val clubUser = QClubUser.clubUser
+
+        val query =
+                from(clubUser)
+                .select(
+                        clubUser.club,
+                        clubUser.seq.count()
+                )
+                .join(clubUser.club, club)
+                .groupBy(clubUser.club.seq)
+                .where(clubUser.club.seq.eq(clubSeq))
+                .fetchFirst()
+
+        return query
+    }
+
     override fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple> {
         val clubUser = QClubUser.clubUser
         val clubUserRole = QClubUserRole.clubUserRole
@@ -82,7 +102,6 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .offset(pageable.offset)
                         .limit(pageable.pageSize.toLong())
                         .fetchResults()
-
         return query
     }
 

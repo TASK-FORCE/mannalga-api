@@ -4,6 +4,7 @@ import com.querydsl.core.QueryResults
 import com.querydsl.core.Tuple
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -18,13 +19,14 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
+import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -35,6 +37,7 @@ import java.lang.IllegalArgumentException
 @Service
 class ClubService(
         private var clubRepository: ClubRepository,
+        private val clubUserService: ClubUserService,
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
@@ -55,6 +58,38 @@ class ClubService(
         return ClubUsersDto( clubUsers[0].club, clubUsers.map{ e -> e.user}.toList() )
     }
 
+    // 모임 세부정보 조회
+    @Transactional
+    fun getClubInfoDetail(user: User?, clubSeq: Long): ClubInfoDetailsDto {
+
+        // 모임, 모임원 수 조회
+        val clubTuple = clubRepository.findClubInfo(clubSeq)
+                ?: throw BizException("해당 클럽이 존재하지 않습니다", HttpStatus.NOT_FOUND)
+
+        // 모임 관심사 조회
+        val clubInterest = clubInterestRepository.findWithInterestGroup(clubSeq)
+                .map (::InterestWithPriorityDto)
+
+        // 모임 지역 조회
+        val clubRegions = clubRegionRepository.findByClubSeq(clubSeq)
+                ?.map(::SimpleRegionDto) ?: emptyList()
+
+        val clubInfoDto = ClubInfoDto(
+                clubTuple.get(0, Club::class.java)!!,
+                clubTuple.get(1, Long::class.java)!!,
+                clubInterest,
+                clubRegions
+        )
+
+        // 모임원일 경우 모임 권한, 좋아요 표시 여부 체크
+        val clubUserDetails = clubUserService.getClubUserDetails(user, clubSeq)
+
+        return ClubInfoDetailsDto(
+                clubInfoDto,
+                clubUserDetails
+        )
+    }
+
     /**
      * 새로운 모임을 생성한다.
      */
@@ -71,7 +106,7 @@ class ClubService(
         val savedClub = clubRepository.save(club)
 
         // 2. 생성한 유저가 해당 모임에 들어감
-        val superUserClub = ClubUser(savedClub, superUser)
+        val superUserClub = ClubUser(savedClub, superUser, false)
         val savedClubUser = clubUserRepository.save(superUserClub)
 
         // 3. 해당 클럽에 관심사 부여
@@ -107,7 +142,7 @@ class ClubService(
         }
 
         // 모임 가입처리
-        val clubUser = ClubUser(club, user)
+        val clubUser = ClubUser(club, user, false)
         clubUserRepository.save(clubUser)
 
         // 디폴트로 모임원 권한 주기

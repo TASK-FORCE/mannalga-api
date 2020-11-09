@@ -26,3 +26,8 @@ class ClubUserDto(
             roles = clubUser.clubUserRoles.map { e -> RoleDto(e.role) }.toSet()
     )
 }
+
+
+class ClubUserInfoDetail {
+
+}
