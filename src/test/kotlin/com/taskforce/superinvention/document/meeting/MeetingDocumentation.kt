@@ -18,8 +18,6 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -36,7 +34,6 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.util.MultiValueMap
 import java.time.LocalDateTime
 
 class MeetingDocumentation: ApiDocumentationTest() {
@@ -152,7 +149,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val club = Club("name", "desc", 3L, "sdasd.jpg")
         val clubUser = ClubUser(
                 club,
-                User("eric")
+                User("eric"),
+                false
         )
 
         val clubDto = ClubDto(
@@ -261,7 +259,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val club = Club("name", "desc", 3L, "sdasd.jpg")
         val clubUser = ClubUser(
                 club,
-                User("eric")
+                User("eric"),
+                false
         )
 
         val clubDto = ClubDto(
@@ -364,7 +363,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val club = Club("name", "desc", 3L, "sdasd.jpg")
         val clubUser = ClubUser(
                 club,
-                User("eric")
+                User("eric"),
+                false
         )
 
         val clubDto = ClubDto(

@@ -3,6 +3,7 @@ package com.taskforce.superinvention.config.test
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
@@ -102,4 +103,7 @@ abstract class ApiDocumentationTest: BaseTest {
 
     @MockBean
     lateinit var meetingService: MeetingService
+
+    @MockBean
+    lateinit var clubUserService: ClubUserService
 }

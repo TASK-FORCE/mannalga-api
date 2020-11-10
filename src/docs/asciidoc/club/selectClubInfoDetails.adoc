@@ -1,0 +1,15 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+include::{sub-snippet}/select-club-info-detail/http-request.adoc[]
+include::{sub-snippet}/select-club-info-detail/path-parameters.adoc[]
+include::{sub-snippet}/select-club-info-detail/http-response.adoc[]
+include::{sub-snippet}/select-club-info-detail/response-fields.adoc[]

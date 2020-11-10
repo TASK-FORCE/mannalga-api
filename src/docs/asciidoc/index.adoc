@@ -88,6 +88,9 @@ include::{root}/club/changeClubUserRole.adoc[]
 == 내 모임 조회
 include::{root}/club/myClubList.adoc[]
 
+== 모임 상세조회
+include::{root}/club/selectClubInfoDetails.adoc[]
+
 = 모임 게시판
 == 모임 게시판 작성
 include::{root}/club/board/register-club-board.adoc[]

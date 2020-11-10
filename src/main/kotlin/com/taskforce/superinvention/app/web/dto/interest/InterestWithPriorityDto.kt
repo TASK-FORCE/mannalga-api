@@ -4,7 +4,7 @@ import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterest
 
-class InterestWithPriorityDto(
+data class InterestWithPriorityDto(
         val interest: InterestDto,
         val priority: Long
 ) {

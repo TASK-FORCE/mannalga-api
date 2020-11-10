@@ -23,12 +23,11 @@ class AuthorizeArgumentResolver(
         return parameter.hasParameterAnnotation(AuthUser::class.java)
     }
 
-    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): User {
+    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer?, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory?): User? {
         val authentication: Authentication = SecurityContextHolder.getContext().authentication
         val userId = authentication.name
 
-        val userEntity: User = userRepository.findByUserId(userId) ?:
-                               throw UsernameNotFoundException("유저를 찾을 수 없습니다.")
+        val userEntity: User? = userRepository.findByUserId(userId)
 
         return userEntity
     }
