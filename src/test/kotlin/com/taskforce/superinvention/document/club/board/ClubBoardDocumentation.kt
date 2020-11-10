@@ -61,7 +61,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         user = User ("12345")
         user.seq = 2
 
-        clubUser = ClubUser(club, user, false)
+        clubUser = ClubUser(club, user, isLiked = false)
 
         clubBoard = ClubBoard(
                 title   = "test-title",
