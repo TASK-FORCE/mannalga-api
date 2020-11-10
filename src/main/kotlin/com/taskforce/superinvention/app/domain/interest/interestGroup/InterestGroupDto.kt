@@ -21,7 +21,7 @@ class InterestGroupDto {
     }
 }
 
-class SimpleInterestGroupDto(
+data class SimpleInterestGroupDto(
         val seq: Long,
         val name: String
 ) {

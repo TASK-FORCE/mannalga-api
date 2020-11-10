@@ -73,4 +73,22 @@ class MeetingController(
         return ResponseDto(meetingService.modifyMeeting(meetingSeq, meetingRequestDto))
     }
 
+    @DeleteMapping("/{meetingSeq}")
+    @Secured(Role.MEMBER)
+    fun deleteMeeting(@AuthUser user: User,
+                      @PathVariable clubSeq: Long,
+                      @PathVariable meetingSeq: Long): ResponseDto<String> {
+        // check auth
+        val clubUser = clubService.getClubUser(clubSeq, user)
+                ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+
+        if (!roleService.hasClubManagerAuth(clubUser)) {
+            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
+        }
+
+        meetingService.checkClubMeeting(clubSeq, meetingSeq)
+        meetingService.deleteMeeting(meetingSeq)
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
+    }
+
 }

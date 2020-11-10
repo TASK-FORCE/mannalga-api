@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
 import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentService
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeService
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.common.FileService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
@@ -29,7 +30,7 @@ import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumLikeC
 import com.taskforce.superinvention.app.web.controller.meeting.MeetingController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
-import com.taskforce.superinvention.app.web.user.UserInterestController
+import com.taskforce.superinvention.app.web.controller.user.UserInterestController
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,14 +48,14 @@ import org.springframework.test.web.servlet.MockMvc
     UserRegionController::class,
     ClubController::class,
     ClubBoardController::class,
+    ClubAlbumController::class,
+    ClubAlbumLikeController::class,
+    ClubAlbumCommentController::class,
     RegionController::class,
     InterestGroupController::class,
     CommonController::class,
     UserInterestController::class,
-    MeetingController::class,
-    ClubAlbumController::class,
-    ClubAlbumLikeController::class,
-    ClubAlbumCommentController::class
+    MeetingController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {
 
@@ -112,6 +113,8 @@ abstract class ApiDocumentationTest: BaseTest {
     @MockBean
     lateinit var meetingService: MeetingService
 
+    @MockBean
+    lateinit var clubUserService: ClubUserService
 
     @MockBean
     lateinit var clubAlbumService: ClubAlbumService

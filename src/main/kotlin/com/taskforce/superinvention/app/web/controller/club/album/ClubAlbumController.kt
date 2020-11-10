@@ -19,7 +19,7 @@ class ClubAlbumController(
 ) {
 
      @GetMapping
-     fun gerClubAlbumList(pageable: Pageable,
+     fun gerClubAlbumList(pageable: Pageable?,
                           @PathVariable clubSeq:Long,
                           searchOption: ClubAlbumSearchOption): ResponseDto<Page<ClubAlbumListDto>> {
 
@@ -29,14 +29,15 @@ class ClubAlbumController(
      @PostMapping
      @ResponseStatus(HttpStatus.CREATED)
      @Secured(Role.CLUB_MEMBER)
-     fun registerClubAlbum(clubSeq: Long,
-                           @RequestBody body: ClubAlbumRegisterDto): ResponseDto<String> {
+     fun registerClubAlbum(@PathVariable clubSeq: Long,
+                           @RequestBody body: ClubAlbumRegisterDto?): ResponseDto<String> {
+
           clubAlbumService.registerClubAlbum(clubSeq, body)
           return ResponseDto(data = "")
      }
 
-     @DeleteMapping
-     fun registerClubAlbum(clubAlbumSeq: Long) : ResponseDto<String> {
+     @DeleteMapping("/{clubAlbumSeq}")
+     fun registerClubAlbum(@PathVariable clubAlbumSeq: Long) : ResponseDto<String> {
           clubAlbumService.removeClubAlbum(clubAlbumSeq)
           return ResponseDto(data = "")
      }

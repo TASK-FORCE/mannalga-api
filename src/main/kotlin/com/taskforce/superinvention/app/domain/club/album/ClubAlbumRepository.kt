@@ -16,14 +16,14 @@ import org.springframework.stereotype.Repository
 interface ClubAlbumRepository: JpaRepository<ClubAlbum, Long>, ClubAlbumRepositoryCustom
 
 interface ClubAlbumRepositoryCustom {
-    fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): QueryResults<Tuple>
+    fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): QueryResults<Tuple>
 }
 
 @Repository
 class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
     QuerydslRepositorySupport(ClubAlbum::class.java) {
 
-    override fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): QueryResults<Tuple> {
+    override fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): QueryResults<Tuple> {
         val clubAlbum = QClubAlbum.clubAlbum
         val clubAlbumLike = QClubAlbumLike.clubAlbumLike
         val clubAlbumComment = QClubAlbumComment.clubAlbumComment
@@ -41,7 +41,7 @@ class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
 
-        if(searchOption.title.isNotBlank()) {
+        if(searchOption!= null && searchOption.title.isNotBlank()) {
             query.where(clubAlbum.title.like("${searchOption.title}%"))
         }
 

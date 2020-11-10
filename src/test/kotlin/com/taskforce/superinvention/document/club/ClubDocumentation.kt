@@ -27,6 +27,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonR
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -42,6 +43,96 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ClubDocumentation: ApiDocumentationTest() {
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `모임 상세 조회`() {
+
+        // given
+        val user = User ("sight")
+        val club = Club(
+                name = "가상 모임",
+                description = "가상 모임에 대한 설명",
+                maximumNumber = 100L,
+                mainImageUrl = ""
+        )
+
+        val clubUser = ClubUser(club, user, isLiked = false)
+
+        user.seq = 1
+        club.seq = 2
+        clubUser.seq = 3
+
+        val region1 = Region(
+                superRegion = null,
+                name = "성남시",
+                superRegionRoot = "경기도/성남시",
+                level = 2,
+                subRegions = listOf()
+        )
+        region1.seq = 401
+
+        val clubRegionList = listOf(
+                SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2)
+        )
+
+        val interestList = listOf(
+                InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2)
+        )
+
+        val resultDto = ClubInfoDetailsDto (
+                clubInfo = ClubInfoDto(
+                        club = club,
+                        userCount = 20L,
+                        clubInterest = interestList,
+                        clubRegion   = clubRegionList
+                ),
+                userInfo = ClubUserStatusDto(
+                        role = listOf(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER),
+                        isLiked = false
+                )
+        )
+
+        // when
+        `when`(clubService.getClubInfoDetail(MockitoHelper.anyObject(), eq(club.seq!!))).thenReturn(resultDto)
+
+        val result = mockMvc.perform(
+                get("/clubs/{clubSeq}", club.seq)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+                .andDo(
+                        document("select-club-info-detail",
+                                getDocumentRequest(),
+                                getDocumentResponse(),
+                                pathParameters(parameterWithName("clubSeq").description("모임 시퀀스.")),
+                                responseFields(
+                                        *commonResponseField(),
+                                        fieldWithPath("data.clubInfo.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
+                                        fieldWithPath("data.clubInfo.name").type(JsonFieldType.STRING).description("모임 명"),
+                                        fieldWithPath("data.clubInfo.description").type(JsonFieldType.STRING).description("모임 설명"),
+                                        fieldWithPath("data.clubInfo.maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 가입 인원 수"),
+                                        fieldWithPath("data.clubInfo.userCount").type(JsonFieldType.NUMBER).description("현재 모임원 인원수"),
+                                        fieldWithPath("data.clubInfo.mainImageUrl").type(JsonFieldType.STRING).description("모임 대표 사진"),
+                                        fieldWithPath("data.clubInfo.clubInterest[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
+                                        fieldWithPath("data.clubInfo.clubInterest[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
+                                        fieldWithPath("data.clubInfo.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
+                                        fieldWithPath("data.clubInfo.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
+                                        fieldWithPath("data.clubInfo.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
+                                        fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
+                                        fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부")
+                                )
+                        )
+                )
+    }
 
     @Test
     @WithMockUser(authorities = [Role.MEMBER])
@@ -166,59 +257,34 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
         )
 
-        val searchRequest = ClubSearchRequestDto(
-                page = 0L,
-                size = 10L,
-                searchOptions = ClubSearchOptions(
-                        regionList = listOf(
-                                RegionRequestDto(
-                                        seq = 102L,
-                                        priority = 1L
-                                )
-                        ),
-                        interestList = listOf(
-                            InterestRequestDto(
-                                    seq = 4L,
-                                    priority = 1L
-                            ),
-                            InterestRequestDto(
-                                    seq = 20L,
-                                    priority = 2L
-                            )
-                        )
-                )
-        )
-
-        `when`(clubService.search(MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 10), 203L))
+        `when`(clubService.search(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 20), 203L))
 
         // when
         val result = mockMvc.perform(
-                post("/clubs/search")
+                get("/clubs/search")
+                        .queryParam("regionSeq", "101")
+                        .queryParam("interestSeq", "1")
+                        .queryParam("page", "0")
+                        .queryParam("size", "20")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(searchRequest))
         ).andDo(print())
 
         // then
         result.andExpect(status().isOk)
                 .andDo(
                         document("searchClub", getDocumentRequest(), getDocumentResponse(),
-                                requestFields(
-                                        fieldWithPath("page").type(JsonFieldType.NUMBER).description("요청하는 페이지"),
-                                        fieldWithPath("size").type(JsonFieldType.NUMBER).description("한번에 조회할 모임 개수"),
-                                        fieldWithPath("searchOptions").type(JsonFieldType.OBJECT).description("검색할 조건들(현재는 지역, 관심사를 검색 조건에 넣을 수 있음)"),
-                                        fieldWithPath("searchOptions.regionList").type(JsonFieldType.ARRAY).description("검색할 지역 리스트 (비어있어도 된다)"),
-                                        fieldWithPath("searchOptions.regionList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                        fieldWithPath("searchOptions.regionList[].priority").type(JsonFieldType.NUMBER).description("검색할 지역의 우선순위. 높을수록 해당 지역의 우선순위를 높게 설정하여 상단에 노출된다."),
-                                        fieldWithPath("searchOptions.interestList[]").type(JsonFieldType.ARRAY).description("검색할 관심사 리스트 (비어있어도 된다)"),
-                                        fieldWithPath("searchOptions.interestList[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
-                                        fieldWithPath("searchOptions.interestList[].priority").type(JsonFieldType.NUMBER).description("검색할 관심사의 우선순위. 높을수록 해당 관심사의 우선순위를 높게 설정하여 상단에 노출된다.")
+                                requestParameters(
+                                        // query string places like this
+                                        parameterWithName("regionSeq").description("지역 seq"),
+                                        parameterWithName("interestSeq").description("관심사 seq"),
+                                        parameterWithName("page").description("페이지"),
+                                        parameterWithName("size").description("페이지당 사이즈")
                                 ),
                                 responseFields(
                                         *commonResponseField(),
-
                                         fieldWithPath("data.content").type(JsonFieldType.ARRAY).description("데이터 본문"),
                                         fieldWithPath("data.content[].seq").type(JsonFieldType.NUMBER).description("모임의 시퀀스"),
                                         fieldWithPath("data.content[].name").type(JsonFieldType.STRING).description("모임명"),
@@ -319,11 +385,11 @@ class ClubDocumentation: ApiDocumentationTest() {
 
 
         club.clubUser = listOf(
-                ClubUser(club, User("유저 1")),
-                ClubUser(club, User("유저 2")),
-                ClubUser(club, User("유저 3")),
-                ClubUser(club, User("유저 4")),
-                ClubUser(club, User("유저 5"))
+                ClubUser(club, User("유저 1"), false),
+                ClubUser(club, User("유저 2"), false),
+                ClubUser(club, User("유저 3"), false),
+                ClubUser(club, User("유저 4"), false),
+                ClubUser(club, User("유저 5"), false)
         )
 
 
@@ -364,7 +430,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                             fieldWithPath("data.interests[].interest").type(JsonFieldType.OBJECT).description("모임 관심사 정보"),
                             fieldWithPath("data.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 시퀀스"),
                             fieldWithPath("data.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사 이름"),
-                          fieldWithPath("data.interests[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
+                            fieldWithPath("data.interests[].interest.interestGroup").type(JsonFieldType.OBJECT).description("관심사 그룹 정보"),
                             fieldWithPath("data.interests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("관심사 그룹 시퀀스"),
                             fieldWithPath("data.interests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("관심사 그룹 이름"),
                             fieldWithPath("data.interests[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위"),
@@ -441,7 +507,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                         maximumNumber = 5L,
                         mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
                 ),
-                User("eric")
+                User("eric"),
+                false
         )
 
         val targetClub = Club(
@@ -454,12 +521,12 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         val targetUser = ClubUser(
                 targetClub,
-                User("sight studio")
+                User("sight studio"),
+                false
         )
 
         `when`(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
-                .thenReturn(currentUser
-                )
+                .thenReturn(currentUser)
 
         `when`(roleService.hasClubMasterAuth(currentUser)).thenReturn(true)
         `when`(roleService.hasClubMasterAuth(targetUser)).thenReturn(false)
@@ -649,11 +716,11 @@ class ClubDocumentation: ApiDocumentationTest() {
 
 
         club.clubUser = listOf(
-                ClubUser(club, User("유저 1")),
-                ClubUser(club, User("유저 2")),
-                ClubUser(club, User("유저 3")),
-                ClubUser(club, User("유저 4")),
-                ClubUser(club, User("유저 5"))
+                ClubUser(club, User("유저 1"),false),
+                ClubUser(club, User("유저 2"),false),
+                ClubUser(club, User("유저 3"),false),
+                ClubUser(club, User("유저 4"),false),
+                ClubUser(club, User("유저 5"),false)
         )
 
 

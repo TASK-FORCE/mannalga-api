@@ -14,10 +14,12 @@ class ClubUser(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_seq")
-        var user: User
+        var user: User,
 
+        var isLiked: Boolean?
 ) : BaseEntity() {
+
         @OneToMany
         @JoinColumn(name = "club_user_seq")
-        lateinit var clubUserRoles: Set<ClubUserRole>
+        lateinit var clubUserRoles: MutableSet<ClubUserRole>
 }

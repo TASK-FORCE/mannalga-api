@@ -15,8 +15,6 @@ endif::[]
 === Request
 include::{sub-snippet}/meeting-all/http-request.adoc[]
 
-include::{sub-snippet}/meeting-all/request-fields.adoc[]
-
 === Response
 include::{sub-snippet}/meeting-all/response-fields.adoc[]
 

@@ -18,22 +18,25 @@ class ClubAlbumService(
 
     // 엘범 등록
     @Transactional
-    fun registerClubAlbum(clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto) {
+    fun registerClubAlbum(clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto?) {
         val club = clubRepository.findBySeq(clubSeq)
-        val clubAlbum = ClubAlbum(club, clubAlbumDto)
-        clubAlbumRepository.save(clubAlbum)
+
+        if(clubAlbumDto != null) {
+            val clubAlbum = ClubAlbum(club, clubAlbumDto)
+            clubAlbumRepository.save(clubAlbum)
+        }
     }
 
     @Transactional(readOnly = true)
-    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): Page<ClubAlbumListDto> {
-        val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable)
+    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable?): Page<ClubAlbumListDto> {
+        val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
 
         val result = query.results.map { tuple ->
             val clubAlbum = tuple.get(1, ClubAlbum::class.java)
             ClubAlbumListDto(
                 title     = clubAlbum?.title     ?: "",
                 file_name = clubAlbum?.file_name ?: "",
-                img_url    = clubAlbum?.img_url   ?: "",
+                img_url    = clubAlbum?.img_url  ?: "",
                 likeCnt   = tuple.get(2, Long::class.java) ?: 0,
                 commentCnt= tuple.get(3, Long::class.java) ?: 0
             )

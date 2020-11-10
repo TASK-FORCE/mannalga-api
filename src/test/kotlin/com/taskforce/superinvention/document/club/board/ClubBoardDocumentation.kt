@@ -62,7 +62,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         user = User ("12345")
         user.seq = 2
 
-        clubUser = ClubUser(club, user)
+        clubUser = ClubUser(club, user, isLiked = false)
 
         clubBoard = ClubBoard(
                 title   = "test-title",
@@ -163,7 +163,11 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
-                get("/clubs/{clubSeq}/boards?page=${page}&size=${pageSize}&title=${searchOpt.title}&content=${searchOpt.content}", clubSeq)
+                get("/clubs/{clubSeq}/boards", clubSeq)
+                        .queryParam("page", "$page")
+                        .queryParam("size", "$pageSize")
+                        .queryParam("title", searchOpt.title)
+                        .queryParam("content", searchOpt.content)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())

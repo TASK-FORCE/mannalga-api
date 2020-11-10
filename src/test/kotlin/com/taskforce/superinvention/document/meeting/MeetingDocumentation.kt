@@ -18,8 +18,6 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -88,6 +86,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val result: ResultActions = this.mockMvc.perform(
                 get("/clubs/{clubSeq}/meetings", clubSeq)
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .queryParam("page", "0")
+                        .queryParam("size", "20")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
                         .accept(MediaType.APPLICATION_JSON)
@@ -149,7 +149,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val club = Club("name", "desc", 3L, "sdasd.jpg")
         val clubUser = ClubUser(
                 club,
-                User("eric")
+                User("eric"),
+                false
         )
 
         val clubDto = ClubDto(
@@ -258,7 +259,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
         val club = Club("name", "desc", 3L, "sdasd.jpg")
         val clubUser = ClubUser(
                 club,
-                User("eric")
+                User("eric"),
+                false
         )
 
         val clubDto = ClubDto(
@@ -291,7 +293,6 @@ class MeetingDocumentation: ApiDocumentationTest() {
         given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(clubUser)
         given(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).willReturn(true)
         given(meetingService.modifyMeeting(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(meetingDto)
-//        given(meetingService.checkClubMeeting(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong())).willReturn(Unit)
 
         // when
         val result: ResultActions = this.mockMvc.perform(
@@ -348,6 +349,61 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.regClubUser.roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명")
                         )
                 ))
+    }
+
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `만남 삭제`() {
+        // given
+        val meetingSeq = 1L
+        val clubSeq = 76L
+
+
+        val club = Club("name", "desc", 3L, "sdasd.jpg")
+        val clubUser = ClubUser(
+                club,
+                User("eric"),
+                false
+        )
+
+        val clubDto = ClubDto(
+                seq = clubSeq,
+                name = "club name",
+                description = "club description",
+                maximumNumber = 100,
+                userCount = null,
+                mainImageUrl = "asdasd.jpg"
+        )
+        clubUser.seq = 132L
+
+
+        given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(clubUser)
+        given(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).willReturn(true)
+
+        // when
+        val result: ResultActions = this.mockMvc.perform(
+                delete("/clubs/{clubSeq}/meetings/{meetingSeq}", clubSeq, meetingSeq)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(MockMvcResultHandlers.print())
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk)
+            .andDo(
+                document(
+            "delete-meeting", getDocumentRequest(), getDocumentResponse(),
+                    pathParameters(
+                        parameterWithName("clubSeq").description("모임 시퀀스"),
+                        parameterWithName("meetingSeq").description("만남 시퀀스")
+                    ),
+                    responseFields(
+                        *ApiDocumentUtil.commonResponseField()
+                    )
+                )
+            )
     }
 
 

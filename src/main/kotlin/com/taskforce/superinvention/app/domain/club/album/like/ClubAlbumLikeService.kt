@@ -20,12 +20,10 @@ class ClubAlbumLikeService(
         val clubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
 
         if(clubUser != null && clubAlbum != null) {
-            val albumLike = clubAlbumLikeRepository.findByClubAlbumAndClubUser(clubAlbum, clubUser)
-            if(albumLike != null) {
-                clubAlbumLikeRepository.save(
-                        ClubAlbumLike(clubAlbum, clubUser)
-                )
-            }
+
+            // 좋아요 하지 않았을 경우에만 좋아요 처리
+            clubAlbumLikeRepository.findByClubAlbumAndClubUser(clubAlbum, clubUser)
+                    ?: run { clubAlbumLikeRepository.save(ClubAlbumLike(clubAlbum, clubUser)) }
         }
     }
 
@@ -35,11 +33,8 @@ class ClubAlbumLikeService(
         val clubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
 
         if(clubUser != null && clubAlbum != null) {
-            val clubAlbumLike = clubAlbumLikeRepository.findByClubAlbumAndClubUser(clubAlbum, clubUser)
-
-            if(clubAlbumLike != null) {
-                clubAlbumLikeRepository.delete(clubAlbumLike)
-            }
+            clubAlbumLikeRepository.findByClubAlbumAndClubUser(clubAlbum, clubUser)
+                    ?.let((clubAlbumLikeRepository::delete))
         }
     }
 }

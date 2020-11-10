@@ -28,6 +28,7 @@ class UserRegionRepositoryImpl: UserRegionRepositoryCustom,
         val query = from(userRegion)
                 .join(userRegion.user, user).fetchJoin()
                 .join(userRegion.region, region).fetchJoin()
+                .where(userRegion.user.seq.eq(userSeq))
         return query.fetch()
     }
 }

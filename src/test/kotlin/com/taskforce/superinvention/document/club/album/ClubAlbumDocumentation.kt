@@ -22,10 +22,12 @@ import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.eqPage
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
@@ -62,12 +64,9 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                 maximumNumber = 10,
                 mainImageUrl  = ""
         )
-        club.seq = 88
 
         user = User ("12345")
-        user.seq = 2
-
-        clubUser = ClubUser(club, user)
+        clubUser = ClubUser(club, user, isLiked = true)
 
         clubAlbum = ClubAlbum (
                 club = club,
@@ -76,6 +75,11 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                 file_name   = "파일 이름",
                 delete_flag = false
         )
+
+        clubUser.seq  = 110
+        clubAlbum.seq = 100
+        club.seq = 88
+        user.seq = 2
     }
 
 
@@ -87,8 +91,8 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                 clubAlbum.title,
                 clubAlbum.file_name,
                 clubAlbum.img_url,
-                1,
-                1
+                likeCnt    = 1,
+                commentCnt = 1
         )
 
         val pageable: Pageable = PageRequest.of(0, 20)
@@ -98,12 +102,18 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         val clubAlbums: Page<ClubAlbumListDto> = PageImpl(clubAlbumList, pageable, clubAlbumList.size.toLong())
 
         // when
-        `when`(clubAlbumService.getClubAlbumList(club.seq!!, searchOpt, pageable))
-                .thenReturn(clubAlbums)
+        `when`(clubAlbumService.getClubAlbumList(
+                eq(club.seq!!),
+                argThat{ search -> search!!.title == "사진첩" },
+                eq(pageable)
+        )).thenReturn(clubAlbums)
 
         val result: ResultActions = this.mockMvc.perform(
-                get("/club/{clubSeq}/album?title=${searchOpt.title}", club.seq)
-                        .header("Authorization", "Bearer xxxxxxxxxxx")
+                get("/club/{clubSeq}/album", club.seq)
+                        .queryParam("title", searchOpt.title)
+                        .queryParam("page", "0")
+                        .queryParam("size", "20")
+                        .header("Authorization", "Bearer xxxxxxxxxxxxx")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
@@ -111,15 +121,13 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("select-club-album", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("club-album-select", getDocumentRequest(), getDocumentResponse(),
                         requestParameters(
-                                *commonPageQueryParam()
+                                *commonPageQueryParam(),
+                                parameterWithName("title").description("제목")
                         ),
                         pathParameters(
                                 parameterWithName("clubSeq").description("모임 시퀀스")
-                        ),
-                        requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목")
                         ),
                         responseFields(
                                 *commonResponseField(),
@@ -146,7 +154,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         )
 
         // when
-        `when`(clubAlbumService.registerClubAlbum(club.seq!!, body)).then{ Unit }
+        `when`(clubAlbumService.registerClubAlbum(eq(club.seq!!), eq(body))).then{ Unit }
 
         val result: ResultActions = this.mockMvc.perform(
                 post("/club/{clubSeq}/album", club.seq!!)
@@ -159,7 +167,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         result.andExpect(status().isCreated)
                 .andDo(document("register-club-album", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("clubSeq").description("[path variable] 모임 시퀀스")
+                                parameterWithName("clubSeq").description("모임 시퀀스")
                         ),
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
@@ -167,8 +175,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("img_ur").type(JsonFieldType.STRING).description("이미지 URL")
                         ),
                         responseFields(
-                                *commonResponseField(),
-                                *pageFieldDescriptor()
+                                *commonResponseField()
                         )
                 ))
     }
@@ -177,14 +184,11 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
     fun `모임 게시판 글 목록 삭제`() {
 
-        // given
-        val clubSeq =  88L
-
         //  when
-        `when`(clubBoardService.deleteClubBoard(user, clubSeq)).then{ Unit }
+        `when`(clubAlbumService.removeClubAlbum(clubAlbum.seq!!)).then{ Unit }
 
         val result: ResultActions = this.mockMvc.perform(
-                delete("/clubs/{clubBoardSeq}/boards", clubSeq)
+                delete("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -192,9 +196,10 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("delete-club-board", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("club-album-delete", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("clubBoardSeq").description("[path variable] 모임 게시판 시퀀스")
+                                parameterWithName("clubSeq").description("모임 시퀀스"),
+                                parameterWithName("clubAlbumSeq").description("모임 사진첩 시퀀스")
                         ),
                         responseFields(
                                 *commonResponseField()

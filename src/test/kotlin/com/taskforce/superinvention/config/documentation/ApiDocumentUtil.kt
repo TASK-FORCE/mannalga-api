@@ -1,5 +1,6 @@
 package com.taskforce.superinvention.config.documentation
 
+import org.springframework.data.domain.Pageable
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
@@ -79,5 +80,15 @@ object ApiDocumentUtil {
                 parameterWithName("page").description("페이지"),
                 parameterWithName("size").description("조회 개수")
         )
+    }
+
+    fun eqPage(paramPageable: Pageable?, pageable: Pageable): Boolean {
+        if(paramPageable == null) return false
+
+        return when {
+            paramPageable.pageSize == pageable.pageSize
+                    && paramPageable.pageNumber == pageable.pageNumber -> true
+            else -> false
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeServ
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -12,6 +13,7 @@ class ClubAlbumLikeController(
         private val clubAlbumLikeService: ClubAlbumLikeService
 ) {
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun registerClubAlbumLike(@AuthUser user: User,
                               @PathVariable clubSeq: Long,
                               @PathVariable clubAlbumSeq: Long): ResponseDto<String> {
