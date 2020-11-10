@@ -280,7 +280,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         // query string places like this
                                         parameterWithName("regionSeq").description("지역 seq"),
                                         parameterWithName("interestSeq").description("관심사 seq"),
-                                        parameterWithName("page").description("페이즈"),
+                                        parameterWithName("page").description("페이지"),
                                         parameterWithName("size").description("페이지당 사이즈")
                                 ),
                                 responseFields(

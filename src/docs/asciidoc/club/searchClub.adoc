@@ -14,7 +14,6 @@ include::{sub-snippet}/searchClub/http-request.adoc[]
 
 include::{sub-snippet}/searchClub/request-parameters.adoc[]
 
-
 === Response
 include::{sub-snippet}/searchClub/http-response.adoc[]
 
