@@ -9,7 +9,10 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
+Request
 include::{sub-snippet}/select-club-info-detail/http-request.adoc[]
 include::{sub-snippet}/select-club-info-detail/path-parameters.adoc[]
+
+Response
 include::{sub-snippet}/select-club-info-detail/http-response.adoc[]
 include::{sub-snippet}/select-club-info-detail/response-fields.adoc[]

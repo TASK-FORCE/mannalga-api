@@ -12,10 +12,10 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 include::{sub-snippet}/meeting-all/http-request.adoc[]
 
-=== Response
+Response
 include::{sub-snippet}/meeting-all/response-fields.adoc[]
 
 include::{sub-snippet}/meeting-all/http-response.adoc[]

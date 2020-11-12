@@ -9,12 +9,12 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 include::{sub-snippet}/changeClubInterests/http-request.adoc[]
 
 include::{sub-snippet}/changeClubInterests/request-fields.adoc[]
 
-=== Response
+Response
 include::{sub-snippet}/changeClubInterests/response-fields.adoc[]
 
 include::{sub-snippet}/changeClubInterests/http-response.adoc[]
