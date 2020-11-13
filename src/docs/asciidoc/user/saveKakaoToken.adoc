@@ -9,7 +9,7 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 ....
 요구 Request Header 없음
 ....
@@ -17,6 +17,6 @@ endif::[]
 include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
 include::{sub-snippet}/saveKakaoToken/request-fields.adoc[]
 
-=== Response
+Response
 include::{sub-snippet}/saveKakaoToken/response-fields.adoc[]
 include::{sub-snippet}/saveKakaoToken/http-response.adoc[]

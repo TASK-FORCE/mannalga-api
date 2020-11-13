@@ -9,10 +9,10 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 include::{sub-snippet}/register-club-board/http-request.adoc[]
 include::{sub-snippet}/register-club-board/request-fields.adoc[]
 
-=== Response
+Response
 include::{sub-snippet}/register-club-board/response-fields.adoc[]
 include::{sub-snippet}/register-club-board/response-body.adoc[]

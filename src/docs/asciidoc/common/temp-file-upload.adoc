@@ -9,13 +9,11 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/common
 
-=== Request
+Request
 include::{sub-snippet}/temp-file-upload/request-parts.adoc[]
-
 include::{sub-snippet}/temp-file-upload/curl-request.adoc[]
 
 
-=== Response
+Response
 include::{sub-snippet}/temp-file-upload/response-fields.adoc[]
-
 include::{sub-snippet}/temp-file-upload/http-response.adoc[]

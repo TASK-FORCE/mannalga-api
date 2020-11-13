@@ -9,10 +9,10 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 include::{sub-snippet}/userInterest/http-request.adoc[]
 
-=== Response
+Response
 include::{sub-snippet}/userInterest/response-fields.adoc[]
 
 include::{sub-snippet}/userInterest/http-response.adoc[]
