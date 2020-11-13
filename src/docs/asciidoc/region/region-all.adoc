@@ -9,7 +9,7 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/state
 
-=== Request
+Request
 include::{sub-snippet}/region-all/http-request.adoc[]
 
 ....
@@ -20,7 +20,7 @@ include::{sub-snippet}/region-all/http-request.adoc[]
     요구 Request Body 없음
 ....
 
-=== Response
+Response
 include::{sub-snippet}/region-all/response-fields.adoc[]
 
 include::{sub-snippet}/region-all/http-response.adoc[]

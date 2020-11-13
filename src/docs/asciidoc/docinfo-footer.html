@@ -1,0 +1,32 @@
+<script>
+    const tocDomElement = document.getElementById("toc");
+    document.querySelector('#toc > .sectlevel1').style.display = 'none';
+
+    const targetToc = document.createElement("div");
+    targetToc.className = "js-toc"
+    tocDomElement.appendChild(targetToc);
+
+    tocbot.init({
+        tocSelector: ".js-toc",
+        contentSelector: "#content",
+        headingSelector: "h1, h2, h3, h4, h5",
+        ignoreSelector: ".js-toc-ignore",
+        extraLinkClasses: "",
+        activeLinkClass: "is-active-link",
+        linkClass: "toc-link",
+        listClass: "toc-list",
+        extraListClasses: "",
+        isCollapsedClass: "is-collapsed",
+        collapsibleClass: "is-collapsible",
+        listItemClass: "toc-list-item",
+        collapseDepth: 0,
+        smoothScroll: false,
+        smoothScrollDuration: 420,
+        headingsOffset: 0,
+        throttleTimeout: 50,
+        positionFixedSelector: null,
+        positionFixedClass: "is-position-fixed",
+        fixedSidebarOffset: "auto",
+        includeHtml: false
+    })
+</script>

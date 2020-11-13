@@ -11,6 +11,7 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/
 :root: {rootDir}/src/docs/asciidoc
+:docinfo1:
 
 = SuperInvention API
 
@@ -24,92 +25,96 @@ endif::[]
 | `http://52.78.18.217/api`
 |===
 
-
-= 공통
-== 파일 임시저장
+== 공통
+=== [.toc-list-item]`파일 임시저장`
 include::{root}/common/temp-file-upload.adoc[]
 
-= 지역
-== 지역 조회 API
+== 지역
+
+=== [.toc-list-item]`지역 조회 API`
 include::{root}/region/region-all.adoc[]
 
-== 유저 지역 조회
+=== [.toc-list-item]`유저 지역 조회`
 include::{root}/region/userRegions.adoc[]
 
-== 유저 지역 변경
+=== [.toc-list-item]`유저 지역 변경`
 include::{root}/user/changeUserRegions.adoc[]
 
-= 유저
-== 앱 토큰 발급
+== 유저
+
+=== [.toc-list-item]`앱 토큰 발급`
 include::{root}/user/saveKakaoToken.adoc[]
 
-== 카카오 유저 정보 조회
+=== [.toc-list-item]`카카오 유저 정보 조회`
 include::{root}/user/kakaoUserProfileInfo.adoc[]
 
-== 회원가입
+=== [.toc-list-item]`회원가입`
 include::{root}/user/userRegist.adoc[]
 
-== 유저 정보 가져오기
+=== [.toc-list-item]`유저 정보 가져오기`
 include::{root}/user/userInfo.adoc[]
 
+== 관심사
 
-= 관심사
-== 관심사 목록 조회
+=== [.toc-list-item]`관심사 목록 조회`
 include::{root}/interest/interest-group-all.adoc[]
 
-== 유저 관심사 조회
+=== [.toc-list-item]`유저 관심사 조회`
 include::{root}/interest/userInterest.adoc[]
 
-== 유저 관심사 변경
+=== [.toc-list-item]`유저 관심사 변경`
 include::{root}/interest/changeUserInterest.adoc[]
 
-= 모임
-== 모임 생성
+== 모임
+
+=== [.toc-list-item]`모임 생성`
 include::{root}/club/addClub.adoc[]
 
-== 모임 가입
+=== [.toc-list-item]`모임 가입`
 include::{root}/club/addClubUser.adoc[]
 
-== 모임 검색
+=== [.toc-list-item]`모임 검색`
 include::{root}/club/searchClub.adoc[]
 
-== 모임 관심사 변경
+=== [.toc-list-item]`모임 관심사 변경`
 include::{root}/club/changeClubInterests.adoc[]
 
-== 모임 지역 변경
+=== [.toc-list-item]`모임 지역 변경`
 include::{root}/club/changeClubRegions.adoc[]
 
-== 모임원 정보 조회 - 내 정보
+=== [.toc-list-item]`모임원 정보 조회 - 내 정보`
 include::{root}/club/getMyClubUserInfo.adoc[]
 
-== 모임원 권한 변경
+=== [.toc-list-item]`모임원 권한 변경`
 include::{root}/club/changeClubUserRole.adoc[]
 
-== 내 모임 조회
+=== [.toc-list-item]`내 모임 조회`
 include::{root}/club/myClubList.adoc[]
 
-== 모임 상세조회
+=== [.toc-list-item]`모임 상세조회`
 include::{root}/club/selectClubInfoDetails.adoc[]
 
-= 모임 게시판
-== 모임 게시판 작성
+== 모임 게시판
+
+=== [.toc-list-item]`모임 게시판 작성`
 include::{root}/club/board/register-club-board.adoc[]
 
-== 모임 게시판 조회
+=== [.toc-list-item]`모임 게시판 조회`
 include::{root}/club/board/select-club-board.adoc[]
 
-== 모임 게시판 삭제
+=== [.toc-list-item]`모임 게시판 삭제`
 include::{root}/club/board/delete-club-board.adoc[]
 
-= 만남
-== 만남 모두 조회
+== 만남
+
+=== [.toc-list-item]`만남 모두 조회`
 include::{root}/club/meeting/meeting-all.adoc[]
 
-== 만남 생성
+=== [.toc-list-item]`만남 생성`
 include::{root}/club/meeting/create-meeting.adoc[]
 
-== 만남 변경
+=== [.toc-list-item]`만남 변경`
 include::{root}/club/meeting/modify-meeting.adoc[]
 
-== 만남 삭제
+=== [.toc-list-item]`만남 삭제`
 include::{root}/club/meeting/delete-meeting.adoc[]
