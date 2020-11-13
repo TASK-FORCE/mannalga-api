@@ -165,7 +165,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isCreated)
-                .andDo(document("register-club-album", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("club-album-register", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("clubSeq").description("모임 시퀀스")
                         ),
@@ -196,7 +196,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("club-album-delete", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("club-album-remove", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("clubSeq").description("모임 시퀀스"),
                                 parameterWithName("clubAlbumSeq").description("모임 사진첩 시퀀스")
