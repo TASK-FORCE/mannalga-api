@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional
 interface MeetingRepository : JpaRepository<Meeting, Long>, MeetingRepositoryCustom {
 }
 
-@Repository
+
 interface MeetingRepositoryCustom {
 
 }
 
 @Repository
-class MeetingRepositorySupport : QuerydslRepositorySupport(Meeting::class.java), MeetingRepositoryCustom{
+class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), MeetingRepositoryCustom{
 
     @Transactional(readOnly = true)
     fun getMeeting(clubSeq: Long, pageable: Pageable): Page<Meeting> {

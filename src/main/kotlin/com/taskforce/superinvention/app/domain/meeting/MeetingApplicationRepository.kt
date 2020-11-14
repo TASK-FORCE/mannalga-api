@@ -15,12 +15,12 @@ interface MeetingApplicationRepository : JpaRepository<MeetingApplication, Long>
     fun findByClubUserAndMeeting(clubUser: ClubUser, meeting: Meeting): MeetingApplication?
 }
 
-@Repository
+
 interface MeetingApplicationRepositoryCustom {
 
 }
 
 @Repository
-class MeetingApplicationRepositorySupport : QuerydslRepositorySupport(MeetingApplication::class.java), MeetingApplicationRepositoryCustom{
+class MeetingApplicationRepositoryImpl : QuerydslRepositorySupport(MeetingApplication::class.java), MeetingApplicationRepositoryCustom{
 
 }

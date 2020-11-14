@@ -13,12 +13,11 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
 
 @Service
 class MeetingService(
         var meetingRepository: MeetingRepository,
-        var meetingRepositorySupport: MeetingRepositorySupport,
+        var meetingRepositoryImpl: MeetingRepositoryImpl,
         var roleService: RoleService,
         var clubService: ClubService,
         var meetingApplicationRepository: MeetingApplicationRepository
@@ -29,7 +28,7 @@ class MeetingService(
 
     @Transactional(readOnly = true)
     fun getMeeting(clubSeq: Long, pageable: Pageable): Page<MeetingDto> {
-        return meetingRepositorySupport.getMeeting(clubSeq, pageable).map { e -> MeetingDto(e) }
+        return meetingRepositoryImpl.getMeeting(clubSeq, pageable).map { e -> MeetingDto(e) }
     }
 
     @Transactional
