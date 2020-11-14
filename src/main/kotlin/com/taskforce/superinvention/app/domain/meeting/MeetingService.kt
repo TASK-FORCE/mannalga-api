@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.meeting
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.RoleService
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
@@ -37,7 +38,7 @@ class MeetingService(
         val clubUser = clubService.getClubUserByClubUserSeq(clubUserSeq)
                 ?: throw BizException("존재하지 않는 모임원입니다", HttpStatus.INTERNAL_SERVER_ERROR)
 
-        if (meetingRequestDto.startTimestamp.isBefore(meetingRequestDto.endTimestamp))
+        if (meetingRequestDto.startTimestamp.isAfter(meetingRequestDto.endTimestamp))
             throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
 
         val meeting: Meeting = Meeting(
@@ -69,7 +70,7 @@ class MeetingService(
     fun checkClubMeeting(clubSeq: Long, meetingSeq: Long) {
         val meeting = meetingRepository.findById(meetingSeq).orElseThrow { meetingNotFountException }
         if (meeting.club.seq!! != clubSeq)
-            throw BizException("해당 클럽의 만남이 아닙니다", HttpStatus.FORBIDDEN)
+            throw BizException("해당 모임의 만남이 아닙니다", HttpStatus.FORBIDDEN)
     }
 
     @Transactional
@@ -79,15 +80,15 @@ class MeetingService(
     }
 
     /**
-     * 만남 신철
+     * 만남 신청
      */
     @Transactional
     fun application(clubUser: ClubUser, meetingSeq: Long): MeetingApplicationDto {
         val meeting = meetingRepository.findById(meetingSeq).orElseThrow { meetingNotFountException }
 
         // 참석자 최대인원 확인
-        if (meeting.maximumNumber != null && meeting.maximumNumber!! >= meeting.meetingApplications.filter { e -> !e.deleteFlag }.count())
-            throw BizException("인원이 다 차서 신청할 수 없습니다.", HttpStatus.CONFLICT)
+        if (meeting.maximumNumber != null && meeting.maximumNumber!! <= meeting.meetingApplications.filter { e -> !e.deleteFlag }.groupBy { e -> e.clubUser }.count())
+            throw BizException("인원이 다 차서 신청할 수 없습니다. 최대 인원은 ${meeting.maximumNumber}명 입니다.", HttpStatus.CONFLICT)
 
         // 이미 신청하였으면 신청 못하게 막는다
         val application = meetingApplicationRepository.findByClubUserAndMeeting(clubUser, meeting)
@@ -95,7 +96,7 @@ class MeetingService(
             return if (application.deleteFlag)
                 MeetingApplicationDto(application.apply { this.deleteFlag = false })
             else
-                throw BizException("이미 신청한 모임입니다.", HttpStatus.CONFLICT)
+                throw BizException("이미 신청한 만남입니다. 신청한 만남 id: ${application.seq}", HttpStatus.CONFLICT)
 
         // 신청
         val meetingApplication = MeetingApplication(clubUser, meeting, false)
@@ -121,6 +122,10 @@ class MeetingService(
     fun getMeetingApplication(meetingApplicationSeq: Long): MeetingApplicationDto {
         val meetingApplication = meetingApplicationRepository.findById(meetingApplicationSeq).orElseThrow { meetingApplicationNotFoundException }
         return MeetingApplicationDto(meetingApplication)
+    }
+
+    fun isRegUser(meetingApplication: MeetingApplicationDto, user: User): Boolean {
+        return meetingApplication.clubUser.userSeq == user.seq
     }
 
 }
