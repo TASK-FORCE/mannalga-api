@@ -79,10 +79,10 @@ class ClubAlbumCommentService(
         val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
         val comment = commentRepository.findByIdOrNull(clubAlbumCommentSeq)
 
-        if(comment != null) {
+        if(comment != null && clubUser != null) {
 
             // 관리자이거나, 작성자만 삭제 가능
-            if(roleService.hasClubMemberAuth(clubSeq, user) || clubUser == comment.clubUser) {
+            if(roleService.hasClubManagerAuth(clubUser) || clubUser == comment.clubUser) {
                 commentRepository.delete(comment)
                 return
             }
