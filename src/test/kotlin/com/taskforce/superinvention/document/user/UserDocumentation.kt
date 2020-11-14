@@ -7,6 +7,7 @@ import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGr
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterest
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -37,6 +38,35 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 
 class UserDocumentation : ApiDocumentationTest() {
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `유저 회원가입이 완료되어있는지 체크`() {
+
+        // given
+        val user = User("121315")
+        user.isRegistered = true
+
+        // when
+        `when`(userRepository.findByUserId(anyObject())).thenReturn(user)
+
+        // then
+        val result: ResultActions = this.mockMvc.perform(
+                get("/users/check-already-register")
+                        .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
+                        .characterEncoding("utf-8")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+                .andDo(document("user-check-register", getDocumentRequest(), getDocumentResponse(),
+                        responseFields(
+                                *commonResponseField(),
+                                fieldWithPath("data.isMember").type(JsonFieldType.BOOLEAN).description("최종 회원가입 여부")
+                        )
+                ))
+    }
 
     @Test
     fun `유저 최초 로그인 처리`() {
@@ -315,7 +345,6 @@ class UserDocumentation : ApiDocumentationTest() {
                 userId = mockUser.userId,
                 interestList = interestList
         )
-
 
         `when`(userInterestService.changeUserInterest(anyObject(), anyObject())).thenReturn(userInterestDto)
 
