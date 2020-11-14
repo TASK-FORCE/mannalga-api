@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
 import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
+import com.taskforce.superinvention.app.web.controller.meeting.MeetingApplicationController
 import com.taskforce.superinvention.app.web.controller.meeting.MeetingController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
@@ -46,7 +47,8 @@ import org.springframework.test.web.servlet.MockMvc
     InterestGroupController::class,
     CommonController::class,
     UserInterestController::class,
-    MeetingController::class
+    MeetingController::class,
+    MeetingApplicationController::class
 ])
 abstract class ApiDocumentationTest: BaseTest {
 
