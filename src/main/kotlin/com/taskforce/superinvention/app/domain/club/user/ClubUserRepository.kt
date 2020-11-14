@@ -25,14 +25,14 @@ interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepository
 }
 
 interface ClubUserRepositoryCustom {
-    fun findClubUserWithRole(clubSeq: Long, user: User): ClubUser?
+    fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser?
 }
 
 @Repository
 class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
     QuerydslRepositorySupport(ClubUser::class.java) {
 
-    override fun findClubUserWithRole(clubSeq: Long, user: User): ClubUser? {
+    override fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser? {
         val user = QUser.user
         val club = QClub.club
         val clubUser = QClubUser.clubUser
@@ -43,8 +43,8 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
                 .join(clubUser.user, user).fetchJoin()
                 .join(clubUser.clubUserRoles, clubUserRole).fetchJoin()
                 .where(clubUser.club.seq.eq(clubSeq)
-                    .and(clubUser.user.seq.eq(user.seq)))
+                    .and(clubUser.user.seq.eq(pUser.seq)))
 
-        return query.fetchFirst()
+        return query.fetchOne()
     }
 }
