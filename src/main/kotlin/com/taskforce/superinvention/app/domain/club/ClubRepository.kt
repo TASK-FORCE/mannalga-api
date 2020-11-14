@@ -5,11 +5,20 @@ import com.querydsl.core.Tuple
 import com.querydsl.core.annotations.QueryProjection
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.taskforce.superinvention.app.domain.club.QClub.*
 import com.taskforce.superinvention.app.domain.club.user.QClubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest
+import com.taskforce.superinvention.app.domain.interest.QClubInterest.*
+import com.taskforce.superinvention.app.domain.interest.interest.QInterest
+import com.taskforce.superinvention.app.domain.interest.interest.QInterest.*
+import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup
+import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup.*
 import com.taskforce.superinvention.app.domain.region.QClubRegion
+import com.taskforce.superinvention.app.domain.region.QClubRegion.*
+import com.taskforce.superinvention.app.domain.region.QRegion
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -27,7 +36,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 }
 
 interface ClubRepositoryCustom {
-    fun search(regionSeq: Long?, interestSeq: Long?, pageable: Pageable): Page<Club>
+    fun search(regionSeq: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
     fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
@@ -36,20 +45,28 @@ interface ClubRepositoryCustom {
 class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCustom,
         QuerydslRepositorySupport(Club::class.java) {
 
-    override fun search(regionSeq: Long?, interestSeq: Long?, pageable: Pageable): Page<Club> {
+    override fun search(regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
 
         // SELECT FROM
-        val query = from(QClub.club)
-                .leftJoin(QClub.club.clubInterests, QClubInterest.clubInterest)
-                .leftJoin(QClub.club.clubRegions, QClubRegion.clubRegion)
+        val query = from(club)
+                .leftJoin(club.clubInterests, clubInterest)
+                .leftJoin(club.clubRegions, clubRegion)
 
         // WHERE
-        if (regionSeq != null) query.where(QClubRegion.clubRegion.region.seq.eq(regionSeq))
-        if (interestSeq != null) query.where(QClubInterest.clubInterest.interest.seq.eq(interestSeq))
+        if (regionSeqList.isNotEmpty()) query.where(clubRegion.region.seq.`in`(regionSeqList))
+        if (interestSeq != null) query.where(clubInterest.interest.seq.eq(interestSeq))
+        if (interestGroupSeq != null)
+            query.where(clubInterest.interest.seq.`in`(
+                JPAExpressions.select(interest.seq)
+                        .from(interestGroup)
+                        .leftJoin(interestGroup.interestList, interest)
+                        .where(interestGroup.seq.eq(interestGroupSeq))
+                )
+            )
 
         // PAGING
         val fetchResult = query
-                .groupBy(QClub.club)
+                .groupBy(club)
                 .orderBy()
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
@@ -59,7 +76,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
     }
 
     override fun findClubInfo(clubSeq: Long): Tuple? {
-        val club = QClub.club
+        val club = club
         val clubUser = QClubUser.clubUser
 
         val query =
@@ -107,26 +124,26 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
 
     private fun eqInterests(interestList:List<InterestRequestDto>): BooleanExpression? {
         if (ObjectUtils.isEmpty(interestList)) return null
-        return QClubInterest.clubInterest.interest.seq.`in`(interestList.map { e -> e.seq })
+        return clubInterest.interest.seq.`in`(interestList.map { e -> e.seq })
     }
 
     private fun eqRegions(regionList:List<RegionRequestDto>): BooleanExpression? {
         if (ObjectUtils.isEmpty(regionList)) return null
-        return QClubRegion.clubRegion.region.seq.`in`(regionList.map { e -> e.seq })
+        return clubRegion.region.seq.`in`(regionList.map { e -> e.seq })
     }
 
     fun getUserCount(clubSeq: Long): Long {
         return queryFactory.select(QClubUser.clubUser.user.count())
-                .from(QClub.club)
-                .leftJoin(QClub.club.clubUser, QClubUser.clubUser)
-                .where(QClub.club.seq.eq(clubSeq))
+                .from(club)
+                .leftJoin(club.clubUser, QClubUser.clubUser)
+                .where(club.seq.eq(clubSeq))
                 .fetchCount()
     }
 
     fun findByUser(userInfo: User, pageable: Pageable): Page<Club> {
-        val fetchResults = queryFactory.select(QClub.club)
+        val fetchResults = queryFactory.select(club)
                 .from(QClubUser.clubUser)
-                .leftJoin(QClubUser.clubUser.club, QClub.club)
+                .leftJoin(QClubUser.clubUser.club, club)
                 .where(QClubUser.clubUser.user.seq.eq(userInfo.seq))
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
