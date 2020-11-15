@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.document.common
 
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
@@ -8,16 +9,17 @@ import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.partWithName
 import org.springframework.restdocs.request.RequestDocumentation.requestParts
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.io.FileInputStream
 
 class CommonDocumentation: ApiDocumentationTest() {
@@ -33,19 +35,24 @@ class CommonDocumentation: ApiDocumentationTest() {
     @Test
     fun `파일 임시저장`() {
         // given
-        given(fileService.fileTempSave(multipartFile)).willReturn(
-            S3Path(
-                absolutePath = "http://{aws-s3-domain}/{file-path}/{file-name}",
-                filePath = "{file-path}/{file-name}",
-                fileName = "{file-name}"
-            )
+        given(fileService.fileTempSave(MockitoHelper.anyObject())).willReturn(
+                S3Path(
+                        absolutePath = "http://{aws-s3-domain}/{file-path}/{file-name}",
+                        filePath = "{file-path}/{file-name}",
+                        fileName = "{file-name}"
+                )
         )
 
+        val image = MockMultipartFile(
+                "file",
+                "image.png",
+                "image/png",
+                "<<png data>>".toByteArray()
+        )
 
         // when
         val result = mockMvc.perform(
-                multipart("/common/temp/file")
-                        .file(multipartFile)
+                multipart("/common/temp/file").file(image)
         ).andDo(print())
 
         // then
