@@ -13,6 +13,7 @@ import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
@@ -67,7 +68,7 @@ class UserService(
         // [1] kakao 유저 존재 x
         if(kakaoId.isBlank()) {
             LOG.error("unknown kakao token received")
-            throw BizException("존재하지 않는 kakao userid입니다")
+            throw BizException("존재하지 않는 kakao userid입니다", HttpStatus.NOT_FOUND)
         }
 
         var user: User? = userRepository.findByUserId(kakaoId)
