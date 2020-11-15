@@ -56,10 +56,10 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 
-    testImplementation("org.mockito:mockito-core:3.4.6")
+    testImplementation("io.mockk:mockk:1.10.0")
+    testImplementation("com.ninja-squad:springmockk:2.0.3")
+
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.spockframework:spock-core:1.1-groovy-2.4")   // Spock 의존성 추가
-    testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4") // Spock 의존성 추가
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
 }

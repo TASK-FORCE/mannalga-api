@@ -34,8 +34,10 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.test.web.servlet.MockMvc
 
-
-@Import(JwtTokenProvider::class, UserDetailsProvider::class)
+@Deprecated(
+        message = "ApiDocumentationTestV2를 쓰세요.",
+        replaceWith = ReplaceWith("com.taskforce.superinvention.config.test.ApiDocumentationTestV2")
+)
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = [
     UserController::class,

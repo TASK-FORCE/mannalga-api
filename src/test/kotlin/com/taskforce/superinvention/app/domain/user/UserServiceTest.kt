@@ -9,7 +9,7 @@ import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import com.taskforce.superinvention.config.test.MockTest
-import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
