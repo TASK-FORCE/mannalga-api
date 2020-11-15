@@ -149,3 +149,12 @@ include::{root}/club/meeting/modify-meeting.adoc[]
 
 === [.toc-list-item]`만남 삭제`
 include::{root}/club/meeting/delete-meeting.adoc[]
+
+=== [.toc-list-item]`만남 신청`
+include::{root}/club/meeting/meeting-application.adoc[]
+
+=== [.toc-list-item]`만남 신청 취소`
+include::{root}/club/meeting/meeting-application-cancel.adoc[]
+
+=== [.toc-list-item]`만남 신청 개별건 조회`
+include::{root}/club/meeting/get-meeting-application.adoc[]

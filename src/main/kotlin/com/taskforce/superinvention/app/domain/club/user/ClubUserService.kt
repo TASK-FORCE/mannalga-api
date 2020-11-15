@@ -13,12 +13,12 @@ class ClubUserService(
 
     // 클럽에서의 유저 상태 표시
     @Transactional
-    fun getClubUserDetails(user: User?, seq: Long): ClubUserStatusDto? {
+    fun getClubUserDetails(user: User?, clubSeq: Long): ClubUserStatusDto? {
         if(user == null) {
             return null
         }
 
-        val clubUser = clubUserRepository.findClubUserWithRole(seq, user) ?: return null
+        val clubUser = clubUserRepository.findClubUserWithRole(clubSeq, user) ?: return null
         val roleNames= clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
 
         return ClubUserStatusDto(roleNames, clubUser.isLiked ?: false )

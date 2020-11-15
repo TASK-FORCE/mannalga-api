@@ -1,10 +1,15 @@
 package com.taskforce.superinvention.app.domain.club.user
 
+import com.querydsl.core.group.GroupBy.*
+import com.querydsl.jpa.JPAExpressions.selectFrom
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.QClub
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
+import com.taskforce.superinvention.app.domain.role.QRole
+import com.taskforce.superinvention.app.domain.role.QRoleGroup
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
@@ -20,14 +25,14 @@ interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepository
 }
 
 interface ClubUserRepositoryCustom {
-    fun findClubUserWithRole(clubSeq: Long, user: User): ClubUser?
+    fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser?
 }
 
 @Repository
 class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
-        QuerydslRepositorySupport(ClubUser::class.java) {
+    QuerydslRepositorySupport(ClubUser::class.java) {
 
-    override fun findClubUserWithRole(clubSeq: Long, paramUser: User): ClubUser? {
+    override fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser? {
         val user = QUser.user
         val club = QClub.club
         val clubUser = QClubUser.clubUser
@@ -38,8 +43,8 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
                 .join(clubUser.user, user).fetchJoin()
                 .join(clubUser.clubUserRoles, clubUserRole).fetchJoin()
                 .where(clubUser.club.seq.eq(clubSeq)
-                        .and(clubUser.user.seq.eq(paramUser.seq)))
+                    .and(clubUser.user.seq.eq(pUser.seq)))
 
-        return query.fetchFirst()
+        return query.fetchOne()
     }
 }

@@ -28,8 +28,9 @@ class ClubController(
         val roleService: RoleService
 ) {
 
+    // 모임 상세 조회
     @GetMapping("/{seq}")
-    fun getClubBySeq(@AuthUser user: User?, @PathVariable seq : Long): ResponseDto<ClubInfoDetailsDto> {
+    fun getClubInfoDetail(@AuthUser user: User?, @PathVariable seq : Long): ResponseDto<ClubInfoDetailsDto> {
         val clubInfoDto = clubService.getClubInfoDetail(user, seq)
         return ResponseDto(data = clubInfoDto)
     }
