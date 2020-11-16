@@ -29,7 +29,7 @@ class User: BaseEntity {
 
     var profileImageLink: String? = ""
 
-    var isRegistered: Int? =0
+    var isRegistered: Boolean
 
     constructor(userId: String, userType: UserType, userRoles: MutableSet<UserRole>, userName:String, birthday: LocalDate) {
         this.userId = userId
@@ -37,12 +37,14 @@ class User: BaseEntity {
         this.userRoles = userRoles
         this.userName = userName
         this.birthday = birthday
+        this.isRegistered = false
     }
 
     constructor(userId: String) {
         this.userId = userId
         this.userType = UserType.KAKAO
         this.userRoles = mutableSetOf()
+        this.isRegistered = false
     }
 
     constructor(userId: String, token: KakaoToken) {
@@ -51,5 +53,6 @@ class User: BaseEntity {
         this.userRoles = mutableSetOf()
         this.accessToken = token.access_token
         this.refreshToken = token.refresh_token
+        this.isRegistered = false
     }
 }

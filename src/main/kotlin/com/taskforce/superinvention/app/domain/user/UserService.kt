@@ -9,9 +9,11 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
@@ -66,21 +68,16 @@ class UserService(
         // [1] kakao 유저 존재 x
         if(kakaoId.isBlank()) {
             LOG.error("unknown kakao token received")
-            throw IllegalArgumentException()
+            throw BizException("존재하지 않는 kakao userid입니다", HttpStatus.NOT_FOUND)
         }
 
         var user: User? = userRepository.findByUserId(kakaoId)
-        var isRegistered = false
 
         // [2] 유저 최초 가입시
         if (user == null) {
             user = User(kakaoId, token)
             userRepository.save(user)
             userRoleService.addRole(user, Role.RoleName.NONE)
-        }
-
-        if(user.isRegistered != 0) {
-            isRegistered = true
         }
 
         // 토큰이 만료되었을 때
@@ -90,7 +87,7 @@ class UserService(
         }
 
         return AppToken(
-                isRegistered,
+                user.isRegistered,
                 jwtTokenProvider.createAppToken(user.userId)
         )
     }
@@ -100,7 +97,7 @@ class UserService(
         user.birthday = request.birthday
         user.userName = request.userName
         user.profileImageLink = request.profileImageLink
-        user.isRegistered = 1
+        user.isRegistered = true
 
         val userRegions    = request.userRegions
         val userInterests = request.userInterests

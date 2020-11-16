@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.UserMemberCheckDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
@@ -22,6 +23,7 @@ class UserController(
         private val userInfoService: UserInfoService
 ) {
 
+
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): ResponseDto<AppToken> {
         return ResponseDto(data = userService.saveKakaoToken(token))
@@ -31,6 +33,12 @@ class UserController(
     @GetMapping("/profile")
     fun getUserInfo(@AuthUser user: User): ResponseDto<UserInfoDto> {
         return ResponseDto(data = userInfoService.getUserInfo(user))
+    }
+
+    @Secured(Role.NONE, Role.MEMBER)
+    @GetMapping("/check-already-register")
+    fun checkMember(@AuthUser user: User): ResponseDto<UserMemberCheckDto> {
+        return ResponseDto(data = UserMemberCheckDto(user.isRegistered ?: false))
     }
 
     @Secured(Role.NONE, Role.MEMBER)

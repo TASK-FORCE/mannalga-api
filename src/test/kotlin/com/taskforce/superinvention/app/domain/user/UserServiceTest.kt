@@ -108,7 +108,7 @@ class UserServiceTest: MockTest() {
 
         val user: User = User("13141")
         user.userRoles.add(UserRole(user, "ROLE_USER"))
-        user.isRegistered = 1
+        user.isRegistered = true
 
         `when`(kakaoOAuth.refreshIfTokenExpired(kakaoToken)).thenReturn(kakaoToken)
         `when`(kakaoOAuth.getKakaoUserProfile(kakaoToken)).thenReturn(kakaoUserInfo)

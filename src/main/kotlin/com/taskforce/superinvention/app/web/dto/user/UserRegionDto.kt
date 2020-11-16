@@ -5,7 +5,7 @@ import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 
 class UserRegionDto(user: User, regions: List<RegionWithPriorityDto>) {
     val userSeq: Long?
-    val userId: String
+    val userId: String?
     val userRegions: List<RegionWithPriorityDto>
 
     init {
@@ -14,7 +14,3 @@ class UserRegionDto(user: User, regions: List<RegionWithPriorityDto>) {
         this.userRegions = regions
     }
 }
-
-
-
-

@@ -30,7 +30,7 @@ class JwtTokenProvider(
         var expireDay: Long = 365
     }
 
-    fun createAppToken(userId: String): String {
+    fun createAppToken(userId: String?): String {
         val payloads: Claims  = Jwts.claims()
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
