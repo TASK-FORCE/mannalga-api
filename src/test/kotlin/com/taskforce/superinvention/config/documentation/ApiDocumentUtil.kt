@@ -1,11 +1,15 @@
 package com.taskforce.superinvention.config.documentation
 
+import org.springframework.data.domain.Pageable
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
 import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.request.ParameterDescriptor
+import org.springframework.restdocs.request.RequestDocumentation
+import org.springframework.restdocs.request.RequestDocumentation.*
 
 object ApiDocumentUtil {
 
@@ -66,5 +70,25 @@ object ApiDocumentUtil {
             fieldWithPath("data").type(JsonFieldType.VARIES).description("데이터 본문"),
             fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
         )
+    }
+
+    /**
+     * 공통 페이징 쿼리파라미터
+     */
+    fun commonPageQueryParam(): Array<ParameterDescriptor> {
+        return arrayOf(
+                parameterWithName("page").description("페이지"),
+                parameterWithName("size").description("조회 개수")
+        )
+    }
+
+    fun eqPage(paramPageable: Pageable?, pageable: Pageable): Boolean {
+        if(paramPageable == null) return false
+
+        return when {
+            paramPageable.pageSize == pageable.pageSize
+                    && paramPageable.pageNumber == pageable.pageNumber -> true
+            else -> false
+        }
     }
 }

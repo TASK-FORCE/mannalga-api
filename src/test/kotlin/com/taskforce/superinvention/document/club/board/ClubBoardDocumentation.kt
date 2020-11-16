@@ -12,6 +12,7 @@ import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
+import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
@@ -174,15 +175,13 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         // then
         result.andExpect(status().isOk)
                 .andDo(document("select-club-board", getDocumentRequest(), getDocumentResponse(),
+                        requestParameters(
+                                *commonPageQueryParam(),
+                                parameterWithName("title").description("검색 글 제목"),
+                                parameterWithName("content").description("검색 내용")
+                        ),
                         pathParameters(
                                 parameterWithName("clubSeq").description("[path variable] 모임 시퀀스")
-                        ),
-                        requestParameters(
-                                // query string places like this
-                                parameterWithName("page").description("페이지"),
-                                parameterWithName("size").description("조회 개수"),
-                                parameterWithName("title").description("검색 글 제목 - optional"),
-                                parameterWithName("content").description("검색 글 내용 - optional")
                         ),
                         responseFields(
                                 *commonResponseField(),
