@@ -34,7 +34,6 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import java.util.*
 
 class ClubBoardDocumentation: ApiDocumentationTest() {
 
