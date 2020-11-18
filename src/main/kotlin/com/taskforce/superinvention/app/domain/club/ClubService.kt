@@ -152,7 +152,7 @@ class ClubService(
         clubUserRoleRepository.save(clubUserRole)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun search(request: ClubSearchRequestDto, pageable: Pageable): Page<ClubWithRegionInterestDto> {
         // 하위 지역까지 모두 입력하자
         val regionSeqList = arrayListOf<Long>()
@@ -162,7 +162,7 @@ class ClubService(
             regions.subRegions.forEach{e -> regionSeqList.add(e.seq!!)}
         }
 
-        val result = clubRepository.search(regionSeqList, request.interestSeq, request.interestGroupSeq, pageable)
+        val result = clubRepository.search(request.text, regionSeqList, request.interestSeq, request.interestGroupSeq, pageable)
         val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
                 club = e,
                 userCount = e.clubUser.size.toLong()
