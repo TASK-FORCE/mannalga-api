@@ -21,7 +21,7 @@ data class ClubUserDto(
     constructor(clubUser: ClubUser): this(
             seq = clubUser.seq!!,
             userSeq = clubUser.user.seq!!,
-            club = ClubDto(clubUser.club, null),
+            club = ClubDto(clubUser.club),
             roles = clubUser.clubUserRoles.map { e -> RoleDto(e.role) }.toSet()
     )
 }
@@ -41,7 +41,6 @@ data class ClubUserWithClubDetailsDto(
             userSeq     = clubUserDto.userSeq,
             club        = ClubInfoDto(
                     club = clubUserDto.club,
-                    userCount = clubUserDto.club.userCount,
                     clubInterest = interests,
                     clubRegion = regions
             ),

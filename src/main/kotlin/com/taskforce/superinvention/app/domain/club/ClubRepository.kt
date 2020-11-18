@@ -109,7 +109,6 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                                 clubUserRole.clubUser.seq,
                                 clubUserRole.clubUser.user.seq,
                                 clubUserRole.clubUser.club,
-                                clubUserRole.clubUser.seq.count(),
 
                                 QRoleDtoQueryProjection(
                                         groupConcatRole,
@@ -128,8 +127,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                     seq = tuple.get(0, Long::class.java)!!,
                     userSeq = tuple.get(1, Long::class.java)!!,
                     club = ClubDto(
-                            tuple.get(2, Club::class.java)!!,
-                            tuple.get(3, Long::class.java)!!
+                            tuple.get(2, Club::class.java)!!
                     ),
                     roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
             )

@@ -73,6 +73,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
         user.seq = 1
         club.seq = 2
         clubUser.seq = 3
+        club.userCount = 2
     }
 
 
@@ -87,7 +88,6 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
         val resultDto = ClubInfoDetailsDto (
                 clubInfo = ClubInfoDto(
                         club = club,
-                        userCount = 20L,
                         clubInterest = interestList,
                         clubRegion   = clubRegionList
                 ),

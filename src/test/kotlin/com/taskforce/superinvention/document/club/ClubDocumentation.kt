@@ -490,13 +490,14 @@ class ClubDocumentation: ApiDocumentationTest() {
         val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
         val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
+        club.userCount = 2
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
                 PageImpl(
                         listOf(
                                 ClubUserWithClubDetailsDto (
                                         clubUserDto = ClubUserDto(
                                                 seq = 12311,
-                                                club = ClubDto(club, 3),
+                                                club = ClubDto(club),
                                                 userSeq = 1,
                                                 roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                         ),

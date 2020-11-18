@@ -62,9 +62,9 @@ class ClubService(
     @Transactional
     fun getClubInfoDetail(user: User?, clubSeq: Long): ClubInfoDetailsDto {
 
-        // 모임, 모임원 수 조회
-        val clubTuple = clubRepository.findClubInfo(clubSeq)
-                ?: throw BizException("해당 클럽이 존재하지 않습니다", HttpStatus.NOT_FOUND)
+        // 모임 조회
+        val clubInfo = clubRepository.findById(clubSeq)
+                .orElseThrow { throw BizException("해당 클럽이 존재하지 않습니다", HttpStatus.NOT_FOUND) }
 
         // 모임 관심사 조회
         val clubInterest = clubInterestRepository.findWithInterestGroup(clubSeq)
@@ -75,8 +75,7 @@ class ClubService(
                 ?.map(::SimpleRegionDto) ?: emptyList()
 
         val clubInfoDto = ClubInfoDto(
-                clubTuple.get(0, Club::class.java)!!,
-                clubTuple.get(1, Long::class.java)!!,
+                ClubDto(clubInfo),
                 clubInterest,
                 clubRegions
         )
@@ -221,7 +220,7 @@ class ClubService(
         return ClubUserDto(
                 seq = clubUser.seq!!,
                 userSeq = clubUser.user.seq!!,
-                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                club = ClubDto(clubUser.club),
                 roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
         )
     }
@@ -238,7 +237,6 @@ class ClubService(
 
     @Transactional
     fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserWithClubDetailsDto> {
-
         // 내 모임원 정보 조회
         val clubListInPage: Page<ClubUserDto> = clubRepository.findUserClubList(user, pageable)
 
