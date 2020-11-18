@@ -237,34 +237,27 @@ class ClubService(
     }
 
     @Transactional
-    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserDto> {
-        val query: QueryResults<Tuple> = clubRepository.findUserClubList(user, pageable)
+    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserWithClubDetailsDto> {
 
-        val result: List<ClubUserDto> = query.results.map { tuple ->
-            ClubUserDto(
-                    seq     = tuple.get(0, Long::class.java)!!,
-                    userSeq = tuple.get(1, Long::class.java)!!,
-                    club    = ClubDto(
-                            tuple.get(2, Club::class.java)!!,
-                            tuple.get(3, Long::class.java)!!
-                    ),
-                    roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
+        // 내 모임원 정보 조회
+        val clubListInPage: Page<ClubUserDto> = clubRepository.findUserClubList(user, pageable)
+
+        val clubSeqList = clubListInPage.toList().map { club -> club.seq }
+
+        // 모임 관심사 조회
+        val clubInterests = clubInterestRepository.findWithInterestGroupIn(clubSeqList)
+
+        // 모임 지역 조회
+        val clubRegions = clubRegionRepository.findByClubSeqIn(clubSeqList)
+
+        val result: Page<ClubUserWithClubDetailsDto> = clubListInPage.map { clubUserDto ->
+            ClubUserWithClubDetailsDto(
+                    clubUserDto = clubUserDto,
+                    interests = clubInterests.filter { it.club.seq == clubUserDto.club.seq }.map(::InterestWithPriorityDto),
+                    regions = clubRegions.filter { it.club.seq == clubUserDto.club.seq }.map(::SimpleRegionDto)
             )
         }
 
-        return PageImpl(result, pageable, query.total)
-    }
-
-    private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
-        if(concatedRole == null) return setOf()
-
-        val roleNames= concatedRole.roleName.split(",")
-        val roleGroupNames =  concatedRole.roleGroupName.split(",")
-
-        val roleSet = mutableSetOf<RoleDto>()
-        for(x in roleNames.indices) {
-            roleSet.add(RoleDto("ROLE_${roleNames[x]}", roleGroupNames[x]))
-        }
-        return roleSet
+        return result
     }
 }

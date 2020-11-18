@@ -21,8 +21,11 @@ import com.taskforce.superinvention.app.domain.region.QClubRegion.*
 import com.taskforce.superinvention.app.domain.region.QRegion
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.ClubDto
+import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -36,8 +39,8 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 }
 
 interface ClubRepositoryCustom {
-    fun search(regionSeq: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
-    fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
+    fun search(regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
+    fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
 
@@ -93,7 +96,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         return query
     }
 
-    override fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple> {
+    override fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto> {
         val clubUser = QClubUser.clubUser
         val clubUserRole = QClubUserRole.clubUserRole
 
@@ -119,37 +122,34 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .offset(pageable.offset)
                         .limit(pageable.pageSize.toLong())
                         .fetchResults()
-        return query
+
+        val result = query.results.map { tuple ->
+            ClubUserDto(
+                    seq = tuple.get(0, Long::class.java)!!,
+                    userSeq = tuple.get(1, Long::class.java)!!,
+                    club = ClubDto(
+                            tuple.get(2, Club::class.java)!!,
+                            tuple.get(3, Long::class.java)!!
+                    ),
+                    roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
+            )
+        }
+
+        return PageImpl(result, pageable, query.total)
+
     }
 
-    private fun eqInterests(interestList:List<InterestRequestDto>): BooleanExpression? {
-        if (ObjectUtils.isEmpty(interestList)) return null
-        return clubInterest.interest.seq.`in`(interestList.map { e -> e.seq })
-    }
+    private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
+        if(concatedRole == null) return setOf()
 
-    private fun eqRegions(regionList:List<RegionRequestDto>): BooleanExpression? {
-        if (ObjectUtils.isEmpty(regionList)) return null
-        return clubRegion.region.seq.`in`(regionList.map { e -> e.seq })
-    }
+        val roleNames= concatedRole.roleName.split(",")
+        val roleGroupNames =  concatedRole.roleGroupName.split(",")
 
-    fun getUserCount(clubSeq: Long): Long {
-        return queryFactory.select(QClubUser.clubUser.user.count())
-                .from(club)
-                .leftJoin(club.clubUser, QClubUser.clubUser)
-                .where(club.seq.eq(clubSeq))
-                .fetchCount()
-    }
-
-    fun findByUser(userInfo: User, pageable: Pageable): Page<Club> {
-        val fetchResults = queryFactory.select(club)
-                .from(QClubUser.clubUser)
-                .leftJoin(QClubUser.clubUser.club, club)
-                .where(QClubUser.clubUser.user.seq.eq(userInfo.seq))
-                .offset(pageable.offset)
-                .limit(pageable.pageSize.toLong())
-                .fetchResults()
-
-        return PageImpl(fetchResults.results, pageable, fetchResults.total)
+        val roleSet = mutableSetOf<RoleDto>()
+        for(x in roleNames.indices) {
+            roleSet.add(RoleDto("ROLE_${roleNames[x]}", roleGroupNames[x]))
+        }
+        return roleSet
     }
 }
 

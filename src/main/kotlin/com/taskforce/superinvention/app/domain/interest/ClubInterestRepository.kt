@@ -15,6 +15,7 @@ interface ClubInterestRepository: JpaRepository<ClubInterest, Long>, ClubInteres
 
 interface ClubInterestRepositoryCustom {
     fun findWithInterestGroup(clubSeq: Long) : List<ClubInterest>
+    fun findWithInterestGroupIn(clubSeqList: List<Long>) : List<ClubInterest>
 }
 
 @Repository
@@ -30,6 +31,19 @@ class ClubInterestRepositoryImpl: ClubInterestRepositoryCustom,
                 .join(clubInterest.club, club)
                 .join(clubInterest.interest.interestGroup, interestGroup)
                 .where(clubInterest.club.seq.eq(clubSeq))
+
+        return query.fetch()
+    }
+
+    override fun findWithInterestGroupIn(clubSeqList: List<Long>): List<ClubInterest> {
+        val club = QClub.club
+        val clubInterest = QClubInterest.clubInterest
+        val interestGroup = QInterestGroup.interestGroup
+
+        val query = from(clubInterest)
+                .join(clubInterest.club, club)
+                .join(clubInterest.interest.interestGroup, interestGroup)
+                .where(clubInterest.club.seq.`in`(clubSeqList))
 
         return query.fetch()
     }
