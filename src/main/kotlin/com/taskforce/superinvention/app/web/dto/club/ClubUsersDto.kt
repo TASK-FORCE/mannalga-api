@@ -22,7 +22,7 @@ class ClubUserDto(
     constructor(clubUser: ClubUser): this(
             seq = clubUser.seq!!,
             userSeq = clubUser.user.seq!!,
-            club = ClubDto(clubUser.club, null),
+            club = ClubDto(clubUser.club),
             roles = clubUser.clubUserRoles.map { e -> RoleDto(e.role) }.toSet()
     )
 }

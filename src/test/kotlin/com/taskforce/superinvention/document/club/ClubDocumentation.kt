@@ -483,12 +483,13 @@ class ClubDocumentation: ApiDocumentationTest() {
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
         )
         club.seq = 123123
+        club.userCount = 2
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
                 PageImpl(
                         listOf(
                                 ClubUserDto(
                                         seq = 12311,
-                                        club = ClubDto(club, 3),
+                                        club = ClubDto(club),
                                         userSeq = 1,
                                         roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                 ),

@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.region.ClubRegion
+import org.hibernate.annotations.Formula
 import javax.persistence.*
 
 @Entity
@@ -17,6 +18,9 @@ class Club(
     var mainImageUrl: String?
 
 ): BaseEntity() {
+
+    @Formula("(select count(*) from club_user cu where cu.club_seq = seq)")
+    var userCount: Long? = null
 
     @OneToMany
     @JoinColumn(name = "club_seq")

@@ -28,7 +28,7 @@ class MeetingDto(
             content = meeting.content,
             startTimestamp = meeting.startTimestamp.toBaseDateTime(),
             endTimestamp = meeting.endTimestamp.toBaseDateTime(),
-            club = ClubDto(meeting.club, null),
+            club = ClubDto(meeting.club),
             deleteFlag = meeting.deleteFlag,
             maximumNumber = meeting.maximumNumber,
             regClubUser = ClubUserDto(meeting.regClubUser)

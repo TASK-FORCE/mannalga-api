@@ -106,7 +106,6 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                                 clubUserRole.clubUser.seq,
                                 clubUserRole.clubUser.user.seq,
                                 clubUserRole.clubUser.club,
-                                clubUserRole.clubUser.seq.count(),
 
                                 QRoleDtoQueryProjection(
                                         groupConcatRole,

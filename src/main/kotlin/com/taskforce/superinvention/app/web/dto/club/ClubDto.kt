@@ -15,12 +15,12 @@ data class ClubDto (
         var userCount: Long?,
         var mainImageUrl: String?
 ){
-    constructor(club : Club, userCount: Long?):
+    constructor(club : Club):
             this(   club.seq,
                     club.name,
                     club.description,
                     club.maximumNumber,
-                    userCount,
+                    club.userCount,
                     club.mainImageUrl ?: ""
             )
 }
@@ -47,7 +47,6 @@ data class ClubInfoDto(
 ) {
     constructor(
             club : Club,
-            userCount: Long?,
             clubInterest: List<InterestWithPriorityDto>,
             clubRegion: List<SimpleRegionDto>
     ): this(
@@ -55,7 +54,7 @@ data class ClubInfoDto(
             club.name,
             club.description,
             club.maximumNumber,
-            userCount,
+            club.userCount,
             club.mainImageUrl ?: "",
             clubInterest,
             clubRegion

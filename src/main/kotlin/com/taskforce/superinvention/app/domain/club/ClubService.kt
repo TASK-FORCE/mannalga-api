@@ -62,9 +62,9 @@ class ClubService(
     @Transactional
     fun getClubInfoDetail(user: User?, clubSeq: Long): ClubInfoDetailsDto {
 
-        // 모임, 모임원 수 조회
-        val clubTuple = clubRepository.findClubInfo(clubSeq)
-                ?: throw BizException("해당 클럽이 존재하지 않습니다", HttpStatus.NOT_FOUND)
+        // 모임 조회
+        val clubInfo = clubRepository.findById(clubSeq)
+                .orElseThrow { throw BizException("해당 클럽이 존재하지 않습니다", HttpStatus.NOT_FOUND) }
 
         // 모임 관심사 조회
         val clubInterest = clubInterestRepository.findWithInterestGroup(clubSeq)
@@ -75,8 +75,7 @@ class ClubService(
                 ?.map(::SimpleRegionDto) ?: emptyList()
 
         val clubInfoDto = ClubInfoDto(
-                clubTuple.get(0, Club::class.java)!!,
-                clubTuple.get(1, Long::class.java)!!,
+                clubInfo,
                 clubInterest,
                 clubRegions
         )
@@ -221,7 +220,7 @@ class ClubService(
         return ClubUserDto(
                 seq = clubUser.seq!!,
                 userSeq = clubUser.user.seq!!,
-                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                club = ClubDto(clubUser.club),
                 roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
         )
     }
@@ -245,8 +244,7 @@ class ClubService(
                     seq     = tuple.get(0, Long::class.java)!!,
                     userSeq = tuple.get(1, Long::class.java)!!,
                     club    = ClubDto(
-                            tuple.get(2, Club::class.java)!!,
-                            tuple.get(3, Long::class.java)!!
+                            tuple.get(2, Club::class.java)!!
                     ),
                     roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
             )
