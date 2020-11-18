@@ -174,6 +174,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 get("/clubs/search")
                         .queryParam("regionSeq", "101")
                         .queryParam("interestSeq", "1")
+                        .queryParam("text", "검색 예시")
                         .queryParam("page", "0")
                         .queryParam("size", "20")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -190,6 +191,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         // query string places like this
                                         parameterWithName("regionSeq").description("지역 seq"),
                                         parameterWithName("interestSeq").description("관심사 seq"),
+                                        parameterWithName("text").description("검색어 (제목, 모임 설명에 포함된 내용 검색 가능)"),
                                         parameterWithName("page").description("페이지"),
                                         parameterWithName("size").description("페이지당 사이즈")
                                 ),

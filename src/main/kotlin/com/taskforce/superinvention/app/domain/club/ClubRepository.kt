@@ -6,19 +6,13 @@ import com.querydsl.core.annotations.QueryProjection
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions
-import com.querydsl.jpa.JPQLQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClub.*
 import com.taskforce.superinvention.app.domain.club.user.QClubUser
-import com.taskforce.superinvention.app.domain.interest.QClubInterest
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.*
-import com.taskforce.superinvention.app.domain.interest.interest.QInterest
 import com.taskforce.superinvention.app.domain.interest.interest.QInterest.*
-import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup
 import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup.*
-import com.taskforce.superinvention.app.domain.region.QClubRegion
 import com.taskforce.superinvention.app.domain.region.QClubRegion.*
-import com.taskforce.superinvention.app.domain.region.QRegion
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
@@ -36,7 +30,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 }
 
 interface ClubRepositoryCustom {
-    fun search(regionSeq: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
+    fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
     fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
@@ -45,7 +39,7 @@ interface ClubRepositoryCustom {
 class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCustom,
         QuerydslRepositorySupport(Club::class.java) {
 
-    override fun search(regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
+    override fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
 
         // SELECT FROM
         val query = from(club)
@@ -53,6 +47,12 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                 .leftJoin(club.clubRegions, clubRegion)
 
         // WHERE
+        if (!text.isNullOrBlank())
+            query.where(
+                    club.name.contains(text).or(
+                    club.description.contains(text))
+            )
+
         if (regionSeqList.isNotEmpty()) query.where(clubRegion.region.seq.`in`(regionSeqList))
         if (interestSeq != null) query.where(clubInterest.interest.seq.eq(interestSeq))
         if (interestGroupSeq != null)
