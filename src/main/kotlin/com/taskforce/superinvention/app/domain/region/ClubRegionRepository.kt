@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface ClubRegionRepository : JpaRepository<ClubRegion, Long> {
     fun findByClub(club: Club): List<ClubRegion>
     fun findByClubSeq(clubSeq: Long): List<ClubRegion>?
+    fun findByClubSeqIn(clubSeq: List<Long>): List<ClubRegion>
 }
