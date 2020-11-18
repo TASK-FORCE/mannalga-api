@@ -47,6 +47,21 @@ data class ClubInfoDto(
 ) {
     constructor(
             club : Club,
+            userCount: Long?,
+            clubInterest: List<InterestWithPriorityDto>,
+            clubRegion: List<SimpleRegionDto>
+    ): this(
+            club.seq,
+            club.name,
+            club.description,
+            club.maximumNumber,
+            club.userCount,
+            club.mainImageUrl ?: "",
+            clubInterest,
+            clubRegion
+    )
+    constructor(
+            club : ClubDto,
             clubInterest: List<InterestWithPriorityDto>,
             clubRegion: List<SimpleRegionDto>
     ): this(

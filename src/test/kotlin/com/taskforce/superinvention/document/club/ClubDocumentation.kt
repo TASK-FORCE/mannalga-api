@@ -293,7 +293,6 @@ class ClubDocumentation: ApiDocumentationTest() {
                 clubRegion
         )
 
-
         club.clubUser = listOf(
                 ClubUser(club, User("유저 1"), false),
                 ClubUser(club, User("유저 2"), false),
@@ -475,6 +474,8 @@ class ClubDocumentation: ApiDocumentationTest() {
     @Test
     @WithMockUser(authorities = [Role.MEMBER])
     fun `내 모임 리스트 조회`() {
+
+        // given
         val pageable:Pageable =  PageRequest.of(0, 20)
         val club = Club(
                 name = "땔감 스터디",
@@ -483,32 +484,44 @@ class ClubDocumentation: ApiDocumentationTest() {
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
         )
         club.seq = 123123
+
+        val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
+        val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
+
         club.userCount = 2
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
                 PageImpl(
                         listOf(
-                                ClubUserDto(
-                                        seq = 12311,
-                                        club = ClubDto(club),
-                                        userSeq = 1,
-                                        roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
-                                ),
-                                ClubUserDto(
-                                        seq = 5615,
-                                        userSeq = 1,
-                                        club = ClubDto(
-                                                seq = 1231,
-                                                name = "떡볶이를 좋아하는 사람들의 모임",
-                                                userCount = 15,
-                                                description = "떡볶이가 좋아요",
-                                                maximumNumber = 100,
-                                                mainImageUrl = "asdasdasd/fc.jpeg"
+                                ClubUserWithClubDetailsDto (
+                                        clubUserDto = ClubUserDto(
+                                                seq = 12311,
+                                                club = ClubDto(club, 3),
+                                                userSeq = 1,
+                                                roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                         ),
-                                        roles = setOf(RoleDto(Role.RoleName.MASTER, "USER_TYPE"))
+                                        interests = clubInterestList,
+                                        regions   = clubRegionList
+                                ),
+
+                                ClubUserWithClubDetailsDto (
+                                        clubUserDto = ClubUserDto(
+                                                seq = 5615,
+                                                userSeq = 1,
+                                                club = ClubDto(
+                                                        seq = 1231,
+                                                        name = "떡볶이를 좋아하는 사람들의 모임",
+                                                        userCount = 15,
+                                                        description = "떡볶이가 좋아요",
+                                                        maximumNumber = 100,
+                                                        mainImageUrl = "asdasdasd/fc.jpeg"
+                                                ),
+                                                roles = setOf(RoleDto(Role.RoleName.MASTER, "USER_TYPE"))
+                                        ),
+                                        interests = clubInterestList,
+                                        regions   = clubRegionList
                                 )
                         ),
-                        pageable,
-                        2
+                        pageable, 2
                 )
         )
 
@@ -526,7 +539,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                         document("myClubList", getDocumentRequest(), getDocumentResponse(),
                                 responseFields(
                                         *commonResponseField(),
-                                        fieldWithPath("data.content[].seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
+                                        fieldWithPath("data.content[].clubUserSeq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
                                         fieldWithPath("data.content[].userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
                                         fieldWithPath("data.content[].club").type(JsonFieldType.OBJECT).description("모임 정보"),
                                         fieldWithPath("data.content[].club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
@@ -538,11 +551,20 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.content[].roles").type(JsonFieldType.ARRAY).description("모임원 권한 정보"),
                                         fieldWithPath("data.content[].roles[].name").type(JsonFieldType.STRING).description("권한 이름"),
                                         fieldWithPath("data.content[].roles[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름"),
+
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
+                                        fieldWithPath("data.content[].club.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
+                                        fieldWithPath("data.content[].club.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.content[].club.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.content[].club.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.content[].club.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
                                         *pageFieldDescriptor()
                                 )
                         )
                 )
-
     }
 
     @Test
