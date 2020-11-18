@@ -34,7 +34,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 
 interface ClubRepositoryCustom {
     fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
-    fun findUserClubList(userInfo: User, pageable: Pageable): QueryResults<Tuple>
+    fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
 
@@ -123,7 +123,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .limit(pageable.pageSize.toLong())
                         .fetchResults()
 
-        val result = query.results.map { tuple ->
+        val result: List<ClubUserDto> = query.results.map { tuple ->
             ClubUserDto(
                     seq = tuple.get(0, Long::class.java)!!,
                     userSeq = tuple.get(1, Long::class.java)!!,
