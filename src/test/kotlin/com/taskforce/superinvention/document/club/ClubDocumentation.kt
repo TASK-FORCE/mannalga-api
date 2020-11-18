@@ -495,7 +495,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 ClubUserWithClubDetailsDto (
                                         clubUserDto = ClubUserDto(
                                                 seq = 12311,
-                                                club = ClubDto(club, 3),
+                                                club = ClubDto(club),
                                                 userSeq = 1,
                                                 roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                         ),

@@ -75,7 +75,7 @@ class ClubService(
                 ?.map(::SimpleRegionDto) ?: emptyList()
 
         val clubInfoDto = ClubInfoDto(
-                clubInfo,
+                ClubDto(clubInfo),
                 clubInterest,
                 clubRegions
         )
@@ -220,7 +220,7 @@ class ClubService(
         return ClubUserDto(
                 seq = clubUser.seq!!,
                 userSeq = clubUser.user.seq!!,
-                club = ClubDto(clubUser.club, clubUser.club.clubUser.size.toLong()),
+                club = ClubDto(clubUser.club),
                 roles = clubUserRoles.map { clubUserRole -> RoleDto(clubUserRole.role) }.toSet()
         )
     }

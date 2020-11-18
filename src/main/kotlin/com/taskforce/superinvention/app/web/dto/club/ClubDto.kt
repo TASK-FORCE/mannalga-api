@@ -47,7 +47,6 @@ data class ClubInfoDto(
 ) {
     constructor(
             club : Club,
-            userCount: Long?,
             clubInterest: List<InterestWithPriorityDto>,
             clubRegion: List<SimpleRegionDto>
     ): this(

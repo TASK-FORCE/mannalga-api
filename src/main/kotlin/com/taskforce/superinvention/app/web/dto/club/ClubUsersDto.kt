@@ -41,7 +41,6 @@ data class ClubUserWithClubDetailsDto(
             userSeq     = clubUserDto.userSeq,
             club        = ClubInfoDto(
                     club = clubUserDto.club,
-                    userCount = clubUserDto.club.userCount,
                     clubInterest = interests,
                     clubRegion = regions
             ),
