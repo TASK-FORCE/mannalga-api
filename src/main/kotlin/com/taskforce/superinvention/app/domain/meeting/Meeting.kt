@@ -19,6 +19,6 @@ class Meeting(
         @ManyToOne
         var regClubUser: ClubUser
 ) : BaseEntity() {
-        @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
-        lateinit var meetingApplications: List<MeetingApplication>
+        @OneToMany(mappedBy = "meeting")
+        var meetingApplications: List<MeetingApplication> = listOf()
 }

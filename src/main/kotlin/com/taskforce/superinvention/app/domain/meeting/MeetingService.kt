@@ -40,7 +40,7 @@ class MeetingService(
         if (meetingRequestDto.startTimestamp.isAfter(meetingRequestDto.endTimestamp))
             throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
 
-        val meeting: Meeting = Meeting(
+        val meeting = Meeting(
                 title = meetingRequestDto.title,
                 content = meetingRequestDto.content,
                 startTimestamp = meetingRequestDto.startTimestamp,
@@ -125,6 +125,12 @@ class MeetingService(
 
     fun isRegUser(meetingApplication: MeetingApplicationDto, user: User): Boolean {
         return meetingApplication.clubUser.userSeq == user.seq
+    }
+
+    @Transactional
+    fun getMeetingApplications(meetingSeq: Long): List<MeetingApplicationDto> {
+        val meeting = meetingRepository.findById(meetingSeq)
+        return meetingApplicationRepository.findByMeeting(meeting).map { MeetingApplicationDto(it) }
     }
 
 }

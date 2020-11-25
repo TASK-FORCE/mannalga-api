@@ -9,10 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Repository
 interface MeetingApplicationRepository : JpaRepository<MeetingApplication, Long>, MeetingApplicationRepositoryCustom {
     fun findByClubUserAndMeeting(clubUser: ClubUser, meeting: Meeting): MeetingApplication?
+    fun findByMeeting(meeting: Optional<Meeting>): List<MeetingApplication>
 }
 
 

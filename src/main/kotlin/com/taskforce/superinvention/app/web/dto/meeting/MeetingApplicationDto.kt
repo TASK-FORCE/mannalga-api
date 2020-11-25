@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.meeting.Meeting
 import com.taskforce.superinvention.app.domain.meeting.MeetingApplication
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubUsersDto
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import java.time.LocalDateTime
 
@@ -24,7 +25,5 @@ class MeetingApplicationDto(
             deleteFlag = meetingApplication.deleteFlag,
             createdAt = meetingApplication.createdAt!!.toBaseDateTime(),
             updatedAt = meetingApplication.updatedAt?.toBaseDateTime() ?:""
-    ) {
-
-    }
+    )
 }

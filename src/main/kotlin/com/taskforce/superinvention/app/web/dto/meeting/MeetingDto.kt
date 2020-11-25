@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.taskforce.superinvention.app.domain.meeting.Meeting
+import com.taskforce.superinvention.app.domain.meeting.MeetingApplication
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
@@ -22,6 +23,9 @@ class MeetingDto(
         val maximumNumber: Int?,
         val regClubUser: ClubUserDto
 ) {
+    lateinit var meetingApplications: List<MeetingApplicationDto>
+
+
     constructor(meeting: Meeting): this(
             seq = meeting.seq!!,
             title = meeting.title,
@@ -32,7 +36,37 @@ class MeetingDto(
             deleteFlag = meeting.deleteFlag,
             maximumNumber = meeting.maximumNumber,
             regClubUser = ClubUserDto(meeting.regClubUser)
-    )
+    ) {
+        meetingApplications = meeting.meetingApplications.map { e -> this.MeetingApplicationDto(e) }
+    }
+
+
+    inner class MeetingApplicationDto {
+        val seq: Long
+        val deleteFlag: Boolean
+        val createdAt: String
+        val updatedAt: String?
+        val userInfo: UserInfo
+
+        constructor(meetingApplication: MeetingApplication) {
+            val user = meetingApplication.clubUser.user
+            userInfo = UserInfo(
+                    userSeq = user.seq!!,
+                    userName = user.userName!!,
+                    profileImageLink = user.profileImageLink
+            )
+            seq = meetingApplication.seq!!
+            deleteFlag = meetingApplication.deleteFlag
+            createdAt = meetingApplication.createdAt!!.toBaseDateTime()
+            updatedAt = meetingApplication.updatedAt?.toBaseDateTime() ?: ""
+        }
+
+        inner class UserInfo (
+                val userSeq: Long,
+                val userName: String,
+                val profileImageLink: String?
+        )
+    }
 }
 
 

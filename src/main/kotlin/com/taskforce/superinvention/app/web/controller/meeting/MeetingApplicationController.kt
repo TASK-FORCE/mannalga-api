@@ -61,4 +61,12 @@ class MeetingApplicationController(
 
         return ResponseDto(meetingService.getMeetingApplication(meetingApplicationSeq))
     }
+
+    @GetMapping
+    fun getMeetingApplications(@AuthUser user: User,
+                                  @PathVariable("clubSeq") clubSeq: Long,
+                                  @PathVariable meetingSeq: Long): ResponseDto<List<MeetingApplicationDto>> {
+        val meetingApplications = meetingService.getMeetingApplications(meetingSeq)
+        return ResponseDto(meetingApplications)
+    }
 }
