@@ -129,12 +129,11 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                     club = ClubDto(
                             tuple.get(2, Club::class.java)!!
                     ),
-                    roles = toRoleSet(tuple.get(4, RoleDtoQueryProjection::class.java))
+                    roles = toRoleSet(tuple.get(3, RoleDtoQueryProjection::class.java))
             )
         }
 
         return PageImpl(result, pageable, query.total)
-
     }
 
     private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
