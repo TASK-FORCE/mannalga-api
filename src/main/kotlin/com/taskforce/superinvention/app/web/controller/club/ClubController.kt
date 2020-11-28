@@ -72,6 +72,10 @@ class ClubController(
      */
     @GetMapping("/search")
     fun getClubList(@AuthUser user: User, request: ClubSearchRequestDto, pageable: Pageable): ResponseDto<Page<ClubWithRegionInterestDto>> {
+        // validation
+        if (request.interestSeq != null && request.interestGroupSeq != null)
+            throw BizException("관심사 그룹과 관심사 중 하나만 선택해서 검색할 수 있습니다.", HttpStatus.BAD_REQUEST)
+
         val data = clubService.search(request, pageable)
         return ResponseDto(data = data)
     }

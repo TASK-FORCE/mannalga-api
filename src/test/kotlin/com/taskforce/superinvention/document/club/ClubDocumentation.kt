@@ -190,7 +190,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 requestParameters(
                                         // query string places like this
                                         parameterWithName("regionSeq").description("지역 seq"),
-                                        parameterWithName("interestSeq").description("관심사 seq"),
+                                        parameterWithName("interestSeq").description("관심사 seq, 관심사 그룹으로 검색하고 싶다면 'interestGroupSeq'로 검색 가능."),
                                         parameterWithName("text").description("검색어 (제목, 모임 설명에 포함된 내용 검색 가능)"),
                                         parameterWithName("page").description("페이지"),
                                         parameterWithName("size").description("페이지당 사이즈")
