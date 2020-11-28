@@ -34,7 +34,9 @@ class MeetingController(
             throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
         }
 
-        return ResponseDto(meetingService.getMeeting(clubSeq, pageable))
+        val clubUser = clubService.getClubUser(clubSeq, user) ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+
+        return ResponseDto(meetingService.getMeeting(clubSeq, pageable, clubUser.seq!!))
     }
 
     @PostMapping
@@ -51,7 +53,9 @@ class MeetingController(
             throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
         }
 
-        return ResponseDto(meetingService.createMeeting(meetingRequestDto, clubUser.seq!!))
+        val data = meetingService.createMeeting(meetingRequestDto, clubUser.seq!!)
+
+        return ResponseDto(data)
     }
 
     @PutMapping("/{meetingSeq}")
@@ -70,7 +74,7 @@ class MeetingController(
 
         meetingService.checkClubMeeting(clubSeq, meetingSeq)
 
-        return ResponseDto(meetingService.modifyMeeting(meetingSeq, meetingRequestDto))
+        return ResponseDto(meetingService.modifyMeeting(meetingSeq, meetingRequestDto, clubUser))
     }
 
     @DeleteMapping("/{meetingSeq}")

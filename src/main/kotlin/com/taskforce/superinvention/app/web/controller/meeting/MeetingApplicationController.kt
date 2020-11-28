@@ -50,7 +50,7 @@ class MeetingApplicationController(
 
     @GetMapping("/{meetingApplicationSeq}")
     fun getMeetingApplicationInfo(@AuthUser user: User,
-                                  @PathVariable("clubSeq") clubSeq: Long,
+                                  @PathVariable clubSeq: Long,
                                   @PathVariable meetingSeq: Long,
                                   @PathVariable meetingApplicationSeq: Long): ResponseDto<MeetingApplicationDto> {
         // 권한체크
@@ -60,5 +60,13 @@ class MeetingApplicationController(
             throw BizException("신청한 유저가 아닙니다.", HttpStatus.FORBIDDEN)
 
         return ResponseDto(meetingService.getMeetingApplication(meetingApplicationSeq))
+    }
+
+    @GetMapping
+    fun getMeetingApplications(@AuthUser user: User,
+                                  @PathVariable("clubSeq") clubSeq: Long,
+                                  @PathVariable meetingSeq: Long): ResponseDto<List<MeetingApplicationDto>> {
+        val meetingApplications = meetingService.getMeetingApplications(meetingSeq)
+        return ResponseDto(meetingApplications)
     }
 }
