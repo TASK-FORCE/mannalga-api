@@ -50,7 +50,7 @@ class MeetingApplicationController(
 
     @GetMapping("/{meetingApplicationSeq}")
     fun getMeetingApplicationInfo(@AuthUser user: User,
-                                  @PathVariable("clubSeq") clubSeq: Long,
+                                  @PathVariable clubSeq: Long,
                                   @PathVariable meetingSeq: Long,
                                   @PathVariable meetingApplicationSeq: Long): ResponseDto<MeetingApplicationDto> {
         // 권한체크
