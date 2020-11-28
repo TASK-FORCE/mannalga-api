@@ -27,8 +27,8 @@ class MeetingService(
     val meetingApplicationNotFoundException = BizException("존재하지 않는 만남 신청입니다.",HttpStatus.NOT_FOUND)
 
     @Transactional(readOnly = true)
-    fun getMeeting(clubSeq: Long, pageable: Pageable): Page<MeetingDto> {
-        return meetingRepositoryImpl.getMeeting(clubSeq, pageable).map { e -> MeetingDto(e) }
+    fun getMeeting(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long): Page<MeetingDto> {
+        return meetingRepositoryImpl.getMeeting(clubSeq, pageable).map { e -> MeetingDto(e, currentClubUserSeq) }
     }
 
     @Transactional
@@ -50,11 +50,11 @@ class MeetingService(
                 maximumNumber = meetingRequestDto.maximumNumber,
                 regClubUser = clubUser
         )
-        return MeetingDto(meetingRepository.save(meeting))
+        return MeetingDto(meetingRepository.save(meeting), clubUser.seq!!)
     }
 
     @Transactional
-    fun modifyMeeting(meetingId: Long, meetingRequestDto: MeetingRequestDto): MeetingDto {
+    fun modifyMeeting(meetingId: Long, meetingRequestDto: MeetingRequestDto, currentClubUser: ClubUser): MeetingDto {
         val meeting: Meeting = meetingRepository.findById(meetingId).orElseThrow { meetingNotFountException }
         meeting.title = meetingRequestDto.title
         meeting.content = meetingRequestDto.content
@@ -62,7 +62,7 @@ class MeetingService(
         meeting.endTimestamp = meetingRequestDto.endTimestamp
         meeting.maximumNumber = meetingRequestDto.maximumNumber
 
-        return MeetingDto(meeting)
+        return MeetingDto(meeting, currentClubUser.seq!!)
     }
 
     @Transactional
