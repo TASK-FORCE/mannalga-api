@@ -70,7 +70,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         // PAGING
         val fetchResult = query
                 .groupBy(club)
-                .orderBy()
+                .orderBy(club.createdAt.desc())
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
                 .fetchResults()
