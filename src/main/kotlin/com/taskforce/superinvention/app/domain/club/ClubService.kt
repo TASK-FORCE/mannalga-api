@@ -1,7 +1,5 @@
 package com.taskforce.superinvention.app.domain.club
 
-import com.querydsl.core.QueryResults
-import com.querydsl.core.Tuple
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
@@ -32,7 +30,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.lang.IllegalArgumentException
 
 @Service
 class ClubService(
@@ -93,13 +90,13 @@ class ClubService(
      * 새로운 모임을 생성한다.
      */
     @Transactional
-    fun addClub(club: Club, superUser: User, interestList: List<InterestRequestDto>, regionList: List<RegionRequestDto>) {
+    fun addClub(club: Club, superUser: User, interestDtoList: List<InterestRequestDto>, regionDtoList: List<RegionRequestDto>) {
         // validation
-        if (interestList.stream().filter { e -> e.priority == 1L }.count() != 1L)
-            throw IllegalArgumentException("우선순위가 1인 관심사가 한개가 아닙니다")
+        if (interestDtoList.stream().filter { e -> e.priority == 1L }.count() != 1L)
+            throw BizException("우선순위가 1인 관심사가 한개가 아닙니다", HttpStatus.BAD_REQUEST)
 
-        if (regionList.stream().filter { e -> e.priority == 1L }.count() != 1L)
-            throw IllegalArgumentException("우선순위가 1인 지역이 한개가 아닙니다")
+        if (regionDtoList.stream().filter { e -> e.priority == 1L }.count() != 1L)
+            throw BizException("우선순위가 1인 지역이 한개가 아닙니다", HttpStatus.BAD_REQUEST)
 
         // 1. 모임 생성
         val savedClub = clubRepository.save(club)
@@ -109,11 +106,14 @@ class ClubService(
         val savedClubUser = clubUserRepository.save(superUserClub)
 
         // 3. 해당 클럽에 관심사 부여
-        val clubInterestList = interestList.map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }.toList()
+        interestService.checkBeforeConvertClubInterest(interestService.findBySeqList(interestDtoList.map { it.seq }))
+
+        val clubInterestList = interestDtoList.map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }.toList()
         clubInterestRepository.saveAll(clubInterestList)
 
         // 4. 해당 클럽에 지역 부여
-        val clubRegionList = regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
+        regionService.checkBeforeConvertClubRegion(regionService.findBySeqList(regionDtoList.map { it.seq }))
+        val clubRegionList = regionDtoList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
         clubRegionRepository.saveAll(clubRegionList)
 
         // 5. 생성한 유저에게 모임장 권한을 부여
@@ -170,7 +170,7 @@ class ClubService(
     }
 
     @Transactional
-    fun changeClubInterests(user: User, clubSeq: Long, interests: Set<InterestRequestDto>): Club {
+    fun changeClubInterests(user: User, clubSeq: Long, interestDtos: Set<InterestRequestDto>): Club {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
                 ?: throw UserIsNotClubMemberException()
@@ -182,14 +182,16 @@ class ClubService(
         clubInterestRepository.deleteAll(toDelete)
 
         // 신규 관심사 등록
-        val toAdd: List<ClubInterest> = interests.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
+        interestService.checkBeforeConvertClubInterest(interestService.findBySeqList(interestDtos.map { it.seq }))
+
+        val toAdd: List<ClubInterest> = interestDtos.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
         clubInterestRepository.saveAll(toAdd)
 
         return club
     }
 
     @Transactional
-    fun changeClubRegions(user: User, clubSeq: Long, clubRegions: Set<RegionRequestDto>) {
+    fun changeClubRegions(user: User, clubSeq: Long, regionDtoList: Set<RegionRequestDto>) {
         val club = getClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
                 ?: throw UserIsNotClubMemberException()
@@ -201,7 +203,8 @@ class ClubService(
         clubRegionRepository.deleteAll(toDelete)
 
         // 신규 모임 지역 등록
-        val toAdd: List<ClubRegion> = clubRegions.map { region -> ClubRegion(club, regionService.findBySeq(region.seq), region.priority) }
+        regionService.checkBeforeConvertClubRegion(regionService.findBySeqList(regionDtoList.map { it.seq }))
+        val toAdd: List<ClubRegion> = regionDtoList.map { region -> ClubRegion(club, regionService.findBySeq(region.seq), region.priority) }
         clubRegionRepository.saveAll(toAdd)
     }
 
