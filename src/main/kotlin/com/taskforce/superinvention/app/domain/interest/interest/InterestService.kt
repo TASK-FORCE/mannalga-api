@@ -26,7 +26,7 @@ class InterestService(
     }
 
     @Transactional
-    fun findBySeqList(seqList: List<Long>): List<Interest> = interestRepository.findAllById(seqList)
+    fun findBySeqList(seqList: Iterable<Long>): List<Interest> = interestRepository.findAllById(seqList)
 
 
 }
