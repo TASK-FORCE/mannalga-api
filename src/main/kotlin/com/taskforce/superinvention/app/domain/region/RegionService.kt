@@ -19,7 +19,7 @@ class RegionService(
     fun findBySeq(seq: Long): Region = regionRepository.findById(seq).orElseThrow{IllegalArgumentException()}
 
     @Transactional
-    fun checkBeforeConvertClubInterest(regions: Iterable<Region>): Iterable<Region> {
+    fun checkBeforeConvertClubRegion(regions: Iterable<Region>): Iterable<Region> {
         if (!isInEqualsSuperRegion(regions)) throw BizException("하나의 도/(특별)시 에 속하는 지역 끼리만 등록할 수 있습니다", HttpStatus.BAD_REQUEST)
         return regions
     }
