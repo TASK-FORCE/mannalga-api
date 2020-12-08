@@ -101,7 +101,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                         "가상 모임에 대한 설명",
                         100L,
                         null
-                ))
+                ).apply { seq = 232 })
 
         val result = mockMvc.perform(
                 post("/clubs/{clubSeq}/users", 232)
@@ -242,35 +242,29 @@ class ClubDocumentation: ApiDocumentationTest() {
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                 maximumNumber = 5L,
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
-        )
-        club.seq = clubSeq
+        ).apply { seq = clubSeq }
 
-        val interestGroup = InterestGroup("건강")
-        interestGroup.seq = 1
+        val interestGroup = InterestGroup("건강").apply { seq = 1 }
 
         val interest3 = Interest(
                 "헬스",
                 interestGroup = interestGroup
-        )
+        ).apply { seq = 3 }
         val interest5 = Interest(
                 "운동",
                 interestGroup = interestGroup
-        )
+        ).apply { seq = 5 }
 
         val clubInterest1 = ClubInterest(
                 club = club,
                 interest = interest3,
                 priority = 1
-        )
+        ).apply { seq = 12451 }
         val clubInterest2 = ClubInterest(
                 club = club,
                 interest = interest5,
                 priority = 1
-        )
-        clubInterest1.seq = 12451
-        interest3.seq = 3
-        clubInterest2.seq = 12466
-        interest5.seq = 5
+        ).apply { seq = 12466 }
 
         club.clubInterests = listOf(
                 clubInterest1,
@@ -284,12 +278,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                 superRegionRoot = "경기도/성남시",
                 level = 2,
                 subRegions = listOf()
-        )
-        region1.seq = 401
+        ).apply { seq = 401 }
 
-        val clubRegion = ClubRegion(club, region1, 1)
-        clubRegion.seq = 41231
-
+        val clubRegion = ClubRegion(club, region1, 1).apply { seq = 41231 }
 
         club.clubRegions = listOf(
                 clubRegion
@@ -417,8 +408,8 @@ class ClubDocumentation: ApiDocumentationTest() {
                         description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                         maximumNumber = 5L,
                         mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
-                ),
-                User("eric"),
+                ).apply { seq = 2 },
+                User("eric").apply { 12 },
                 false
         )
 
@@ -427,8 +418,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                 maximumNumber = 5L,
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
-        )
-        targetClub.seq = 91L
+        ).apply { seq = 91 }
 
         val targetUser = ClubUser(
                 targetClub,
@@ -484,13 +474,14 @@ class ClubDocumentation: ApiDocumentationTest() {
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                 maximumNumber = 5L,
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
-        )
-        club.seq = 123123
+        ).apply {
+            seq = 123123
+            userCount = 2
+        }
 
         val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
         val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
-        club.userCount = 2
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
                 PageImpl(
                         listOf(
@@ -585,35 +576,29 @@ class ClubDocumentation: ApiDocumentationTest() {
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                 maximumNumber = 5L,
                 mainImageUrl = "s3urlhost/d2e4dxxadf2E.png"
-        )
-        club.seq = clubSeq
+        ).apply { seq = clubSeq }
 
-        val interestGroup = InterestGroup("건강")
-        interestGroup.seq = 1
+        val interestGroup = InterestGroup("건강").apply { seq = 1 }
 
         val interest3= Interest(
                 "헬스",
                 interestGroup = interestGroup
-        )
+        ).apply { seq = 3 }
         val interest5 = Interest(
                 "운동",
                 interestGroup = interestGroup
-        )
+        ).apply { seq = 5 }
 
         val clubInterest1 = ClubInterest(
                 club = club,
                 interest = interest3,
                 priority = 1
-        )
+        ).apply { seq = 12451 }
         val clubInterest2 = ClubInterest(
                 club = club,
                 interest = interest5,
                 priority = 1
-        )
-        clubInterest1.seq = 12451
-        interest3.seq = 3
-        clubInterest2.seq = 12466
-        interest5.seq = 5
+        ).apply { seq = 12466 }
 
         club.clubInterests = listOf(
                 clubInterest1,
@@ -627,8 +612,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 superRegionRoot = "경기도/성남시",
                 level = 2,
                 subRegions = listOf()
-        )
-        region1.seq = 401
+        ).apply { seq = 401 }
 
         val region2 = Region(
                 superRegion = null,
@@ -636,13 +620,10 @@ class ClubDocumentation: ApiDocumentationTest() {
                 level = 2,
                 subRegions = listOf(),
                 superRegionRoot = "서울특별시/강남구"
-        )
-        region2.seq = 123
+        ).apply { seq = 123 }
 
-        val clubRegion = ClubRegion(club, region1, 1)
-        clubRegion.seq = 41231
-        val clubRegion2 = ClubRegion(club, region2, 2)
-        clubRegion2.seq = 41231
+        val clubRegion = ClubRegion(club, region1, 1).apply { seq = 41231 }
+        val clubRegion2 = ClubRegion(club, region2, 2).apply { seq = 41231 }
 
         club.clubRegions = listOf(
                 clubRegion,

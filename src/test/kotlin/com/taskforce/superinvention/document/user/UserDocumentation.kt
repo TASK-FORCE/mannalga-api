@@ -162,10 +162,8 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 지역 조회`() {
 
         // given
-        val region1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2, subRegions = listOf())
-        val region2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2, subRegions = listOf())
-        region1.seq = 1001L
-        region2.seq = 1002L
+        val region1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2, subRegions = listOf()).apply {seq = 1001}
+        val region2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2, subRegions = listOf()).apply {seq = 1002}
 
         val regionWithPriorityDto1 = RegionWithPriorityDto(
                 region = SimpleRegionDto(region1)
@@ -175,15 +173,16 @@ class UserDocumentation : ApiDocumentationTest() {
                 region = SimpleRegionDto(region2)
                 , priority = 2L)
 
-        val user = User("eric")
-        user.seq = 1L
+        val user = User("eric").apply { seq = 1 }
 
-        `when`(userRegionService.findUserRegionList(anyObject())).thenReturn(UserRegionDto(
+        `when`(userRegionService.findUserRegionList(anyObject())).thenReturn(
+            UserRegionDto(
                 user, listOf(
                 regionWithPriorityDto1,
                 regionWithPriorityDto2
+                )
+            )
         )
-        ))
 
         val result = this.mockMvc.perform(
                 get("/users/regions")
@@ -264,16 +263,14 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 지역 변경`() {
 
         // given
-        val mockUser = User("eric")
-        mockUser.seq = 1L
-        mockUser.userId = "12313"
+        val mockUser = User("eric").apply {
+            seq = 1
+            userId = "12313"
+        }
 
-        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf())
-        superRegion.seq  = 1
-        val region1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf())
-        region1.seq = 101L
-        val region2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf())
-        region2.seq = 102L
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf()).apply { seq  = 1 }
+        val region1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 101L }
+        val region2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 102L }
 
         val userRegions = listOf(
                 RegionWithPriorityDto(region = SimpleRegionDto(region = region1), priority = 1L),
@@ -325,9 +322,10 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 관심사 변경`() {
 
         // given
-        val mockUser = User("eric")
-        mockUser.seq = 1L
-        mockUser.userId = "12313"
+        val mockUser = User("eric").apply {
+            seq = 1
+            userId = "12313"
+        }
 
         val request = listOf(InterestRequestDto(1, 1), InterestRequestDto(2, 2))
 
@@ -389,9 +387,11 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 관심사 조회`() {
 
         // given
-        val mockUser = User("eric")
-        mockUser.seq = 1L
-        mockUser.userId = "12313"
+        val mockUser = User("eric").apply {
+            seq = 1L
+            userId = "12313"
+        }
+
 
         val interestList = listOf(
                 InterestWithPriorityDto(
@@ -446,20 +446,19 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 정보 조회`() {
 
         // given
-        val mockUser = User("sight")
-        mockUser.seq = 1L
-        mockUser.userId   = "12313"
-        mockUser.birthday = LocalDate.parse("1995-12-12")
-        mockUser.profileImageLink = "https://cdn.kakao/sight-profile-img.gif"
+        val mockUser = User("sight").apply {
+            seq = 1L
+            userId   = "12313"
+            birthday = LocalDate.parse("1995-12-12")
+            profileImageLink = "https://cdn.kakao/sight-profile-img.gif"
+        }
+
 
         // given - userInfoRegion Data set
-        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf())
-        val region1    = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf())
-        val region2    = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf())
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf()).apply { seq  = 1 }
+        val region1    = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 101L }
+        val region2    = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 102L }
 
-        superRegion.seq  = 1
-        region1.seq = 101L
-        region2.seq = 102L
 
         val userInfoRegions: List<UserInfoRegionDto> = listOf(
                 UserInfoRegionDto(SimpleRegionDto(region1), priority = 1L),
@@ -467,19 +466,13 @@ class UserDocumentation : ApiDocumentationTest() {
         )
 
         // given - userInfoInterests Data set
-        val interestGroup1 = InterestGroup("여행")
-        val interest1      = Interest("국내여행", interestGroup1)
-        val userInterest1 = UserInterest(mockUser, interest1, priority = 1L)
-        interestGroup1.seq = 1
-        interest1.seq      = 2
-        userInterest1.seq  = 3
+        val interestGroup1 = InterestGroup("여행").apply { seq = 1 }
+        val interest1      = Interest("국내여행", interestGroup1).apply { seq = 2 }
+        val userInterest1 = UserInterest(mockUser, interest1, priority = 1L).apply { seq  = 3 }
 
-        val interestGroup2 = InterestGroup("여행")
-        val interest2      = Interest("국내여행", interestGroup2)
-        val userInterest2 = UserInterest(mockUser, interest2, priority = 1L)
-        interestGroup2.seq = 4
-        interest2.seq      = 5
-        userInterest2.seq  = 6
+        val interestGroup2 = InterestGroup("여행").apply { seq = 4 }
+        val interest2      = Interest("국내여행", interestGroup2).apply { seq = 5 }
+        val userInterest2 = UserInterest(mockUser, interest2, priority = 1L).apply { seq  = 6 }
 
         val userInfoInterests: List<UserInfoInterestDto> = listOf(
                 UserInfoInterestDto(userInterest1),

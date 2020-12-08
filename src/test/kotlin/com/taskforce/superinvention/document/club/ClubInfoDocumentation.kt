@@ -51,15 +51,20 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
 
     @BeforeEach
     fun setup() {
-        user = User ("sight")
+        user = User ("sight").apply { seq = 1 }
         club = Club(
                 name = "가상 모임",
                 description = "가상 모임에 대한 설명",
                 maximumNumber = 100L,
                 mainImageUrl = ""
-        )
+        ).apply {
+            seq = 2
+            userCount = 2
+        }
 
-        clubUser = ClubUser(club, user, isLiked = false)
+        clubUser = ClubUser(club, user, isLiked = false).apply {
+            seq = 3
+        }
 
         region = Region(
                 superRegion = null,
@@ -67,13 +72,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                 superRegionRoot = "경기도/성남시",
                 level = 2,
                 subRegions = listOf()
-        )
-
-        region.seq = 401
-        user.seq = 1
-        club.seq = 2
-        clubUser.seq = 3
-        club.userCount = 2
+        ).apply { seq = 401 }
     }
 
 

@@ -55,12 +55,9 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                 description   = "",
                 maximumNumber = 10,
                 mainImageUrl  = ""
-        )
-        club.seq = 88;
+        ).apply { seq = 88 }
 
-        user = User ("12345")
-        user.seq = 2
-
+        user = User ("12345").apply { seq = 2 }
         clubUser = ClubUser(club, user, isLiked = false)
 
         clubBoard = ClubBoard(
@@ -71,8 +68,7 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                 deleteFlag = false,
                 notificationFlag = false,
                 topFixedFlag = false
-        )
-        clubBoard.seq = 300
+        ).apply { seq = 300 }
     }
 
 

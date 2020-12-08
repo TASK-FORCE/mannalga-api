@@ -49,12 +49,12 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
                 description   = "",
                 maximumNumber = 10,
                 mainImageUrl  = ""
-        )
+        ).apply { seq = 88 }
 
-        user = User ("1")
+        user = User ("1").apply { seq = 2 }
         user.userName = "eric"
 
-        clubUser = ClubUser(club, user, isLiked = true)
+        clubUser = ClubUser(club, user, isLiked = true).apply { seq  = 110 }
 
         clubUser.clubUserRoles = mutableSetOf(
                 ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE")))
@@ -69,15 +69,10 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
                 regClubUser = clubUser,
                 maximumNumber = 20,
                 deleteFlag = false
-        )
+        ).apply { seq = 1243 }
 
-        meetingApplication = MeetingApplication(clubUser, meeting, false)
+        meetingApplication = MeetingApplication(clubUser, meeting, false).apply { seq = 1525 }
 
-        clubUser.seq  = 110
-        club.seq = 88
-        user.seq = 2
-        meeting.seq = 1243
-        meetingApplication.seq = 1525
     }
 
 
