@@ -29,6 +29,9 @@ endif::[]
 === [.toc-list-item]`파일 임시저장`
 include::{root}/common/temp-file-upload.adoc[]
 
+=== [.toc-list-item]`에러 코드`
+include::{root}/common/error.adoc[]
+
 == 지역
 
 === [.toc-list-item]`지역 조회 API`

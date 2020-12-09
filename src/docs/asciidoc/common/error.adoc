@@ -1,0 +1,14 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/common
+
+Response
+include::{sub-snippet}/error/response-fields.adoc[]
+include::{sub-snippet}/error/http-response.adoc[]
