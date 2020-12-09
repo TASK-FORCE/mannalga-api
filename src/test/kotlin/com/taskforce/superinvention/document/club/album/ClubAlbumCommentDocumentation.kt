@@ -44,17 +44,25 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
     @BeforeEach
     fun setup() {
 
+
+
         club = Club(
                 name = "테스트 모임",
                 description   = "",
                 maximumNumber = 10,
                 mainImageUrl  = ""
-        )
+        ).apply {
+            seq = 88
+        }
 
-        user = User ("12345")
-        user.userName = "sight"
+        user = User ("12345").apply {
+            userName = "sight"
+            seq = 2
+        }
 
-        clubUser = ClubUser(club, user, isLiked = true)
+        clubUser = ClubUser(club, user, isLiked = true).apply {
+            seq = 110
+        }
 
         clubAlbum = ClubAlbum (
                 club = club,
@@ -62,19 +70,17 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                 img_url     = "이미지 URL",
                 file_name   = "파일 이름",
                 delete_flag = false
-        )
+        ).apply {
+            seq = 100
+        }
 
         clubAlbumComment = ClubAlbumComment(
                 content = "모임",
                 clubUser  = clubUser,
                 clubAlbum = clubAlbum
-        )
-
-        clubAlbumComment.seq = 111
-        clubUser.seq  = 110
-        clubAlbum.seq = 100
-        club.seq = 88
-        user.seq = 2
+        ).apply {
+            seq = 111
+        }
     }
 
     @Test

@@ -29,8 +29,7 @@ class RegionDocumentation: ApiDocumentationTest() {
                 superRegionRoot = "서울특별시",
                 subRegions = emptyList(),
                 superRegion = null
-        )
-        region.seq=1
+        ).apply { seq = 1 }
 
         given(regionService.findAllRegionDtoList())
                 .willReturn(listOf(of(region, 1)))

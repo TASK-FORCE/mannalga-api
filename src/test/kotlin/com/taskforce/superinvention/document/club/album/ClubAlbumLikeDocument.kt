@@ -42,12 +42,12 @@ class ClubAlbumLikeDocument: ApiDocumentationTest() {
                 description   = "",
                 maximumNumber = 10,
                 mainImageUrl  = ""
-        )
+        ).apply { seq = 88 }
 
-        user = User ("12345")
+        user = User ("12345").apply { seq = 2 }
         user.userName = "sight"
 
-        clubUser = ClubUser(club, user, isLiked = true)
+        clubUser = ClubUser(club, user, isLiked = true).apply { seq  = 110 }
 
         clubAlbum = ClubAlbum (
                 club = club,
@@ -55,18 +55,13 @@ class ClubAlbumLikeDocument: ApiDocumentationTest() {
                 img_url     = "이미지 URL",
                 file_name   = "파일 이름",
                 delete_flag = false
-        )
+        ).apply { seq = 100 }
 
         clubAlbumLike = ClubAlbumLike(
                 clubUser  = clubUser,
                 clubAlbum = clubAlbum
-        )
+        ).apply { seq = 111 }
 
-        clubAlbumLike.seq = 111
-        clubUser.seq  = 110
-        clubAlbum.seq = 100
-        club.seq = 88
-        user.seq = 2
     }
 
     @Test
