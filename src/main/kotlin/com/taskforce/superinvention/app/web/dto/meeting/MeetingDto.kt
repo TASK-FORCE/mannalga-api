@@ -31,7 +31,7 @@ class MeetingDto {
     var isCurrentUserApplicationMeeting: Boolean
 
 
-    constructor(meeting: Meeting, currentClubUserSeq: Long){
+    constructor(meeting: Meeting, currentClubUserSeq: Long?){
         seq = meeting.seq!!
         title = meeting.title
         content = meeting.content
@@ -58,7 +58,7 @@ class MeetingDto {
             maximumNumber: Int,
             regClubUser: ClubUserDto,
             meetingApplications: List<MeetingApplicationDto>,
-            currentClubUserSeq: Long,
+            currentClubUserSeq: Long?,
             isCurrentUserApplicationMeeting: Boolean
     ) {
         this.seq = seq
