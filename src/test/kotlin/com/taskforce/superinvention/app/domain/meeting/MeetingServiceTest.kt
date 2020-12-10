@@ -3,11 +3,8 @@ package com.taskforce.superinvention.app.domain.meeting
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.user.User
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import org.apache.http.util.TextUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -38,9 +35,6 @@ internal class MeetingServiceTest {
 
     @BeforeEach
     fun init() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
-        mockkStatic(TextUtils::class)
-
         clubSeq = 123123
         clubUserSeq = 6742
         regClubUserSeq = 4444
