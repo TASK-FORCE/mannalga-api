@@ -27,7 +27,7 @@ class MeetingService(
     val meetingApplicationNotFoundException = BizException("존재하지 않는 만남 신청입니다.",HttpStatus.NOT_FOUND)
 
     @Transactional(readOnly = true)
-    fun getMeeting(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long): Page<MeetingDto> {
+    fun getMeeting(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): Page<MeetingDto> {
         return meetingRepositoryImpl.getMeeting(clubSeq, pageable).map { e -> MeetingDto(e, currentClubUserSeq) }
     }
 

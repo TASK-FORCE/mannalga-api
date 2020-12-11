@@ -30,13 +30,9 @@ class MeetingController(
                       @PathVariable clubSeq: Long,
                       pageable: Pageable): ResponseDto<Page<MeetingDto>> {
 
-        if (!roleService.hasClubMemberAuth(clubSeq, user)) {
-            throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
-        }
+        val clubUser = clubService.getClubUser(clubSeq, user)
 
-        val clubUser = clubService.getClubUser(clubSeq, user) ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
-
-        return ResponseDto(meetingService.getMeeting(clubSeq, pageable, clubUser.seq!!))
+        return ResponseDto(meetingService.getMeeting(clubSeq, pageable, clubUser?.seq))
     }
 
     @PostMapping
