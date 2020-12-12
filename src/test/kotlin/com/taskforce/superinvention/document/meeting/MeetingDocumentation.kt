@@ -6,10 +6,13 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.app.web.dto.user.UserDto
 import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
+import com.taskforce.superinvention.common.util.extendFun.toBaseDate
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil
@@ -34,6 +37,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class MeetingDocumentation: ApiDocumentationTest() {
@@ -68,9 +72,16 @@ class MeetingDocumentation: ApiDocumentationTest() {
             mainImageUrl = "asdasd.jpg"
     )
 
-    val clubUserDto = ClubUserDto(
+    val clubUserDto = ClubUserWithUserDto(
             seq = 512,
-            userSeq = 1,
+            user = UserDto(
+                   4,
+                   mutableSetOf(),
+                    "eric",
+                    LocalDate.now().toBaseDate(),
+                    "asfasfsaf.png"
+
+            ),
             club = clubDto,
             roles = setOf(RoleDto(Role.RoleName.CLUB_MEMBER, "CLUB_ROLE"))
     )
@@ -163,7 +174,12 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content.[].maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 제한 인원"),
                                 fieldWithPath("data.content.[].regClubUser").type(JsonFieldType.OBJECT).description("만남 생성한 모임원 정보"),
                                 fieldWithPath("data.content.[].regClubUser.seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
-                                fieldWithPath("data.content.[].regClubUser.userSeq").type(JsonFieldType.NUMBER).description("모임원의 유저 시퀀스"),
+                                fieldWithPath("data.content.[].regClubUser.user").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("data.content.[].regClubUser.user.seq").type(JsonFieldType.NUMBER).description("회원 시퀀스"),
+                                fieldWithPath("data.content.[].regClubUser.user.userRoles").type(JsonFieldType.ARRAY).description("회원 권한"),
+                                fieldWithPath("data.content.[].regClubUser.user.userName").type(JsonFieldType.STRING).description("회원명"),
+                                fieldWithPath("data.content.[].regClubUser.user.birthday").type(JsonFieldType.STRING).description("생일"),
+                                fieldWithPath("data.content.[].regClubUser.user.profileImageLink").type(JsonFieldType.STRING).description("프로필 이미지 링크"),
                                 fieldWithPath("data.content.[].regClubUser.club").type(JsonFieldType.OBJECT).description("모임원의 모임 정보"),
                                 fieldWithPath("data.content.[].regClubUser.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
                                 fieldWithPath("data.content.[].regClubUser.club.name").type(JsonFieldType.STRING).description("모임 모임명"),
@@ -239,7 +255,12 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 제한 인원"),
                                 fieldWithPath("data.regClubUser").type(JsonFieldType.OBJECT).description("만남 생성한 모임원 정보"),
                                 fieldWithPath("data.regClubUser.seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
-                                fieldWithPath("data.regClubUser.userSeq").type(JsonFieldType.NUMBER).description("모임원의 유저 시퀀스"),
+                                fieldWithPath("data.regClubUser.user").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("data.regClubUser.user.seq").type(JsonFieldType.NUMBER).description("회원 시퀀스"),
+                                fieldWithPath("data.regClubUser.user.userRoles").type(JsonFieldType.ARRAY).description("회원 권한"),
+                                fieldWithPath("data.regClubUser.user.userName").type(JsonFieldType.STRING).description("회원명"),
+                                fieldWithPath("data.regClubUser.user.birthday").type(JsonFieldType.STRING).description("생일"),
+                                fieldWithPath("data.regClubUser.user.profileImageLink").type(JsonFieldType.STRING).description("프로필 이미지 링크"),
                                 fieldWithPath("data.regClubUser.club").type(JsonFieldType.OBJECT).description("모임원의 모임 정보"),
                                 fieldWithPath("data.regClubUser.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
                                 fieldWithPath("data.regClubUser.club.name").type(JsonFieldType.STRING).description("모임 모임명"),
@@ -322,7 +343,12 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 제한 인원"),
                                 fieldWithPath("data.regClubUser").type(JsonFieldType.OBJECT).description("만남 생성한 모임원 정보"),
                                 fieldWithPath("data.regClubUser.seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
-                                fieldWithPath("data.regClubUser.userSeq").type(JsonFieldType.NUMBER).description("모임원의 유저 시퀀스"),
+                                fieldWithPath("data.regClubUser.user").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("data.regClubUser.user.seq").type(JsonFieldType.NUMBER).description("회원 시퀀스"),
+                                fieldWithPath("data.regClubUser.user.userRoles").type(JsonFieldType.ARRAY).description("회원 권한"),
+                                fieldWithPath("data.regClubUser.user.userName").type(JsonFieldType.STRING).description("회원명"),
+                                fieldWithPath("data.regClubUser.user.birthday").type(JsonFieldType.STRING).description("생일"),
+                                fieldWithPath("data.regClubUser.user.profileImageLink").type(JsonFieldType.STRING).description("프로필 이미지 링크"),
                                 fieldWithPath("data.regClubUser.club").type(JsonFieldType.OBJECT).description("모임원의 모임 정보"),
                                 fieldWithPath("data.regClubUser.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
                                 fieldWithPath("data.regClubUser.club.name").type(JsonFieldType.STRING).description("모임 모임명"),

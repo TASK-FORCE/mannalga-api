@@ -23,6 +23,7 @@ import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.app.web.dto.user.UserDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -128,7 +129,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         val result: List<ClubUserWithUserDto> = query.results.map { tuple ->
             ClubUserWithUserDto(
                     seq = tuple.get(0, Long::class.java)!!,
-                    user = tuple.get(1, User::class.java)!!,
+                    user = UserDto(tuple.get(1, User::class.java)!!),
                     club = ClubDto(
                             tuple.get(2, Club::class.java)!!
                     ),

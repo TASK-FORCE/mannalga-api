@@ -47,6 +47,15 @@ class MeetingApplicationController(
         return ResponseDto(meetingService.applicationCancel(clubUser, meetingApplicationSeq))
     }
 
+    @DeleteMapping
+    fun cancelApplicationWithoutSeq(@AuthUser user: User,
+                                    @PathVariable("clubSeq") clubSeq: Long,
+                                    @PathVariable meetingSeq: Long): ResponseDto<MeetingApplicationDto> {
+        val clubUser = clubService.getClubUser(clubSeq, user)?: throw BizException("모임원이 아닙니다.", HttpStatus.FORBIDDEN)
+        var meetingApplication = meetingService.findMeetingApplication(clubUser, meetingSeq)
+        return cancelApplication(user, clubSeq, meetingSeq, meetingApplication.seq!!)
+    }
+
 
     @GetMapping("/{meetingApplicationSeq}")
     fun getMeetingApplicationInfo(@AuthUser user: User,
@@ -63,10 +72,19 @@ class MeetingApplicationController(
     }
 
     @GetMapping
-    fun getMeetingApplications(@AuthUser user: User,
-                                  @PathVariable("clubSeq") clubSeq: Long,
-                                  @PathVariable meetingSeq: Long): ResponseDto<List<MeetingApplicationDto>> {
-        val meetingApplications = meetingService.getMeetingApplications(meetingSeq)
-        return ResponseDto(meetingApplications)
+    fun getMeetingApplicationInfoWithoutSeq(@AuthUser user: User,
+                                    @PathVariable("clubSeq") clubSeq: Long,
+                                    @PathVariable meetingSeq: Long): ResponseDto<MeetingApplicationDto> {
+        val clubUser = clubService.getClubUser(clubSeq, user)?: throw BizException("모임원이 아닙니다.", HttpStatus.FORBIDDEN)
+        var meetingApplication = meetingService.findMeetingApplication(clubUser, meetingSeq)
+        return getMeetingApplicationInfo(user, clubSeq, meetingSeq, meetingApplication.seq!!)
     }
+
+
+//    fun getMeetingApplications(@AuthUser user: User,
+//                                  @PathVariable("clubSeq") clubSeq: Long,
+//                                  @PathVariable meetingSeq: Long): ResponseDto<List<MeetingApplicationDto>> {
+//        val meetingApplications = meetingService.getMeetingApplications(meetingSeq)
+//        return ResponseDto(meetingApplications)
+//    }
 }
