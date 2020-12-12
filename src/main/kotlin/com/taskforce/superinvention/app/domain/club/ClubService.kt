@@ -239,11 +239,12 @@ class ClubService(
     }
 
     @Transactional
-    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserWithClubDetailsDto> {
-        // 내 모임원 정보 조회
-        val clubListInPage: Page<ClubUserDto> = clubRepository.findUserClubList(user, pageable)
+    fun getUserClubList(user: User): List<ClubUserWithClubDetailsDto> {
 
-        val clubSeqList = clubListInPage.toList().map { club -> club.seq }
+        // 내 모임원 정보 조회
+        val clubListInPage: List<ClubUserWithUserDto> = clubRepository.findUserClubList(user)
+
+        val clubSeqList = clubListInPage.toList().map { clubUser -> clubUser.club.seq!! }
 
         // 모임 관심사 조회
         val clubInterests = clubInterestRepository.findWithInterestGroupIn(clubSeqList)
@@ -251,14 +252,13 @@ class ClubService(
         // 모임 지역 조회
         val clubRegions = clubRegionRepository.findByClubSeqIn(clubSeqList)
 
-        val result: Page<ClubUserWithClubDetailsDto> = clubListInPage.map { clubUserDto ->
+        val result: List<ClubUserWithClubDetailsDto> = clubListInPage.map { clubUserDto ->
             ClubUserWithClubDetailsDto(
                     clubUserDto = clubUserDto,
                     interests = clubInterests.filter { it.club.seq == clubUserDto.club.seq }.map(::InterestWithPriorityDto),
                     regions = clubRegions.filter { it.club.seq == clubUserDto.club.seq }.map(::SimpleRegionDto)
             )
         }
-
         return result
     }
 }

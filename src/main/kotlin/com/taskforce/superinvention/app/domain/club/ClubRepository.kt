@@ -14,9 +14,12 @@ import com.taskforce.superinvention.app.domain.interest.interest.QInterest.*
 import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup.*
 import com.taskforce.superinvention.app.domain.region.QClubRegion.*
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
+import com.taskforce.superinvention.app.domain.role.QRole
+import com.taskforce.superinvention.app.domain.role.QRoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
@@ -34,7 +37,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 
 interface ClubRepositoryCustom {
     fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
-    fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto>
+    fun findUserClubList(userInfo: User): List<ClubUserWithUserDto>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
 
@@ -96,9 +99,10 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         return query
     }
 
-    override fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto> {
+    override fun findUserClubList(userInfo: User): List<ClubUserWithUserDto> {
         val clubUser = QClubUser.clubUser
         val clubUserRole = QClubUserRole.clubUserRole
+        val roleGroup = QRoleGroup.roleGroup;
 
         val groupConcatRole      = Expressions.stringTemplate("group_concat({0}, ' ')", clubUserRole.role.name)
         val groupConcatRoleGroup = Expressions.stringTemplate("group_concat({0}, ' ')", clubUserRole.role.roleGroup.name)
@@ -107,7 +111,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                 from(clubUserRole)
                         .select(
                                 clubUserRole.clubUser.seq,
-                                clubUserRole.clubUser.user.seq,
+                                clubUserRole.clubUser.user,
                                 clubUserRole.clubUser.club,
 
                                 QRoleDtoQueryProjection(
@@ -116,16 +120,15 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                                 )
                         )
                         .join(clubUserRole.clubUser, clubUser)
+                        .join(clubUserRole.role.roleGroup, roleGroup)
                         .groupBy(clubUserRole.clubUser.club.seq)
                         .where(clubUserRole.clubUser.user.seq.eq(userInfo.seq))
-                        .offset(pageable.offset)
-                        .limit(pageable.pageSize.toLong())
                         .fetchResults()
 
-        val result: List<ClubUserDto> = query.results.map { tuple ->
-            ClubUserDto(
+        val result: List<ClubUserWithUserDto> = query.results.map { tuple ->
+            ClubUserWithUserDto(
                     seq = tuple.get(0, Long::class.java)!!,
-                    userSeq = tuple.get(1, Long::class.java)!!,
+                    user = tuple.get(1, User::class.java)!!,
                     club = ClubDto(
                             tuple.get(2, Club::class.java)!!
                     ),
@@ -133,7 +136,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
             )
         }
 
-        return PageImpl(result, pageable, query.total)
+        return result
     }
 
     private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
