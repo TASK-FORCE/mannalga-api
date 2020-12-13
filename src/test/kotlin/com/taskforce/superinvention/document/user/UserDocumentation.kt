@@ -162,8 +162,8 @@ class UserDocumentation : ApiDocumentationTest() {
     fun `유저 지역 조회`() {
 
         // given
-        val region1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2, subRegions = listOf()).apply {seq = 1001}
-        val region2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2, subRegions = listOf()).apply {seq = 1002}
+        val region1 = Region(superRegion = null, name = "성남시", superRegionRoot = "경기도/성남시", level = 2).apply {seq = 1001;}
+        val region2 = Region(superRegion = null, name = "수원시", superRegionRoot = "경기도/수원시", level = 2).apply {seq = 1002;}
 
         val regionWithPriorityDto1 = RegionWithPriorityDto(
                 region = SimpleRegionDto(region1)
@@ -268,15 +268,14 @@ class UserDocumentation : ApiDocumentationTest() {
             userId = "12313"
         }
 
-        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf()).apply { seq  = 1 }
-        val region1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 101L }
-        val region2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 102L }
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null).apply { seq  = 1; }
+        val region1 = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion).apply { seq = 101L;}
+        val region2 = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion).apply { seq = 102L; }
 
         val userRegions = listOf(
                 RegionWithPriorityDto(region = SimpleRegionDto(region = region1), priority = 1L),
                 RegionWithPriorityDto(region = SimpleRegionDto(region = region2), priority = 2L)
         )
-
 
         val regionRequest = listOf(RegionRequestDto(seq = 101L, priority = 1L), RegionRequestDto(seq = 102L, priority = 2L))
         val userRegionDto = UserRegionDto(user = mockUser, regions = userRegions)
@@ -455,9 +454,9 @@ class UserDocumentation : ApiDocumentationTest() {
 
 
         // given - userInfoRegion Data set
-        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null, subRegions = listOf()).apply { seq  = 1 }
-        val region1    = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 101L }
-        val region2    = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion, subRegions = listOf()).apply { seq = 102L }
+        val superRegion= Region(name="서울특별시", superRegionRoot = "서울특별시", level = 2L, superRegion = null).apply { seq  = 1; }
+        val region1    = Region(name="종로구", superRegionRoot = "서울특별시/종로구", level = 2L, superRegion = superRegion).apply { seq = 101L; }
+        val region2    = Region(name="중구", superRegionRoot = "서울특별시/중구", level = 2L, superRegion = superRegion).apply { seq = 102L; }
 
 
         val userInfoRegions: List<UserInfoRegionDto> = listOf(

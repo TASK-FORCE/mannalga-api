@@ -27,7 +27,6 @@ class RegionDocumentation: ApiDocumentationTest() {
                 level = 1,
                 name = "서울특별시",
                 superRegionRoot = "서울특별시",
-                subRegions = emptyList(),
                 superRegion = null
         ).apply { seq = 1 }
 

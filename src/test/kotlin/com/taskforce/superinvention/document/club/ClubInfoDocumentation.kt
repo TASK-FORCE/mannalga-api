@@ -70,8 +70,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                 superRegion = null,
                 name = "성남시",
                 superRegionRoot = "경기도/성남시",
-                level = 2,
-                subRegions = listOf()
+                level = 2
         ).apply { seq = 401 }
     }
 
