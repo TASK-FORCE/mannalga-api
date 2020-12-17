@@ -34,6 +34,25 @@ fun of(region: Region, findDepth: Long): RegionDto
              name = region.name,
              superRegionRoot = region.superRegionRoot,
              level = region.level,
-             subRegions = if (findDepth > 0) region.subRegions.stream().map { e -> of(e, findDepth - 1) }.toList() else ArrayList()
+             subRegions = if (findDepth > 0) region.subRegions.map { e -> of(e, findDepth - 1) }.toList() else emptyList()
      )
  }
+
+
+fun of(region: Region, subRegions: List<Region>): RegionDto
+{
+    return RegionDto(
+        seq = region.seq,
+        name = region.name,
+        superRegionRoot = region.superRegionRoot,
+        level = region.level,
+        subRegions = subRegions.map {
+            RegionDto(
+                seq = it.seq,
+                name = it.name,
+                superRegionRoot = it.superRegionRoot,
+                level = it.level,
+                subRegions = emptyList()
+            ) }
+    )
+}

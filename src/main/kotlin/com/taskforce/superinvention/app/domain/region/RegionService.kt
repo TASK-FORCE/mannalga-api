@@ -13,7 +13,8 @@ class RegionService(
 ) {
     @Transactional
     fun findAllRegionDtoList(): List<RegionDto> {
-        return regionRepository.findByLevel(1).map { e -> of(e, 1) }.toList()
+        val regions = regionRepository.findByLevelWithSubRegions().map { of(it, it.subRegions) }
+        return regions
     }
 
     fun findBySeq(seq: Long): Region = regionRepository.findById(seq).orElseThrow{IllegalArgumentException()}

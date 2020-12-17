@@ -6,14 +6,18 @@ import javax.persistence.*
 
 @Entity
 class Region(
+
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="super_region_seq")
+        @JoinColumn(name="super_region_seq", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
         @JsonIgnore
         var superRegion: Region?,
         var name: String,
         var superRegionRoot: String,
-        var level: Long,
+        var level: Long
 
-        @OneToMany(mappedBy = "superRegion")
-        var subRegions: List<Region>
-): BaseEntity()
+): BaseEntity() {
+
+        @OneToMany
+        @JoinColumn(name="super_region_seq", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+        var subRegions: List<Region> = listOf()
+}
