@@ -124,13 +124,18 @@ class MeetingService(
     }
 
     fun isRegUser(meetingApplication: MeetingApplicationDto, user: User): Boolean {
-        return meetingApplication.clubUser.userSeq == user.seq
+        return meetingApplication.clubUser.user.seq == user.seq
     }
 
     @Transactional
     fun getMeetingApplications(meetingSeq: Long): List<MeetingApplicationDto> {
         val meeting = meetingRepository.findById(meetingSeq)
         return meetingApplicationRepository.findByMeeting(meeting).map { MeetingApplicationDto(it) }
+    }
+
+    @Transactional
+    fun findMeetingApplication(clubUser: ClubUser, meetingSeq: Long): MeetingApplication {
+        return meetingRepository.findMeetingApplicationByUserAndMeetingSeq(clubUser, meetingSeq)
     }
 
 }

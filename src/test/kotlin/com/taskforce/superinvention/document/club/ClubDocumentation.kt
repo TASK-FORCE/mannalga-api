@@ -19,6 +19,7 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.app.web.dto.user.UserDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -467,6 +468,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     fun `내 모임 리스트 조회`() {
 
         // given
+        val pageable:Pageable =  PageRequest.of(0, 20)
         val club = Club(
                 name = "땔감 스터디",
                 description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
@@ -487,7 +489,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         clubUserDto = ClubUserWithUserDto(
                                                 seq = 12311,
                                                 club = ClubDto(club),
-                                                user = user,
+                                                user = UserDto(user),
                                                 roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                         ),
                                         interests = clubInterestList,
@@ -497,7 +499,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                                 ClubUserWithClubDetailsDto (
                                         clubUserDto = ClubUserWithUserDto(
                                                 seq = 5615,
-                                                user = user,
+                                                user = UserDto(user),
                                                 club = ClubDto(
                                                         seq = 1231,
                                                         name = "떡볶이를 좋아하는 사람들의 모임",

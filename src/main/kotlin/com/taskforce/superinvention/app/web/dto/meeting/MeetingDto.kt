@@ -9,6 +9,9 @@ import com.taskforce.superinvention.app.domain.meeting.MeetingApplication
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import org.springframework.format.annotation.DateTimeFormat
@@ -25,7 +28,7 @@ class MeetingDto {
     val club: ClubDto
     val deleteFlag: Boolean
     val maximumNumber: Int?
-    val regClubUser: ClubUserDto
+    val regClubUser: ClubUserWithUserDto
     var meetingApplications: List<MeetingApplicationDto>
     var isCurrentUserRegMeeting: Boolean
     var isCurrentUserApplicationMeeting: Boolean
@@ -40,7 +43,7 @@ class MeetingDto {
         club = ClubDto(meeting.club)
         deleteFlag = meeting.deleteFlag
         maximumNumber = meeting.maximumNumber
-        regClubUser = ClubUserDto(meeting.regClubUser)
+        regClubUser = ClubUserWithUserDto(meeting.regClubUser)
 
         meetingApplications = meeting.meetingApplications.map { e -> this.MeetingApplicationDto(e) }
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
@@ -56,7 +59,7 @@ class MeetingDto {
             club: ClubDto,
             deleteFlag: Boolean,
             maximumNumber: Int,
-            regClubUser: ClubUserDto,
+            regClubUser: ClubUserWithUserDto,
             meetingApplications: List<MeetingApplicationDto>,
             currentClubUserSeq: Long?,
             isCurrentUserApplicationMeeting: Boolean

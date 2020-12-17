@@ -7,6 +7,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.app.web.dto.user.UserDto
 
 data class ClubUsersDto(
         val club: Club,
@@ -30,13 +31,13 @@ data class ClubUserDto(
 
 data class ClubUserWithUserDto(
         val seq: Long,
-        val user: User,
+        val user: UserDto,
         val club: ClubDto,
         val roles: Set<RoleDto>
 ) {
         constructor(clubUser: ClubUser): this(
                 seq = clubUser.seq!!,
-                user = clubUser.user,
+                user = UserDto(clubUser.user),
                 club = ClubDto(clubUser.club),
                 roles = clubUser.clubUserRoles.map { e -> RoleDto(e.role) }.toSet()
         )
