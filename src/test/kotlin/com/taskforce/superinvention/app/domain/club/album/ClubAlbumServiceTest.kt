@@ -162,10 +162,10 @@ class ClubAlbumServiceTest: MockkTest() {
         every { roleService.hasClubMasterAuth(nonWriterClubUser)  } returns false
 
         every { roleService.hasClubManagerAuth(clubManager) } returns true
-        every { roleService.hasClubMasterAuth(clubManager) }  returns false
+        every { roleService.hasClubMasterAuth(clubManager)  } returns false
 
         every { roleService.hasClubManagerAuth(clubMaster) }  returns true
-        every { roleService.hasClubMasterAuth(clubMaster) }   returns true
+        every { roleService.hasClubMasterAuth(clubMaster)  }  returns true
 
         every { clubAlbumRepository.findByIdOrNull(clubAlbum.seq)        } returns clubAlbum
         every { clubAlbumRepository.findByIdOrNull(deletedClubAlbum.seq) } returns deletedClubAlbum
@@ -188,14 +188,14 @@ class ClubAlbumServiceTest: MockkTest() {
         }
 
         // 사진 등록자가 삭제할 때
-        assertEquals(true, clubAlbumService.removeClubAlbum(writer, club.seq!!, clubAlbum.seq!!))
+        assertEquals(Unit, clubAlbumService.removeClubAlbum(writer, club.seq!!, clubAlbum.seq!!))
             .run { resetDeleteState(clubAlbum) }
 
         // 모임장, 매니저가 삭제할 때
-        assertEquals(true, clubAlbumService.removeClubAlbum(userAsManager, club.seq!!, clubAlbum.seq!!))
+        assertEquals(Unit, clubAlbumService.removeClubAlbum(userAsManager, club.seq!!, clubAlbum.seq!!))
             .run { resetDeleteState(clubAlbum) }
 
-        assertEquals(true, clubAlbumService.removeClubAlbum(userAsMaster , club.seq!!, clubAlbum.seq!!))
+        assertEquals(Unit, clubAlbumService.removeClubAlbum(userAsMaster , club.seq!!, clubAlbum.seq!!))
             .run { resetDeleteState(clubAlbum) }
 
         // 요청자가 모임원이지만 등록자, 모임장, 매니저가 아닐 때
@@ -203,7 +203,6 @@ class ClubAlbumServiceTest: MockkTest() {
             clubAlbumService.removeClubAlbum(nonWriter, club.seq!!, clubAlbum.seq!!)
         }
     }
-
 
     private fun resetDeleteState(clubAlbum: ClubAlbum) {
         clubAlbum.delete_flag = false

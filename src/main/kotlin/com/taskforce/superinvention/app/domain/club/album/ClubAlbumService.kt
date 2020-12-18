@@ -30,6 +30,15 @@ class ClubAlbumService(
         private val clubRepository: ClubRepository
 ) {
 
+    companion object {
+        private val clubNotFoundException        = ClubNotFoundException()
+        private val userIsNotClubMemberException = UserIsNotClubMemberException()
+        private val clubAlbumNotFoundException   = ClubAlbumNotFoundException()
+        private val isAlreadyDeletedException    = IsAlreadyDeletedException()
+        private val noAuthForClubAlbumException  = NoAuthForClubAlbumException()
+    }
+
+
     // 엘범 등록
     @Transactional
     fun registerClubAlbum(user: User?, clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto?): Boolean {
@@ -71,33 +80,32 @@ class ClubAlbumService(
     }
 
     @Transactional
-    fun removeClubAlbum(user: User, clubSeq: Long, clubAlbumSeq: Long): Boolean {
+    fun removeClubAlbum(user: User, clubSeq: Long, clubAlbumSeq: Long) {
 
         val club = clubRepository.findByIdOrNull(clubSeq)
-            ?: throw ClubNotFoundException()
+            ?: throw clubNotFoundException
 
         val clubUser = clubUserRepository.findByClubAndUser(club, user)
-            ?: throw UserIsNotClubMemberException()
+            ?: throw userIsNotClubMemberException
 
         val clubAlbum: ClubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
-            ?: throw ClubAlbumNotFoundException()
+            ?: throw clubAlbumNotFoundException
 
         if(clubAlbum.delete_flag) {
-            throw IsAlreadyDeletedException()
+            throw isAlreadyDeletedException
         }
 
         if(eqSeq(clubAlbum.writer, clubUser)) {
             clubAlbum.delete_flag = true
-            return true
+            return
         }
 
-        if(roleService.hasClubManagerAuth(clubUser) ||
-           roleService.hasClubMasterAuth(clubUser)) {
+        if(roleService.hasClubManagerAuth(clubUser)) {
             clubAlbum.delete_flag = true
-            return true
+            return
         }
 
-        throw NoAuthForClubAlbumException()
+        throw noAuthForClubAlbumException
     }
 
     private fun isValid(clubAlbumDto: ClubAlbumRegisterDto): Boolean {
