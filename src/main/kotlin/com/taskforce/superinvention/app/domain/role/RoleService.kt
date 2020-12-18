@@ -9,10 +9,10 @@ import java.sql.SQLException
 
 @Service
 class RoleService(
-        val roleRepository: RoleRepository,
-        val roleGroupRepository: RoleGroupRepository,
-        val clubUserRoleRepository: ClubUserRoleRepository,
-        val clubUserRepository: ClubUserRepository
+        private val roleRepository: RoleRepository,
+        private val roleGroupRepository: RoleGroupRepository,
+        private val clubUserRoleRepository: ClubUserRoleRepository,
+        private val clubUserRepository: ClubUserRepository
 ) {
     /**
      * 모임원의 권한중 매니저 이상의 권한이 있는지 확인한다.

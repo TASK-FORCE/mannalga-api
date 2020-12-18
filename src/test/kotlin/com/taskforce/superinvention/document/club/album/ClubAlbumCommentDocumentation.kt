@@ -6,8 +6,6 @@ import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumComme
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
@@ -66,6 +64,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
 
         clubAlbum = ClubAlbum (
                 club = club,
+                writer = clubUser,
                 title       = "모임 사진첩 사진 1",
                 img_url     = "이미지 URL",
                 file_name   = "파일 이름",

@@ -1,15 +1,15 @@
 package com.taskforce.superinvention.app.web.controller.club.album
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
-import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -28,17 +28,20 @@ class ClubAlbumController(
 
      @PostMapping
      @ResponseStatus(HttpStatus.CREATED)
-     @Secured(Role.CLUB_MEMBER)
-     fun registerClubAlbum(@PathVariable clubSeq: Long,
-                           @RequestBody body: ClubAlbumRegisterDto?): ResponseDto<String> {
+     fun registerClubAlbum(@AuthUser     user: User,
+                           @PathVariable clubSeq: Long,
+                           @RequestBody  body: ClubAlbumRegisterDto): ResponseDto<String> {
 
-          clubAlbumService.registerClubAlbum(clubSeq, body)
+          clubAlbumService.registerClubAlbum(user, clubSeq, body)
           return ResponseDto(data = "")
      }
 
      @DeleteMapping("/{clubAlbumSeq}")
-     fun registerClubAlbum(@PathVariable clubAlbumSeq: Long) : ResponseDto<String> {
-          clubAlbumService.removeClubAlbum(clubAlbumSeq)
+     fun deleteClubAlbum(@AuthUser     user: User,
+                         @PathVariable clubSeq:Long,
+                         @PathVariable clubAlbumSeq: Long) : ResponseDto<String> {
+
+          clubAlbumService.removeClubAlbum(user, clubSeq, clubAlbumSeq)
           return ResponseDto(data = "")
      }
 }

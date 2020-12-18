@@ -2,36 +2,22 @@ package com.taskforce.superinvention.document.club.album
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
-import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
-import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentService
-import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeService
-import com.taskforce.superinvention.app.domain.club.board.ClubBoard
-import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
-import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
-import com.taskforce.superinvention.common.util.aws.s3.S3Path
-import com.taskforce.superinvention.config.MockitoHelper.anyObject
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
-import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.eqPage
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -46,7 +32,6 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import java.util.*
 
 class ClubAlbumDocumentation: ApiDocumentationTest() {
 
@@ -68,7 +53,8 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         clubUser = ClubUser(club, user, isLiked = true).apply { seq = 110 }
 
         clubAlbum = ClubAlbum (
-                club = club,
+                club        = club,
+                writer    = clubUser,
                 title       = "클럽 사진첩 사진 1",
                 img_url     = "이미지 URL",
                 file_name   = "파일 이름",
@@ -148,7 +134,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         )
 
         // when
-        `when`(clubAlbumService.registerClubAlbum(eq(club.seq!!), eq(body))).then{ Unit }
+        `when`(clubAlbumService.registerClubAlbum(eq(user), eq(club.seq!!), eq(body))).then{ Unit }
 
         val result: ResultActions = this.mockMvc.perform(
                 post("/club/{clubSeq}/album", club.seq!!)
@@ -179,7 +165,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     fun `모임 게시판 글 목록 삭제`() {
 
         //  when
-        `when`(clubAlbumService.removeClubAlbum(clubAlbum.seq!!)).then{ Unit }
+        `when`(clubAlbumService.removeClubAlbum(user, club.seq!!, clubAlbum.seq!!)).then{ Unit }
 
         val result: ResultActions = this.mockMvc.perform(
                 delete("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)
