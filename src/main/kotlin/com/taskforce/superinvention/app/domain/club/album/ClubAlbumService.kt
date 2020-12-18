@@ -1,30 +1,56 @@
 package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.ClubRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.role.RoleService
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
+import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoundException
+import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
+import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumService(
+        private val roleService: RoleService,
+        private val clubUserRepository : ClubUserRepository,
         private val clubAlbumRepository: ClubAlbumRepository,
         private val clubRepository: ClubRepository
 ) {
 
     // 엘범 등록
     @Transactional
-    fun registerClubAlbum(clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto?) {
-        val club = clubRepository.findBySeq(clubSeq)
+    fun registerClubAlbum(user: User?, clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto?): Boolean {
+        user ?: throw UserIsNotClubMemberException()
 
-        if(clubAlbumDto != null) {
-            val clubAlbum = ClubAlbum(club, clubAlbumDto)
+        val club = clubRepository.findByIdOrNull(clubSeq)
+            ?: throw ClubNotFoundException()
+
+        val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
+            ?: throw UserIsNotClubMemberException()
+
+        if(isValid(clubAlbumDto!!)) {
+            val clubAlbum = ClubAlbum (
+                writer      = clubUser,
+                club        = club,
+                registerDto = clubAlbumDto
+            )
             clubAlbumRepository.save(clubAlbum)
+            return true
         }
+        return false
     }
 
     @Transactional(readOnly = true)
@@ -45,10 +71,47 @@ class ClubAlbumService(
     }
 
     @Transactional
-    fun removeClubAlbum(clubAlbumSeq: Long) {
-        val clubAlbum = clubAlbumRepository.findById(clubAlbumSeq)
-        if(clubAlbum.isPresent) {
-            clubAlbum.get().delete_flag = true
+    fun removeClubAlbum(user: User, clubSeq: Long, clubAlbumSeq: Long): Boolean {
+
+        val club = clubRepository.findByIdOrNull(clubSeq)
+            ?: throw ClubNotFoundException()
+
+        val clubUser = clubUserRepository.findByClubAndUser(club, user)
+            ?: throw UserIsNotClubMemberException()
+
+        val clubAlbum: ClubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
+            ?: throw ClubAlbumNotFoundException()
+
+        if(clubAlbum.delete_flag) {
+            throw IsAlreadyDeletedException()
         }
+
+        if(eqSeq(clubAlbum.writer, clubUser)) {
+            clubAlbum.delete_flag = true
+            return true
+        }
+
+        if(roleService.hasClubManagerAuth(clubUser) ||
+           roleService.hasClubMasterAuth(clubUser)) {
+            clubAlbum.delete_flag = true
+            return true
+        }
+
+        throw NoAuthForClubAlbumException()
+    }
+
+    private fun isValid(clubAlbumDto: ClubAlbumRegisterDto): Boolean {
+
+        if(clubAlbumDto.img_ur.isBlank()) {
+            throw BizException("잘못된 이미지 URL입니다.", HttpStatus.BAD_REQUEST)
+        }
+        if(clubAlbumDto.title.isBlank()) {
+            throw BizException("제목이 비어있습니다.", HttpStatus.BAD_REQUEST)
+        }
+        return true
+    }
+
+    private fun eqSeq(writer: ClubUser, clubUser: ClubUser): Boolean {
+        return writer.seq == clubUser.seq
     }
 }

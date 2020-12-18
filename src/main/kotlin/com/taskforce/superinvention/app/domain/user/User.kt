@@ -47,6 +47,14 @@ class User: BaseEntity {
         this.isRegistered = false
     }
 
+    constructor(userId: String, userName: String) {
+        this.userId = userId
+        this.userName = userName
+        this.userType = UserType.KAKAO
+        this.userRoles = mutableSetOf()
+        this.isRegistered = false
+    }
+
     constructor(userId: String, token: KakaoToken) {
         this.userId = userId
         this.userType = UserType.KAKAO
