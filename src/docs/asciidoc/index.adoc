@@ -147,6 +147,9 @@ include::{root}/club/album/club-album-like-remove.adoc[]
 === [.toc-list-item]`만남 모두 조회`
 include::{root}/club/meeting/meeting-all.adoc[]
 
+=== [.toc-list-item]`만남 개별 건 조회`
+include::{root}/club/meeting/meeting-one.adoc[]
+
 === [.toc-list-item]`만남 생성`
 include::{root}/club/meeting/create-meeting.adoc[]
 

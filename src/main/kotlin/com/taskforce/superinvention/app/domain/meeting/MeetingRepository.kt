@@ -25,7 +25,7 @@ interface MeetingRepositoryCustom {
 class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), MeetingRepositoryCustom{
 
     @Transactional(readOnly = true)
-    fun getMeeting(clubSeq: Long, pageable: Pageable): Page<Meeting> {
+    fun getMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting> {
         val query = from(QMeeting.meeting)
                 .join(QMeeting.meeting.club, QClub.club)
                 .leftJoin(QMeeting.meeting.meetingApplications, QMeetingApplication.meetingApplication)

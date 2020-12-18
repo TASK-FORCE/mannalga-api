@@ -3,6 +3,8 @@ package com.taskforce.superinvention.app.domain.meeting
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
+import com.taskforce.superinvention.common.exception.BizException
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -31,6 +34,8 @@ internal class MeetingServiceTest {
     lateinit var meetingService: MeetingService
 
     lateinit var meetingRepositoryImpl: MeetingRepositoryImpl
+
+    lateinit var meetingRepository: MeetingRepository
 
 
     @BeforeEach
@@ -73,8 +78,9 @@ internal class MeetingServiceTest {
         }
 
         meetingRepositoryImpl = mockk<MeetingRepositoryImpl>()
+        meetingRepository = mockk()
         meetingService = MeetingService(
-                meetingRepository = mockk(),
+                meetingRepository = meetingRepository,
                 clubService = mockk(),
                 meetingApplicationRepository = mockk(),
                 meetingRepositoryImpl = meetingRepositoryImpl,
@@ -84,12 +90,12 @@ internal class MeetingServiceTest {
 
     @Test
     @DisplayName("모임원이 아닌 유저의 만남 조회")
-    fun getMeetingTestWithoutClubUserRole() {
+    fun getMeetingsTestWithoutClubUserRole() {
         // given
-        every { meetingRepositoryImpl.getMeeting(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
-        val response = meetingService.getMeeting(clubSeq, pageable, null)
+        val response = meetingService.getMeetings(clubSeq, pageable, null)
 
         // then
         assertEquals(1, response.content.size)
@@ -101,7 +107,7 @@ internal class MeetingServiceTest {
 
     @Test
     @DisplayName("모임원인 유저의 만남 조회")
-    fun getMeetingTestWitClubUserRole() {
+    fun getMeetingsTestWitClubUserRole() {
         // given
         meeting.meetingApplications = listOf(
                 MeetingApplication(
@@ -122,10 +128,10 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getMeeting(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
-        val response = meetingService.getMeeting(clubSeq, pageable, clubUserSeq)
+        val response = meetingService.getMeetings(clubSeq, pageable, clubUserSeq)
 
         // then
         assertEquals(1, response.content.size)
@@ -135,7 +141,7 @@ internal class MeetingServiceTest {
 
     @Test
     @DisplayName("모임원이며 만남 생성을 한 유저의 만남 조회")
-    fun getMeetingTestWitGenerateMeetingUser() {
+    fun getMeetingsTestWitGenerateMeetingUser() {
         // given
         meeting.meetingApplications = listOf(
                 MeetingApplication(
@@ -156,14 +162,40 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getMeeting(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
-        val response = meetingService.getMeeting(clubSeq, pageable, regClubUserSeq)
+        val response = meetingService.getMeetings(clubSeq, pageable, regClubUserSeq)
 
         // then
         assertEquals(1, response.content.size)
         assertTrue(response.first().isCurrentUserRegMeeting)
         assertTrue(response.first().isCurrentUserApplicationMeeting)
+    }
+
+    @Test
+    @DisplayName("모임원이 아닌 유저의 모임 개별건 조회")
+    fun getMeetingTestWithoutClubUserRole() {
+        // given
+        every { meetingRepository.findById(meeting.seq!!) }.returns(Optional.of(meeting))
+
+        // when
+        val response = meetingService.getMeeting(meeting.seq!!, clubUserSeq)
+
+        // then
+        assertEquals(meeting.seq!!, response.seq)
+        assertEquals(meeting.content, response.content)
+    }
+    
+    @Test
+    @DisplayName("존재하지 않는 모임 개별건 조회")
+    fun getMeetingTestNotFountSeq() {
+        // given
+        every { meetingRepository.findById(meeting.seq!!) }.returns(Optional.empty())
+
+        // when, then
+        assertThrows(BizException::class.java) {
+            meetingService.getMeeting(meeting.seq!!, clubUserSeq)
+        }
     }
 }

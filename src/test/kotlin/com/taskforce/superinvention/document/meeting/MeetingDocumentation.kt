@@ -5,7 +5,6 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
@@ -21,6 +20,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.BDDMockito.anyLong
 import org.mockito.BDDMockito.given
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -135,7 +135,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
         // given
         given(roleService.hasClubMemberAuth(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
                 .willReturn(true)
-        given(meetingService.getMeeting(ArgumentMatchers.anyLong(), MockitoHelper.anyObject(), ArgumentMatchers.anyLong())).willReturn(meetings)
+        given(meetingService.getMeetings(ArgumentMatchers.anyLong(), MockitoHelper.anyObject(), ArgumentMatchers.anyLong())).willReturn(meetings)
         given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(currentUser)
 
 
@@ -217,7 +217,6 @@ class MeetingDocumentation: ApiDocumentationTest() {
         // when
         val result: ResultActions = this.mockMvc.perform(
                 post("/clubs/{clubSeq}/meetings", clubSeq)
-                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(meetingAddRequestDto))
@@ -407,6 +406,82 @@ class MeetingDocumentation: ApiDocumentationTest() {
                     )
                 )
             )
+    }
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `만남 개별건 조회`() {
+        // given
+        given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(clubUser)
+        given(meetingService.getMeeting(anyLong(), anyLong())).willReturn(meetingDto)
+
+        // when
+        val result: ResultActions = this.mockMvc.perform(
+                get("/clubs/{clubSeq}/meetings/{meetingSeq}", clubSeq, meetingSeq)
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(MockMvcResultHandlers.print())
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk)
+                .andDo(document("meeting-one", getDocumentRequest(), getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("clubSeq").description("모임 시퀀스"),
+                                parameterWithName("meetingSeq").description("만남 시퀀스")
+                        ),
+                        responseFields(
+                                *ApiDocumentUtil.commonResponseField(),
+
+                                fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("만남 시퀀스"),
+                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("만남 제목"),
+                                fieldWithPath("data.content").type(JsonFieldType.STRING).description("만남 상세 내용"),
+                                fieldWithPath("data.startTimestamp").type(JsonFieldType.STRING).description("만남 시작 시간. $DATE_TIME_FORMAT 형식으로 전송하면 받을 수 있다."),
+                                fieldWithPath("data.endTimestamp").type(JsonFieldType.STRING).description("만남 종료 시간. $DATE_TIME_FORMAT 형식으로 전송하면 받을 수 있다."),
+                                fieldWithPath("data.club").type(JsonFieldType.OBJECT).description("만남을 진행하는 모임 정보"),
+                                fieldWithPath("data.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
+                                fieldWithPath("data.club.name").type(JsonFieldType.STRING).description("모임 모임명"),
+                                fieldWithPath("data.club.description").type(JsonFieldType.STRING).description("모임 상세설명"),
+                                fieldWithPath("data.club.maximumNumber").type(JsonFieldType.NUMBER).description("모임 모임 최대 인원"),
+                                fieldWithPath("data.club.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지"),
+                                fieldWithPath("data.club.userCount").type(JsonFieldType.NULL).description("사용하지 않는 필드"),
+                                fieldWithPath("data.deleteFlag").type(JsonFieldType.BOOLEAN).description("만남 삭제 여부"),
+                                fieldWithPath("data.maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 제한 인원"),
+                                fieldWithPath("data.regClubUser").type(JsonFieldType.OBJECT).description("만남 생성한 모임원 정보"),
+                                fieldWithPath("data.regClubUser.seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
+                                fieldWithPath("data.regClubUser.user").type(JsonFieldType.OBJECT).description("유저 정보"),
+                                fieldWithPath("data.regClubUser.user.seq").type(JsonFieldType.NUMBER).description("회원 시퀀스"),
+                                fieldWithPath("data.regClubUser.user.userRoles").type(JsonFieldType.ARRAY).description("회원 권한"),
+                                fieldWithPath("data.regClubUser.user.userName").type(JsonFieldType.STRING).description("회원명"),
+                                fieldWithPath("data.regClubUser.user.birthday").type(JsonFieldType.STRING).description("생일"),
+                                fieldWithPath("data.regClubUser.user.profileImageLink").type(JsonFieldType.STRING).description("프로필 이미지 링크"),
+                                fieldWithPath("data.regClubUser.club").type(JsonFieldType.OBJECT).description("모임원의 모임 정보"),
+                                fieldWithPath("data.regClubUser.club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
+                                fieldWithPath("data.regClubUser.club.name").type(JsonFieldType.STRING).description("모임 모임명"),
+                                fieldWithPath("data.regClubUser.club.description").type(JsonFieldType.STRING).description("모임 상세설명"),
+                                fieldWithPath("data.regClubUser.club.maximumNumber").type(JsonFieldType.NUMBER).description("모임 모임 최대 인원"),
+                                fieldWithPath("data.regClubUser.club.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지"),
+                                fieldWithPath("data.regClubUser.club.userCount").type(JsonFieldType.NULL).description("사용하지 않는 필드"),
+                                fieldWithPath("data.regClubUser.roles").type(JsonFieldType.ARRAY).description("모임원의 권한 정보"),
+                                fieldWithPath("data.regClubUser.roles[].name").type(JsonFieldType.STRING).description("권한 명"),
+                                fieldWithPath("data.regClubUser.roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명"),
+                                fieldWithPath("data.meetingApplications").type(JsonFieldType.ARRAY).description("만남을 신청한 모임원들 정보"),
+                                fieldWithPath("data.meetingApplications.[].seq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
+                                fieldWithPath("data.meetingApplications.[].deleteFlag").type(JsonFieldType.BOOLEAN).description("만남 신청을 삭제했는지 여부"),
+                                fieldWithPath("data.meetingApplications.[].createdAt").type(JsonFieldType.STRING).description("최초로 만남신청을 진행한 시각"),
+                                fieldWithPath("data.meetingApplications.[].updatedAt").type(JsonFieldType.STRING).description("만남 신청정보를 업데이트한 마지막 시각"),
+                                fieldWithPath("data.meetingApplications.[].userInfo").type(JsonFieldType.OBJECT).description("만남 신청을 진행한 유저의 상세 정보"),
+                                fieldWithPath("data.meetingApplications.[].userInfo.userSeq").type(JsonFieldType.NUMBER).description("유저 정보"),
+                                fieldWithPath("data.meetingApplications.[].userInfo.userName").type(JsonFieldType.STRING).description("유저 이름"),
+                                fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
+                                fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부")
+
+                        )
+                    )
+                )
     }
 
 
