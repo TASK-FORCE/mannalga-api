@@ -39,8 +39,6 @@ data class ClubUserStatusDto(
 
 data class ClubInfoUserDto(
     val name: String,
-
-    @JsonProperty("img_url")
     val imgUrl: String,
     val role: List<Role.RoleName>
 ) {

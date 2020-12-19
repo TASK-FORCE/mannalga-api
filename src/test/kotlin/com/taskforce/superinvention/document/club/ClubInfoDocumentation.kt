@@ -139,7 +139,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                         fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
                                         fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부"),
                                         fieldWithPath("data.userList[].name").type(JsonFieldType.STRING).description("모임원 이름"),
-                                        fieldWithPath("data.userList[].img_url").type(JsonFieldType.STRING).description("모임원 프로필 [empty string default]"),
+                                        fieldWithPath("data.userList[].imgUrl").type(JsonFieldType.STRING).description("모임원 프로필 [empty string default]"),
                                         fieldWithPath("data.userList[].role[]").type(JsonFieldType.ARRAY).description("모임원 권한")
                                 )
                         )
