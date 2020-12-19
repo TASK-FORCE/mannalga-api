@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.domain.club.user
 
 import com.querydsl.core.group.GroupBy.*
+import com.querydsl.core.types.Predicate
 import com.querydsl.jpa.JPAExpressions.selectFrom
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.QClub
@@ -26,6 +27,7 @@ interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepository
 
 interface ClubUserRepositoryCustom {
     fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser?
+    fun findClubUsersInClub(clubSeq: Long): List<ClubUser>
 }
 
 @Repository
@@ -46,5 +48,23 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
                     .and(clubUser.user.seq.eq(pUser.seq)))
 
         return query.fetchOne()
+    }
+
+    // 클럽원들의 유저 정보 조회
+    override fun findClubUsersInClub(clubSeq: Long): List<ClubUser> {
+        var clubUserRole = QClubUserRole.clubUserRole
+        var clubUser = QClubUser.clubUser
+        var user = QUser.user
+
+        val query = from(clubUser)
+            .join(clubUser.clubUserRoles, clubUserRole).fetchJoin()
+            .join(clubUser.user, user).fetchJoin()
+            .where(eqSeq(clubUser.club, clubSeq))
+
+        return query.fetch()
+    }
+
+    private fun eqSeq(club: QClub, clubSeq: Long): Predicate {
+        return club.seq.eq(clubSeq)
     }
 }

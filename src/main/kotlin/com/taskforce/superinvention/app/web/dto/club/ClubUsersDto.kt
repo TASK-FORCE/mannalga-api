@@ -59,7 +59,7 @@ data class ClubUserWithClubDetailsDto(
             clubUserSeq = clubUserDto.seq,
             clubUserName = clubUserDto.user.userName ?: "",
             clubUserImgUrl = clubUserDto.user.profileImageLink ?: "",
-            userSeq     = clubUserDto.user.seq!!,
+            userSeq     = clubUserDto.user.seq,
             club        = ClubInfoDto(
                     club = clubUserDto.club,
                     clubInterest = interests,
