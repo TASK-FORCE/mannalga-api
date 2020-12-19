@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -24,6 +25,8 @@ class MeetingController(
         var clubService: ClubService
 ) {
 
+    val userIsNotClubMemberException = UserIsNotClubMemberException()
+
     @GetMapping
     @Secured(Role.MEMBER)
     fun getAllMeeting(@AuthUser user: User,
@@ -32,7 +35,15 @@ class MeetingController(
 
         val clubUser = clubService.getClubUser(clubSeq, user)
 
-        return ResponseDto(meetingService.getMeeting(clubSeq, pageable, clubUser?.seq))
+        return ResponseDto(meetingService.getMeetings(clubSeq, pageable, clubUser?.seq))
+    }
+
+    @GetMapping("/{meetingSeq}")
+    fun getMeeting(@AuthUser user: User,
+                   @PathVariable meetingSeq: Long,
+                   @PathVariable clubSeq: Long): ResponseDto<MeetingDto> {
+        val clubUser = clubService.getClubUser(clubSeq, user)
+        return ResponseDto(meetingService.getMeeting(meetingSeq, clubUser?.seq!!))
     }
 
     @PostMapping
