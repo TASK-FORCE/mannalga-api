@@ -119,7 +119,7 @@ class ClubAlbumServiceTest: MockkTest() {
         val body = ClubAlbumRegisterDto(
             title     = "신규 모임 사진첩 제목",
             file_name = "파일명",
-            img_ur    = "이미지 URL"
+            imgUrl    = "이미지 URL"
         )
 
         every { clubRepository.findByIdOrNull(club.seq)        } returns club

@@ -19,8 +19,8 @@ class ClubAlbumController(
 ) {
 
      @GetMapping
-     fun gerClubAlbumList(pageable: Pageable?,
-                          @PathVariable clubSeq:Long,
+     fun gerClubAlbumList(@PathVariable clubSeq:Long,
+                          pageable: Pageable,
                           searchOption: ClubAlbumSearchOption): ResponseDto<Page<ClubAlbumListDto>> {
 
           return ResponseDto(clubAlbumService.getClubAlbumList(clubSeq, searchOption, pageable))

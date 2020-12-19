@@ -3,7 +3,7 @@ package com.taskforce.superinvention.app.web.dto.club.album
 data class ClubAlbumRegisterDto(
         val title     : String = "",
         val file_name : String = "",
-        val img_ur    : String = ""
+        val imgUrl    : String = ""
 )
 
 data class ClubAlbumListDto(
