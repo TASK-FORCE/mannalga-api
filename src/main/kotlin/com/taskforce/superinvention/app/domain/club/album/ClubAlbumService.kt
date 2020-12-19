@@ -71,7 +71,7 @@ class ClubAlbumService(
             ClubAlbumListDto(
                 title     = clubAlbum?.title     ?: "",
                 file_name = clubAlbum?.file_name ?: "",
-                img_url    = clubAlbum?.img_url  ?: "",
+                imgUrl    = clubAlbum?.img_url  ?: "",
                 likeCnt   = tuple.get(2, Long::class.java) ?: 0,
                 commentCnt= tuple.get(3, Long::class.java) ?: 0
             )
