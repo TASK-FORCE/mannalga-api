@@ -151,7 +151,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("file_name").type(JsonFieldType.STRING).description("파일명"),
-                                fieldWithPath("img_ur").type(JsonFieldType.STRING).description("이미지 URL")
+                                fieldWithPath("imgUrl").type(JsonFieldType.STRING).description("이미지 URL")
                         ),
                         responseFields(
                                 *commonResponseField()
