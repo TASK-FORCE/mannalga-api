@@ -7,12 +7,15 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.interest.interest.InterestDto
 import com.taskforce.superinvention.app.domain.interest.interestGroup.SimpleInterestGroupDto
 import com.taskforce.superinvention.app.domain.region.Region
+import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDetailsDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
+import com.taskforce.superinvention.app.web.dto.club.ClubInfoUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
@@ -62,9 +65,12 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
             userCount = 2
         }
 
-        clubUser = ClubUser(club, user, isLiked = false).apply {
-            seq = 3
-        }
+        clubUser = ClubUser(club, user, isLiked = false)
+            .apply {seq = 3}
+
+        clubUser.clubUserRoles = mutableSetOf(
+                ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE")))
+            )
 
         region = Region(
                 superRegion = null,
@@ -92,7 +98,8 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                 userInfo = ClubUserStatusDto(
                         role = listOf(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER),
                         isLiked = false
-                )
+                ),
+                userList = listOf(ClubInfoUserDto(clubUser))
         )
 
         // when
@@ -130,7 +137,10 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                         fieldWithPath("data.clubInfo.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
                                         fieldWithPath("data.clubInfo.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
                                         fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
-                                        fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부")
+                                        fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부"),
+                                        fieldWithPath("data.userList[].name").type(JsonFieldType.STRING).description("모임원 이름"),
+                                        fieldWithPath("data.userList[].imgUrl").type(JsonFieldType.STRING).description("모임원 프로필 [empty string default]"),
+                                        fieldWithPath("data.userList[].role[]").type(JsonFieldType.ARRAY).description("모임원 권한")
                                 )
                         )
                 )

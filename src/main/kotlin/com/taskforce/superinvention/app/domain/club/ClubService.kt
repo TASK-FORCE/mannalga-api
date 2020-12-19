@@ -77,12 +77,17 @@ class ClubService(
                 clubRegions
         )
 
-        // 모임원일 경우 모임 권한, 좋아요 표시 여부 체크
+        // [현재 조회한 인원이] 모임원일 경우 모임 권한, 좋아요 표시 여부 체크
         val clubUserDetails = clubUserService.getClubUserDetails(user, clubSeq)
+
+        // 해당 모임에 가입된 유저들을 조회
+        val clubMembers = clubUserRepository.findClubUsersInClub(clubSeq)
+            .map(::ClubInfoUserDto)
 
         return ClubInfoDetailsDto(
                 clubInfoDto,
-                clubUserDetails
+                clubUserDetails,
+                clubMembers
         )
     }
 

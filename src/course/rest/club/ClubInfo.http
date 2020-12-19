@@ -11,12 +11,6 @@ Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
 
 ### [로컬] 클럽 상세 정보 조회 - 비로그인 상태
-GET http://localhost:8080/clubs/163
+GET http://localhost:8080/clubs/6174
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-
-### https://github.com/TASK-FORCE/super-invention/issues/180
-GET http://localhost:8080/clubs/my?size=20&page=0
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwNjQwNjYxMCwiZXhwIjoxNjM3OTQyNjEwfQ.j-TUvKcJMWgbYfJjnXh45XJ3wb-IvqWr_vvbMtBegb4
