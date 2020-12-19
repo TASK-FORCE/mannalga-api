@@ -3,7 +3,9 @@ package com.taskforce.superinvention.document.club.album
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
@@ -50,6 +52,9 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         user = User ("12345").apply { seq = 2 }
         clubUser = ClubUser(club, user, isLiked = true).apply { seq = 110 }
+        clubUser.clubUserRoles = mutableSetOf(
+            ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE")))
+        )
 
         clubAlbum = ClubAlbum (
                 club        = club,
@@ -67,9 +72,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
 
         // given
         val clubAlbumListDto = ClubAlbumListDto(
-                clubAlbum.title,
-                clubAlbum.file_name,
-                clubAlbum.img_url,
+                clubAlbum,
                 likeCnt    = 1,
                 commentCnt = 1
         )
@@ -111,11 +114,17 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                         responseFields(
                                 *commonResponseField(),
                                 *pageFieldDescriptor(),
+                                fieldWithPath("data.content[].albumSeq").type(JsonFieldType.NUMBER).description("사진첩 seq")   ,
                                 fieldWithPath("data.content[].title").type(JsonFieldType.STRING).description("사진첩 제목")   ,
                                 fieldWithPath("data.content[].file_name").type(JsonFieldType.STRING).description("파일 명")  ,
                                 fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("이미지 URL") ,
                                 fieldWithPath("data.content[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개")   ,
-                                fieldWithPath("data.content[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수")
+                                fieldWithPath("data.content[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                                fieldWithPath("data.content[].writer.writerSeq").type(JsonFieldType.NUMBER).description("작성자 clubUser seq"),
+                                fieldWithPath("data.content[].writer.writerUserSeq").type(JsonFieldType.NUMBER).description("작성자 user seq"),
+                                fieldWithPath("data.content[].writer.name").type(JsonFieldType.STRING).description("작성자 이름"),
+                                fieldWithPath("data.content[].writer.imgUrl").type(JsonFieldType.STRING).description("프로필 이미지"),
+                                fieldWithPath("data.content[].writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
                         )
                     )
                 )

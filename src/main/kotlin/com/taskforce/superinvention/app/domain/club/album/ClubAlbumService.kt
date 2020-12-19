@@ -67,11 +67,9 @@ class ClubAlbumService(
         val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
 
         val result = query.results.map { tuple ->
-            val clubAlbum = tuple.get(0, ClubAlbum::class.java)
+            val clubAlbum = tuple.get(0, ClubAlbum::class.java)!!
             ClubAlbumListDto(
-                title     = clubAlbum?.title     ?: "",
-                file_name = clubAlbum?.file_name ?: "",
-                imgUrl    = clubAlbum?.img_url  ?: "",
+                clubAlbum = clubAlbum,
                 likeCnt   = tuple.get(1, Long::class.java) ?: 0,
                 commentCnt= tuple.get(2, Long::class.java) ?: 0
             )
