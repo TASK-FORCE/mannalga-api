@@ -38,7 +38,7 @@ interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
 
 interface ClubRepositoryCustom {
     fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
-    fun findUserClubList(userInfo: User): List<ClubUserWithUserDto>
+    fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
 
@@ -100,7 +100,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         return query
     }
 
-    override fun findUserClubList(userInfo: User): List<ClubUserWithUserDto> {
+    override fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto> {
         val clubUser = QClubUser.clubUser
         val clubUserRole = QClubUserRole.clubUserRole
         val roleGroup = QRoleGroup.roleGroup;
@@ -112,7 +112,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                 from(clubUserRole)
                         .select(
                                 clubUserRole.clubUser.seq,
-                                clubUserRole.clubUser.user,
+                                clubUserRole.clubUser.user.seq,
                                 clubUserRole.clubUser.club,
 
                                 QRoleDtoQueryProjection(
@@ -124,12 +124,14 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .join(clubUserRole.role.roleGroup, roleGroup)
                         .groupBy(clubUserRole.clubUser.club.seq)
                         .where(clubUserRole.clubUser.user.seq.eq(userInfo.seq))
+                        .offset(pageable.offset)
+                        .limit(pageable.pageSize.toLong())
                         .fetchResults()
 
-        val result: List<ClubUserWithUserDto> = query.results.map { tuple ->
-            ClubUserWithUserDto(
+        val result: List<ClubUserDto> = query.results.map { tuple ->
+            ClubUserDto(
                     seq = tuple.get(0, Long::class.java)!!,
-                    user = UserDto(tuple.get(1, User::class.java)!!),
+                    userSeq = tuple.get(1, Long::class.java)!!,
                     club = ClubDto(
                             tuple.get(2, Club::class.java)!!
                     ),
@@ -137,7 +139,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
             )
         }
 
-        return result
+        return PageImpl(result, pageable, query.total)
     }
 
     private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {
