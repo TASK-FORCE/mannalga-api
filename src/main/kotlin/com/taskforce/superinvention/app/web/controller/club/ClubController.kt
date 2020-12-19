@@ -149,7 +149,7 @@ class ClubController(
 
     @GetMapping("/my")
     @Secured(Role.MEMBER)
-    fun getMyClubList(@AuthUser user: User): ResponseDto<List<ClubUserWithClubDetailsDto>> {
-        return ResponseDto(data = clubService.getUserClubList(user))
+    fun getMyClubList(@AuthUser user: User, pageable: Pageable): ResponseDto<Page<ClubUserWithClubDetailsDto>> {
+        return ResponseDto(data = clubService.getUserClubList(user, pageable))
     }
 }
