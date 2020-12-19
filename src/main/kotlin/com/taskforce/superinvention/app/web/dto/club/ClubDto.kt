@@ -1,8 +1,8 @@
 package com.taskforce.superinvention.app.web.dto.club
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
-import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
@@ -38,14 +38,16 @@ data class ClubUserStatusDto(
 )
 
 data class ClubInfoUserDto(
-        val name: String,
-        val imageUrl: String,
-        val role: List<Role.RoleName>
+    val name: String,
+
+    @JsonProperty("img_url")
+    val imgUrl: String,
+    val role: List<Role.RoleName>
 ) {
     constructor(clubUser: ClubUser)
         :this(
             name = clubUser.user.userName             ?: "",
-            imageUrl = clubUser.user.profileImageLink ?: "",
+            imgUrl = clubUser.user.profileImageLink ?: "",
             role  = clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
         )
 }
