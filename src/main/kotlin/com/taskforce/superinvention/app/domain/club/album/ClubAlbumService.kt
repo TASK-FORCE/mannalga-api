@@ -67,13 +67,13 @@ class ClubAlbumService(
         val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
 
         val result = query.results.map { tuple ->
-            val clubAlbum = tuple.get(1, ClubAlbum::class.java)
+            val clubAlbum = tuple.get(0, ClubAlbum::class.java)
             ClubAlbumListDto(
                 title     = clubAlbum?.title     ?: "",
                 file_name = clubAlbum?.file_name ?: "",
                 imgUrl    = clubAlbum?.img_url  ?: "",
-                likeCnt   = tuple.get(2, Long::class.java) ?: 0,
-                commentCnt= tuple.get(3, Long::class.java) ?: 0
+                likeCnt   = tuple.get(1, Long::class.java) ?: 0,
+                commentCnt= tuple.get(2, Long::class.java) ?: 0
             )
         }
         return PageImpl(result, pageable, query.total)
@@ -110,7 +110,7 @@ class ClubAlbumService(
 
     private fun isValid(clubAlbumDto: ClubAlbumRegisterDto): Boolean {
 
-        if(clubAlbumDto.img_ur.isBlank()) {
+        if(clubAlbumDto.imgUrl.isBlank()) {
             throw BizException("잘못된 이미지 URL입니다.", HttpStatus.BAD_REQUEST)
         }
         if(clubAlbumDto.title.isBlank()) {

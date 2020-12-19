@@ -8,7 +8,6 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
-import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -130,7 +129,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         val body = ClubAlbumRegisterDto(
                 title     = "신규 모임 사진첩 제목",
                 file_name = "파일명",
-                img_ur    = "이미지 URL"
+                imgUrl    = "이미지 URL"
         )
 
         // when
@@ -152,7 +151,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("file_name").type(JsonFieldType.STRING).description("파일명"),
-                                fieldWithPath("img_ur").type(JsonFieldType.STRING).description("이미지 URL")
+                                fieldWithPath("imgUrl").type(JsonFieldType.STRING).description("이미지 URL")
                         ),
                         responseFields(
                                 *commonResponseField()
