@@ -44,9 +44,9 @@ data class ClubInfoUserDto(
 ) {
     constructor(clubUser: ClubUser)
         :this(
-            name = clubUser.user.userName             ?: "",
+            name   = clubUser.user.userName         ?: "",
             imgUrl = clubUser.user.profileImageLink ?: "",
-            role  = clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
+            role   = clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
         )
 }
 
