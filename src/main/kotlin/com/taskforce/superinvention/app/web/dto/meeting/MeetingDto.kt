@@ -47,7 +47,7 @@ class MeetingDto {
 
         meetingApplications = meeting.meetingApplications.map { e -> this.MeetingApplicationDto(e) }
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
-        isCurrentUserApplicationMeeting = meeting.meetingApplications.map { e -> e.clubUser.seq }.contains(currentClubUserSeq)
+        isCurrentUserApplicationMeeting = meeting.meetingApplications.filter { !it.deleteFlag }.map { e -> e.clubUser.seq }.contains(currentClubUserSeq)
     }
 
     constructor(
