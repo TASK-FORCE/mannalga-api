@@ -9,7 +9,7 @@ data class ClubAlbumRegisterDto(
 data class ClubAlbumListDto(
         val title      : String = "",
         val file_name  : String = "",
-        val img_url    : String = "",
+        val imgUrl     : String = "",
         val likeCnt    : Long = 0,
         val commentCnt : Long = 0
 )
