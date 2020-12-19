@@ -45,22 +45,18 @@ data class ClubUserWithUserDto(
 
 data class ClubUserWithClubDetailsDto(
         val clubUserSeq: Long,
-        val clubUserName: String,
-        val clubUserImgUrl: String,
         val userSeq: Long,
         val club: ClubInfoDto,
         val roles: Set<RoleDto>
 ) {
     constructor(
-            clubUserDto: ClubUserWithUserDto,
+            clubUserDto: ClubUserDto,
             interests: List<InterestWithPriorityDto>,
             regions: List<SimpleRegionDto>
     ) :this(
             clubUserSeq = clubUserDto.seq,
-            clubUserName = clubUserDto.user.userName ?: "",
-            clubUserImgUrl = clubUserDto.user.profileImageLink ?: "",
-            userSeq     = clubUserDto.user.seq!!,
-            club        = ClubInfoDto(
+            userSeq     = clubUserDto.userSeq,
+            club = ClubInfoDto(
                     club = clubUserDto.club,
                     clubInterest = interests,
                     clubRegion = regions

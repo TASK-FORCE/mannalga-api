@@ -483,23 +483,23 @@ class ClubDocumentation: ApiDocumentationTest() {
         val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
         val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
-        `when`(clubService.getUserClubList(MockitoHelper.anyObject())).thenReturn(
-                        listOf(
+        `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
+                PageImpl(listOf(
                                 ClubUserWithClubDetailsDto (
-                                        clubUserDto = ClubUserWithUserDto(
+                                        clubUserDto = ClubUserDto(
                                                 seq = 12311,
                                                 club = ClubDto(club),
-                                                user = UserDto(user),
-                                                roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
+                                                userSeq = 1,
+                                            roles = setOf(RoleDto(Role.RoleName.MEMBER, "USER_TYPE"))
                                         ),
                                         interests = clubInterestList,
                                         regions   = clubRegionList
                                 ),
 
                                 ClubUserWithClubDetailsDto (
-                                        clubUserDto = ClubUserWithUserDto(
+                                        clubUserDto = ClubUserDto(
                                                 seq = 5615,
-                                                user = UserDto(user),
+                                                userSeq = 1,
                                                 club = ClubDto(
                                                         seq = 1231,
                                                         name = "떡볶이를 좋아하는 사람들의 모임",
@@ -513,7 +513,9 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         interests = clubInterestList,
                                         regions   = clubRegionList
                                 )
-                        )
+                        ),
+                        pageable, 2
+                    )
                 )
 
         val result = mockMvc.perform(
@@ -530,29 +532,29 @@ class ClubDocumentation: ApiDocumentationTest() {
                         document("myClubList", getDocumentRequest(), getDocumentResponse(),
                                 responseFields(
                                         *commonResponseField(),
-                                        fieldWithPath("data[].clubUserSeq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
-                                        fieldWithPath("data[].clubUserName").type(JsonFieldType.STRING).description("모임원 유저 이름"),
-                                        fieldWithPath("data[].clubUserImgUrl").type(JsonFieldType.STRING).description("모임원 프로필 이미지 링크"),
-                                        fieldWithPath("data[].userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
-                                        fieldWithPath("data[].club").type(JsonFieldType.OBJECT).description("모임 정보"),
-                                        fieldWithPath("data[].club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
-                                        fieldWithPath("data[].club.name").type(JsonFieldType.STRING).description("모임 제목"),
-                                        fieldWithPath("data[].club.description").type(JsonFieldType.STRING).description("모임 설명"),
-                                        fieldWithPath("data[].club.maximumNumber").type(JsonFieldType.NUMBER).description("최대 가입 가능 인원"),
-                                        fieldWithPath("data[].club.userCount").type(JsonFieldType.NUMBER).description("현재 가입 인원"),
-                                        fieldWithPath("data[].club.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 URL"),
-                                        fieldWithPath("data[].roles").type(JsonFieldType.ARRAY).description("모임원 권한 정보"),
-                                        fieldWithPath("data[].roles[].name").type(JsonFieldType.STRING).description("권한 이름"),
-                                        fieldWithPath("data[].roles[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름"),
-                                        fieldWithPath("data[].club.clubInterest[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
-                                        fieldWithPath("data[].club.clubInterest[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
-                                        fieldWithPath("data[].club.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
-                                        fieldWithPath("data[].club.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
-                                        fieldWithPath("data[].club.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
-                                        fieldWithPath("data[].club.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
-                                        fieldWithPath("data[].club.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
-                                        fieldWithPath("data[].club.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
-                                        fieldWithPath("data[].club.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계")
+                                        *pageFieldDescriptor(),
+                                        fieldWithPath("data.content[].clubUserSeq").type(JsonFieldType.NUMBER).description("모임원 시퀀스"),
+                                        fieldWithPath("data.content[].userSeq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
+                                        fieldWithPath("data.content[].club").type(JsonFieldType.OBJECT).description("모임 정보"),
+                                        fieldWithPath("data.content[].club.seq").type(JsonFieldType.NUMBER).description("모임 시퀀스"),
+                                        fieldWithPath("data.content[].club.name").type(JsonFieldType.STRING).description("모임 제목"),
+                                        fieldWithPath("data.content[].club.description").type(JsonFieldType.STRING).description("모임 설명"),
+                                        fieldWithPath("data.content[].club.maximumNumber").type(JsonFieldType.NUMBER).description("최대 가입 가능 인원"),
+                                        fieldWithPath("data.content[].club.userCount").type(JsonFieldType.NUMBER).description("현재 가입 인원"),
+                                        fieldWithPath("data.content[].club.mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 URL"),
+                                        fieldWithPath("data.content[].roles").type(JsonFieldType.ARRAY).description("모임원 권한 정보"),
+                                        fieldWithPath("data.content[].roles[].name").type(JsonFieldType.STRING).description("권한 이름"),
+                                        fieldWithPath("data.content[].roles[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름"),
+
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
+                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
+                                        fieldWithPath("data.content[].club.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
+                                        fieldWithPath("data.content[].club.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.content[].club.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.content[].club.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.content[].club.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계")
                                 )
                         )
                 )
