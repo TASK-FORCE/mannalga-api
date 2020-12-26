@@ -32,16 +32,16 @@ data class ClubAlbumListDto(
 }
 
 data class ClubAlbumWriter(
-        val writerSeq    : Long,
         val writerUserSeq: Long,
+        val writerClubUserSeq : Long,
         val name  : String,
         val imgUrl: String,
         val role: List<Role.RoleName>
 ) {
         constructor(writer: ClubUser): this(
-                name          = writer.user.userName ?: "",
+                name               = writer.user.userName ?: "",
+                writerClubUserSeq  = writer.seq!!,
                 writerUserSeq = writer.user.seq!!,
-                writerSeq     = writer.seq!!,
                 imgUrl        = writer.user.profileImageLink ?: "",
                 role          = writer.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
         )
