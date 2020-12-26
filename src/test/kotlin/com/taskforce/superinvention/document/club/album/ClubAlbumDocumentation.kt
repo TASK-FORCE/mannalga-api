@@ -121,7 +121,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("이미지 URL") ,
                                 fieldWithPath("data.content[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개")   ,
                                 fieldWithPath("data.content[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
-                                fieldWithPath("data.content[].writer.writerSeq").type(JsonFieldType.NUMBER).description("작성자 clubUser seq"),
+                                fieldWithPath("data.content[].writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("작성자 clubUser seq"),
                                 fieldWithPath("data.content[].writer.writerUserSeq").type(JsonFieldType.NUMBER).description("작성자 user seq"),
                                 fieldWithPath("data.content[].writer.name").type(JsonFieldType.STRING).description("작성자 이름"),
                                 fieldWithPath("data.content[].writer.imgUrl").type(JsonFieldType.STRING).description("프로필 이미지"),
