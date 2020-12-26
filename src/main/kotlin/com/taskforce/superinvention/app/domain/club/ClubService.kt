@@ -269,4 +269,9 @@ class ClubService(
         }
         return PageDto(result)
     }
+
+    fun getManagers(clubSeq: Long): List<ClubUserWithUserDto> {
+        val clubManagers = clubUserRepository.findManagersByClubSeq(clubSeq)
+        return clubManagers.map(::ClubUserWithUserDto)
+    }
 }

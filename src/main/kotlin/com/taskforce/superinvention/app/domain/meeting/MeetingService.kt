@@ -6,11 +6,13 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationDto
+import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationStatusDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -146,6 +148,13 @@ class MeetingService(
         return meetingRepository.findById(meetingSeq)
                 .orElseThrow { BizException("요청하신 ${meetingSeq}번 모임은 존재하지 않는 모임입니다", HttpStatus.NOT_FOUND) }
                 .let { e -> MeetingDto(e, clubUserSeq) }
+    }
+
+    @Transactional
+    fun getMeetingApplicationStatus(meetingSeq: Long, clubUser: ClubUser?): MeetingApplicationStatusDto {
+        return meetingRepository.findById(meetingSeq)
+            .orElseThrow { BizException("요청하신 ${meetingSeq}번 모임은 존재하지 않는 모임입니다", HttpStatus.NOT_FOUND) }
+            .let { MeetingApplicationStatusDto(it, clubUser?.seq) }
     }
 
 }
