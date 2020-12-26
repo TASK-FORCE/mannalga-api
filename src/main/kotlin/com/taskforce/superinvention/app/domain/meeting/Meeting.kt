@@ -20,5 +20,6 @@ class Meeting(
         var regClubUser: ClubUser
 ) : BaseEntity() {
         @OneToMany(mappedBy = "meeting")
+        @OrderBy("deleteFlag desc")
         var meetingApplications: List<MeetingApplication> = listOf()
 }

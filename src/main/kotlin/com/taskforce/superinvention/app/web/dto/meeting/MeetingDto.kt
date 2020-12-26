@@ -45,7 +45,7 @@ class MeetingDto {
         maximumNumber = meeting.maximumNumber
         regClubUser = ClubUserWithUserDto(meeting.regClubUser)
 
-        meetingApplications = meeting.meetingApplications.map { e -> this.MeetingApplicationDto(e) }
+        meetingApplications = meeting.meetingApplications.map { e -> MeetingApplicationDto(e) }
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
         isCurrentUserApplicationMeeting = meeting.meetingApplications.filter { !it.deleteFlag }.map { e -> e.clubUser.seq }.contains(currentClubUserSeq)
     }

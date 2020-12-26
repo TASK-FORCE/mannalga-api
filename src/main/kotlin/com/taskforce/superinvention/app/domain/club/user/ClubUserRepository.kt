@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.club.QClub
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.role.QRole
 import com.taskforce.superinvention.app.domain.role.QRoleGroup
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
@@ -28,6 +29,7 @@ interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepository
 interface ClubUserRepositoryCustom {
     fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser?
     fun findClubUsersInClub(clubSeq: Long): List<ClubUser>
+    fun findManagersByClubSeq(clubSeq: Long): MutableList<ClubUser>
 }
 
 @Repository
@@ -66,5 +68,17 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
 
     private fun eqSeq(club: QClub, clubSeq: Long): Predicate {
         return club.seq.eq(clubSeq)
+    }
+
+    override fun findManagersByClubSeq(clubSeq: Long): MutableList<ClubUser> {
+        return from(QClubUser.clubUser)
+                .leftJoin(QClubUser.clubUser.clubUserRoles, QClubUserRole.clubUserRole).fetchJoin()
+                .leftJoin(QClubUserRole.clubUserRole.role, QRole.role).fetchJoin()
+                .join(QClubUser.clubUser.club, QClub.club)
+                .join(QClubUser.clubUser.user, QUser.user)
+                .where(
+                        QClub.club.seq.eq(clubSeq),
+                        QRole.role.name.`in`(Role.RoleName.MANAGER, Role.RoleName.MASTER)
+                ).fetch()?: mutableListOf()
     }
 }
