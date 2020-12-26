@@ -38,12 +38,16 @@ data class ClubUserStatusDto(
 )
 
 data class ClubInfoUserDto(
+    val clubUserSeq: Long,
+    val userSeq: Long,
     val name: String,
     val imgUrl: String,
     val role: List<Role.RoleName>
 ) {
     constructor(clubUser: ClubUser)
         :this(
+            userSeq     = clubUser.user.seq!!,
+            clubUserSeq = clubUser.seq!!,
             name   = clubUser.user.userName         ?: "",
             imgUrl = clubUser.user.profileImageLink ?: "",
             role   = clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
