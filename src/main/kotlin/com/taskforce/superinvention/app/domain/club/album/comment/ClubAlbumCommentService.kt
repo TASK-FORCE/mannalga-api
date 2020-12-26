@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
@@ -26,10 +27,12 @@ class ClubAlbumCommentService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getCommentList(pageable: Pageable?, clubAlbumSeq: Long): Page<ClubAlbumCommentListDto> {
+    fun getCommentList(pageable: Pageable?, clubAlbumSeq: Long): PageDto<ClubAlbumCommentListDto> {
         val list = commentRepository.findCommentList(pageable!!, clubAlbumSeq)
         val result = list.results.map(::ClubAlbumCommentListDto)
-        return PageImpl(result, pageable, list.total)
+
+        val resultPage = PageImpl(result, pageable, list.total)
+        return PageDto(resultPage)
     }
 
     // 댓글 등록

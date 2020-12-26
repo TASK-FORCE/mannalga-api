@@ -16,6 +16,7 @@ import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
@@ -157,7 +158,7 @@ class ClubService(
     }
 
     @Transactional(readOnly = true)
-    fun search(request: ClubSearchRequestDto, pageable: Pageable): Page<ClubWithRegionInterestDto> {
+    fun search(request: ClubSearchRequestDto, pageable: Pageable): PageDto<ClubWithRegionInterestDto> {
         // 하위 지역까지 모두 입력하자
         val regionSeqList = arrayListOf<Long>()
         if (request.regionSeq != null){
@@ -171,7 +172,9 @@ class ClubService(
                 club = e,
                 userCount = e.clubUser.size.toLong()
         )}.toList()
-        return PageImpl(mappingContents, result.pageable, result.totalElements)
+
+        val resultPage = PageImpl(mappingContents, result.pageable, result.totalElements)
+        return PageDto(resultPage)
     }
 
     @Transactional
@@ -244,7 +247,7 @@ class ClubService(
     }
 
     @Transactional
-    fun getUserClubList(user: User, pageable: Pageable): Page<ClubUserWithClubDetailsDto> {
+    fun getUserClubList(user: User, pageable: Pageable): PageDto<ClubUserWithClubDetailsDto> {
 
         // 내 모임원 정보 조회
         val clubListInPage: Page<ClubUserDto> = clubRepository.findUserClubList(user, pageable)
@@ -264,6 +267,6 @@ class ClubService(
                     regions = clubRegions.filter { it.club.seq == clubUserDto.club.seq }.map(::SimpleRegionDto)
             )
         }
-        return result
+        return PageDto(result)
     }
 }

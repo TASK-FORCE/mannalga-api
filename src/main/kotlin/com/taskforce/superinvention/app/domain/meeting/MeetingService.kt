@@ -4,6 +4,7 @@ import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
@@ -27,8 +28,10 @@ class MeetingService(
     val meetingApplicationNotFoundException = BizException("존재하지 않는 만남 신청입니다.",HttpStatus.NOT_FOUND)
 
     @Transactional(readOnly = true)
-    fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): Page<MeetingDto> {
-        return meetingRepositoryImpl.getMeetings(clubSeq, pageable).map { e -> MeetingDto(e, currentClubUserSeq) }
+    fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingDto> {
+
+        val resultPage = meetingRepositoryImpl.getMeetings(clubSeq, pageable).map { e -> MeetingDto(e, currentClubUserSeq) }
+        return PageDto(resultPage)
     }
 
     @Transactional

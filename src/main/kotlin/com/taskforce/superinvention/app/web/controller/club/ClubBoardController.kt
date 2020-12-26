@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -24,7 +25,7 @@ class ClubBoardController(
     @GetMapping("/{clubSeq}/boards")
     fun getClubBoardList(@PathVariable clubSeq: Long,
                          pageable: Pageable,
-                         searchRequest: ClubBoardSearchOpt): ResponseDto<Page<ClubBoardPreviewDto>> {
+                         searchRequest: ClubBoardSearchOpt): ResponseDto<PageDto<ClubBoardPreviewDto>> {
 
         val search = clubBoardService.getClubBoardList(pageable, searchRequest, clubSeq)
         return ResponseDto(data = search)

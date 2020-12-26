@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
@@ -154,7 +155,8 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
 
         val dummyItemList = listOf(dummyItem, dummyItem,dummyItem)
         val resultItemList =  PageImpl(dummyItemList, pageable, 100)
-        given(clubBoardService.getClubBoardList(anyObject(), anyObject(), anyLong())).willReturn(resultItemList)
+        given(clubBoardService.getClubBoardList(anyObject(), anyObject(), anyLong()))
+            .willReturn(PageDto(resultItemList))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(

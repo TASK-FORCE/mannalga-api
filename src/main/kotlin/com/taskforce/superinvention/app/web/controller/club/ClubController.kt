@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
@@ -71,7 +72,7 @@ class ClubController(
      * @author eric
      */
     @GetMapping("/search")
-    fun getClubList(@AuthUser user: User, request: ClubSearchRequestDto, pageable: Pageable): ResponseDto<Page<ClubWithRegionInterestDto>> {
+    fun getClubList(@AuthUser user: User, request: ClubSearchRequestDto, pageable: Pageable): ResponseDto<PageDto<ClubWithRegionInterestDto>> {
         // validation
         if (request.interestSeq != null && request.interestGroupSeq != null)
             throw BizException("관심사 그룹과 관심사 중 하나만 선택해서 검색할 수 있습니다.", HttpStatus.BAD_REQUEST)
@@ -149,7 +150,7 @@ class ClubController(
 
     @GetMapping("/my")
     @Secured(Role.MEMBER)
-    fun getMyClubList(@AuthUser user: User, pageable: Pageable): ResponseDto<Page<ClubUserWithClubDetailsDto>> {
+    fun getMyClubList(@AuthUser user: User, pageable: Pageable): ResponseDto<PageDto<ClubUserWithClubDetailsDto>> {
         return ResponseDto(data = clubService.getUserClubList(user, pageable))
     }
 }

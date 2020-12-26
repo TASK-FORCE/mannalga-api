@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -88,7 +89,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                 eq(club.seq!!),
                 argThat{ search -> search!!.title == "사진첩" },
                 eq(pageable)
-        )).thenReturn(clubAlbums)
+        )).thenReturn(PageDto(clubAlbums))
 
         val result: ResultActions = this.mockMvc.perform(
                 get("/club/{clubSeq}/album", club.seq)

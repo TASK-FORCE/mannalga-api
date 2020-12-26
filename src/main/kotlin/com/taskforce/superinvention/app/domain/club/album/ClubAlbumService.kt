@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
@@ -63,7 +64,7 @@ class ClubAlbumService(
     }
 
     @Transactional(readOnly = true)
-    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable?): Page<ClubAlbumListDto> {
+    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable?): PageDto<ClubAlbumListDto> {
         val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
 
         val result = query.results.map { tuple ->
@@ -74,7 +75,9 @@ class ClubAlbumService(
                 commentCnt= tuple.get(2, Long::class.java) ?: 0
             )
         }
-        return PageImpl(result, pageable, query.total)
+
+        val resultPage = PageImpl(result, pageable, query.total)
+        return PageDto(resultPage)
     }
 
     @Transactional
