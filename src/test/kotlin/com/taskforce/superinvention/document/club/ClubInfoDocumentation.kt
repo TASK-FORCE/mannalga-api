@@ -138,6 +138,8 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                         fieldWithPath("data.clubInfo.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
                                         fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
                                         fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부"),
+                                        fieldWithPath("data.userList[].clubUserSeq").type(JsonFieldType.NUMBER).description("클럽 유저 seq"),
+                                        fieldWithPath("data.userList[].userSeq").type(JsonFieldType.NUMBER).description("유저 seq"),
                                         fieldWithPath("data.userList[].name").type(JsonFieldType.STRING).description("모임원 이름"),
                                         fieldWithPath("data.userList[].imgUrl").type(JsonFieldType.STRING).description("모임원 프로필 [empty string default]"),
                                         fieldWithPath("data.userList[].role[]").type(JsonFieldType.ARRAY).description("모임원 권한")
