@@ -497,6 +497,7 @@ class UserDocumentation : ApiDocumentationTest() {
                 .andDo(document("user-info", getDocumentRequest(), getDocumentResponse(),
                         responseFields(
                                 *commonResponseField(),
+                                fieldWithPath("data.seq").type(JsonFieldType.NUMBER).description("유저 시퀀스"),
                                 fieldWithPath("data.userName").type(JsonFieldType.STRING).description("유저 이름"),
                                 fieldWithPath("data.birthday").type(JsonFieldType.STRING).description("유저 생년월일"),
                                 fieldWithPath("data.profileImageLink").type(JsonFieldType.STRING).description("유저 카카오 프로필 이미지 링크"),
