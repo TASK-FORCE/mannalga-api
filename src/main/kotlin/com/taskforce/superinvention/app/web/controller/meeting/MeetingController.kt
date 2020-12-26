@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
@@ -31,7 +32,7 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun getAllMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      pageable: Pageable): ResponseDto<Page<MeetingDto>> {
+                      pageable: Pageable): ResponseDto<PageDto<MeetingDto>> {
 
         val clubUser = clubService.getClubUser(clubSeq, user)
 

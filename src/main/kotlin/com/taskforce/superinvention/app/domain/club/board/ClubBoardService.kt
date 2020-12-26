@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
@@ -29,9 +30,11 @@ class ClubBoardService(
      * 게시판 글 목록 조회
      */
     @Transactional
-    fun getClubBoardList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoardPreviewDto> {
+    fun getClubBoardList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): PageDto<ClubBoardPreviewDto> {
         val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
-        return clubBoardRepository.searchInList(pageRequest, searchOpt, clubSeq)
+        val resultPage = clubBoardRepository.searchInList(pageRequest, searchOpt, clubSeq)
+
+        return PageDto(resultPage)
     }
 
     /**

@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -94,7 +95,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
 
         // when
         `when`(clubAlbumCommentService.getCommentList(eq(pageable), eq(clubAlbum.seq!!)))
-                .thenReturn(PageImpl(clubAlbumCommentList, pageable, clubAlbumCommentList.size.toLong()))
+                .thenReturn(PageDto
+                    (PageImpl(clubAlbumCommentList, pageable, clubAlbumCommentList.size.toLong())))
 
         val result: ResultActions = this.mockMvc.perform(
                 get("/club/{clubSeq}/album/{clubAlbumSeq}/comment", club.seq, clubAlbum.seq)

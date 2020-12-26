@@ -13,6 +13,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
@@ -168,7 +169,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                 )
         )
 
-        `when`(clubService.search(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(PageImpl(searchResult, PageRequest.of(0, 20), 203L))
+        `when`(clubService.search(MockitoHelper.anyObject(), MockitoHelper.anyObject()))
+            .thenReturn(
+                PageDto(
+                    PageImpl(searchResult, PageRequest.of(0, 20), 203L)
+                )
+            )
 
         // when
         val result = mockMvc.perform(
@@ -484,6 +490,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
+            PageDto(
                 PageImpl(listOf(
                                 ClubUserWithClubDetailsDto (
                                         clubUserDto = ClubUserDto(
@@ -517,6 +524,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                         pageable, 2
                     )
                 )
+            )
 
         val result = mockMvc.perform(
                 get("/clubs/my")
@@ -525,7 +533,6 @@ class ClubDocumentation: ApiDocumentationTest() {
                         .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
                         .characterEncoding("UTF-8")
         ).andDo(print())
-
 
         result.andExpect(status().isOk)
                 .andDo(

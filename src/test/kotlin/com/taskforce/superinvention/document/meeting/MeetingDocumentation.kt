@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
@@ -133,9 +134,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
     @WithMockUser(authorities = [Role.MEMBER])
     fun `만남 조회 기능`() {
         // given
-        given(roleService.hasClubMemberAuth(ArgumentMatchers.anyLong(), MockitoHelper.anyObject()))
-                .willReturn(true)
-        given(meetingService.getMeetings(ArgumentMatchers.anyLong(), MockitoHelper.anyObject(), ArgumentMatchers.anyLong())).willReturn(meetings)
+        given(roleService.hasClubMemberAuth(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(true)
+        given(meetingService.getMeetings(ArgumentMatchers.anyLong(), MockitoHelper.anyObject(), ArgumentMatchers.anyLong())).willReturn(PageDto(meetings))
         given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(currentUser)
 
 

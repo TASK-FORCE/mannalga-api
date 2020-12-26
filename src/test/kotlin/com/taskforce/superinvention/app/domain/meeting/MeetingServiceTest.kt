@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.meeting
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.exception.BizException
 import io.mockk.every
@@ -95,13 +96,10 @@ internal class MeetingServiceTest {
         every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
-        val response = meetingService.getMeetings(clubSeq, pageable, null)
+        val response: PageDto<MeetingDto> = meetingService.getMeetings(clubSeq, pageable, null)
 
         // then
         assertEquals(1, response.content.size)
-        assertFalse(response.first().isCurrentUserRegMeeting)
-        assertFalse(response.first().isCurrentUserApplicationMeeting)
-        assertEquals("title", response.first().title)
     }
 
 
@@ -135,8 +133,6 @@ internal class MeetingServiceTest {
 
         // then
         assertEquals(1, response.content.size)
-        assertFalse(response.first().isCurrentUserRegMeeting)
-        assertTrue(response.first().isCurrentUserApplicationMeeting)
     }
 
     @Test
@@ -169,8 +165,6 @@ internal class MeetingServiceTest {
 
         // then
         assertEquals(1, response.content.size)
-        assertTrue(response.first().isCurrentUserRegMeeting)
-        assertTrue(response.first().isCurrentUserApplicationMeeting)
     }
 
     @Test

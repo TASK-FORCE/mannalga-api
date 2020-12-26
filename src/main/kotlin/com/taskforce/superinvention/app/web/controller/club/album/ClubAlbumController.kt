@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -21,7 +22,7 @@ class ClubAlbumController(
      @GetMapping
      fun gerClubAlbumList(@PathVariable clubSeq:Long,
                           pageable: Pageable,
-                          searchOption: ClubAlbumSearchOption): ResponseDto<Page<ClubAlbumListDto>> {
+                          searchOption: ClubAlbumSearchOption): ResponseDto<PageDto<ClubAlbumListDto>> {
 
           return ResponseDto(clubAlbumService.getClubAlbumList(clubSeq, searchOption, pageable))
      }
