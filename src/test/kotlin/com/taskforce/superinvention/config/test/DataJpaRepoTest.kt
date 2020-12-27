@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @DataJpaTest
 @Transactional
-@ActiveProfiles("test")
+@ActiveProfiles(TestEnv.TEST)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(TestConfig::class)
 abstract class DataJpaRepoTest: BaseTest

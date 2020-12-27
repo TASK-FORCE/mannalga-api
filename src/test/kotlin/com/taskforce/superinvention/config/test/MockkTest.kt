@@ -5,5 +5,5 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.test.context.ActiveProfiles
 
 @ExtendWith(MockKExtension::class)
-@ActiveProfiles("test")
+@ActiveProfiles(TestEnv.TEST)
 abstract class MockkTest

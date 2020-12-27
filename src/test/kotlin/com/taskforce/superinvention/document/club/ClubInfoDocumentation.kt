@@ -13,6 +13,7 @@ import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
+import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDetailsDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoUserDto
@@ -26,6 +27,7 @@ import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
@@ -36,6 +38,8 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
+
+@WebMvcTest(ClubController::class)
 class ClubInfoDocumentation: ApiDocumentationTestV2() {
 
     @MockkBean
@@ -103,7 +107,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
         )
 
         // when
-        every { clubService.getClubInfoDetail(any(), club.seq!!) }.returns(resultDto)
+        every { clubService.getClubInfoDetail(any(), club.seq!!) }.returns( resultDto)
 
         val result = mockMvc.perform(
                 get("/clubs/{clubSeq}", club.seq)
