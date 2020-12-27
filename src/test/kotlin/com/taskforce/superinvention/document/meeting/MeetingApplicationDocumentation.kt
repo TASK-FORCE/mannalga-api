@@ -74,7 +74,9 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
                 club = club,
                 regClubUser = clubUser,
                 maximumNumber = 20,
-                deleteFlag = false
+                deleteFlag = false,
+                region = "천호역 4번출구",
+                cost = 12450
         ).apply { seq = 1243 }
 
         meetingApplication = MeetingApplication(clubUser, meeting, false).apply { seq = 1525 }

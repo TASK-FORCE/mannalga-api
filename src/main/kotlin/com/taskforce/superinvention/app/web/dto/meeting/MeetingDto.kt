@@ -32,6 +32,8 @@ class MeetingDto {
     var meetingApplications: List<MeetingApplicationDto>
     var isCurrentUserRegMeeting: Boolean
     var isCurrentUserApplicationMeeting: Boolean
+    var region: String?
+    var cost: Int?
 
 
     constructor(meeting: Meeting, currentClubUserSeq: Long?){
@@ -44,6 +46,8 @@ class MeetingDto {
         deleteFlag = meeting.deleteFlag
         maximumNumber = meeting.maximumNumber
         regClubUser = ClubUserWithUserDto(meeting.regClubUser)
+        region = meeting.region
+        cost = meeting.cost
 
         meetingApplications = meeting.meetingApplications.map(::MeetingApplicationDto)
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
@@ -62,7 +66,9 @@ class MeetingDto {
             regClubUser: ClubUserWithUserDto,
             meetingApplications: List<MeetingApplicationDto>,
             currentClubUserSeq: Long?,
-            isCurrentUserApplicationMeeting: Boolean
+            isCurrentUserApplicationMeeting: Boolean,
+            region: String?,
+            cost: Int?
     ) {
         this.seq = seq
         this.title = title
@@ -76,6 +82,8 @@ class MeetingDto {
         this.meetingApplications = meetingApplications
         this.isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
         this.isCurrentUserApplicationMeeting = isCurrentUserApplicationMeeting
+        this.region = region
+        this.cost = cost
     }
 
 
@@ -143,7 +151,9 @@ class MeetingRequestDto(
         val startTimestamp: LocalDateTime,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT, timezone = "Asia/Seoul")
         val endTimestamp: LocalDateTime,
-        val maximumNumber: Int?
+        val maximumNumber: Int?,
+        val region: String?,
+        val cost: Int?
 )
 
 

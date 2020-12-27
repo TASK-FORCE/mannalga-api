@@ -45,6 +45,10 @@ class MeetingService(
         if (meetingRequestDto.startTimestamp.isAfter(meetingRequestDto.endTimestamp))
             throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
 
+        meetingRequestDto.cost?.let { if(it < 0)
+            throw BizException("만남 금액은 0원 이상이어야 합니다. ${it}원으로 설정할 수 없습니다.") }
+
+
         val meeting = Meeting(
                 title = meetingRequestDto.title,
                 content = meetingRequestDto.content,
@@ -53,7 +57,9 @@ class MeetingService(
                 club = clubUser.club,
                 deleteFlag = false,
                 maximumNumber = meetingRequestDto.maximumNumber,
-                regClubUser = clubUser
+                regClubUser = clubUser,
+                region = meetingRequestDto.region,
+                cost = meetingRequestDto.cost
         )
         return MeetingDto(meetingRepository.save(meeting), clubUser.seq!!)
     }
@@ -66,6 +72,8 @@ class MeetingService(
         meeting.startTimestamp = meetingRequestDto.startTimestamp
         meeting.endTimestamp = meetingRequestDto.endTimestamp
         meeting.maximumNumber = meetingRequestDto.maximumNumber
+        meeting.region = meetingRequestDto.region
+        meeting.cost = meetingRequestDto.cost
 
         return MeetingDto(meeting, currentClubUser.seq!!)
     }
