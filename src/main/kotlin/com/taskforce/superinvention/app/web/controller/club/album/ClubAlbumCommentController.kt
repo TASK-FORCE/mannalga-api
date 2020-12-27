@@ -7,7 +7,6 @@ import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumComm
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -20,10 +19,11 @@ class ClubAlbumCommentController(
 
     // 클럽 댓글 조회
     @GetMapping("/comment")
-    fun getClubAlbumComments(pageable: Pageable?,
+    fun getClubAlbumComments(pageable: Pageable,
+                             @AuthUser     user        : User,
                              @PathVariable clubSeq     : Long,
                              @PathVariable clubAlbumSeq: Long): ResponseDto<PageDto<ClubAlbumCommentListDto>> {
-        return ResponseDto(clubAlbumCommentService.getCommentList(pageable, clubAlbumSeq))
+        return ResponseDto(clubAlbumCommentService.getCommentList(user, pageable, clubAlbumSeq))
     }
 
     // 클럽 댓글 등록

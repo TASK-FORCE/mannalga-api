@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club.album.comment
 
 import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumComment
+import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import org.springframework.http.HttpStatus
@@ -11,15 +12,27 @@ data class ClubAlbumCommentRegisterDto(
 
 data class ClubAlbumCommentListDto(
         val writer: String,
+        val writerSeq: Long,
         val writeClubUserSeq: Long,
         val registerTime: String,
-        val content: String
+        val content: String,
+        val isWrittenByMe: Boolean
 ) {
     constructor(clubAlbumComment: ClubAlbumComment) :this(
             content          = clubAlbumComment.content,
             writer           = clubAlbumComment.clubUser.user.userName ?: "",
             registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
-            writeClubUserSeq = clubAlbumComment.clubUser.seq
-                    ?: throw BizException("작성자를 확인할 수 없습니다.", HttpStatus.NOT_FOUND)
+            writeClubUserSeq = clubAlbumComment.clubUser.seq!!,
+            writerSeq        = clubAlbumComment.clubUser.user.seq!!,
+            isWrittenByMe    = false
+    )
+
+    constructor(clubAlbumComment: ClubAlbumComment, user: User): this(
+        content          = clubAlbumComment.content,
+        writer           = clubAlbumComment.clubUser.user.userName ?: "",
+        registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
+        writeClubUserSeq = clubAlbumComment.clubUser.seq!!,
+        writerSeq        = clubAlbumComment.clubUser.user.seq!!,
+        isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq
     )
 }
