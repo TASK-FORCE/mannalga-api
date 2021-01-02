@@ -35,7 +35,7 @@ data class ClubAlbumCommentListDto(
         registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
         writeClubUserSeq = clubAlbumComment.clubUser.seq!!,
         writerSeq        = clubAlbumComment.clubUser.user.seq!!,
-        imgUrl           = user.profileImageLink ?: "",
+        imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
         isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq
     )
 }
