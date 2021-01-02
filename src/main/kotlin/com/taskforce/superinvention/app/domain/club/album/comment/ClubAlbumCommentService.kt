@@ -29,7 +29,7 @@ class ClubAlbumCommentService(
         val list = commentRepository.findCommentListWithWriter(pageable!!, clubAlbumSeq)
 
         val result = if(user != null) {
-            list.results.map{ comment -> ClubAlbumCommentListDto(comment, user) }
+            list.results.map{ comment -> ClubAlbumCommentListDto(comment) }
         } else {
             list.results.map(::ClubAlbumCommentListDto)
         }

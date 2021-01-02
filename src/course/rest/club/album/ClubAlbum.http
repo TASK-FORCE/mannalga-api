@@ -1,8 +1,8 @@
-### [로컬] 내 클럽 사진첩 등록
-POST http://localhost:8080/club/6174/album
+### 내 클럽 사진첩 등록
+POST {{host}}/club/6174/album
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwNzUyMTI2OSwiZXhwIjoxNjM5MDU3MjY5fQ.89WmDakxELDdxVSV5eN7jvSuY75E_OQ8IXy8kb5iVN0
+Authorization: Bearer {{token-sdm}}
 
 {
   "title": "1234",
@@ -10,8 +10,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViI
   "imgUrl": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20201212112310-c234aede-b227-4fd3-a02c-13a86624c7ef-test.png"
 }
 
-### [로컬] 내 클럽 사진첩 조회
-GET http://localhost:8080/club/6174/album
+### 내 클럽 사진첩 조회
+GET {{host}}/club/6174/album
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwNzUyMTI2OSwiZXhwIjoxNjM5MDU3MjY5fQ.89WmDakxELDdxVSV5eN7jvSuY75E_OQ8IXy8kb5iVN0
+Authorization: Bearer {{token-sdm}}

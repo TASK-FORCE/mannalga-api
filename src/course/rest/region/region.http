@@ -1,4 +1,4 @@
 ### [로컬]
-GET http://localhost:8080/regions
+GET {{host}} /regions
 Content-Type: application/json;charset=UTF-8
 Accept: application/json

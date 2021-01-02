@@ -1,15 +1,11 @@
-### [로컬] 내 모임 사진첩 댓글 등록
-POST {{host}}/club/6174/album/6943/comment
+### [로컬] 내 클럽 사진첩 좋아요 등록
+POST {{host}}/club/6174/album/6451/like
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
-{
-  "content" : "테스트 댓글"
-}
-
-###  내 클럽 사진첩 댓글 조회
-GET  {{host}}/club/6174/album/6943/comment
+### [로컬] 내 클럽 사진첩 좋아요 등록
+DELETE {{host}}/club/6174/album/6451/like
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
