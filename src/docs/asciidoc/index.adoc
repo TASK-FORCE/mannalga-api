@@ -167,3 +167,7 @@ include::{root}/club/meeting/meeting-application-cancel.adoc[]
 
 === [.toc-list-item]`만남 신청 개별건 조회`
 include::{root}/club/meeting/get-meeting-application.adoc[]
+
+=== [.toc-list-item]`만남 신청상태 조회`
+include::{root}/club/meeting/get-meeting-application-status.adoc[]
+
