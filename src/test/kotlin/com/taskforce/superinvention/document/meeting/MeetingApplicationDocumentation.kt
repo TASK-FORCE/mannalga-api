@@ -218,7 +218,7 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
 
         // then
         result.andExpect(MockMvcResultMatchers.status().isOk)
-            .andDo(MockMvcRestDocumentation.document("get-meeting-application", ApiDocumentUtil.getDocumentRequest(), ApiDocumentUtil.getDocumentResponse(),
+            .andDo(MockMvcRestDocumentation.document("get-meeting-application-status", ApiDocumentUtil.getDocumentRequest(), ApiDocumentUtil.getDocumentResponse(),
                 pathParameters(
                     parameterWithName("clubSeq").description("모임 시퀀스"),
                     parameterWithName("meetingSeq").description("만남 시퀀스")
