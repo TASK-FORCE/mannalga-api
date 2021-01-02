@@ -86,6 +86,7 @@ internal class MeetingServiceTest {
                 maximumNumber = 20,
                 regClubUser = clubUser,
                 region = "홍대역 1번출구",
+                regionURL = "map.kakao.com/asdas",
                 cost = 12000
         ).apply {
             seq = 421
