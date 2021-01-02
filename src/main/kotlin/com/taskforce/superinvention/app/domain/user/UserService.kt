@@ -15,7 +15,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
 
 @Service
@@ -110,4 +109,12 @@ class UserService(
         userRegionService.changeUserRegion(user, userRegions)
         userInterestService.changeUserInterest(user, userInterests)
     }
+
+    @Transactional
+    fun getUserByUsername(username: String): User {
+        var user = userRepository.findByUserName(username)
+        if (user == null) throw BizException("존재하지 않는 유저입니다")
+        return user
+    }
+
 }
