@@ -1,0 +1,15 @@
+### [로컬] 내 모임 사진첩 댓글 등록
+POST http://localhost:8080/club/6174/album/6451/comment
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwNzUyMTI2OSwiZXhwIjoxNjM5MDU3MjY5fQ.89WmDakxELDdxVSV5eN7jvSuY75E_OQ8IXy8kb5iVN0
+
+{
+  "content" : "테스트 댓글"
+}
+
+### [로컬] 내 모임 사진첩 댓글 조회
+GET http://localhost:8080/club/6174/album/6451/comment
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwNzUyMTI2OSwiZXhwIjoxNjM5MDU3MjY5fQ.89WmDakxELDdxVSV5eN7jvSuY75E_OQ8IXy8kb5iVN0

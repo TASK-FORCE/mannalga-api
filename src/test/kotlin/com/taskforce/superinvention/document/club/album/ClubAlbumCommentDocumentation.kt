@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -94,7 +95,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         )
 
         // when
-        `when`(clubAlbumCommentService.getCommentList(eq(pageable), eq(clubAlbum.seq!!)))
+        `when`(clubAlbumCommentService.getCommentList(MockitoHelper.anyObject(), eq(pageable), eq(clubAlbum.seq!!)))
                 .thenReturn(PageDto
                     (PageImpl(clubAlbumCommentList, pageable, clubAlbumCommentList.size.toLong())))
 
@@ -120,9 +121,11 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                                 *commonResponseField(),
                                 *pageFieldDescriptor(),
                                 fieldWithPath("data.content[].writer").type(JsonFieldType.STRING).description("글쓴이 이름"),
-                                fieldWithPath("data.content[].writeClubUserSeq").type(JsonFieldType.NUMBER).description("글쓴이 모임 유저 Seq"),
+                                fieldWithPath("data.content[].writeClubUserSeq").type(JsonFieldType.NUMBER).description("글쓴이  clubUserSeq"),
+                                fieldWithPath("data.content[].writerSeq").type(JsonFieldType.NUMBER).description("글쓴이 userSeq"),
                                 fieldWithPath("data.content[].registerTime").type(JsonFieldType.STRING).description("등록 시간"),
-                                fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("댓글 내용")
+                                fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("data.content[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부")
                         )
                 ))
     }
