@@ -1,8 +1,8 @@
-### [로컬] 최종 회원 가입 여부 조회
-GET http://localhost:8080/users/check-already-register
+### 최종 회원 가입 여부 조회
+GET {{host}} /users/check-already-register
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-sdm}}
 
 ### [로컬] 유저 백도어 조회
 GET http://localhost:8080/users/door/꽑꽑이

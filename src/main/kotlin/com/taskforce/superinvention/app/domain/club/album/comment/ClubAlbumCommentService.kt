@@ -7,11 +7,8 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
-import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -27,9 +24,15 @@ class ClubAlbumCommentService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getCommentList(pageable: Pageable?, clubAlbumSeq: Long): PageDto<ClubAlbumCommentListDto> {
-        val list = commentRepository.findCommentList(pageable!!, clubAlbumSeq)
-        val result = list.results.map(::ClubAlbumCommentListDto)
+    fun getCommentList(user: User?, pageable: Pageable?, clubAlbumSeq: Long): PageDto<ClubAlbumCommentListDto> {
+
+        val list = commentRepository.findCommentListWithWriter(pageable!!, clubAlbumSeq)
+
+        val result = if(user != null) {
+            list.results.map{ comment -> ClubAlbumCommentListDto(comment, user) }
+        } else {
+            list.results.map(::ClubAlbumCommentListDto)
+        }
 
         val resultPage = PageImpl(result, pageable, list.total)
         return PageDto(resultPage)

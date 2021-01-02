@@ -1,16 +1,16 @@
 ### [로컬] 모임 상세 조회 - 클럽 미가입 && 로그인 상태
-GET http://localhost:8080/clubs/127
+GET {{host}}/clubs/127
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYwMDQ0MDc4OSwiZXhwIjoxNjMxOTc2Nzg5fQ.csOA38Zh0dL1OtG0AKqRudY4E8FQMg3gVC80h7XuPsY
+Authorization: Bearer {{token-sdm}}
 
 ### [로컬] 모임 상세 조회 - 클럽 가입 && 로그인 상태
-GET http://localhost:8080/clubs/127
+GET {{host}}/clubs/127
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-sdm}}
 
 ### [로컬] 클럽 상세 정보 조회 - 비로그인 상태
-GET http://localhost:8080/clubs/6174
+GET {{host}}/clubs/6174
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
