@@ -18,5 +18,10 @@ class ClubAlbumComment(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name="club_album_seq")
-        var clubAlbum: ClubAlbum
+        var clubAlbum: ClubAlbum,
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name="parent_comment_seq")
+        var parentComment: ClubAlbumComment?
+
 ): BaseEntity()

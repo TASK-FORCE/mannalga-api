@@ -78,7 +78,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         clubAlbumComment = ClubAlbumComment(
                 content = "모임",
                 clubUser  = clubUser,
-                clubAlbum = clubAlbum
+                clubAlbum = clubAlbum,
+                parentComment = null
         ).apply {
             seq = 111
         }

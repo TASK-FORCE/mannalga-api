@@ -27,14 +27,15 @@ class ClubAlbumCommentController(
     }
 
     // 클럽 댓글 등록
-    @PostMapping("/comment")
+    @PostMapping(value = ["/comment", "/comment/{parentCommentSeq}"])
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubAlbumComment(@AuthUser     user        : User,
                                  @PathVariable clubSeq     : Long,
-                                 @PathVariable clubAlbumSeq: Long,
+                                 @PathVariable clubAlbumSeq     : Long,
+                                 @PathVariable parentCommentSeq : Long?,
                                  @RequestBody  body: ClubAlbumCommentRegisterDto): ResponseDto<String> {
 
-        clubAlbumCommentService.registerComment(clubSeq, clubAlbumSeq, user, body)
+        clubAlbumCommentService.registerComment(clubSeq, clubAlbumSeq, parentCommentSeq, user, body)
         return ResponseDto(data = "")
     }
 

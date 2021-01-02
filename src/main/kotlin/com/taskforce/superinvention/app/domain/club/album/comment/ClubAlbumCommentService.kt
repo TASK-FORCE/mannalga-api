@@ -40,19 +40,26 @@ class ClubAlbumCommentService(
 
     // 댓글 등록
     @Transactional
-    fun registerComment(clubSeq     : Long,
-                        clubAlbumSeq: Long,
+    fun registerComment(clubSeq          : Long,
+                        clubAlbumSeq     : Long,
+                        parentCommentSeq :  Long?,
                         user: User,
                         body: ClubAlbumCommentRegisterDto) {
 
         val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
         val clubAlbum= clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
+        val parentCommentRef = if(parentCommentSeq != null) {
+            commentRepository.getOne(parentCommentSeq)
+        } else {
+            null
+        }
 
         if(clubAlbum != null && clubUser != null) {
             val clubAlbumComment = ClubAlbumComment(
                     content   = body.content,
                     clubUser  = clubUser    ,
-                    clubAlbum = clubAlbum
+                    clubAlbum = clubAlbum   ,
+                    parentComment = parentCommentRef
             )
             commentRepository.save(clubAlbumComment)
         }
