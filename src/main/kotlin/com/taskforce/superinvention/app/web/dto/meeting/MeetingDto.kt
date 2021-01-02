@@ -33,6 +33,7 @@ class MeetingDto {
     var isCurrentUserRegMeeting: Boolean
     var isCurrentUserApplicationMeeting: Boolean
     var region: String?
+    var regionURL: String?
     var cost: Int?
 
 
@@ -47,6 +48,7 @@ class MeetingDto {
         maximumNumber = meeting.maximumNumber
         regClubUser = ClubUserWithUserDto(meeting.regClubUser)
         region = meeting.region
+        regionURL = meeting.regionURL
         cost = meeting.cost
 
         meetingApplications = meeting.meetingApplications.map(::MeetingApplicationDto)
@@ -68,6 +70,7 @@ class MeetingDto {
             currentClubUserSeq: Long?,
             isCurrentUserApplicationMeeting: Boolean,
             region: String?,
+            regionURL: String?,
             cost: Int?
     ) {
         this.seq = seq
@@ -83,6 +86,7 @@ class MeetingDto {
         this.isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
         this.isCurrentUserApplicationMeeting = isCurrentUserApplicationMeeting
         this.region = region
+        this.regionURL = regionURL
         this.cost = cost
     }
 
@@ -153,6 +157,7 @@ class MeetingRequestDto(
         val endTimestamp: LocalDateTime,
         val maximumNumber: Int?,
         val region: String?,
+        var regionURL: String?,
         val cost: Int?
 )
 

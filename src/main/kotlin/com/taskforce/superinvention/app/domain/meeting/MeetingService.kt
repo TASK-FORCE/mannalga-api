@@ -59,6 +59,7 @@ class MeetingService(
                 maximumNumber = meetingRequestDto.maximumNumber,
                 regClubUser = clubUser,
                 region = meetingRequestDto.region,
+                regionURL = meetingRequestDto.regionURL,
                 cost = meetingRequestDto.cost
         )
         return MeetingDto(meetingRepository.save(meeting), clubUser.seq!!)
@@ -73,6 +74,7 @@ class MeetingService(
         meeting.endTimestamp = meetingRequestDto.endTimestamp
         meeting.maximumNumber = meetingRequestDto.maximumNumber
         meeting.region = meetingRequestDto.region
+        meeting.regionURL = meetingRequestDto.regionURL
         meeting.cost = meetingRequestDto.cost
 
         return MeetingDto(meeting, currentClubUser.seq!!)

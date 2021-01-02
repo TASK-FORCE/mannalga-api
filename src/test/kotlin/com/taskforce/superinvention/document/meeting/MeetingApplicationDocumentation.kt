@@ -76,6 +76,7 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
                 maximumNumber = 20,
                 deleteFlag = false,
                 region = "천호역 4번출구",
+                regionURL = "map.kakao.com/asdas",
                 cost = 12450
         ).apply { seq = 1243 }
 
