@@ -16,6 +16,7 @@ data class ClubAlbumCommentListDto(
         val writeClubUserSeq: Long,
         val registerTime: String,
         val content: String,
+        val imgUrl: String,
         val isWrittenByMe: Boolean
 ) {
     constructor(clubAlbumComment: ClubAlbumComment) :this(
@@ -24,6 +25,7 @@ data class ClubAlbumCommentListDto(
             registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
             writeClubUserSeq = clubAlbumComment.clubUser.seq!!,
             writerSeq        = clubAlbumComment.clubUser.user.seq!!,
+            imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
             isWrittenByMe    = false
     )
 
@@ -33,6 +35,7 @@ data class ClubAlbumCommentListDto(
         registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
         writeClubUserSeq = clubAlbumComment.clubUser.seq!!,
         writerSeq        = clubAlbumComment.clubUser.user.seq!!,
+        imgUrl           = user.profileImageLink ?: "",
         isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq
     )
 }

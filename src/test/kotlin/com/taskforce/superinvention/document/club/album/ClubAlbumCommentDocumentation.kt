@@ -125,6 +125,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content[].writerSeq").type(JsonFieldType.NUMBER).description("글쓴이 userSeq"),
                                 fieldWithPath("data.content[].registerTime").type(JsonFieldType.STRING).description("등록 시간"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("댓글 내용"),
+                                fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("댓글 작성자 프로필 url"),
                                 fieldWithPath("data.content[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부")
                         )
                 ))
