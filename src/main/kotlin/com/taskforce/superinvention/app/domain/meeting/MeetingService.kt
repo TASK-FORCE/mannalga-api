@@ -29,6 +29,11 @@ class MeetingService(
     val meetingNotFountException = BizException("존재하지 않는 만남입니다", HttpStatus.NOT_FOUND)
     val meetingApplicationNotFoundException = BizException("존재하지 않는 만남 신청입니다.",HttpStatus.NOT_FOUND)
 
+    fun getNotDeletedMeetingEntity(meetingSeq: Long): Meeting = meetingRepository.findById(meetingSeq)
+        .filter{!it.deleteFlag}
+        .orElseThrow{meetingNotFountException}
+        .apply { meetingApplications = meetingApplications.filter { !it.deleteFlag } }
+
     @Transactional(readOnly = true)
     fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingDto> {
 
@@ -45,6 +50,10 @@ class MeetingService(
         if (meetingRequestDto.startTimestamp.isAfter(meetingRequestDto.endTimestamp))
             throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
 
+        meetingRequestDto.cost?.let { if(it < 0)
+            throw BizException("만남 금액은 0원 이상이어야 합니다. ${it}원으로 설정할 수 없습니다.") }
+
+
         val meeting = Meeting(
                 title = meetingRequestDto.title,
                 content = meetingRequestDto.content,
@@ -53,7 +62,10 @@ class MeetingService(
                 club = clubUser.club,
                 deleteFlag = false,
                 maximumNumber = meetingRequestDto.maximumNumber,
-                regClubUser = clubUser
+                regClubUser = clubUser,
+                region = meetingRequestDto.region,
+                regionURL = meetingRequestDto.regionURL,
+                cost = meetingRequestDto.cost
         )
         return MeetingDto(meetingRepository.save(meeting), clubUser.seq!!)
     }
@@ -66,21 +78,24 @@ class MeetingService(
         meeting.startTimestamp = meetingRequestDto.startTimestamp
         meeting.endTimestamp = meetingRequestDto.endTimestamp
         meeting.maximumNumber = meetingRequestDto.maximumNumber
+        meeting.region = meetingRequestDto.region
+        meeting.regionURL = meetingRequestDto.regionURL
+        meeting.cost = meetingRequestDto.cost
 
         return MeetingDto(meeting, currentClubUser.seq!!)
     }
 
     @Transactional
     fun checkClubMeeting(clubSeq: Long, meetingSeq: Long) {
-        val meeting = meetingRepository.findById(meetingSeq).orElseThrow { meetingNotFountException }
+        val meeting = getNotDeletedMeetingEntity(meetingSeq)
         if (meeting.club.seq!! != clubSeq)
             throw BizException("해당 모임의 만남이 아닙니다", HttpStatus.FORBIDDEN)
     }
 
     @Transactional
     fun deleteMeeting(meetingSeq: Long) {
-        val meeting = meetingRepository.findById(meetingSeq).orElseThrow { meetingNotFountException }
-        meeting.deleteFlag = true;
+        val meeting = getNotDeletedMeetingEntity(meetingSeq)
+        meeting.deleteFlag = true
     }
 
     /**
@@ -88,7 +103,7 @@ class MeetingService(
      */
     @Transactional
     fun application(clubUser: ClubUser, meetingSeq: Long): MeetingApplicationDto {
-        val meeting = meetingRepository.findById(meetingSeq).orElseThrow { meetingNotFountException }
+        val meeting = getNotDeletedMeetingEntity(meetingSeq)
 
         // 참석자 최대인원 확인
         if (meeting.maximumNumber != null && meeting.maximumNumber!! <= meeting.meetingApplications.filter { e -> !e.deleteFlag }.groupBy { e -> e.clubUser }.count())
@@ -112,7 +127,10 @@ class MeetingService(
      */
     @Transactional
     fun applicationCancel(clubUser: ClubUser, meetingApplicationSeq: Long): MeetingApplicationDto{
-        val meetingApplication = meetingApplicationRepository.findById(meetingApplicationSeq).orElseThrow{ meetingApplicationNotFoundException }
+        val meetingApplication = meetingApplicationRepository
+            .findById(meetingApplicationSeq)
+            .filter{!it.deleteFlag}
+            .orElseThrow{ meetingApplicationNotFoundException }
         if (meetingApplication.deleteFlag)
             throw BizException("이미 취소한 만남 신청입니다", HttpStatus.CONFLICT)
         return MeetingApplicationDto(meetingApplication.apply { this.deleteFlag = true })
@@ -124,18 +142,15 @@ class MeetingService(
      */
     @Transactional
     fun getMeetingApplication(meetingApplicationSeq: Long): MeetingApplicationDto {
-        val meetingApplication = meetingApplicationRepository.findById(meetingApplicationSeq).orElseThrow { meetingApplicationNotFoundException }
+        val meetingApplication = meetingApplicationRepository
+            .findById(meetingApplicationSeq)
+            .filter{!it.deleteFlag}
+            .orElseThrow { meetingApplicationNotFoundException }
         return MeetingApplicationDto(meetingApplication)
     }
 
     fun isRegUser(meetingApplication: MeetingApplicationDto, user: User): Boolean {
         return meetingApplication.clubUser.user.seq == user.seq
-    }
-
-    @Transactional
-    fun getMeetingApplications(meetingSeq: Long): List<MeetingApplicationDto> {
-        val meeting = meetingRepository.findById(meetingSeq)
-        return meetingApplicationRepository.findByMeeting(meeting).map { MeetingApplicationDto(it) }
     }
 
     @Transactional
@@ -145,16 +160,12 @@ class MeetingService(
 
     @Transactional
     fun getMeeting(meetingSeq: Long, clubUserSeq: Long?): MeetingDto {
-        return meetingRepository.findById(meetingSeq)
-                .orElseThrow { BizException("요청하신 ${meetingSeq}번 모임은 존재하지 않는 모임입니다", HttpStatus.NOT_FOUND) }
-                .let { e -> MeetingDto(e, clubUserSeq) }
+        return MeetingDto(getNotDeletedMeetingEntity(meetingSeq), clubUserSeq)
     }
 
     @Transactional
     fun getMeetingApplicationStatus(meetingSeq: Long, clubUser: ClubUser?): MeetingApplicationStatusDto {
-        return meetingRepository.findById(meetingSeq)
-            .orElseThrow { BizException("요청하신 ${meetingSeq}번 모임은 존재하지 않는 모임입니다", HttpStatus.NOT_FOUND) }
-            .let { MeetingApplicationStatusDto(it, clubUser?.seq) }
+        return MeetingApplicationStatusDto(getNotDeletedMeetingEntity(meetingSeq), clubUser?.seq)
     }
 
 }

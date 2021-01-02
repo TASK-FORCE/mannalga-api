@@ -15,9 +15,6 @@ import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = [
-    ClubController::class]
-)
 abstract class ApiDocumentationTestV2: BaseTest {
 
     @Autowired
@@ -33,7 +30,7 @@ abstract class ApiDocumentationTestV2: BaseTest {
     @MockkBean
     lateinit var userRepository: UserRepository
 
-    @MockkBean
+    @MockkBean(relaxed = true)
     lateinit var jwtTokenProvider: JwtTokenProvider
 
     @MockkBean

@@ -14,7 +14,6 @@ import java.util.*
 @Repository
 interface MeetingApplicationRepository : JpaRepository<MeetingApplication, Long>, MeetingApplicationRepositoryCustom {
     fun findByClubUserAndMeeting(clubUser: ClubUser, meeting: Meeting): MeetingApplication?
-    fun findByMeeting(meeting: Optional<Meeting>): List<MeetingApplication>
 }
 
 

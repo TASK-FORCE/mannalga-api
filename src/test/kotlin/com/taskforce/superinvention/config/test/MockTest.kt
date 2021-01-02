@@ -5,5 +5,5 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.test.context.ActiveProfiles
 
 @ExtendWith(MockitoExtension::class)
-@ActiveProfiles("test")
+@ActiveProfiles(TestEnv.TEST)
 abstract class MockTest

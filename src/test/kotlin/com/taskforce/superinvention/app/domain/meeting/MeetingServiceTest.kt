@@ -84,7 +84,10 @@ internal class MeetingServiceTest {
                 club = club,
                 deleteFlag = false,
                 maximumNumber = 20,
-                regClubUser = clubUser
+                regClubUser = clubUser,
+                region = "홍대역 1번출구",
+                regionURL = "map.kakao.com/asdas",
+                cost = 12000
         ).apply {
             seq = 421
             meetingApplications = listOf()

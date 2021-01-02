@@ -17,7 +17,10 @@ class Meeting(
         var deleteFlag: Boolean,
         var maximumNumber: Int?,
         @ManyToOne
-        var regClubUser: ClubUser
+        var regClubUser: ClubUser,
+        var region: String?,
+        var regionURL: String?,
+        var cost: Int?
 ) : BaseEntity() {
         @OneToMany(mappedBy = "meeting")
         @OrderBy("deleteFlag desc")

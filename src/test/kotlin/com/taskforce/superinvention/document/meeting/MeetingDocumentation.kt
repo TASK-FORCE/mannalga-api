@@ -100,7 +100,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
             meetingApplications = arrayListOf(
             ),
             currentClubUserSeq = 512,
-            isCurrentUserApplicationMeeting = true
+            isCurrentUserApplicationMeeting = true,
+            region = "건대 엔젤리너스",
+            regionURL = "map.naver.com/aabb",
+            cost = 5000
     ).apply {
         this.meetingApplications += this.MeetingApplicationDto(
                 seq = 1,
@@ -127,7 +130,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
             content = "modified content",
             startTimestamp = LocalDateTime.parse("2020-08-08T10:00:00"),
             endTimestamp = LocalDateTime.parse("2020-08-09T11:00:00"),
-            maximumNumber = 20
+            maximumNumber = 20,
+            region = "건대 엔젤리너스",
+            regionURL = "map.naver.com/aabb",
+            cost = 5000
     )
 
     @Test
@@ -201,7 +207,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content.[].meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.content.[].meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.content.[].isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
-                                fieldWithPath("data.content.[].isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부")
+                                fieldWithPath("data.content.[].isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
+                                fieldWithPath("data.content.[].region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
+                                fieldWithPath("data.content.[].regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("data.content.[].cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
                         )
                 ))
     }
@@ -233,7 +242,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("만남 내용"),
                                 fieldWithPath("startTimestamp").type(JsonFieldType.STRING).description("만남 시작 시간"),
                                 fieldWithPath("endTimestamp").type(JsonFieldType.STRING).description("만남 종료 시간"),
-                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 인원")
+                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("만남 최대 인원"),
+                                fieldWithPath("region").type(JsonFieldType.STRING).description("만남 진행 장소 (nullable)"),
+                                fieldWithPath("regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("cost").type(JsonFieldType.NUMBER).description("만남진행 시 필요한 금액(nullable)")
                         ),
                         responseFields(
                                 *ApiDocumentUtil.commonResponseField(),
@@ -281,8 +293,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
-                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부")
-
+                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
+                                fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
+                                fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
                         )
                 ))
 
@@ -322,7 +336,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("변경할 만남 내용"),
                                 fieldWithPath("startTimestamp").type(JsonFieldType.STRING).description("변경할 만남 시작 시간"),
                                 fieldWithPath("endTimestamp").type(JsonFieldType.STRING).description("변경할 만남 종료 시간"),
-                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("변경할 만남 최대 인원")
+                                fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("변경할 만남 최대 인원"),
+                                fieldWithPath("region").type(JsonFieldType.STRING).description("변경할 만남의 만남 장소(nullable)"),
+                                fieldWithPath("regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("cost").type(JsonFieldType.NUMBER).description("변경할 만남의 진행 비용(nullable)")
                         ),
                         responseFields(
                                 *ApiDocumentUtil.commonResponseField(),
@@ -369,8 +386,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
-                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부")
-
+                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
+                                fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
+                                fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
                         )
                 ))
     }
@@ -477,8 +496,10 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
-                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부")
-
+                                fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
+                                fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
+                                fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
                         )
                     )
                 )
