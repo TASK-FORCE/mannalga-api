@@ -19,6 +19,7 @@ class Meeting(
         @ManyToOne
         var regClubUser: ClubUser,
         var region: String?,
+        var regionURL: String?,
         var cost: Int?
 ) : BaseEntity() {
         @OneToMany(mappedBy = "meeting")
