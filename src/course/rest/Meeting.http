@@ -69,13 +69,13 @@ Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 개별건 조회 [준]
-GET {{token-jun}}/clubs/6164/meetings/612314
+GET {{host}}/clubs/6164/meetings/612314
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 상태 조회 [준]
-GET {{token-jun}}/clubs/6164/meetings/6228/applications/status HTTP/1.1
+GET {{host}}/clubs/6164/meetings/6228/applications/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json
