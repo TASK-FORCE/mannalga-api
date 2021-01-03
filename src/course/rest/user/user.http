@@ -8,3 +8,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViI
 GET http://localhost:8080/users/door/꽑꽑이
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
+
+
+### [로컬] 유저리스트 백도어 조회
+GET http://localhost:8080/users/door
+Content-Type: application/json;charset=UTF-8
+Accept: application/json

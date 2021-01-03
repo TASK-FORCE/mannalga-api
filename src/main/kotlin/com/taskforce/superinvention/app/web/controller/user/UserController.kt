@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.app.web.dto.user.UserMemberCheckDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
@@ -71,6 +72,12 @@ class UserController(
         if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
         var user = userService.getUserByUsername(username)
         return ResponseDto(user.accessToken!!)
+    }
+
+    @GetMapping("/door")
+    fun backdoorUserList(): ResponseDto<List<UserIdAndNameDto>> {
+        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        return ResponseDto(userService.getUserIdAndUserNameList())
     }
 }
 

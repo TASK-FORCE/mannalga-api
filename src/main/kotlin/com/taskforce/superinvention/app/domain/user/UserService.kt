@@ -4,9 +4,11 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.exception.BizException
@@ -115,6 +117,10 @@ class UserService(
         var user = userRepository.findByUserName(username)
         if (user == null) throw BizException("존재하지 않는 유저입니다")
         return user
+    }
+
+    fun getUserIdAndUserNameList(): List<UserIdAndNameDto> {
+        return userRepository.findAll().map(::UserIdAndNameDto)
     }
 
 }
