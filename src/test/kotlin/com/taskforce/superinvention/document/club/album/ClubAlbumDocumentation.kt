@@ -7,6 +7,7 @@ import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
@@ -72,11 +73,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     fun `모임 사진첩 사진 목록 조회`() {
 
         // given
-        val clubAlbumListDto = ClubAlbumListDto(
-                clubAlbum,
-                likeCnt    = 1,
-                commentCnt = 1
-        )
+        val clubAlbumListDto = ClubAlbumListDto(clubAlbum)
 
         val pageable: Pageable = PageRequest.of(0, 20)
         val clubAlbumList: List<ClubAlbumListDto> = listOf(clubAlbumListDto)
@@ -115,21 +112,57 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                         responseFields(
                                 *commonResponseField(),
                                 *pageFieldDescriptor(),
-                                fieldWithPath("data.content[].albumSeq").type(JsonFieldType.NUMBER).description("사진첩 seq")   ,
+                                fieldWithPath("data.content[].albumSeq").type(JsonFieldType.NUMBER).description("사진첩 seq"),
                                 fieldWithPath("data.content[].title").type(JsonFieldType.STRING).description("사진첩 제목")   ,
                                 fieldWithPath("data.content[].file_name").type(JsonFieldType.STRING).description("파일 명")  ,
-                                fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("이미지 URL") ,
-                                fieldWithPath("data.content[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개")   ,
-                                fieldWithPath("data.content[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
-                                fieldWithPath("data.content[].writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("작성자 clubUser seq"),
-                                fieldWithPath("data.content[].writer.writerUserSeq").type(JsonFieldType.NUMBER).description("작성자 user seq"),
-                                fieldWithPath("data.content[].writer.name").type(JsonFieldType.STRING).description("작성자 이름"),
-                                fieldWithPath("data.content[].writer.imgUrl").type(JsonFieldType.STRING).description("프로필 이미지"),
-                                fieldWithPath("data.content[].writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
+                                fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("이미지 URL")  ,
+                                fieldWithPath("data.content[].writerClubUserSeq").type(JsonFieldType.NUMBER).description("작성자 clubUser seq")
                         )
                     )
                 )
     }
+
+    @Test
+    fun `모임 사진첩 사진 단건 조회`() {
+
+        // given
+        `when`(clubAlbumService.getClubAlbum(clubAlbum.seq))
+            .thenReturn(ClubAlbumDto(clubAlbum))
+
+        // when
+
+        val result: ResultActions = this.mockMvc.perform(
+            get("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("club-album-select-single", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("clubSeq").description("모임 시퀀스"),
+                    parameterWithName("clubAlbumSeq").description("모임 사진첩 시퀀스")
+                ),
+                responseFields(
+                    *commonResponseField(),
+                    fieldWithPath("data.albumSeq").type(JsonFieldType.NUMBER).description("사진첩 seq"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("사진첩 제목"),
+                    fieldWithPath("data.file_name").type(JsonFieldType.STRING).description("파일 명"),
+                    fieldWithPath("data.imgUrl").type(JsonFieldType.STRING).description("사진첩 이미지 URL"),
+                    fieldWithPath("data.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
+                    fieldWithPath("data.commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("data.writer.writerUserSeq").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("data.writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("data.writer.name").type(JsonFieldType.STRING).description("작성자명 (user)"),
+                    fieldWithPath("data.writer.imgUrl").type(JsonFieldType.STRING).description("작성자 프로필 url"),
+                    fieldWithPath("data.writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
+                )
+            )
+        )
+    }
+
 
     @Test
     @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])

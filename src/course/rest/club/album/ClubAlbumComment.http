@@ -12,4 +12,4 @@ Authorization: Bearer {{token-sdm}}
 GET  {{host}}/club/6174/album/6943/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-dong}}

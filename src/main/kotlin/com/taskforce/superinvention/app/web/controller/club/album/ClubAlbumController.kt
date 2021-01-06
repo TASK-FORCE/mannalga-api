@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.web.controller.club.album
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
+import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
@@ -26,6 +27,14 @@ class ClubAlbumController(
 
           return ResponseDto(clubAlbumService.getClubAlbumList(clubSeq, searchOption, pageable))
      }
+
+
+    @GetMapping("/{clubAlbumSeq}")
+    fun gerClubAlbum(@PathVariable clubSeq      :Long,
+                     @PathVariable clubAlbumSeq :Long): ResponseDto<ClubAlbumDto> {
+
+        return ResponseDto(clubAlbumService.getClubAlbum(clubAlbumSeq))
+    }
 
      @PostMapping
      @ResponseStatus(HttpStatus.CREATED)
