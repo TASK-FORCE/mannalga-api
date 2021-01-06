@@ -36,6 +36,8 @@ data class ClubAlbumListDto(
         val title      : String = "",
         val file_name  : String = "",
         val imgUrl     : String = "",
+        val likeCnt    : Long,
+        val commentCnt : Long,
         val writerClubUserSeq: Long ?= 0
 ) {
         constructor(clubAlbum: ClubAlbum): this (
@@ -43,6 +45,8 @@ data class ClubAlbumListDto(
                 title      = clubAlbum.title,
                 file_name  = clubAlbum.file_name,
                 imgUrl     = clubAlbum.img_url,
+                likeCnt    = clubAlbum.albumLikeCnt ?: 0,
+                commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writerClubUserSeq = clubAlbum.writer.seq
         )
 }
