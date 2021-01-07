@@ -105,7 +105,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
             regionURL = "map.naver.com/aabb",
             cost = 5000
     ).apply {
-        this.meetingApplications += this.MeetingApplicationDto(
+        this.meetingApplications += MeetingDto.MeetingApplicationDto(
                 seq = 1,
                 deleteFlag = false,
                 createdAt = LocalDateTime.now().toBaseDateTime(),

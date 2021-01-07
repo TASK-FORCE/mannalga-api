@@ -92,7 +92,7 @@ class MeetingDto {
 
 
 
-    inner class MeetingApplicationDto {
+    class MeetingApplicationDto {
         val seq: Long
         val deleteFlag: Boolean
         val createdAt: String

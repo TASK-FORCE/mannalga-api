@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
@@ -65,19 +66,18 @@ class ClubAlbumService(
 
     @Transactional(readOnly = true)
     fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable?): PageDto<ClubAlbumListDto> {
-        val query = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
+        val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
+            .map(::ClubAlbumListDto)
 
-        val result = query.results.map { tuple ->
-            val clubAlbum = tuple.get(0, ClubAlbum::class.java)!!
-            ClubAlbumListDto(
-                clubAlbum = clubAlbum,
-                likeCnt   = tuple.get(1, Long::class.java) ?: 0,
-                commentCnt= tuple.get(2, Long::class.java) ?: 0
-            )
-        }
+        return PageDto(result)
+    }
 
-        val resultPage = PageImpl(result, pageable, query.total)
-        return PageDto(resultPage)
+    @Transactional(readOnly = true)
+    fun getClubAlbum(clubAlbumSeq: Long?): ClubAlbumDto {
+        val clubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
+            ?: throw ClubAlbumNotFoundException()
+
+        return ClubAlbumDto(clubAlbum)
     }
 
     @Transactional

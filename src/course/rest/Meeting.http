@@ -1,13 +1,13 @@
 ### 모임 내 모든 만남 조회 [준]
-GET localhost:8080/clubs/6164/meetings HTTP/1.1
+GET {{host}}/clubs/6164/meetings HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 수정 [준]
-PUT localhost:8080/clubs/115/meetings/1 HTTP/1.1
+PUT {{host}}/clubs/115/meetings/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 {
@@ -19,15 +19,15 @@ Accept: application/json
 }
 
 ### 만남 삭제 [준]
-DELETE localhost:8080/clubs/115/meetings/1 HTTP/1.1
+DELETE {{host}}/clubs/115/meetings/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 생성 [준]
-POST localhost:8080/clubs/6164/meetings HTTP/1.1
+POST {{host}}/clubs/6164/meetings HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 {
@@ -39,43 +39,43 @@ Accept: application/json
 }
 
 ### 만남 신청 [준]
-POST localhost:8080/clubs/6164/meetings/6228/applications HTTP/1.1
+POST {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 신청 취소 [준]
-DELETE localhost:8080/clubs/115/meetings/6111/applications/6112 HTTP/1.1
+DELETE {{host}}/clubs/115/meetings/6111/applications/6112 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 신청 취소 [준]
-DELETE localhost:8080/clubs/6164/meetings/6228/applications HTTP/1.1
+DELETE {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 신청 정보 [준]
-GET localhost:8080/clubs/6164/meetings/6228/applications HTTP/1.1
+GET {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 개별건 조회 [준]
-GET localhost:8080/clubs/6164/meetings/6228
+GET {{host}}/clubs/6164/meetings/6228
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 개별건 조회 [준]
-GET localhost:8080/clubs/6164/meetings/612314
+GET {{host}}/clubs/6164/meetings/612314
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남 상태 조회 [준]
-GET localhost:8080/clubs/6164/meetings/6228/applications/status HTTP/1.1
+GET {{host}}/clubs/6164/meetings/6228/applications/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTU5OTI4MzIxOCwiZXhwIjoxNjMwODE5MjE4fQ.v-sfReNKli476qoHc1F2yoak-n4bh_D2Db5rczwS3Bs
+Authorization: Bearer {{token-jun}}
 Accept: application/json

@@ -115,6 +115,9 @@ include::{root}/club/board/delete-club-board.adoc[]
 === [.toc-list-item]`사진첩 조회`
 include::{root}/club/album/club-album-select.adoc[]
 
+=== [.toc-list-item]`사진첩 개별 조회`
+include::{root}/club/album/club-album-select-single.adoc[]
+
 === [.toc-list-item]`사진첩 등록`
 include::{root}/club/album/club-album-register.adoc[]
 

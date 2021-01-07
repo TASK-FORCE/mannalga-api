@@ -19,6 +19,10 @@ class ClubUser(
         var isLiked: Boolean?
 ) : BaseEntity() {
 
+        constructor(club: Club, user: User)
+                : this(club, user, false)
+
+
         @OneToMany
         @JoinColumn(name = "club_user_seq")
         lateinit var clubUserRoles: MutableSet<ClubUserRole>
