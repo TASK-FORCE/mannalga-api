@@ -7,14 +7,14 @@ import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 
 class MeetingApplicationStatusDto(
-        val meetingApplications: List<MeetingApplicationDto>,
+        val meetingApplications: List<MeetingDto.MeetingApplicationDto>,
         val currentCount: Int,
         val maximumNumber: Int?,
         var isCurrentUserRegMeeting: Boolean = false,
         var isCurrentUserApplicationMeeting: Boolean = false
 ) {
     constructor(meeting: Meeting, currentClubUserSeq: Long?): this(
-            meetingApplications = meeting.meetingApplications.map { e -> MeetingApplicationDto(e) },
+            meetingApplications = meeting.meetingApplications.map { e -> MeetingDto.MeetingApplicationDto(e) },
             currentCount = meeting.meetingApplications.filterNot { it.deleteFlag }.count(),
             maximumNumber = meeting.maximumNumber,
             isCurrentUserRegMeeting = currentClubUserSeq == meeting.regClubUser.seq,
