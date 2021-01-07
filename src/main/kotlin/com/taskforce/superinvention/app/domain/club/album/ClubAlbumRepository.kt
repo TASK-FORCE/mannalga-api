@@ -25,9 +25,7 @@ class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
         val clubAlbum        = QClubAlbum.clubAlbum
 
         val query = from(clubAlbum)
-                .where(clubAlbum.delete_flag.isFalse
-                    .and(eqSeq(clubAlbum.club.seq, clubSeq))
-                )
+                .where(clubAlbum.delete_flag.isFalse, eqSeq(clubAlbum.club.seq, clubSeq))
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
 
