@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumComme
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLike
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
+import org.hibernate.annotations.Formula
 import javax.persistence.*
 
 @Entity
@@ -24,6 +25,12 @@ class ClubAlbum(
     var file_name  : String,
     var delete_flag: Boolean
 ): BaseEntity() {
+
+    @Formula("(select count(*) from club_album_like cal where cal.club_album_seq = seq)")
+    var albumLikeCnt: Long? = null
+
+    @Formula("(select count(*) from club_album_comment cac where cac.club_album_seq = seq)")
+    var albumCommentCnt: Long? = null
 
     @OneToMany
     @JoinColumn(name = "club_album_seq")

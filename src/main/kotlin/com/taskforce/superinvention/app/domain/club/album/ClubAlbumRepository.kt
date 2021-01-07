@@ -1,11 +1,10 @@
 package com.taskforce.superinvention.app.domain.club.album
 
-import com.querydsl.core.QueryResults
-import com.querydsl.core.Tuple
-import com.taskforce.superinvention.app.domain.club.album.comment.QClubAlbumComment
-import com.taskforce.superinvention.app.domain.club.album.like.QClubAlbumLike
-import com.taskforce.superinvention.app.domain.club.user.QClubUser
+import com.querydsl.core.types.Predicate
+import com.querydsl.core.types.dsl.NumberPath
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
@@ -15,30 +14,18 @@ import org.springframework.stereotype.Repository
 interface ClubAlbumRepository: JpaRepository<ClubAlbum, Long>, ClubAlbumRepositoryCustom
 
 interface ClubAlbumRepositoryCustom {
-    fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): QueryResults<Tuple>
+    fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): Page<ClubAlbum>
 }
 
 @Repository
 class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
     QuerydslRepositorySupport(ClubAlbum::class.java) {
 
-    override fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): QueryResults<Tuple> {
-        val clubUser         = QClubUser.clubUser
+    override fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable): Page<ClubAlbum> {
         val clubAlbum        = QClubAlbum.clubAlbum
-        val clubAlbumLike    = QClubAlbumLike.clubAlbumLike
-        val clubAlbumComment = QClubAlbumComment.clubAlbumComment
 
         val query = from(clubAlbum)
-                .select(
-                        clubAlbum,
-                        clubAlbumLike.count(),     // 좋아요  개수
-                        clubAlbumComment.count()   // 댓글    개수
-                )
-                .leftJoin(clubAlbum.clubAlbumLikes, clubAlbumLike)
-                .leftJoin(clubAlbum.clubAlbumComments, clubAlbumComment)
-                .join(clubAlbum.writer, clubUser).fetchJoin()
-                .groupBy(clubAlbum.seq)
-                .where(clubAlbum.delete_flag.isFalse.and(clubAlbum.club.seq.eq(clubSeq)))
+                .where(clubAlbum.delete_flag.isFalse, eqSeq(clubAlbum.club.seq, clubSeq))
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
 
@@ -46,6 +33,12 @@ class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
             query.where(clubAlbum.title.like("${searchOption.title}%"))
         }
 
-        return query.fetchResults()
+        val fetchResults = query.fetchResults()
+
+        return PageImpl(fetchResults.results, pageable, fetchResults.total)
+    }
+
+    private fun eqSeq(seq: NumberPath<Long>, clubSeq: Long): Predicate {
+        return seq.eq(clubSeq)
     }
 }
