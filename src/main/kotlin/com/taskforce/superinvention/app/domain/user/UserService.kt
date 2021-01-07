@@ -4,9 +4,11 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.exception.BizException
@@ -15,7 +17,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import javax.transaction.Transactional
 
 @Service
@@ -110,4 +111,16 @@ class UserService(
         userRegionService.changeUserRegion(user, userRegions)
         userInterestService.changeUserInterest(user, userInterests)
     }
+
+    @Transactional
+    fun getUserByUsername(username: String): User {
+        var user = userRepository.findByUserName(username)
+        if (user == null) throw BizException("존재하지 않는 유저입니다")
+        return user
+    }
+
+    fun getUserIdAndUserNameList(): List<UserIdAndNameDto> {
+        return userRepository.findAll().map(::UserIdAndNameDto)
+    }
+
 }

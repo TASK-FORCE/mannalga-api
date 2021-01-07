@@ -27,3 +27,10 @@ data class UserDto(
             profileImageLink = user.profileImageLink
     )
 }
+
+data class UserIdAndNameDto(
+    var seq: Long,
+    var userName: String
+) {
+    constructor(user: User): this(user.seq!!, user.userName!!)
+}

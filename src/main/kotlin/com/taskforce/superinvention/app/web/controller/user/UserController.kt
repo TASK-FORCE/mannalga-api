@@ -8,10 +8,13 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
+import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.app.web.dto.user.UserMemberCheckDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
+import com.taskforce.superinvention.common.exception.BizException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
@@ -23,6 +26,8 @@ class UserController(
         private val userInfoService: UserInfoService
 ) {
 
+    @Value("\${spring.profiles.active}")
+    lateinit var profile: String
 
     @PostMapping("/saveKakaoToken")
     fun saveKakaoToken(@RequestBody token: KakaoToken): ResponseDto<AppToken> {
@@ -55,6 +60,24 @@ class UserController(
 
         userService.registerUser(request, user)
         return ResponseDto(data = ResponseDto.EMPTY)
+    }
+
+
+    /**
+     * Use Only Develop Profile!!
+     * find User token by username.
+     */
+    @GetMapping("/door/{username}")
+    fun backdoorUserToken(@PathVariable username: String): ResponseDto<String> {
+        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        var user = userService.getUserByUsername(username)
+        return ResponseDto(user.accessToken!!)
+    }
+
+    @GetMapping("/door")
+    fun backdoorUserList(): ResponseDto<List<UserIdAndNameDto>> {
+        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        return ResponseDto(userService.getUserIdAndUserNameList())
     }
 }
 
