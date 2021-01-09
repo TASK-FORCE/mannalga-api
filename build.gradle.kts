@@ -52,9 +52,17 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:${queryDsl}:jpa")
     kaptTest("com.querydsl:querydsl-apt:${queryDsl}:jpa")
 
-    compileOnly("com.blazebit:blaze-persistence-integration-querydsl-expressions:$blaze")
+    implementation(platform("com.blazebit:blaze-persistence-bom:$blaze"))
+    compileOnly("com.blazebit:blaze-persistence-core-api:$blaze")
+    runtimeOnly("com.blazebit:blaze-persistence-core-impl:$blaze")
+    implementation("com.blazebit:blaze-persistence-integration-querydsl-expressions:$blaze")
     runtimeOnly("com.blazebit:blaze-persistence-integration-hibernate-5.4:$blaze")
 
+    testImplementation(platform("com.blazebit:blaze-persistence-bom:$blaze"))
+    testCompileOnly("com.blazebit:blaze-persistence-core-api:$blaze")
+    testRuntimeOnly("com.blazebit:blaze-persistence-core-impl:$blaze")
+    testImplementation("com.blazebit:blaze-persistence-integration-querydsl-expressions:$blaze")
+    testRuntimeOnly("com.blazebit:blaze-persistence-integration-hibernate-5.4:$blaze")
 
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

@@ -23,4 +23,9 @@ class ClubUserService(
 
         return ClubUserStatusDto(roleNames, clubUser.isLiked ?: false )
     }
+
+    fun getValidClubUser(clubSeq: Long, user: User): ClubUser {
+        return clubUserRepository.findByClubSeqAndUser(clubSeq, user)
+            ?: throw UserIsNotClubMemberException()
+    }
 }

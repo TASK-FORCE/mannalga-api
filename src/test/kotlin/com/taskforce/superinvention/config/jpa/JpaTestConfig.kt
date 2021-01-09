@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.config
+package com.taskforce.superinvention.config.jpa
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.boot.test.context.TestConfiguration
@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean
 import javax.persistence.EntityManager
 
 @TestConfiguration
-class TestConfig(
-        private val entityManager: EntityManager
+class JpaTestConfig(
+    private val entityManager: EntityManager
 ) {
 
     @Bean
