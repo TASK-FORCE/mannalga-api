@@ -79,3 +79,20 @@ GET {{host}}/clubs/6164/meetings/6228/applications/status HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json
+
+### 만남 생성
+POST {{host}}/clubs/6164/meetings HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+{
+  "title" : "제약조건 테스트 제목",
+  "content" : "제약조건 테스트 내용",
+  "startTimestamp" : "2020-08-08 10:00:00",
+  "endTimestamp" : "2020-08-09 11:00:00",
+  "maximumNumber" : 1,
+  "region" : "건대 엔젤리너스",
+  "regionURL" : "map.naver.com/aabb",
+  "cost" : 5000
+}

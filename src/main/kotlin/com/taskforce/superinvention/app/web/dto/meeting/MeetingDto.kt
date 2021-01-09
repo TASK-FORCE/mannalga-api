@@ -10,14 +10,12 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
-import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
-import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
-import kotlin.math.max
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 
 class MeetingDto {
     val seq: Long
@@ -148,13 +146,17 @@ class MeetingDto {
 }
 
 
-class MeetingRequestDto(
+data class MeetingRequestDto(
+        @get:NotBlank(message = "만남 제목을 입력해주세요")
         val title: String,
+        @get:NotBlank(message = "만남 내용을 입력해주세요")
         val content: String,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT, timezone = "Asia/Seoul")
         val startTimestamp: LocalDateTime,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT, timezone = "Asia/Seoul")
         val endTimestamp: LocalDateTime,
+        @get:Max(value = 999, message = "최대 인원은 999명까지만 제한할 수 있습니다.")
+        @get:Min(2, message = "만남 최소 인원은 2명 이상이어야 합니다.")
         val maximumNumber: Int?,
         val region: String?,
         var regionURL: String?,

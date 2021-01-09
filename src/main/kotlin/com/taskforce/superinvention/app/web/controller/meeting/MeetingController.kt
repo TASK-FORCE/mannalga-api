@@ -12,14 +12,16 @@ import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/clubs/{clubSeq}/meetings")
+@Validated
 class MeetingController(
         var meetingService: MeetingService,
         var roleService: RoleService,
@@ -51,7 +53,7 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun createMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      @RequestBody meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
+                      @RequestBody @Valid meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
 
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
@@ -71,7 +73,7 @@ class MeetingController(
     fun modifyMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
                       @PathVariable meetingSeq: Long,
-                      @RequestBody meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
+                      @RequestBody @Valid meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
                 ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
