@@ -32,7 +32,6 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
                 .fetchJoin()
                 .where(QClub.club.seq.eq(clubSeq)
                         , QMeeting.meeting.deleteFlag.isFalse
-                        , QMeetingApplication.meetingApplication.deleteFlag.isFalse
                 )
 
         val fetchResult = query
