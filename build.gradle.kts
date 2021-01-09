@@ -48,6 +48,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-jpa:${queryDsl}")
 
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     kapt("com.querydsl:querydsl-apt:${queryDsl}:jpa")
     kaptTest("com.querydsl:querydsl-apt:${queryDsl}:jpa")
 
