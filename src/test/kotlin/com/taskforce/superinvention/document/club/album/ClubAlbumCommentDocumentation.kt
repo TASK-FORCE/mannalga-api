@@ -163,6 +163,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
 
         val result: ResultActions = this.mockMvc.perform(
             get("/club/{clubSeq}/album/{clubAlbumSeq}/comment/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
+                .queryParam("depthLimit", "3")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
