@@ -2,8 +2,10 @@ package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubRepository
+import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
@@ -28,6 +30,12 @@ class ClubAlbumServiceTest: MockkTest() {
 
     @InjectMockKs
     lateinit var clubAlbumService: ClubAlbumService
+
+    @MockK
+    lateinit var clubService: ClubService
+
+    @MockK
+    lateinit var clubUserService: ClubUserService
 
     @MockK
     lateinit var clubAlbumRepository: ClubAlbumRepository
@@ -122,11 +130,11 @@ class ClubAlbumServiceTest: MockkTest() {
             imgUrl    = "이미지 URL"
         )
 
-        every { clubRepository.findByIdOrNull(club.seq)        } returns club
-        every { clubRepository.findByIdOrNull(neq(club.seq!!)) } returns null
+        every { clubService.getValidClubBySeq(club.seq!!)        } returns club
+        every { clubService.getValidClubBySeq(neq(club.seq!!))   } throws  ClubNotFoundException()
 
-        every { clubUserRepository.findByClubSeqAndUser(club.seq!!, writer)        } returns writerClubUser
-        every { clubUserRepository.findByClubSeqAndUser(club.seq!!, nonClubUser) } returns null
+        every { clubUserService.getValidClubUser(club.seq!!, writer)      } returns writerClubUser
+        every { clubUserService.getValidClubUser(club.seq!!, nonClubUser) } throws  UserIsNotClubMemberException()
 
         every { clubAlbumRepository.save( any<ClubAlbum>()) } returns clubAlbum
 

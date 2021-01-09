@@ -9,7 +9,6 @@ import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -33,7 +32,7 @@ class ClubAlbumController(
     fun gerClubAlbum(@PathVariable clubSeq      :Long,
                      @PathVariable clubAlbumSeq :Long): ResponseDto<ClubAlbumDto> {
 
-        return ResponseDto(clubAlbumService.getClubAlbum(clubAlbumSeq))
+        return ResponseDto(clubAlbumService.getClubAlbumDto(clubAlbumSeq))
     }
 
      @PostMapping

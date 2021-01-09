@@ -23,10 +23,12 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -45,9 +47,9 @@ class ClubService(
         private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
-    fun getClubBySeq(seq: Long): Club {
-        val club = clubRepository.findById(seq).orElseThrow { NullPointerException() }
-        return club
+    fun getValidClubBySeq(clubSeq: Long): Club {
+        return clubRepository.findByIdOrNull(clubSeq)
+            ?: throw ClubNotFoundException()
     }
 
     fun getClubUserDto(clubSeq: Long): ClubUsersDto? {
@@ -179,7 +181,7 @@ class ClubService(
 
     @Transactional
     fun changeClubInterests(user: User, clubSeq: Long, interestDtos: Set<InterestRequestDto>): Club {
-        val club = getClubBySeq(clubSeq)
+        val club = getValidClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
                 ?: throw UserIsNotClubMemberException()
 
@@ -200,7 +202,7 @@ class ClubService(
 
     @Transactional
     fun changeClubRegions(user: User, clubSeq: Long, regionDtoList: Set<RegionRequestDto>) {
-        val club = getClubBySeq(clubSeq)
+        val club = getValidClubBySeq(clubSeq)
         val clubUser: ClubUser = clubUserRepository.findByClubAndUser(club, user)
                 ?: throw UserIsNotClubMemberException()
 
@@ -218,7 +220,7 @@ class ClubService(
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun getClubWithPriorityDto(clubSeq: Long): ClubWithRegionInterestDto {
-        val club = getClubBySeq(clubSeq)
+        val club = getValidClubBySeq(clubSeq)
         return ClubWithRegionInterestDto(club, club.clubUser.size.toLong())
     }
 

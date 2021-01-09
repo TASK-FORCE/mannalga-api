@@ -1,15 +1,17 @@
 package com.taskforce.superinvention.app.domain.club.album.comment
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbumRepository
+import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
+import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -17,45 +19,78 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumCommentService(
-        private val roleService: RoleService,
-        private val clubAlbumRepository: ClubAlbumRepository,
-        private val clubUserRepository : ClubUserRepository ,
-        private val commentRepository  : ClubAlbumCommentRepository
+    private val roleService: RoleService,
+    private val clubAlbumService: ClubAlbumService,
+    private val clubUserService: ClubUserService,
+    private val commentRepository  : ClubAlbumCommentRepository
 ) {
 
+    fun getValidCommentBySeq(commentSeq: Long): ClubAlbumComment {
+        return commentRepository.findByIdOrNull(commentSeq)
+            ?: throw ResourceNotFoundException("댓글이 삭제되었거나, 존재하지 않습니다.")
+    }
+    
+    // 댓글 루트레벨만 조회
     @Transactional(readOnly = true)
     fun getCommentList(user: User?, pageable: Pageable?, clubAlbumSeq: Long): PageDto<ClubAlbumCommentListDto> {
 
-        val list = commentRepository.findCommentListWithWriter(pageable!!, clubAlbumSeq)
+        val pageList = commentRepository.findRootCommentListWithWriter(pageable!!, clubAlbumSeq)
 
-        val result = if(user != null) {
-            list.results.map{ comment -> ClubAlbumCommentListDto(comment, user) }
+        return if(user != null) {
+            PageDto(pageList.map{ comment -> ClubAlbumCommentListDto(
+                comment, user
+            )})
         } else {
-            list.results.map(::ClubAlbumCommentListDto)
+            PageDto(pageList.map(::ClubAlbumCommentListDto))
         }
+    }
 
-        val resultPage = PageImpl(result, pageable, list.total)
-        return PageDto(resultPage)
+    // 특정 댓글의 뎁스별 하위 댓글 조회
+    @Transactional(readOnly = true)
+    fun getChildCommentList(user: User?, parentCommentSeq: Long, depthLimitCnt: Long = 1): List<ClubAlbumCommentListDto> {
+        val parentComment = getValidCommentBySeq(parentCommentSeq)
+
+        val pageList: List<ClubAlbumCommentCTE> = commentRepository.findChildCommentsWithWriter(
+            parentCommentSeq = parentComment.seq!!,
+            startDepth = parentComment.depth + 1,
+            limitDepth = parentComment.depth + depthLimitCnt
+        )
+
+        return if(user != null) {
+            pageList.map{ comment -> ClubAlbumCommentListDto(comment, user)}
+        } else {
+            pageList.map(::ClubAlbumCommentListDto)
+        }
     }
 
     // 댓글 등록
     @Transactional
-    fun registerComment(clubSeq     : Long,
-                        clubAlbumSeq: Long,
+    fun registerComment(clubSeq          : Long,
+                        clubAlbumSeq     : Long,
+                        parentCommentSeq : Long?,
                         user: User,
-                        body: ClubAlbumCommentRegisterDto) {
+                        body: ClubAlbumCommentRegisterDto): ClubAlbumComment {
 
-        val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
-        val clubAlbum= clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
+        val clubUser = clubUserService.getValidClubUser(clubSeq, user)
+        val clubAlbum= clubAlbumService.getClubValidAlbumBySeq(clubAlbumSeq)
 
-        if(clubAlbum != null && clubUser != null) {
-            val clubAlbumComment = ClubAlbumComment(
-                    content   = body.content,
-                    clubUser  = clubUser    ,
-                    clubAlbum = clubAlbum
-            )
-            commentRepository.save(clubAlbumComment)
+        var parentComment: ClubAlbumComment ?= null
+        var depth = 1L
+
+        if(parentCommentSeq != null) {
+            parentComment = getValidCommentBySeq(parentCommentSeq)
+            depth = parentComment.depth + 1L
         }
+
+        val comment = ClubAlbumComment(
+            content = body.content,
+            clubUser = clubUser,
+            clubAlbum = clubAlbum,
+            parent = parentComment,
+            depth = depth
+        )
+
+        return commentRepository.save(comment)
     }
 
     // 댓글 수정
@@ -67,33 +102,26 @@ class ClubAlbumCommentService(
             user: User,
             body: ClubAlbumCommentRegisterDto) {
 
-        val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
-        val comment = commentRepository.findByIdOrNull(clubAlbumCommentSeq)
+        val clubUser = clubUserService.getValidClubUser(clubSeq, user)
+        val comment  = getValidCommentBySeq(clubAlbumCommentSeq)
 
-        if(comment != null) {
-            if(comment.clubUser == clubUser) {
-                comment.content = body.content
-                return
-            }
+        if(comment.clubUser != clubUser) {
             throw OnlyWriterCanAccessException("댓글 작성자만 수정 할 수 있습니다.")
         }
-        throw ResourceNotFoundException()
+
+        comment.content = body.content
     }
 
     @Transactional
     fun removeComment(clubSeq: Long, clubAlbumSeq: Long, clubAlbumCommentSeq: Long, user: User) {
-        val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
-        val comment = commentRepository.findByIdOrNull(clubAlbumCommentSeq)
+        val clubUser = clubUserService.getValidClubUser(clubSeq, user)
+        val comment  = getValidCommentBySeq(clubAlbumCommentSeq)
 
-        if(comment != null && clubUser != null) {
-
-            // 관리자이거나, 작성자만 삭제 가능
-            if(roleService.hasClubManagerAuth(clubUser) || clubUser == comment.clubUser) {
-                commentRepository.delete(comment)
-                return
-            }
+        // 관리자이거나, 작성자만 삭제 가능
+        if(!roleService.hasClubManagerAuth(clubUser) && clubUser != comment.clubUser) {
             throw OnlyWriterCanAccessException("댓글 작성자와 관리자만 삭제 할 수 있습니다.")
         }
-        throw ResourceNotFoundException()
+
+        commentRepository.delete(comment)
     }
 }

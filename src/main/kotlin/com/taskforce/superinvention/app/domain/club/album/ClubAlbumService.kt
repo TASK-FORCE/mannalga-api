@@ -1,8 +1,10 @@
 package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.ClubRepository
+import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
@@ -17,7 +19,6 @@ import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoun
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ClubAlbumService(
         private val roleService: RoleService,
+        private val clubService: ClubService,
+        private val clubUserService: ClubUserService,
         private val clubUserRepository : ClubUserRepository,
         private val clubAlbumRepository: ClubAlbumRepository,
         private val clubRepository: ClubRepository
@@ -40,17 +43,18 @@ class ClubAlbumService(
         private val noAuthForClubAlbumException  = NoAuthForClubAlbumException()
     }
 
+    fun getClubValidAlbumBySeq(clubAlbumSeq: Long?): ClubAlbum {
+        return clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
+            ?: throw ClubAlbumNotFoundException()
+    }
 
     // 엘범 등록
     @Transactional
     fun registerClubAlbum(user: User?, clubSeq: Long, clubAlbumDto: ClubAlbumRegisterDto?): Boolean {
         user ?: throw UserIsNotClubMemberException()
 
-        val club = clubRepository.findByIdOrNull(clubSeq)
-            ?: throw ClubNotFoundException()
-
-        val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
-            ?: throw UserIsNotClubMemberException()
+        val club     = clubService.getValidClubBySeq(clubSeq)
+        val clubUser = clubUserService.getValidClubUser(clubSeq, user)
 
         if(isValid(clubAlbumDto!!)) {
             val clubAlbum = ClubAlbum (
@@ -73,11 +77,8 @@ class ClubAlbumService(
     }
 
     @Transactional(readOnly = true)
-    fun getClubAlbum(clubAlbumSeq: Long?): ClubAlbumDto {
-        val clubAlbum = clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
-            ?: throw ClubAlbumNotFoundException()
-
-        return ClubAlbumDto(clubAlbum)
+    fun getClubAlbumDto(clubAlbumSeq: Long?): ClubAlbumDto {
+        return ClubAlbumDto(getClubValidAlbumBySeq(clubAlbumSeq))
     }
 
     @Transactional

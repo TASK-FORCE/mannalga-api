@@ -128,7 +128,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     fun `모임 사진첩 사진 단건 조회`() {
 
         // given
-        `when`(clubAlbumService.getClubAlbum(clubAlbum.seq))
+        `when`(clubAlbumService.getClubAlbumDto(clubAlbum.seq))
             .thenReturn(ClubAlbumDto(clubAlbum))
 
         // when

@@ -40,11 +40,10 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
     lateinit var clubUser : ClubUser
     lateinit var clubAlbum: ClubAlbum
     lateinit var clubAlbumComment: ClubAlbumComment
+    lateinit var clubAlbumCommentChild: ClubAlbumComment
 
     @BeforeEach
     fun setup() {
-
-
 
         club = Club(
                 name = "테스트 모임",
@@ -80,13 +79,28 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                 clubUser  = clubUser,
                 clubAlbum = clubAlbum
         ).apply {
-            seq = 111
+            seq           = 111
+            subCommentCnt = 3
+            totalSubCommentCnt = 10
         }
+
+        clubAlbumCommentChild = ClubAlbumComment(
+            content = "모임",
+            clubUser  = clubUser,
+            clubAlbum = clubAlbum
+        ).apply {
+            seq           = 119
+            subCommentCnt = 0
+            totalSubCommentCnt = 0
+            depth   = 2
+            parent  = clubAlbumComment
+        }
+
     }
 
     @Test
     @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
-    fun `모임 사진첩 댓글 목록 조회`() {
+    fun `모임 사진첩 댓글 목록 조회 - 루트`() {
 
         // given
         val pageable: Pageable = PageRequest.of(0, 20)
@@ -126,9 +140,59 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content[].registerTime").type(JsonFieldType.STRING).description("등록 시간"),
                                 fieldWithPath("data.content[].content").type(JsonFieldType.STRING).description("댓글 내용"),
                                 fieldWithPath("data.content[].imgUrl").type(JsonFieldType.STRING).description("댓글 작성자 프로필 url"),
-                                fieldWithPath("data.content[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부")
+                                fieldWithPath("data.content[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부"),
+                                fieldWithPath("data.content[].depth").type(JsonFieldType.NUMBER).description("현재 댓글 뎁스"),
+                                fieldWithPath("data.content[].childCommentCnt").type(JsonFieldType.NUMBER).description("하위 댓글 개수"),
+                                fieldWithPath("data.content[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지")
                         )
                 ))
+    }
+
+    @Test
+    @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
+    fun `모임 사진첩 댓글 목록 조회 - 하위 댓글`() {
+
+        // given
+        val clubAlbumCommentList: List<ClubAlbumCommentListDto> = listOf(
+            ClubAlbumCommentListDto(clubAlbumCommentChild)
+        )
+
+        // when
+        `when`(clubAlbumCommentService.getChildCommentList(MockitoHelper.anyObject(), eq(clubAlbumComment.seq!!), anyLong()))
+            .thenReturn(clubAlbumCommentList)
+
+        val result: ResultActions = this.mockMvc.perform(
+            get("/club/{clubSeq}/album/{clubAlbumSeq}/comment/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
+                .queryParam("depthLimit", "3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("club-album-comment-select-sub", getDocumentRequest(), getDocumentResponse(),
+                requestParameters(
+                    parameterWithName("depthLimit").description("하위 뎁스 조회 제한")
+                ),
+                pathParameters(
+                    parameterWithName("clubSeq").description("모임 시퀀스"),
+                    parameterWithName("clubAlbumSeq").description("모임 엘범 시퀀스"),
+                    parameterWithName("clubAlbumCommentSeq").description("부모 사진첩 댓글 시퀀스")
+                ),
+                responseFields(
+                    *commonResponseField(),
+                    fieldWithPath("data[].writer").type(JsonFieldType.STRING).description("글쓴이 이름"),
+                    fieldWithPath("data[].writeClubUserSeq").type(JsonFieldType.NUMBER).description("글쓴이  clubUserSeq"),
+                    fieldWithPath("data[].writerSeq").type(JsonFieldType.NUMBER).description("글쓴이 userSeq"),
+                    fieldWithPath("data[].registerTime").type(JsonFieldType.STRING).description("등록 시간"),
+                    fieldWithPath("data[].content").type(JsonFieldType.STRING).description("댓글 내용"),
+                    fieldWithPath("data[].imgUrl").type(JsonFieldType.STRING).description("댓글 작성자 프로필 url"),
+                    fieldWithPath("data[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부"),
+                    fieldWithPath("data[].depth").type(JsonFieldType.NUMBER).description("현재 댓글 뎁스"),
+                    fieldWithPath("data[].childCommentCnt").type(JsonFieldType.NUMBER).description("하위 댓글 개수"),
+                    fieldWithPath("data[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지")
+                )
+            ))
     }
 
     @Test
@@ -143,7 +207,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                 clubSeq      = club.seq!!,
                 clubAlbumSeq = clubAlbum.seq!!,
                 user         = user,
-                body         = body
+                body         = body,
+            parentCommentSeq = null
         )).then { Unit }
 
         val result: ResultActions = this.mockMvc.perform(

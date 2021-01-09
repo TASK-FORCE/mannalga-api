@@ -124,8 +124,11 @@ include::{root}/club/album/club-album-register.adoc[]
 === [.toc-list-item]`사진첩 삭제`
 include::{root}/club/album/club-album-remove.adoc[]
 
-=== [.toc-list-item]`사진첩 댓글 조회`
+=== [.toc-list-item]`사진첩 댓글 조회 - 루트`
 include::{root}/club/album/club-album-comment-select.adoc[]
+
+=== [.toc-list-item]`사진첩 댓글 조회 - 서브`
+include::{root}/club/album/club-album-comment-select-sub.adoc[]
 
 === [.toc-list-item]`사진첩 댓글 등록`
 include::{root}/club/album/club-album-comment-register.adoc[]

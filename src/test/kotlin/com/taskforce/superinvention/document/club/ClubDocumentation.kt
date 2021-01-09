@@ -20,7 +20,6 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.app.web.dto.user.UserDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -29,7 +28,6 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonR
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -97,7 +95,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 가입`() {
 
-        `when`(clubService.getClubBySeq(232))
+        `when`(clubService.getValidClubBySeq(232))
                 .thenReturn(Club(
                         "가상 모임",
                         "가상 모임에 대한 설명",

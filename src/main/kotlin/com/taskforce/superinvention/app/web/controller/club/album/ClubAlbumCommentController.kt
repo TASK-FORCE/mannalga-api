@@ -22,19 +22,32 @@ class ClubAlbumCommentController(
     fun getClubAlbumComments(pageable: Pageable,
                              @AuthUser     user        : User,
                              @PathVariable clubSeq     : Long,
-                             @PathVariable clubAlbumSeq: Long): ResponseDto<PageDto<ClubAlbumCommentListDto>> {
+                             @PathVariable clubAlbumSeq: Long) : ResponseDto<PageDto<ClubAlbumCommentListDto>> {
+
         return ResponseDto(clubAlbumCommentService.getCommentList(user, pageable, clubAlbumSeq))
     }
 
+    // 클럽 대댓글 조회
+    @GetMapping("/comment/{parentCommentSeq}")
+    fun getClubAlbumComments(@AuthUser     user        : User,
+                             @PathVariable clubSeq     : Long,
+                             @PathVariable clubAlbumSeq: Long,
+                             @PathVariable parentCommentSeq: Long,
+                             @RequestParam(required = false) depthLimit: Long?): ResponseDto<List<ClubAlbumCommentListDto>> {
+
+        return ResponseDto(clubAlbumCommentService.getChildCommentList(user, parentCommentSeq, depthLimit ?: 1))
+    }
+
     // 클럽 댓글 등록
-    @PostMapping("/comment")
+    @PostMapping(value = ["/comment", "/comment/{parentCommentSeq}"])
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubAlbumComment(@AuthUser     user        : User,
                                  @PathVariable clubSeq     : Long,
-                                 @PathVariable clubAlbumSeq: Long,
+                                 @PathVariable clubAlbumSeq     : Long,
+                                 @PathVariable parentCommentSeq : Long?,
                                  @RequestBody  body: ClubAlbumCommentRegisterDto): ResponseDto<String> {
 
-        clubAlbumCommentService.registerComment(clubSeq, clubAlbumSeq, user, body)
+        clubAlbumCommentService.registerComment(clubSeq, clubAlbumSeq, parentCommentSeq, user, body)
         return ResponseDto(data = "")
     }
 

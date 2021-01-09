@@ -17,6 +17,7 @@ version = "SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 val queryDsl = "4.3.1"
+val blaze    = "1.5.1"
 ext {
     set("snippetsDir", file("build/generated-snippets"))
 }
@@ -52,6 +53,18 @@ dependencies {
 
     kapt("com.querydsl:querydsl-apt:${queryDsl}:jpa")
     kaptTest("com.querydsl:querydsl-apt:${queryDsl}:jpa")
+
+    implementation(platform("com.blazebit:blaze-persistence-bom:$blaze"))
+    compileOnly("com.blazebit:blaze-persistence-core-api:$blaze")
+    runtimeOnly("com.blazebit:blaze-persistence-core-impl:$blaze")
+    implementation("com.blazebit:blaze-persistence-integration-querydsl-expressions:$blaze")
+    runtimeOnly("com.blazebit:blaze-persistence-integration-hibernate-5.4:$blaze")
+
+    testImplementation(platform("com.blazebit:blaze-persistence-bom:$blaze"))
+    testCompileOnly("com.blazebit:blaze-persistence-core-api:$blaze")
+    testRuntimeOnly("com.blazebit:blaze-persistence-core-impl:$blaze")
+    testImplementation("com.blazebit:blaze-persistence-integration-querydsl-expressions:$blaze")
+    testRuntimeOnly("com.blazebit:blaze-persistence-integration-hibernate-5.4:$blaze")
 
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
