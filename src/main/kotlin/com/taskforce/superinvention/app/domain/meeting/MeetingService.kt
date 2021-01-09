@@ -37,7 +37,13 @@ class MeetingService(
     @Transactional(readOnly = true)
     fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingDto> {
 
-        val resultPage = meetingRepositoryImpl.getMeetings(clubSeq, pageable).map { e -> MeetingDto(e, currentClubUserSeq) }
+        val resultPage = meetingRepositoryImpl
+            .getMeetings(clubSeq, pageable)
+            .map { e -> MeetingDto(e, currentClubUserSeq)
+                .apply {
+                    meetingApplications = meetingApplications.filterNot { it.deleteFlag }
+                }
+            }
         return PageDto(resultPage)
     }
 
