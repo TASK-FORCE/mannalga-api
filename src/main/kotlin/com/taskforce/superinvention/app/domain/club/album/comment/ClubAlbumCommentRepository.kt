@@ -89,7 +89,7 @@ class ClubAlbumCommentRepositoryImpl: ClubAlbumCommentRepositoryCustom,
             .select(commentCTE)
             .from(commentCTE)
             .join(commentCTE.clubUser.user, user)
-            .orderBy(commentCTE.seq.desc())
+            .orderBy(commentCTE.seq.asc(), commentCTE.createdAt.asc())
             .fetch()
 
         return query
