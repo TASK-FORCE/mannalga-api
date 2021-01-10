@@ -7,11 +7,15 @@ data class ErrorResponse(
 ) {
     companion object {
         const val defaultMessage = "서버에 에러가 발생하였습니다"
+        fun sliceArrayAndJoin(arr: Array<*>): String {
+            return arr.sliceArray(0..20).joinToString (separator = "\n"){ it.toString() }
+        }
     }
 
     constructor(message: String, stackTrace: Array<StackTraceElement>) :
-            this(message, stackTrace.sliceArray(0..20).joinToString (separator = "\n"){ it.toString() })
+            this(message, sliceArrayAndJoin(stackTrace))
 
     constructor(stackTrace: Array<StackTraceElement>):
-            this(defaultMessage, stackTrace.sliceArray(0..20).joinToString (separator = "\n"){ it.toString() })
+            this(defaultMessage, sliceArrayAndJoin(stackTrace))
 }
+
