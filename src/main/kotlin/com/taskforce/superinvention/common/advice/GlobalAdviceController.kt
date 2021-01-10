@@ -29,7 +29,7 @@ class GlobalAdviceController {
     @ExceptionHandler(Exception::class)
     fun globalExceptionAdvice(e: Exception, webRequest: WebRequest): ResponseEntity<ErrorResponse> {
         LOG.error("${e.message}\n${e.stackTrace.joinToString("\n")}")
-        return ResponseEntity(ErrorResponse(e.message ?: "", e.stackTrace), HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ErrorResponse(e.stackTrace), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ExceptionHandler(value = [BindException::class, MethodArgumentNotValidException::class, HttpMessageNotReadableException::class])

@@ -12,7 +12,7 @@ class GlobalControllerExceptionHandler {
     @ExceptionHandler(AccessDeniedException::class)
     fun forbiddenWithNoAuthException(e: AccessDeniedException) : ResponseEntity<ErrorResponse> {
         return ResponseEntity(
-                ErrorResponse("접근 권한이 없습니다 : ${e.message}", e.stackTrace),
+                ErrorResponse("접근 권한이 없습니다.", e.stackTrace),
                 HttpStatus.INTERNAL_SERVER_ERROR
         )
     }

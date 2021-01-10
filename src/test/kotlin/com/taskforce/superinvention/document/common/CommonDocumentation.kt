@@ -89,7 +89,7 @@ class CommonDocumentation: ApiDocumentationTest() {
                         document("error", getDocumentRequest(), getDocumentResponse(),
                                 responseFields(
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("에러 발생 사유에 대한 메세지, 사용자 전달용"),
-                                        fieldWithPath("stackTrace").type(JsonFieldType.ARRAY).description("에러에 대한 스택 트레이스 정보 (디버깅용)")
+                                        fieldWithPath("stackTrace").type(JsonFieldType.STRING).description("에러에 대한 스택 트레이스 정보 (디버깅용)")
                                 )
                         )
                 )
