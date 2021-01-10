@@ -71,7 +71,7 @@ class UserController(
      */
     @GetMapping("/door/{username}")
     fun backdoorUserToken(@PathVariable username: String): ResponseDto<String> {
-        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        checkDevProfile()
         var user = userService.getUserByUsername(username)
         val appToken = jwtTokenProvider.createAppToken(user.userId)
 
@@ -80,8 +80,20 @@ class UserController(
 
     @GetMapping("/door")
     fun backdoorUserList(): ResponseDto<List<UserIdAndNameDto>> {
-        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        checkDevProfile()
         return ResponseDto(userService.getUserIdAndUserNameList())
+    }
+
+    @GetMapping("/door-seq/{userSeq}")
+    fun backdoorUserTokenForUserSeq(@PathVariable userSeq: Long): ResponseDto<String> {
+        checkDevProfile()
+        var user = userService.getUserBySeq(userSeq)
+        val appToken = jwtTokenProvider.createAppToken(user.userId)
+        return ResponseDto(appToken)
+    }
+
+    private fun checkDevProfile() {
+        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
     }
 }
 

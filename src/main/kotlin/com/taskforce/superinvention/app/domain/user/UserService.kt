@@ -15,6 +15,7 @@ import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -30,6 +31,7 @@ class UserService(
 ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(UserService::class.java)
+        val cannotFindUserException = BizException("존재하지 않는 유저입니다")
     }
 
     fun getKakaoUserInfo(user: User): KakaoUserInfo {
@@ -115,12 +117,16 @@ class UserService(
     @Transactional
     fun getUserByUsername(username: String): User {
         var user = userRepository.findByUserName(username)
-        if (user == null) throw BizException("존재하지 않는 유저입니다")
+        if (user == null) throw cannotFindUserException
         return user
     }
 
     fun getUserIdAndUserNameList(): List<UserIdAndNameDto> {
-        return userRepository.findAll().map(::UserIdAndNameDto)
+        return userRepository.findAll().filter { it.isRegistered }.map(::UserIdAndNameDto)
+    }
+
+    fun getUserBySeq(userSeq: Long): User {
+        return userRepository.findByIdOrNull(userSeq)?: throw cannotFindUserException
     }
 
 }
