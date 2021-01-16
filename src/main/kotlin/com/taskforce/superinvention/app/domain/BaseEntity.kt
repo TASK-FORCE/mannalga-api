@@ -10,7 +10,7 @@ import javax.persistence.*
 open class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var seq: Long? = null
 
     @CreatedDate
