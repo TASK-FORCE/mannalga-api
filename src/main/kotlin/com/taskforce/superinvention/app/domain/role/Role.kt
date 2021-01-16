@@ -10,7 +10,9 @@ class Role (
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "role_group_seq")
-        var roleGroup: RoleGroup
+        var roleGroup: RoleGroup,
+
+        var level: Int
 ): BaseEntity() {
 
         companion object {

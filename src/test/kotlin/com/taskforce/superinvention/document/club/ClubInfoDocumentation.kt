@@ -73,7 +73,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
             .apply {seq = 3}
 
         clubUser.clubUserRoles = mutableSetOf(
-                ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE")))
+                ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE"), 2))
             )
 
         region = Region(

@@ -440,7 +440,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 .thenReturn(targetUser)
 
         `when`(roleService.findBySeqList(MockitoHelper.anyObject()))
-                .thenReturn(setOf(Role(Role.RoleName.CLUB_MEMBER, RoleGroup("USER_AUTH", "USER_AUTH"))))
+                .thenReturn(setOf(Role(Role.RoleName.CLUB_MEMBER, RoleGroup("USER_AUTH", "USER_AUTH"), 2)))
 
         val result = mockMvc.perform(
                 put("/clubs/{clubSeq}/users/{clubUserSeq}/roles", 91, 3123)

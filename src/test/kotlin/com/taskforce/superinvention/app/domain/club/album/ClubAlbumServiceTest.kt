@@ -65,9 +65,9 @@ class ClubAlbumServiceTest: MockkTest() {
     private  val nonClubSeq = 111L
 
     private val roleGroup    = RoleGroup("USER", "USER_TYPE")
-    private val memberRole   = Role(Role.RoleName.CLUB_MEMBER, roleGroup)
-    private val masterRole   = Role(Role.RoleName.MASTER , roleGroup)
-    private val managerRole  = Role(Role.RoleName.MANAGER, roleGroup)
+    private val memberRole   = Role(Role.RoleName.CLUB_MEMBER, roleGroup, 2)
+    private val masterRole   = Role(Role.RoleName.MASTER , roleGroup, 4)
+    private val managerRole  = Role(Role.RoleName.MANAGER, roleGroup, 3)
 
     @BeforeEach
     fun setup() {

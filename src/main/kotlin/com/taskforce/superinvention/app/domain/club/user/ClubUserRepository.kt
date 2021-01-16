@@ -15,6 +15,7 @@ import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
+import javax.persistence.OrderBy
 
 @Repository
 interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepositoryCustom {
@@ -62,6 +63,7 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
             .join(clubUser.clubUserRoles, clubUserRole).fetchJoin()
             .join(clubUser.user, user).fetchJoin()
             .where(eqSeq(clubUser.club, clubSeq))
+            .orderBy(clubUser.clubUserRoles.any().role.level.desc(), clubUser.user.userName.asc())
 
         return query.fetch()
     }
