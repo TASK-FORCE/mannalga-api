@@ -55,7 +55,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         user = User ("12345").apply { seq = 2 }
         clubUser = ClubUser(club, user, isLiked = true).apply { seq = 110 }
         clubUser.clubUserRoles = mutableSetOf(
-            ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE")))
+            ClubUserRole(clubUser, Role(Role.RoleName.CLUB_MEMBER, RoleGroup("ROLE_NAME", "ROLE_GROUP_TYPE"), 2))
         )
 
         clubAlbum = ClubAlbum (
