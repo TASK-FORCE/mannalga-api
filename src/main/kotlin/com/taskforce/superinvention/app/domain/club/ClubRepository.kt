@@ -105,8 +105,8 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
         val clubUserRole = QClubUserRole.clubUserRole
         val roleGroup = QRoleGroup.roleGroup;
 
-        val groupConcatRole      = Expressions.stringTemplate("group_concat({0}, ' ')", clubUserRole.role.name)
-        val groupConcatRoleGroup = Expressions.stringTemplate("group_concat({0}, ' ')", clubUserRole.role.roleGroup.name)
+        val groupConcatRole      = Expressions.stringTemplate("group_concat({0})", clubUserRole.role.name)
+        val groupConcatRoleGroup = Expressions.stringTemplate("group_concat({0})", clubUserRole.role.roleGroup.name)
 
         val query =
                 from(clubUserRole)
