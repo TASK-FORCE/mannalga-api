@@ -142,6 +142,12 @@ class MeetingService(
         return MeetingApplicationDto(meetingApplication.apply { this.deleteFlag = true })
     }
 
+    @Transactional
+    fun cancelAllApplication(clubUser: ClubUser) {
+        val myApplications: List<MeetingApplication> = meetingApplicationRepository.findMyLiveMeetingApplication(clubUser)
+        myApplications.forEach { applicationCancel(clubUser, it.seq!!) }
+    }
+
 
     /**
      * 신청한 만남 정보

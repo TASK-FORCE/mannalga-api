@@ -13,6 +13,7 @@ import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
+import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDetailsDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
@@ -25,6 +26,7 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocu
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
 import io.mockk.every
+import io.mockk.just
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -150,6 +152,65 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                 )
                         )
                 )
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임 탈퇴`() {
+        // when
+        every { clubService.getClubUser(any(), any()) }.returns(clubUser)
+        every { clubService.withdraw(any(), any()) }.returns(Unit)
+
+        val result = mockMvc.perform(
+            delete("/clubs/{clubSeq}/withdraw", club.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+            .andDo(
+                document("club-withdraw",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(parameterWithName("clubSeq").description("모임 시퀀스.")),
+                    responseFields(
+                        *commonResponseField()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임 강퇴`() {
+        // when
+        every { clubService.getClubUser(any(), any()) }.returns(clubUser)
+        every { clubService.withdraw(any(), any()) }.returns(Unit)
+
+        val result = mockMvc.perform(
+            delete("/clubs/{clubSeq}/kick/{clubUserSeq}", club.seq, clubUser.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+            .andDo(
+                document("club-kick",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                        parameterWithName("clubSeq").description("모임 시퀀스."),
+                        parameterWithName("clubUserSeq").description("강퇴 대상 모임원 시퀀스.")
+                    ),
+                    responseFields(
+                        *commonResponseField()
+                    )
+                )
+            )
     }
 }
 

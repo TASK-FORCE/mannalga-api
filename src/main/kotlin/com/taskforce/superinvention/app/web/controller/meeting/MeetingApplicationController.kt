@@ -27,6 +27,9 @@ class MeetingApplicationController(
     fun meetingApplication(@AuthUser user: User, @PathVariable("clubSeq") clubSeq: Long, @PathVariable meetingSeq: Long): ResponseDto<Any> {
         // 권한체크
         val clubUser = clubService.getClubUser(clubSeq, user)?: throw BizException("모임원이 아닙니다.", HttpStatus.FORBIDDEN)
+        if (roleService.hasClubMemberAuth(clubUser)) throw BizException("모임원이 아닙니다.", HttpStatus.FORBIDDEN)
+
+        // 만남 신청
         meetingService.application(clubUser, meetingSeq)
         return ResponseDto(ResponseDto.EMPTY)
     }
