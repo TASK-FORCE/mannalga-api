@@ -100,6 +100,12 @@ include::{root}/club/myClubList.adoc[]
 === [.toc-list-item]`모임 상세조회`
 include::{root}/club/selectClubInfoDetails.adoc[]
 
+=== [.toc-list-item]`모임 탈퇴`
+include::{root}/club/withdraw.adoc[]
+
+=== [.toc-list-item]`모임원 강퇴`
+include::{root}/club/kick.adoc[]
+
 == 모임 게시판
 
 === [.toc-list-item]`모임 게시판 작성`

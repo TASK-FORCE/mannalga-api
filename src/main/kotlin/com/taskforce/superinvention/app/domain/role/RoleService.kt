@@ -66,7 +66,28 @@ class RoleService(
 
     @Transactional
     fun hasClubMemberAuth(clubSeq: Long, user: User): Boolean {
-        val clubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!)
-        return clubUser != null
+        val clubUser = clubUserRepository.findByClubSeqAndUserSeq(clubSeq, user.seq!!) ?: return false
+        val clubUserRole = getClubUserRoles(clubUser)
+        val memberAuth = setOf(Role.RoleName.MASTER, Role.RoleName.MANAGER, Role.RoleName.CLUB_MEMBER)
+
+        return clubUserRole.map { clubUserRole -> clubUserRole.role.name }
+            .any { roleName -> memberAuth.contains(roleName) }
+    }
+
+    @Transactional
+    fun hasClubMemberAuth(clubUser: ClubUser): Boolean {
+        val clubUserRole = getClubUserRoles(clubUser)
+        val memberAuth = setOf(Role.RoleName.MASTER, Role.RoleName.MANAGER, Role.RoleName.CLUB_MEMBER)
+
+        return clubUserRole.map { clubUserRole -> clubUserRole.role.name }
+            .any { roleName -> memberAuth.contains(roleName) }
+    }
+
+    @Transactional
+    fun withdrawRole(withdrawClubUser: ClubUser) {
+        clubUserRoleRepository.deleteAll(withdrawClubUser.clubUserRoles)
+        val memberRole = roleRepository.findByName(Role.RoleName.MEMBER)
+        val memberUserRole = ClubUserRole(withdrawClubUser, memberRole)
+        clubUserRoleRepository.save(memberUserRole)
     }
 }

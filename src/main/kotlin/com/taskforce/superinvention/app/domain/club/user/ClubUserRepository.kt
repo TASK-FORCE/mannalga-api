@@ -13,6 +13,7 @@ import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 import javax.persistence.OrderBy
@@ -20,8 +21,6 @@ import javax.persistence.OrderBy
 @Repository
 interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepositoryCustom {
     fun findBySeq(seq: Long): ClubUser
-    fun findByClub(club: Club): List<ClubUser>
-    fun findByClubSeq(clubSeq: Long): List<ClubUser>
     fun findByClubAndUser(club: Club, user: User): ClubUser?
     fun findByClubSeqAndUser(clubSeq: Long, user: User): ClubUser?
     fun findByClubSeqAndUserSeq(clubSeq: Long, userSeq: Long): ClubUser?
@@ -30,6 +29,8 @@ interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepository
 interface ClubUserRepositoryCustom {
     fun findClubUserWithRole(clubSeq: Long, pUser: User): ClubUser?
     fun findClubUsersInClub(clubSeq: Long): List<ClubUser>
+    fun findByClub(club: Club): List<ClubUser>
+    fun findByClubSeq(clubSeq: Long): List<ClubUser>
     fun findManagersByClubSeq(clubSeq: Long): MutableList<ClubUser>
 }
 
@@ -58,11 +59,14 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
         var clubUserRole = QClubUserRole.clubUserRole
         var clubUser = QClubUser.clubUser
         var user = QUser.user
+        val role = QRole.role
 
         val query = from(clubUser)
             .join(clubUser.clubUserRoles, clubUserRole).fetchJoin()
             .join(clubUser.user, user).fetchJoin()
-            .where(eqSeq(clubUser.club, clubSeq))
+            .leftJoin(clubUser.clubUserRoles, clubUserRole).fetchJoin()
+            .leftJoin(clubUserRole.role, role).fetchJoin()
+            .where(eqSeq(clubUser.club, clubSeq), role.name.`in`(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER, Role.RoleName.MASTER))
             .orderBy(clubUser.clubUserRoles.any().role.level.desc(), clubUser.user.userName.asc())
 
         return query.fetch()
@@ -82,5 +86,30 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
                         QClub.club.seq.eq(clubSeq),
                         QRole.role.name.`in`(Role.RoleName.MANAGER, Role.RoleName.MASTER)
                 ).fetch()?: mutableListOf()
+    }
+
+    override fun findByClub(targetClub: Club): List<ClubUser> {
+        val club = QClub.club
+        val clubUser = QClubUser.clubUser
+        val user = QUser.user
+        val clubUserRole = QClubUserRole.clubUserRole
+        val role = QRole.role
+
+        return from(clubUser)
+            .join(clubUser.club, club)
+            .join(clubUser.user, user)
+            .leftJoin(clubUser.clubUserRoles, clubUserRole).fetchJoin()
+            .leftJoin(clubUserRole.role, role).fetchJoin()
+            .where(club.eq(targetClub), role.name.`in`(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER, Role.RoleName.MASTER))
+            .fetch()
+
+    }
+
+    override fun findByClubSeq(clubSeq: Long): List<ClubUser> {
+        return findByClub(from(QClub.club).where(QClub.club.seq.eq(clubSeq)).fetchOne())
+    }
+
+    private fun isClubUser() {
+
     }
 }

@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
+import com.taskforce.superinvention.app.domain.meeting.MeetingService
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
 import com.taskforce.superinvention.app.domain.role.Role
@@ -25,6 +26,7 @@ import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -47,6 +49,9 @@ class ClubService(
         private var clubRegionRepository: ClubRegionRepository,
         private var clubUserRoleRepository: ClubUserRoleRepository
 ) {
+    @Autowired
+    lateinit var meetingService: MeetingService
+
     fun getValidClubBySeq(clubSeq: Long): Club {
         return clubRepository.findByIdOrNull(clubSeq)
             ?: throw ClubNotFoundException()
@@ -275,5 +280,35 @@ class ClubService(
     fun getManagers(clubSeq: Long): List<ClubUserWithUserDto> {
         val clubManagers = clubUserRepository.findManagersByClubSeq(clubSeq)
         return clubManagers.map(::ClubUserWithUserDto)
+    }
+
+    @Transactional
+    fun withdraw(clubUserSeq: Long, actorClubUser: Long) {
+        val withdrawClubUser =
+            clubUserRepository.findByIdOrNull(clubUserSeq) ?: throw BizException("$clubUserSeq 번 모임원은 존재하지 않습니다")
+        val actorClubUser =
+            clubUserRepository.findByIdOrNull(actorClubUser) ?: throw BizException("$actorClubUser 번 모임원은 존재하지 않습니다")
+
+        // 이미 탈퇴한 유저는 아닌지 검사한다
+        if (!roleService.hasClubMemberAuth(withdrawClubUser)) throw BizException("이미 탈퇴한 유저입니다")
+
+        // 모임장은 탈퇴 불가. 모임장 탈퇴 전 모임장을 다른 모임원에게 넘겨야 한다
+        if (roleService.hasClubMasterAuth(withdrawClubUser)) throw BizException("모임장은 탈퇴할 수 없습니다. 모임 삭제 또는 모임장을 변경해주세요")
+
+        // 다른 모임원에 의한 강퇴일 때
+        if (withdrawClubUser != actorClubUser) {
+            // 매니저 이상만 모임원에 대한 탈퇴처리가 가능하다
+            if (!roleService.hasClubManagerAuth(actorClubUser)) throw BizException("모임원 강제 탈퇴 처리는 매니저 이상만 할 수 있습니다")
+
+            // 매니저가 매니저 퇴출, 매니저가 모임장 퇴출은 불가능하다
+            if (roleService.hasClubManagerAuth(withdrawClubUser) && !roleService.hasClubMasterAuth(actorClubUser))
+                throw BizException("매니저 이상 권한자는 현재 권한으로 강제탈퇴 처리할 수 없습니다")
+        }
+
+        // 신청된 만남 모두 취소
+        meetingService.cancelAllApplication(withdrawClubUser)
+        
+        // 모임원 권한 회수
+        roleService.withdrawRole(withdrawClubUser)
     }
 }

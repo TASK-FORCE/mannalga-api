@@ -153,4 +153,18 @@ class ClubController(
     fun getMyClubList(@AuthUser user: User, pageable: Pageable): ResponseDto<PageDto<ClubUserWithClubDetailsDto>> {
         return ResponseDto(data = clubService.getUserClubList(user, pageable))
     }
+
+    @DeleteMapping("/{clubSeq}/withdraw")
+    fun withdrawClubUserSelf(@AuthUser user: User, @PathVariable clubSeq: Long): ResponseDto<String> {
+        val clubUser = clubService.getClubUser(clubSeq, user) ?: throw BizException("존재하지 않는 모임원입니다.", HttpStatus.NOT_FOUND)
+        clubService.withdraw(clubUser.seq!!, clubUser.seq!!)
+        return ResponseDto(ResponseDto.EMPTY)
+    }
+
+    @DeleteMapping("/{clubSeq}/kick/{clubUserSeq}")
+    fun withdrawClubUser(@AuthUser user: User, @PathVariable clubSeq: Long, @PathVariable clubUserSeq: Long): ResponseDto<String> {
+        val actor = clubService.getClubUser(clubSeq, user) ?: throw BizException("존재하지 않는 모임원입니다.", HttpStatus.NOT_FOUND)
+        clubService.withdraw(clubUserSeq, actor.seq!!)
+        return ResponseDto(ResponseDto.EMPTY)
+    }
 }
