@@ -90,6 +90,7 @@ class MeetingApplicationDocumentation: ApiDocumentationTest() {
     fun `만남 신청`() {
         // given
         `when`(clubService.getClubUser(anyLong(), MockitoHelper.anyObject())).thenReturn(clubUser)
+        `when`(roleService.hasClubMemberAuth(MockitoHelper.anyObject())).thenReturn(true)
         `when`(meetingService.application(MockitoHelper.anyObject(), anyLong())).thenReturn(MeetingApplicationDto(meetingApplication))
 
         // when
