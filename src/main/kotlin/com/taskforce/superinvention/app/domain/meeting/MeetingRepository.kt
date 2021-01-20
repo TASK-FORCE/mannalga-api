@@ -3,7 +3,6 @@ package com.taskforce.superinvention.app.domain.meeting
 import com.taskforce.superinvention.app.domain.club.QClub
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.QClubUser
-import com.taskforce.superinvention.app.domain.user.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -44,13 +43,18 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
     }
 
     @Transactional
-    override fun findMeetingApplicationByUserAndMeetingSeq(clubUser: ClubUser, meetingSeq: Long): MeetingApplication {
-        return from(QMeetingApplication.meetingApplication)
-                .join(QMeetingApplication.meetingApplication.meeting, QMeeting.meeting)
-                .join(QMeeting.meeting.club, QClub.club)
-                .join(QClub.club.clubUser, QClubUser.clubUser)
-                .where(QClubUser.clubUser.seq.eq(clubUser.seq)
-                        , QMeeting.meeting.seq.eq(meetingSeq))
-                .fetchOne()
+    override fun findMeetingApplicationByUserAndMeetingSeq(clubUserParam: ClubUser, meetingSeq: Long): MeetingApplication {
+        val meetingApplication = QMeetingApplication.meetingApplication
+        val meeting = QMeeting.meeting
+        val clubUser = QClubUser.clubUser
+        val club = QClub.club
+
+        return from(meetingApplication)
+            .join(meetingApplication.meeting, meeting)
+            .join(meetingApplication.clubUser, clubUser)
+            .join(meeting.club, club)
+            .where(
+                clubUser.seq.eq(clubUserParam.seq), meeting.seq.eq(meetingSeq)
+            ).fetchOne()
     }
 }
