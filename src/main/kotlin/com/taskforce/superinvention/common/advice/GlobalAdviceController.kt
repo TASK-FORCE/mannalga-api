@@ -23,6 +23,7 @@ class GlobalAdviceController {
 
     @ExceptionHandler(BizException::class)
     fun bizExceptionAdvice(e: BizException, webRequest: WebRequest): ResponseEntity<ErrorResponse> {
+        LOG.error("${e.message}\n${e.stackTrace.joinToString("\n")}")
         return ResponseEntity(ErrorResponse(e.message), e.httpStatus)
     }
 
@@ -34,6 +35,7 @@ class GlobalAdviceController {
 
     @ExceptionHandler(value = [BindException::class, MethodArgumentNotValidException::class, HttpMessageNotReadableException::class])
     fun handleMethodArgumentNotValidException(e: Exception): ResponseEntity<*> {
+        LOG.error("${e.message}\n${e.stackTrace.joinToString("\n")}")
 
         var errorMessage: String = when (e) {
             is BindException -> {
