@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
@@ -32,7 +33,8 @@ class ClubAlbumService(
         private val clubUserService: ClubUserService,
         private val clubUserRepository : ClubUserRepository,
         private val clubAlbumRepository: ClubAlbumRepository,
-        private val clubRepository: ClubRepository
+        private val clubRepository: ClubRepository,
+        private val clubAlbumLikeRepository: ClubAlbumLikeRepository
 ) {
 
     companion object {
@@ -69,16 +71,23 @@ class ClubAlbumService(
     }
 
     @Transactional(readOnly = true)
-    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption?, pageable: Pageable?): PageDto<ClubAlbumListDto> {
-        val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable!!)
+    fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): PageDto<ClubAlbumListDto> {
+        val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable)
             .map(::ClubAlbumListDto)
 
         return PageDto(result)
     }
 
     @Transactional(readOnly = true)
-    fun getClubAlbumDto(clubAlbumSeq: Long?): ClubAlbumDto {
-        return ClubAlbumDto(getClubValidAlbumBySeq(clubAlbumSeq))
+    fun getClubAlbumDto(user: User?, clubSeq: Long, clubAlbumSeq: Long?): ClubAlbumDto {
+
+        // 조회자가 좋아요를 눌렀을 경우
+        val isLiked = user
+            ?.let { clubUserRepository.findByClubSeqAndUser(clubSeq, user) }
+            ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
+            ?.let { true } ?: false
+
+        return ClubAlbumDto(getClubValidAlbumBySeq(clubAlbumSeq), isLiked)
     }
 
     @Transactional

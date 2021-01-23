@@ -37,9 +37,7 @@ class ClubAlbumCommentService(
         val pageList = commentRepository.findRootCommentListWithWriter(pageable!!, clubAlbumSeq)
 
         return if(user != null) {
-            PageDto(pageList.map{ comment -> ClubAlbumCommentListDto(
-                comment, user
-            )})
+            PageDto(pageList.map{ comment -> ClubAlbumCommentListDto(comment, user)})
         } else {
             PageDto(pageList.map(::ClubAlbumCommentListDto))
         }
@@ -57,7 +55,7 @@ class ClubAlbumCommentService(
         )
 
         return if(user != null) {
-            pageList.map{ comment -> ClubAlbumCommentListDto(comment, user)}
+            pageList.map{ comment -> ClubAlbumCommentListDto(comment, user) }
         } else {
             pageList.map(::ClubAlbumCommentListDto)
         }

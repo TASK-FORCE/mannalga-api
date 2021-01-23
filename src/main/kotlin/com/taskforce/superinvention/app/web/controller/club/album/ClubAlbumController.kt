@@ -29,10 +29,11 @@ class ClubAlbumController(
 
 
     @GetMapping("/{clubAlbumSeq}")
-    fun gerClubAlbum(@PathVariable clubSeq      :Long,
+    fun gerClubAlbum(@AuthUser     user: User?,
+                     @PathVariable clubSeq      :Long,
                      @PathVariable clubAlbumSeq :Long): ResponseDto<ClubAlbumDto> {
 
-        return ResponseDto(clubAlbumService.getClubAlbumDto(clubAlbumSeq))
+        return ResponseDto(clubAlbumService.getClubAlbumDto(user, clubSeq, clubAlbumSeq))
     }
 
      @PostMapping

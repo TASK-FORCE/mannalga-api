@@ -18,16 +18,18 @@ data class ClubAlbumDto(
         val imgUrl     : String = "",
         val likeCnt    : Long = 0,
         val commentCnt : Long = 0,
-        val writer     : ClubAlbumWriter
+        val writer     : ClubAlbumWriter,
+        val isLiked    : Boolean
 ) {
-        constructor(clubAlbum: ClubAlbum): this (
+        constructor(clubAlbum: ClubAlbum, isLiked: Boolean): this (
                 albumSeq   = clubAlbum.seq!!,
                 title      = clubAlbum.title,
                 file_name  = clubAlbum.file_name,
                 imgUrl     = clubAlbum.img_url,
                 likeCnt    = clubAlbum.albumLikeCnt    ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
-                writer     = ClubAlbumWriter(clubAlbum.writer)
+                writer     = ClubAlbumWriter(clubAlbum.writer),
+                isLiked    = isLiked
         )
 }
 

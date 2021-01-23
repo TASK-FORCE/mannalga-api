@@ -1,12 +1,15 @@
 package com.taskforce.superinvention.document.club.album
 
+import com.ninjasquad.springmockk.MockkBean
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
+import com.taskforce.superinvention.app.domain.club.album.ClubAlbumService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumController
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
@@ -17,10 +20,11 @@ import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonR
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
-import com.taskforce.superinvention.config.test.ApiDocumentationTest
+import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
+import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.*
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
@@ -36,7 +40,11 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
-class ClubAlbumDocumentation: ApiDocumentationTest() {
+@WebMvcTest(ClubAlbumController::class)
+class ClubAlbumDocumentation: ApiDocumentationTestV2() {
+
+    @MockkBean(relaxed = true)
+    lateinit var clubAlbumService: ClubAlbumService
 
     lateinit var club: Club
     lateinit var user: User
@@ -68,7 +76,6 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         ).apply { seq = 100 }
     }
 
-
     @Test
     fun `모임 사진첩 사진 목록 조회`() {
 
@@ -82,11 +89,12 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         val clubAlbums: Page<ClubAlbumListDto> = PageImpl(clubAlbumList, pageable, clubAlbumList.size.toLong())
 
         // when
-        `when`(clubAlbumService.getClubAlbumList(
-                eq(club.seq!!),
-                argThat{ search -> search!!.title == "사진첩" },
-                eq(pageable)
-        )).thenReturn(PageDto(clubAlbums))
+        every {
+            clubAlbumService.getClubAlbumList(
+                club.seq!!,
+                match { search -> search.title == "사진첩" },
+                pageable
+        )}.returns(PageDto(clubAlbums))
 
         val result: ResultActions = this.mockMvc.perform(
                 get("/club/{clubSeq}/album", club.seq)
@@ -128,8 +136,8 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     fun `모임 사진첩 사진 단건 조회`() {
 
         // given
-        `when`(clubAlbumService.getClubAlbumDto(clubAlbum.seq))
-            .thenReturn(ClubAlbumDto(clubAlbum))
+        every {clubAlbumService.getClubAlbumDto(any(), club.seq!!, clubAlbum.seq)}
+            .returns(ClubAlbumDto(clubAlbum = clubAlbum, isLiked = false))
 
         // when
 
@@ -153,6 +161,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
                     fieldWithPath("data.title").type(JsonFieldType.STRING).description("사진첩 제목"),
                     fieldWithPath("data.file_name").type(JsonFieldType.STRING).description("파일 명"),
                     fieldWithPath("data.imgUrl").type(JsonFieldType.STRING).description("사진첩 이미지 URL"),
+                    fieldWithPath("data.isLiked").type(JsonFieldType.BOOLEAN).description("조회자가 좋아요를 눌렀는지"),
                     fieldWithPath("data.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
                     fieldWithPath("data.commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
                     fieldWithPath("data.writer.writerUserSeq").type(JsonFieldType.NUMBER).description("댓글 개수"),
@@ -178,7 +187,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
         )
 
         // when
-        `when`(clubAlbumService.registerClubAlbum(eq(user), eq(club.seq!!), eq(body))).then{ Unit }
+//        every { (clubAlbumService.registerClubAlbum(eq(user), eq(club.seq!!), eq(body))) }.then
 
         val result: ResultActions = this.mockMvc.perform(
                 post("/club/{clubSeq}/album", club.seq!!)
@@ -209,7 +218,7 @@ class ClubAlbumDocumentation: ApiDocumentationTest() {
     fun `모임 게시판 글 목록 삭제`() {
 
         //  when
-        `when`(clubAlbumService.removeClubAlbum(user, club.seq!!, clubAlbum.seq!!)).then{ Unit }
+//        every { (clubAlbumService.removeClubAlbum(user, club.seq!!, clubAlbum.seq!!) }.then{ Unit }
 
         val result: ResultActions = this.mockMvc.perform(
                 delete("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)

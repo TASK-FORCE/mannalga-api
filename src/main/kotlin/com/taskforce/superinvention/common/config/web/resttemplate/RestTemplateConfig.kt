@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.common.config.web
+package com.taskforce.superinvention.common.config.web.resttemplate
 
 import org.apache.http.client.HttpClient
 import org.apache.http.impl.client.HttpClientBuilder

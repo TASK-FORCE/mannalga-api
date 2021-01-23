@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 
-@Disabled
+
 class ClubBoardServiceTest: IntegrationTest()  {
 
     @Autowired
@@ -25,6 +25,7 @@ class ClubBoardServiceTest: IntegrationTest()  {
     @Autowired
     lateinit var clubRepository: ClubRepository
 
+    @Disabled
     @Test
     fun `게시판 리스트 조회`() {
 
@@ -41,6 +42,7 @@ class ClubBoardServiceTest: IntegrationTest()  {
         print(searchInList)
     }
 
+    @Disabled
     @Test
     fun `게시판 글 등록`() {
         val user = userRepository.findByUserId("1439528597")!!
@@ -69,6 +71,7 @@ class ClubBoardServiceTest: IntegrationTest()  {
         sut.registerClubBoard(user, clubSeq, requestBody);
     }
 
+    @Disabled
     @Test
     fun `게시판 글 삭제`() {
         val user = userRepository.findByUserId("1439528597")!!
@@ -101,6 +104,7 @@ class ClubBoardServiceTest: IntegrationTest()  {
         sut.deleteClubBoard(user, clubBoardSeq = clubBoard.seq!!);
     }
 
+    @Disabled
     @Test
     fun `작성자 또는 매니저가 아니면 게시글을 지우지 못함`() {
 
