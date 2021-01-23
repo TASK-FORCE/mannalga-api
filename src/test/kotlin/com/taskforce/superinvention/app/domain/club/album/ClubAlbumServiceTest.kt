@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.club.album
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
@@ -48,6 +49,9 @@ class ClubAlbumServiceTest: MockkTest() {
 
     @MockK
     lateinit var roleService: RoleService
+
+    @MockK
+    lateinit var clubAlbumLikeRepository: ClubAlbumLikeRepository
 
     lateinit var nonClubUser   : User
     lateinit var writer        : User

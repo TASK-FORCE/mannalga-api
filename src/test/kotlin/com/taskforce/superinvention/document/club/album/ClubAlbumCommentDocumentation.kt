@@ -134,6 +134,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                         responseFields(
                                 *commonResponseField(),
                                 *pageFieldDescriptor(),
+                                fieldWithPath("data.content[].commentSeq").type(JsonFieldType.NUMBER).description("댓글 seq"),
                                 fieldWithPath("data.content[].writer").type(JsonFieldType.STRING).description("글쓴이 이름"),
                                 fieldWithPath("data.content[].writeClubUserSeq").type(JsonFieldType.NUMBER).description("글쓴이  clubUserSeq"),
                                 fieldWithPath("data.content[].writerSeq").type(JsonFieldType.NUMBER).description("글쓴이 userSeq"),
@@ -181,6 +182,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                 ),
                 responseFields(
                     *commonResponseField(),
+                    fieldWithPath("data[].commentSeq").type(JsonFieldType.NUMBER).description("댓글 seq"),
                     fieldWithPath("data[].writer").type(JsonFieldType.STRING).description("글쓴이 이름"),
                     fieldWithPath("data[].writeClubUserSeq").type(JsonFieldType.NUMBER).description("글쓴이  clubUserSeq"),
                     fieldWithPath("data[].writerSeq").type(JsonFieldType.NUMBER).description("글쓴이 userSeq"),

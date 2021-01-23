@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository
 interface ClubAlbumLikeRepository: JpaRepository<ClubAlbumLike, Long>, ClubAlbumLikeCustom {
 
     fun findByClubAlbumAndClubUser(clubAlbum: ClubAlbum, clubUser: ClubUser): ClubAlbumLike?
+    fun findByClubAlbumSeqAndClubUser(clubAlbumSeq: Long, clubUser: ClubUser): ClubAlbumLike?
 }
 
 interface ClubAlbumLikeCustom {

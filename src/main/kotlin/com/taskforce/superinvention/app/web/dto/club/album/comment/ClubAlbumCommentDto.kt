@@ -10,6 +10,7 @@ data class ClubAlbumCommentRegisterDto(
 )
 
 data class ClubAlbumCommentListDto(
+        val commentSeq: Long,
         val writer: String,
         val writerSeq: Long,
         val writeClubUserSeq: Long,
@@ -23,6 +24,7 @@ data class ClubAlbumCommentListDto(
 ) {
 
     constructor(clubAlbumComment: ClubAlbumComment) :this(
+            commentSeq       = clubAlbumComment.seq!!,
             content          = clubAlbumComment.content,
             writer           = clubAlbumComment.clubUser.user.userName ?: "",
             registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
@@ -40,6 +42,7 @@ data class ClubAlbumCommentListDto(
     }
 
     constructor(clubAlbumComment: ClubAlbumComment, user: User): this(
+        commentSeq       = clubAlbumComment.seq!!,
         content          = clubAlbumComment.content,
         writer           = clubAlbumComment.clubUser.user.userName ?: "",
         registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
@@ -57,6 +60,7 @@ data class ClubAlbumCommentListDto(
     }
 
     constructor(clubAlbumComment: ClubAlbumCommentCTE) :this(
+        commentSeq       = clubAlbumComment.seq!!,
         content          = clubAlbumComment.content,
         writer           = clubAlbumComment.clubUser.user.userName ?: "",
         registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",
@@ -69,6 +73,7 @@ data class ClubAlbumCommentListDto(
     )
 
     constructor(clubAlbumComment: ClubAlbumCommentCTE, user: User): this(
+        commentSeq       = clubAlbumComment.seq!!,
         content          = clubAlbumComment.content,
         writer           = clubAlbumComment.clubUser.user.userName ?: "",
         registerTime     = clubAlbumComment.createdAt?.toBaseDateTime() ?: "",

@@ -10,7 +10,6 @@ import java.sql.SQLException
 @Service
 class RoleService(
         private val roleRepository: RoleRepository,
-        private val roleGroupRepository: RoleGroupRepository,
         private val clubUserRoleRepository: ClubUserRoleRepository,
         private val clubUserRepository: ClubUserRepository
 ) {
