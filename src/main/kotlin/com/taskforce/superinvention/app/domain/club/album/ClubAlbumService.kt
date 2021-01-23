@@ -82,18 +82,10 @@ class ClubAlbumService(
     fun getClubAlbumDto(user: User?, clubSeq: Long, clubAlbumSeq: Long?): ClubAlbumDto {
 
         // 조회자가 좋아요를 눌렀을 경우
-        var isLiked = false
-        if(user != null) {
-            val clubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
-
-            if(clubUser != null) {
-                val clubAlbumLike = clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser)
-
-                if(clubAlbumLike != null) {
-                    isLiked = true
-                }
-            }
-        }
+        val isLiked = user
+            ?.let { clubUserRepository.findByClubSeqAndUser(clubSeq, user) }
+            ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
+            ?.let { true } ?: false
 
         return ClubAlbumDto(getClubValidAlbumBySeq(clubAlbumSeq), isLiked)
     }

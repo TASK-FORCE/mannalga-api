@@ -76,7 +76,6 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
         ).apply { seq = 100 }
     }
 
-
     @Test
     fun `모임 사진첩 사진 목록 조회`() {
 
