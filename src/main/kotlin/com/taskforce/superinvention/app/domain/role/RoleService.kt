@@ -43,6 +43,10 @@ class RoleService(
         return roleRepository.findBySeqIn(roleSeqList);
     }
 
+    fun findByRoleNameIn(roleNameList: Set<Role.RoleName>): Set<Role> {
+        return roleRepository.findByNameIn(roleNameList)
+    }
+
     fun hasClubMasterAuth(clubUser: ClubUser): Boolean {
         return getClubUserRoles(clubUser).any { clubUserRole -> Role.RoleName.MASTER == clubUserRole.role.name }
     }
@@ -88,5 +92,15 @@ class RoleService(
         val memberRole = roleRepository.findByName(Role.RoleName.MEMBER)
         val memberUserRole = ClubUserRole(withdrawClubUser, memberRole)
         clubUserRoleRepository.save(memberUserRole)
+    }
+
+    @Transactional
+    fun changeClubMaster(clubSeq: Long, targetClubUser: ClubUser) {
+        // MASTER 권한 제거
+        val clubMaster = clubUserRepository.findMasterByClubSeq(clubSeq)
+        changeClubUserRoles(clubMaster, setOf(roleRepository.findByName(Role.RoleName.CLUB_MEMBER)))
+
+        // MASTER 권한 생성
+        changeClubUserRoles(targetClubUser, setOf(roleRepository.findByName(Role.RoleName.MASTER)))
     }
 }

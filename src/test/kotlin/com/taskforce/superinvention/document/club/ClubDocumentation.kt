@@ -404,7 +404,7 @@ class ClubDocumentation: ApiDocumentationTest() {
     @WithMockUser(authorities = [Role.MEMBER])
     fun `모임원 권한 변경`() {
         // given
-        val requestBody = setOf<Long>(4)    // MANAGER
+        val requestBody = setOf<String>("MANAGER")    // MANAGER
 
         val currentUser = ClubUser(
                 Club(
@@ -439,7 +439,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         `when`(clubService.getClubUserByClubUserSeq(ArgumentMatchers.anyLong()))
                 .thenReturn(targetUser)
 
-        `when`(roleService.findBySeqList(MockitoHelper.anyObject()))
+        `when`(roleService.findByRoleNameIn(MockitoHelper.anyObject()))
                 .thenReturn(setOf(Role(Role.RoleName.CLUB_MEMBER, RoleGroup("USER_AUTH", "USER_AUTH"), 2)))
 
         val result = mockMvc.perform(
@@ -456,10 +456,11 @@ class ClubDocumentation: ApiDocumentationTest() {
                         document("changeClubUserRole", getDocumentRequest(), getDocumentResponse(),
                                 pathParameters(parameterWithName("clubSeq").description("모임 시퀀스"),
                                         parameterWithName("clubUserSeq").description("모임원 시퀀스")),
+                                requestFields(
+                                    fieldWithPath("[]").type(JsonFieldType.ARRAY).description("권한 코드")
+                                ),
                                 responseFields(
-                                        *commonResponseField(),
-                                        fieldWithPath("data[].name").type(JsonFieldType.STRING).description("권한 이름"),
-                                        fieldWithPath("data[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름")
+                                    *commonResponseField()
                                 )
                         )
                 )

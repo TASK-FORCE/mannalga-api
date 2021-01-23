@@ -15,7 +15,6 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
@@ -123,14 +122,14 @@ class ClubController(
     fun changeClubUserRole(@AuthUser user: User,
                            @PathVariable clubSeq: Long,
                            @PathVariable clubUserSeq: Long,
-                           @RequestBody roleSeqList: Set<Long>): ResponseDto<Set<RoleDto>> {
+                           @RequestBody roleNameList: Set<Role.RoleName>): ResponseDto<String> {
         // 현재 유저가 모임에 가입은 했는지
         val currentClubUser = clubService.getClubUser(clubSeq, user) ?: throw BizException("권한이 없습니다.", HttpStatus.FORBIDDEN)
 
         // 모임장인지
-        val hasClubManagerAuth = roleService.hasClubMasterAuth(currentClubUser)
+        val hasClubMasterAuth = roleService.hasClubMasterAuth(currentClubUser)
 
-        if (!hasClubManagerAuth) throw BizException("모임원 권한 변경은 모임장만 가능합니다.", HttpStatus.FORBIDDEN)
+        if (!hasClubMasterAuth) throw BizException("모임원 권한 변경은 모임장만 가능합니다.", HttpStatus.FORBIDDEN)
 
         // 타겟으로 잡은 대상이 현재 모임원인지
         val targetClubUser: ClubUser = clubService.getClubUserByClubUserSeq(clubUserSeq)
@@ -142,10 +141,16 @@ class ClubController(
             throw BizException("모임장의 권한을 변경할 수 없습니다", HttpStatus.CONFLICT)
         }
 
-        val roles: Set<Role> =  roleService.findBySeqList(roleSeqList)
-        roleService.changeClubUserRoles(targetClubUser, roles)
+        // 모임장이 다른 모임원을 모임장으로 변경하였을 경우 모임장 권한 양도
+        if (roleNameList.contains(Role.RoleName.MASTER)) {
+            roleService.changeClubMaster(clubSeq, targetClubUser)
+        } else {
+            val roles: Set<Role> =  roleService.findByRoleNameIn(roleNameList)
+            roleService.changeClubUserRoles(targetClubUser, roles)
+        }
 
-        return ResponseDto(data = roles.map { role -> RoleDto(role) }.toSet())
+
+        return ResponseDto(ResponseDto.EMPTY)
     }
 
     @GetMapping("/my")

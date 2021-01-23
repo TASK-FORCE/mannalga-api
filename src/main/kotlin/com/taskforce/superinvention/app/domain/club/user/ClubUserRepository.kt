@@ -32,6 +32,7 @@ interface ClubUserRepositoryCustom {
     fun findByClub(club: Club): List<ClubUser>
     fun findByClubSeq(clubSeq: Long): List<ClubUser>
     fun findManagersByClubSeq(clubSeq: Long): MutableList<ClubUser>
+    fun findMasterByClubSeq(clubSeq: Long): ClubUser
 }
 
 @Repository
@@ -109,7 +110,15 @@ class ClubUserRepositoryImpl: ClubUserRepositoryCustom,
         return findByClub(from(QClub.club).where(QClub.club.seq.eq(clubSeq)).fetchOne())
     }
 
-    private fun isClubUser() {
-
+    override fun findMasterByClubSeq(clubSeq: Long): ClubUser {
+        return from(QClubUser.clubUser)
+            .leftJoin(QClubUser.clubUser.clubUserRoles, QClubUserRole.clubUserRole).fetchJoin()
+            .leftJoin(QClubUserRole.clubUserRole.role, QRole.role).fetchJoin()
+            .join(QClubUser.clubUser.club, QClub.club)
+            .join(QClubUser.clubUser.user, QUser.user)
+            .where(
+                QClub.club.seq.eq(clubSeq),
+                QRole.role.name.`in`(Role.RoleName.MASTER)
+            ).fetchOne()
     }
 }
