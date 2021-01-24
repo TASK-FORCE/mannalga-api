@@ -34,7 +34,7 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
                 )
 
         val fetchResult = query
-                .orderBy(QMeeting.meeting.startTimestamp.desc())
+                .orderBy(QMeeting.meeting.seq.desc())
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
                 .fetchResults()

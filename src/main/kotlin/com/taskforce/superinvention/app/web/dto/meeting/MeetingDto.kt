@@ -33,6 +33,7 @@ class MeetingDto {
     var region: String?
     var regionURL: String?
     var cost: Int?
+    var isOpen: Boolean
 
 
     constructor(meeting: Meeting, currentClubUserSeq: Long?){
@@ -48,6 +49,7 @@ class MeetingDto {
         region = meeting.region
         regionURL = meeting.regionURL
         cost = meeting.cost
+        isOpen = meeting.endTimestamp.isAfter(LocalDateTime.now())
 
         meetingApplications = meeting.meetingApplications.map(::MeetingApplicationDto)
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
@@ -69,7 +71,8 @@ class MeetingDto {
             isCurrentUserApplicationMeeting: Boolean,
             region: String?,
             regionURL: String?,
-            cost: Int?
+            cost: Int?,
+            isOpen: Boolean
     ) {
         this.seq = seq
         this.title = title
@@ -86,6 +89,7 @@ class MeetingDto {
         this.region = region
         this.regionURL = regionURL
         this.cost = cost
+        this.isOpen = isOpen
     }
 
 
