@@ -25,4 +25,6 @@ class Meeting(
         @OneToMany(mappedBy = "meeting")
         @OrderBy("deleteFlag desc")
         var meetingApplications: List<MeetingApplication> = listOf()
+
+        fun isOpen(): Boolean = endTimestamp.isAfter(LocalDateTime.now())
 }

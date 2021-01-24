@@ -10,6 +10,9 @@ import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationStatus
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingAlreadyApplicationException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingIsClosedException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingMemberOverflowException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -28,6 +31,9 @@ class MeetingService(
 
     val meetingNotFountException = BizException("존재하지 않는 만남입니다", HttpStatus.NOT_FOUND)
     val meetingApplicationNotFoundException = BizException("존재하지 않는 만남 신청입니다.",HttpStatus.NOT_FOUND)
+    val meetingIsClosedException = MeetingIsClosedException()
+    val alreadyCancelException = BizException("이미 취소한 만남 신청입니다", HttpStatus.CONFLICT)
+    val isNotCLubMeetingException = BizException("해당 모임의 만남이 아닙니다", HttpStatus.FORBIDDEN)
 
     fun getNotDeletedMeetingEntity(meetingSeq: Long): Meeting = meetingRepository.findById(meetingSeq)
         .filter{!it.deleteFlag}
@@ -94,8 +100,7 @@ class MeetingService(
     @Transactional
     fun checkClubMeeting(clubSeq: Long, meetingSeq: Long) {
         val meeting = getNotDeletedMeetingEntity(meetingSeq)
-        if (meeting.club.seq!! != clubSeq)
-            throw BizException("해당 모임의 만남이 아닙니다", HttpStatus.FORBIDDEN)
+        if (meeting.club.seq!! != clubSeq) throw isNotCLubMeetingException
     }
 
     @Transactional
@@ -111,9 +116,12 @@ class MeetingService(
     fun application(clubUser: ClubUser, meetingSeq: Long): MeetingApplicationDto {
         val meeting = getNotDeletedMeetingEntity(meetingSeq)
 
+        // 만남이 현재 활성상태인지 확인
+        if (!meeting.isOpen()) throw meetingIsClosedException
+
         // 참석자 최대인원 확인
         if (meeting.maximumNumber != null && meeting.maximumNumber!! <= meeting.meetingApplications.filter { e -> !e.deleteFlag }.groupBy { e -> e.clubUser }.count())
-            throw BizException("인원이 다 차서 신청할 수 없습니다. 최대 인원은 ${meeting.maximumNumber}명 입니다.", HttpStatus.CONFLICT)
+            throw MeetingMemberOverflowException("인원이 다 차서 신청할 수 없습니다. 최대 인원은 ${meeting.maximumNumber}명 입니다.")
 
         // 이미 신청하였으면 신청 못하게 막는다
         val application = meetingApplicationRepository.findByClubUserAndMeeting(clubUser, meeting)
@@ -121,7 +129,7 @@ class MeetingService(
             return if (application.deleteFlag)
                 MeetingApplicationDto(application.apply { this.deleteFlag = false })
             else
-                throw BizException("이미 신청한 만남입니다. 신청한 만남 id: ${application.seq}", HttpStatus.CONFLICT)
+                throw MeetingAlreadyApplicationException("이미 신청한 만남입니다. 신청한 만남 id: ${application.seq}")
 
         // 신청
         val meetingApplication = MeetingApplication(clubUser, meeting, false)
@@ -137,8 +145,10 @@ class MeetingService(
             .findById(meetingApplicationSeq)
             .filter{!it.deleteFlag}
             .orElseThrow{ meetingApplicationNotFoundException }
-        if (meetingApplication.deleteFlag)
-            throw BizException("이미 취소한 만남 신청입니다", HttpStatus.CONFLICT)
+
+        if (!meetingApplication.meeting.isOpen()) throw meetingIsClosedException
+        if (meetingApplication.deleteFlag) throw alreadyCancelException
+
         return MeetingApplicationDto(meetingApplication.apply { this.deleteFlag = true })
     }
 

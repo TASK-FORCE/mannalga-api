@@ -49,7 +49,7 @@ class MeetingDto {
         region = meeting.region
         regionURL = meeting.regionURL
         cost = meeting.cost
-        isOpen = meeting.endTimestamp.isAfter(LocalDateTime.now())
+        isOpen = meeting.isOpen()
 
         meetingApplications = meeting.meetingApplications.map(::MeetingApplicationDto)
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
