@@ -97,7 +97,7 @@ internal class MeetingServiceTest {
         meetingRepository = mockk()
         meetingService = MeetingService(
                 meetingRepository = meetingRepository,
-                clubService = mockk(),
+                clubUserRepository = mockk(),
                 meetingApplicationRepository = mockk(),
                 meetingRepositoryImpl = meetingRepositoryImpl,
                 roleService = mockk()

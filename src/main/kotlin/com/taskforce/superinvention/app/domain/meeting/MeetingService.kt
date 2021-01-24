@@ -1,7 +1,9 @@
 package com.taskforce.superinvention.app.domain.meeting
 
+import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.common.PageDto
@@ -22,8 +24,8 @@ class MeetingService(
         var meetingRepository: MeetingRepository,
         var meetingRepositoryImpl: MeetingRepositoryImpl,
         var roleService: RoleService,
-        var clubService: ClubService,
-        var meetingApplicationRepository: MeetingApplicationRepository
+        var meetingApplicationRepository: MeetingApplicationRepository,
+        var clubUserRepository: ClubUserRepository
 ) {
 
     val meetingNotFountException = BizException("존재하지 않는 만남입니다", HttpStatus.NOT_FOUND)
@@ -50,8 +52,9 @@ class MeetingService(
     @Transactional
     fun createMeeting(meetingRequestDto: MeetingRequestDto, clubUserSeq: Long): MeetingDto {
         // check validation
-        val clubUser = clubService.getClubUserByClubUserSeq(clubUserSeq)
-                ?: throw BizException("존재하지 않는 모임원입니다", HttpStatus.INTERNAL_SERVER_ERROR)
+        val clubUser = clubUserRepository
+            .findById(clubUserSeq)
+            .orElseThrow {BizException("존재하지 않는 모임원입니다", HttpStatus.INTERNAL_SERVER_ERROR)}
 
         if (meetingRequestDto.startTimestamp.isAfter(meetingRequestDto.endTimestamp))
             throw BizException("만남 종료 시간은 시작시간 이후여야 합니다.", HttpStatus.BAD_REQUEST)
