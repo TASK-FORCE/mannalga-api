@@ -4,17 +4,18 @@ plugins {
     id("idea")
     id("groovy")
     id("org.asciidoctor.convert") version "1.6.0"
-    kotlin("jvm")             version "1.3.72"
-    kotlin("kapt")            version "1.3.72"
-    kotlin("plugin.spring")   version "1.3.72"
-    kotlin("plugin.jpa")      version "1.3.72"
-    kotlin("plugin.allopen")  version "1.3.72"
-    kotlin("plugin.noarg")    version "1.3.72"
+    kotlin("jvm")             version "1.4.21"
+    kotlin("kapt")            version "1.4.21"
+    kotlin("plugin.spring")   version "1.4.21"
+    kotlin("plugin.jpa")      version "1.4.21"
+    kotlin("plugin.allopen")  version "1.4.21"
+    kotlin("plugin.noarg")    version "1.4.21"
 }
 
 group = "com.taskforce"
 version = "SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
 
 val queryDsl = "4.3.1"
 val blaze    = "1.5.1"
@@ -129,14 +130,14 @@ tasks {
     compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
 }
