@@ -20,6 +20,7 @@ import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -91,7 +92,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
     fun `모임 상세 조회`() {
 
         // given
-        val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
+        val clubRegionList = listOf(RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1))
         val interestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
         val resultDto = ClubInfoDetailsDto (
