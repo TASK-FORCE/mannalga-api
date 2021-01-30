@@ -33,6 +33,8 @@ import com.taskforce.superinvention.app.web.controller.meeting.MeetingController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
 import com.taskforce.superinvention.app.web.controller.user.UserInterestController
+import com.taskforce.superinvention.common.config.WebMvcConfig
+import com.taskforce.superinvention.common.config.argument.auth.AuthorizeArgumentResolver
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,6 +42,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 
 @Deprecated(
@@ -51,7 +54,6 @@ import org.springframework.test.web.servlet.MockMvc
     UserController::class,
     UserRegionController::class,
     ClubController::class,
-    ClubBoardController::class,
     ClubAlbumController::class,
     ClubAlbumLikeController::class,
     ClubAlbumCommentController::class,

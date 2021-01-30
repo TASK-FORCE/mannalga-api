@@ -1,14 +1,14 @@
 package com.taskforce.superinvention.app.web.controller.club
 
+import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.auth.AuthUser
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -25,7 +25,7 @@ class ClubBoardController(
     @GetMapping("/{clubSeq}/boards")
     fun getClubBoardList(@PathVariable clubSeq: Long,
                          pageable: Pageable,
-                         searchRequest: ClubBoardSearchOpt): ResponseDto<PageDto<ClubBoardPreviewDto>> {
+                         searchRequest: ClubBoardSearchOpt): ResponseDto<PageDto<ClubBoardListViewDto>> {
 
         val search = clubBoardService.getClubBoardList(pageable, searchRequest, clubSeq)
         return ResponseDto(data = search)
@@ -38,7 +38,7 @@ class ClubBoardController(
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubBoard(@AuthUser user: User,
                           @PathVariable clubSeq: Long,
-                          @RequestBody  body: ClubBoardBody): ResponseDto<String> {
+                          @RequestBody body: ClubBoardRegisterBody): ResponseDto<String> {
 
         clubBoardService.registerClubBoard(user, clubSeq, body)
         return ResponseDto(data = "")

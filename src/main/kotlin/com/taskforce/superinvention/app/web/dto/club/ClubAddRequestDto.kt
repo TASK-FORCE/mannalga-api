@@ -10,5 +10,4 @@ class ClubAddRequestDto(
         var mainImageUrl: String?,
         var interestList: List<InterestRequestDto>,
         var regionList: List<RegionRequestDto>
-) {
-}
+)

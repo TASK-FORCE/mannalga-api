@@ -1,9 +1,7 @@
 package com.taskforce.superinvention.app.web.dto.club.album
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
-import com.taskforce.superinvention.app.domain.club.user.ClubUser
-import com.taskforce.superinvention.app.domain.role.Role
-import com.taskforce.superinvention.app.web.dto.user.UserDto
+import com.taskforce.superinvention.app.web.dto.club.ClubWriter
 
 data class ClubAlbumRegisterDto(
         val title     : String = "",
@@ -18,7 +16,7 @@ data class ClubAlbumDto(
         val imgUrl     : String = "",
         val likeCnt    : Long = 0,
         val commentCnt : Long = 0,
-        val writer     : ClubAlbumWriter,
+        val writer     : ClubWriter,
         val isLiked    : Boolean
 ) {
         constructor(clubAlbum: ClubAlbum, isLiked: Boolean): this (
@@ -28,7 +26,7 @@ data class ClubAlbumDto(
                 imgUrl     = clubAlbum.img_url,
                 likeCnt    = clubAlbum.albumLikeCnt    ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
-                writer     = ClubAlbumWriter(clubAlbum.writer),
+                writer     = ClubWriter(clubAlbum.writer),
                 isLiked    = isLiked
         )
 }
@@ -50,22 +48,6 @@ data class ClubAlbumListDto(
                 likeCnt    = clubAlbum.albumLikeCnt ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writerClubUserSeq = clubAlbum.writer.seq
-        )
-}
-
-data class ClubAlbumWriter(
-        val writerUserSeq: Long,
-        val writerClubUserSeq : Long,
-        val name  : String,
-        val imgUrl: String,
-        val role: List<Role.RoleName>
-) {
-        constructor(writer: ClubUser): this(
-                name               = writer.user.userName ?: "",
-                writerClubUserSeq  = writer.seq!!,
-                writerUserSeq = writer.user.seq!!,
-                imgUrl        = writer.user.profileImageLink ?: "",
-                role          = writer.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
         )
 }
 
