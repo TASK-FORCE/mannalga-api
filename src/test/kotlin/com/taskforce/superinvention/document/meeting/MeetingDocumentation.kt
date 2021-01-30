@@ -103,7 +103,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
             isCurrentUserApplicationMeeting = true,
             region = "건대 엔젤리너스",
             regionURL = "map.naver.com/aabb",
-            cost = 5000
+            cost = 5000,
+            isOpen = true
     ).apply {
         this.meetingApplications += MeetingDto.MeetingApplicationDto(
                 seq = 1,
@@ -210,7 +211,9 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content.[].isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.content.[].region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
                                 fieldWithPath("data.content.[].regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
-                                fieldWithPath("data.content.[].cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
+                                fieldWithPath("data.content.[].cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)") ,
+                                fieldWithPath("data.content.[].isOpen").type(JsonFieldType.BOOLEAN).description("만남이 현재 활성상태인지 검사한다. 종료 시간을 기준으로 현재보다 만남 종료시간이 이후라면 활성상태로 판단한다.")
+
                         )
                 ))
     }
@@ -296,7 +299,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
                                 fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
-                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)"),
+                                fieldWithPath("data.isOpen").type(JsonFieldType.BOOLEAN).description("만남이 현재 활성상태인지 검사한다. 종료 시간을 기준으로 현재보다 만남 종료시간이 이후라면 활성상태로 판단한다.")
                         )
                 ))
 
@@ -389,7 +393,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
                                 fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
-                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)"),
+                                fieldWithPath("data.isOpen").type(JsonFieldType.BOOLEAN).description("만남이 현재 활성상태인지 검사한다. 종료 시간을 기준으로 현재보다 만남 종료시간이 이후라면 활성상태로 판단한다.")
                         )
                 ))
     }
@@ -499,7 +504,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
                                 fieldWithPath("data.regionURL").type(JsonFieldType.STRING).description("만남을 지역과 관련된 URL, 지도 URL등을 입력 가능 (nullable)"),
-                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)")
+                                fieldWithPath("data.cost").type(JsonFieldType.NUMBER).description("만남 진행 시 필요한 금액(nullable)"),
+                                fieldWithPath("data.isOpen").type(JsonFieldType.BOOLEAN).description("만남이 현재 활성상태인지 검사한다. 종료 시간을 기준으로 현재보다 만남 종료시간이 이후라면 활성상태로 판단한다.")
                         )
                     )
                 )

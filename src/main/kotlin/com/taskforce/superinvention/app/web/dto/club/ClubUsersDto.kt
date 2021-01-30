@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.app.web.dto.user.UserDto
@@ -52,7 +53,7 @@ data class ClubUserWithClubDetailsDto(
     constructor(
             clubUserDto: ClubUserDto,
             interests: List<InterestWithPriorityDto>,
-            regions: List<SimpleRegionDto>
+            regions: List<RegionWithPriorityDto>
     ) :this(
             clubUserSeq = clubUserDto.seq,
             userSeq     = clubUserDto.userSeq,
