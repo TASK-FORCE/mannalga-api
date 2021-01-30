@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
@@ -77,7 +78,7 @@ class ClubService(
 
         // 모임 지역 조회
         val clubRegions = clubRegionRepository.findByClubSeq(clubSeq)
-                ?.map(::SimpleRegionDto) ?: emptyList()
+                ?.map(::RegionWithPriorityDto) ?: emptyList()
 
         val clubInfoDto = ClubInfoDto(
                 ClubDto(clubInfo),
@@ -271,7 +272,7 @@ class ClubService(
             ClubUserWithClubDetailsDto(
                     clubUserDto = clubUserDto,
                     interests = clubInterests.filter { it.club.seq == clubUserDto.club.seq }.map(::InterestWithPriorityDto),
-                    regions = clubRegions.filter { it.club.seq == clubUserDto.club.seq }.map(::SimpleRegionDto)
+                    regions = clubRegions.filter { it.club.seq == clubUserDto.club.seq }.map(::RegionWithPriorityDto)
             )
         }
         return PageDto(result)

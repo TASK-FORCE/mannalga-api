@@ -485,7 +485,7 @@ class ClubDocumentation: ApiDocumentationTest() {
         }
         val user = User("sight studio").apply { seq = 1111 }
 
-        val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
+        val clubRegionList = listOf(RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1))
         val clubInterestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
         `when`(clubService.getUserClubList(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(
@@ -557,10 +557,12 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
                                         fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
                                         fieldWithPath("data.content[].club.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
-                                        fieldWithPath("data.content[].club.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
-                                        fieldWithPath("data.content[].club.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
-                                        fieldWithPath("data.content[].club.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
-                                        fieldWithPath("data.content[].club.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계")
+                                        fieldWithPath("data.content[].club.clubRegion[].region").type(JsonFieldType.OBJECT).description("지역 상세 정보"),
+                                        fieldWithPath("data.content[].club.clubRegion[].region.seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.content[].club.clubRegion[].region.name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.content[].club.clubRegion[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.content[].club.clubRegion[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
+                                        fieldWithPath("data.content[].club.clubRegion[].priority").type(JsonFieldType.NUMBER).description("모임에서 설정한 지역 우선순위")
                                 )
                         )
                 )

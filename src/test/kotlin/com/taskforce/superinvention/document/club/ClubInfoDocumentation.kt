@@ -20,6 +20,7 @@ import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
 import com.taskforce.superinvention.app.web.dto.club.ClubInfoUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -91,7 +92,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
     fun `모임 상세 조회`() {
 
         // given
-        val clubRegionList = listOf(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2))
+        val clubRegionList = listOf(RegionWithPriorityDto(SimpleRegionDto(seq = 101, name = "강남구", superRegionRoot = "서울특별시/강남구", level = 2), 1))
         val interestList = listOf(InterestWithPriorityDto(InterestDto(11, "등산", SimpleInterestGroupDto(20, "운동/건강")), 2))
 
         val resultDto = ClubInfoDetailsDto (
@@ -137,10 +138,12 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                         fieldWithPath("data.clubInfo.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
                                         fieldWithPath("data.clubInfo.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
                                         fieldWithPath("data.clubInfo.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
-                                        fieldWithPath("data.clubInfo.clubRegion[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
-                                        fieldWithPath("data.clubInfo.clubRegion[].name").type(JsonFieldType.STRING).description("모임 지역명"),
-                                        fieldWithPath("data.clubInfo.clubRegion[].superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
-                                        fieldWithPath("data.clubInfo.clubRegion[].level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].region").type(JsonFieldType.OBJECT).description("모임 지역 상세정보"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].region.seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].region.name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
+                                        fieldWithPath("data.clubInfo.clubRegion[].priority").type(JsonFieldType.NUMBER).description("모임에서 설정한 지역 우선순위"),
                                         fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
                                         fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부"),
                                         fieldWithPath("data.userList[].clubUserSeq").type(JsonFieldType.NUMBER).description("클럽 유저 seq"),

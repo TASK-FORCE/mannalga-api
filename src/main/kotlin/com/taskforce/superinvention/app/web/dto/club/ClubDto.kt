@@ -62,12 +62,12 @@ data class ClubInfoDto(
         var userCount: Long?,
         var mainImageUrl: String?,
         var clubInterest: List<InterestWithPriorityDto>,
-        var clubRegion: List<SimpleRegionDto>
+        var clubRegion: List<RegionWithPriorityDto>
 ) {
     constructor(
             club : Club,
             clubInterest: List<InterestWithPriorityDto>,
-            clubRegion: List<SimpleRegionDto>
+            clubRegion: List<RegionWithPriorityDto>
     ): this(
             club.seq,
             club.name,
@@ -81,7 +81,7 @@ data class ClubInfoDto(
     constructor(
             club : ClubDto,
             clubInterest: List<InterestWithPriorityDto>,
-            clubRegion: List<SimpleRegionDto>
+            clubRegion: List<RegionWithPriorityDto>
     ): this(
             club.seq,
             club.name,
