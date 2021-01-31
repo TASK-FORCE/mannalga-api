@@ -11,6 +11,7 @@ endif::[]
 
 Request
 include::{sub-snippet}/club-album-comment-register/http-request.adoc[]
+include::{sub-snippet}/club-album-comment-register/request-parameters.adoc[]
 include::{sub-snippet}/club-album-comment-register/path-parameters.adoc[]
 include::{sub-snippet}/club-album-comment-register/request-fields.adoc[]
 

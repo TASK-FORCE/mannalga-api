@@ -214,7 +214,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         )).then { Unit }
 
         val result: ResultActions = this.mockMvc.perform(
-                post("/club/{clubSeq}/album/{clubAlbumSeq}/comment/{parentCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq!!)
+                post("/club/{clubSeq}/album/{clubAlbumSeq}/comment", club.seq, clubAlbum.seq)
+                        .queryParam("parentCommentSeq", clubAlbumComment.seq!!.toString())
                         .content(objectMapper.writeValueAsString(body))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -223,10 +224,12 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         // then
         result.andExpect(status().isCreated)
                 .andDo(document("club-album-comment-register", getDocumentRequest(), getDocumentResponse(),
+                        requestParameters(
+                            parameterWithName("parentCommentSeq").description("[optional] 모임 사진첩 부모댓글 시퀀스, 없을 경우 루트"),
+                        ),
                         pathParameters(
                                 parameterWithName("clubSeq").description("모임 시퀀스"),
                                 parameterWithName("clubAlbumSeq").description("모임 사진첩 시퀀스"),
-                                parameterWithName("parentCommentSeq").description("[optional] 모임 사진첩 부모댓글 시퀀스, 없을 경우 루트")
                         ),
                         requestFields(
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 내용")
