@@ -11,20 +11,20 @@ import javax.persistence.*
 @Entity
 class ClubBoard(
 
-        var title: String,
-        var content: String,
+    var title: String,
+    var content: String,
 
-        @ManyToOne( fetch = FetchType.LAZY)
-        @JoinColumn(name = "club_user_seq")
-        var clubUser: ClubUser,
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_user_seq")
+    var clubUser: ClubUser,
 
-        @ManyToOne( fetch = FetchType.LAZY)
-        @JoinColumn(name = "club_seq")
-        var club: Club,
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_seq")
+    var club: Club,
 
-        var category: Category,
+    var category: Category,
 
-        var deleteFlag: Boolean ?= false,
+    var deleteFlag: Boolean ?= false,
 
 ): BaseEntity() {
 

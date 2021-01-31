@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.app.web.controller.club
+package com.taskforce.superinvention.app.web.controller.club.board
 
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService

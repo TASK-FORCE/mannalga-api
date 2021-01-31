@@ -48,22 +48,6 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
             .where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
 
-        // 조회한 결과 매핑
-//        val results: List<Tuple> = querydsl!!.applyPagination(pageable, jpqlQuery).fetch()
-//        val clubBoardList = results.map { tuple ->
-//            ClubBoardPreviewDto(
-//                    clubBoardSeq = tuple.get(clubBoard.seq)!!,
-//                    clubUserSeq  = tuple.get(clubBoard.clubUser.seq)!!,
-//                    title        = tuple.get(clubBoard.title) ?: "",
-//                    userName     = tuple.get(clubBoard.clubUser.user.userName)      ?: "",
-//                    createdAt    = tuple.get(clubBoard.createdAt)?.toBaseDateTime() ?: "",
-//                    titleImgUrl  = tuple.get(clubBoard.titleImg.imgUrl) ?: "",
-//                    photoCnt     = tuple.get(clubBoardImg.count()) ?: 0,
-//                    topFixedFlag = tuple.get(clubBoard.topFixedFlag) ?: false,
-//                    notificationFlag = tuple.get(clubBoard.notificationFlag) ?: false
-//            )
-//        }
-
         val fetchResult = query.fetchResults();
 
         return PageImpl(fetchResult.results, pageable, fetchResult.total)

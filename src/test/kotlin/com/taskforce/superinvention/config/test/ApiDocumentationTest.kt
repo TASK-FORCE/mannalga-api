@@ -23,7 +23,6 @@ import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.controller.region.RegionController
 import com.taskforce.superinvention.app.web.controller.CommonController
 import com.taskforce.superinvention.app.web.controller.InterestGroupController
-import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
 import com.taskforce.superinvention.app.web.controller.club.ClubController
 import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumCommentController
 import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumController
@@ -33,16 +32,12 @@ import com.taskforce.superinvention.app.web.controller.meeting.MeetingController
 import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.app.web.controller.user.UserRegionController
 import com.taskforce.superinvention.app.web.controller.user.UserInterestController
-import com.taskforce.superinvention.common.config.WebMvcConfig
-import com.taskforce.superinvention.common.config.argument.auth.AuthorizeArgumentResolver
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Import
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 
 @Deprecated(

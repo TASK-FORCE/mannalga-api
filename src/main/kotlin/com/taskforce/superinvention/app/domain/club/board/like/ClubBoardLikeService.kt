@@ -1,10 +1,8 @@
 package com.taskforce.superinvention.app.domain.club.board.like
 
-import com.taskforce.superinvention.app.domain.club.album.ClubAlbumRepository
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.album.like.ClubAlbumLikeDto
 import com.taskforce.superinvention.app.web.dto.club.board.like.ClubBoardLikeDto
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
@@ -42,17 +40,17 @@ class ClubBoardLikeService(
     }
 
     @Transactional
-    fun removeClubAlbumLike(user: User, clubSeq: Long, clubBoardSeq: Long): ClubBoardLikeDto {
+    fun removeClubBoardLike(user: User, clubSeq: Long, clubBoardSeq: Long): ClubBoardLikeDto {
         val clubUser   = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
             ?: throw UserIsNotClubMemberException()
 
-        val clubAlbum  = clubBoardRepository.findByIdOrNull(clubBoardSeq)
+        val clubBoard  = clubBoardRepository.findByIdOrNull(clubBoardSeq)
             ?: throw ClubNotFoundException()
 
-        clubBoardLikeRepository.findByClubBoardAndClubUser(clubAlbum, clubUser)
+        clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser)
                 ?.let(clubBoardLikeRepository::delete)
 
-        val likeCnt = clubBoardLikeRepository.getClubBoardLikeCnt(clubAlbum)
+        val likeCnt = clubBoardLikeRepository.getClubBoardLikeCnt(clubBoard)
 
         return ClubBoardLikeDto(
             clubSeq      = clubSeq,

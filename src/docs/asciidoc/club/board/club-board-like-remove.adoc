@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+Request
+include::{sub-snippet}/club-album-like-remove/http-request.adoc[]
+include::{sub-snippet}/club-album-like-remove/path-parameters.adoc[]
+
+Response
+include::{sub-snippet}/club-album-like-remove/response-fields.adoc[]
+include::{sub-snippet}/club-album-like-remove/http-response.adoc[]
+

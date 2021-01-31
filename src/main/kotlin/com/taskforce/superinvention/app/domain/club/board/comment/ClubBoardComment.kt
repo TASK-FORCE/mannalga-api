@@ -23,7 +23,7 @@ class ClubBoardComment(
 
         @ManyToOne( fetch = FetchType.LAZY)
         @JoinColumn(name = "parent_comment_seq")
-        var parent: ClubBoardComment?,
+        var parent: ClubBoardComment ?= null,
 
         var depth: Long,
 

@@ -11,7 +11,7 @@ import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.controller.club.ClubBoardController
+import com.taskforce.superinvention.app.web.controller.club.board.ClubBoardController
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
@@ -36,7 +36,6 @@ import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
