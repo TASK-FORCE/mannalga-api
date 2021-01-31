@@ -10,11 +10,13 @@ import javax.persistence.ManyToOne
 @Entity
 class ClubBoardImg(
 
-        @ManyToOne( fetch = FetchType.LAZY)
-        @JoinColumn(name = "club_board_seq")
-        var clubBoard: ClubBoard,
+    @ManyToOne( fetch = FetchType.LAZY)
+    @JoinColumn(name = "club_board_seq")
+    var clubBoard: ClubBoard,
 
-        var imgUrl : String,
-        var imgName: String = "",
-        var deleteFlag: Boolean
+    var imgUrl : String,
+
+    var imgName: String,
+
+    var deleteFlag: Boolean
 ): BaseEntity()

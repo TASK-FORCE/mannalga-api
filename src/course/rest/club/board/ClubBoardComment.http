@@ -1,0 +1,31 @@
+###  내 모임 게시글 댓글 조회
+GET  {{host}}/club/6174/board/2/comment
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-dong}}
+
+### 내 모임 게시글 댓글 등록
+POST {{host}}/club/6174/board/2/comment
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "content" : "테스트 댓글"
+}
+
+### 내 모임 게시글 대댓글 등록
+POST {{host}}/club/6174/board/2/comment/1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "content" : "테스트 댓글"
+}
+
+### 내 모임 게시글 대댓글 조회
+GET {{host}}/club/6174/board/2/comment/1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}

@@ -37,6 +37,23 @@ data class ClubUserStatusDto(
         val isLiked: Boolean
 )
 
+
+data class ClubWriter(
+    val writerUserSeq: Long,
+    val writerClubUserSeq : Long,
+    val name  : String,
+    val imgUrl: String,
+    val role: List<Role.RoleName>
+) {
+    constructor(writer: ClubUser): this(
+        name               = writer.user.userName ?: "",
+        writerClubUserSeq  = writer.seq!!,
+        writerUserSeq      = writer.user.seq!!,
+        imgUrl             = writer.user.profileImageLink ?: "",
+        role               = writer.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
+    )
+}
+
 data class ClubInfoUserDto(
     val clubUserSeq: Long,
     val userSeq: Long,

@@ -109,13 +109,33 @@ include::{root}/club/kick.adoc[]
 == 모임 게시판
 
 === [.toc-list-item]`모임 게시판 작성`
-include::{root}/club/board/register-club-board.adoc[]
+include::{root}/club/board/club-board-register.adoc[]
 
 === [.toc-list-item]`모임 게시판 조회`
-include::{root}/club/board/select-club-board.adoc[]
+include::{root}/club/board/club-board-select.adoc[]
 
 === [.toc-list-item]`모임 게시판 삭제`
-include::{root}/club/board/delete-club-board.adoc[]
+include::{root}/club/board/club-board-delete.adoc[]
+
+=== [.toc-list-item]`모임 게시판 댓글 조회 - 루트`
+include::{root}/club/board/club-board-comment-select.adoc[]
+
+=== [.toc-list-item]`모임 게시판 댓글 조회 - 서브`
+include::{root}/club/board/club-board-comment-select-sub.adoc[]
+
+=== [.toc-list-item]`모임 게시판 댓글 등록`
+include::{root}/club/board/club-board-comment-register.adoc[]
+
+=== [.toc-list-item]`모임 게시판 댓글 수정`
+include::{root}/club/board/club-board-comment-edit.adoc[]
+
+include::{root}/club/board/club-board-comment-remove.adoc[]
+
+=== [.toc-list-item]`모임 게시판 좋아요 등록`
+include::{root}/club/board/club-board-like-register.adoc[]
+
+=== [.toc-list-item]`모임 게시판 좋아요 삭제`
+include::{root}/club/board/club-board-like-remove.adoc[]
 
 == 모임 사진첩
 === [.toc-list-item]`사진첩 조회`

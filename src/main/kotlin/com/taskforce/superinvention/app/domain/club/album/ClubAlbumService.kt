@@ -45,7 +45,7 @@ class ClubAlbumService(
         private val noAuthForClubAlbumException  = NoAuthForClubAlbumException()
     }
 
-    fun getClubValidAlbumBySeq(clubAlbumSeq: Long?): ClubAlbum {
+    fun getValidClubAlbumBySeq(clubAlbumSeq: Long?): ClubAlbum {
         return clubAlbumRepository.findByIdOrNull(clubAlbumSeq)
             ?: throw ClubAlbumNotFoundException()
     }
@@ -87,7 +87,7 @@ class ClubAlbumService(
             ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
             ?.let { true } ?: false
 
-        return ClubAlbumDto(getClubValidAlbumBySeq(clubAlbumSeq), isLiked)
+        return ClubAlbumDto(getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
     }
 
     @Transactional

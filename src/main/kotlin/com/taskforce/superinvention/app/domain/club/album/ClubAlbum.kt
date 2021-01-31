@@ -24,6 +24,7 @@ class ClubAlbum(
     var img_url    : String,
     var file_name  : String,
     var delete_flag: Boolean
+
 ): BaseEntity() {
 
     @Formula("(select count(*) from club_album_like cal where cal.club_album_seq = seq)")

@@ -1,28 +1,32 @@
 package com.taskforce.superinvention.document.club.board
 
+import com.ninjasquad.springmockk.MockkBean
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
+import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardPreviewDto
+import com.taskforce.superinvention.app.web.controller.club.board.ClubBoardController
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
-import com.taskforce.superinvention.config.MockitoHelper.anyObject
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.pageFieldDescriptor
-import com.taskforce.superinvention.config.test.ApiDocumentationTest
+import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
+import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.*
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
@@ -36,18 +40,25 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
-class ClubBoardDocumentation: ApiDocumentationTest() {
+@WebMvcTest(ClubBoardController::class)
+class ClubBoardDocumentation: ApiDocumentationTestV2() {
 
-    @MockBean
+    @MockkBean(relaxUnitFun = true)
+    lateinit var clubBoardService: ClubBoardService
+
+    @MockkBean(relaxUnitFun = true)
     lateinit var clubBoardRepository: ClubBoardRepository
 
-    @MockBean
+    @MockkBean(relaxUnitFun = true)
     lateinit var clubUserRepository: ClubUserRepository
 
-    lateinit var club: Club
-    lateinit var user: User
-    lateinit var clubUser : ClubUser
-    lateinit var clubBoard: ClubBoard
+    private lateinit var club: Club
+    private lateinit var user: User
+    private lateinit var clubUser : ClubUser
+    private lateinit var clubBoard: ClubBoard
+
+    private val roleGroup  = RoleGroup("USER", "USER_TYPE")
+    private val memberRole = Role(Role.RoleName.CLUB_MEMBER, roleGroup,2)
 
     @BeforeEach
     fun setup() {
@@ -60,18 +71,20 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
 
         user = User ("12345").apply { seq = 2 }
         clubUser = ClubUser(club, user, isLiked = false)
+            .apply {
+                seq = 111;
+                clubUserRoles = mutableSetOf(ClubUserRole(this, memberRole))
+            }
 
         clubBoard = ClubBoard(
-                title   = "test-title",
-                content = "test-content",
-                club = club,
+                title    = "test-title",
+                content  = "test-content",
+                club     = club,
                 clubUser = clubUser,
                 deleteFlag = false,
-                notificationFlag = false,
-                topFixedFlag = false
+                category   = ClubBoard.Category.NORMAL
         ).apply { seq = 300 }
     }
-
 
     @Test
     fun `모임 게시판 글 작성`() {
@@ -83,27 +96,21 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                 filePath = "test/i3.jpg"
         )
 
-        val dummyImgList = listOf(
-                s3path, // title
-                s3path,
-                s3path
-        )
-
-        val postBody = ClubBoardBody(
-                title   = "글 제목",
-                content = "내용",
-                isTopFixed   = false,
-                isNotifiable = false,
-                imgList = dummyImgList
+        val imgList = listOf(s3path)
+        val postBody = ClubBoardRegisterBody(
+            title    = "글 제목",
+            content  = "내용",
+            imgList  = imgList,
+            category = ClubBoard.Category.NORMAL
         )
 
         // when
-        `when`(clubUserRepository.findByClubSeqAndUser(club.seq!!, user)).thenReturn(clubUser)
-        `when`(clubBoardRepository.save(clubBoard)).then {Unit}
+        every { clubBoardService.registerClubBoard(any(), any(), any()) } returns clubBoard
 
-        val result: ResultActions = this.mockMvc.perform(
-                post("/clubs/{clubSeq}/boards", club.seq)
+        val result: ResultActions = mockMvc.perform(
+                post("/clubs/{clubSeq}/board", club.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
+                        .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(postBody))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -118,11 +125,10 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
-                                fieldWithPath("isTopFixed").type(JsonFieldType.BOOLEAN).description("제목"),
-                                fieldWithPath("isNotifiable").type(JsonFieldType.BOOLEAN).description("내용"),
                                 fieldWithPath("imgList[].absolutePath").type(JsonFieldType.STRING).description("전체 경로 ( 도메인 포함 )"),
                                 fieldWithPath("imgList[].filePath").type(JsonFieldType.STRING).description("파일 경로"),
-                                fieldWithPath("imgList[].fileName").type(JsonFieldType.STRING).description("파일 명")
+                                fieldWithPath("imgList[].fileName").type(JsonFieldType.STRING).description("파일 명"),
+                                fieldWithPath("category").type(JsonFieldType.STRING).description("글 상태, NORMAL | NOTICE"),
                         ),
                         responseFields(
                                 *commonResponseField()
@@ -141,26 +147,16 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         val searchOpt = ClubBoardSearchOpt()
         val clubSeq =  88L
 
-        val dummyItem = ClubBoardPreviewDto (
-                clubBoardSeq = 0,
-                clubUserSeq  = 1,
-                title = "글 제목",
-                userName = "글 내용",
-                createdAt = "yyyy/mm/dd hh:mm:ss",
-                titleImgUrl = "제목 이미지 URL - 없으면 공백",
-                photoCnt = 3, // 등록된 사진 개수
-                topFixedFlag = false,
-                notificationFlag = false
-        )
+        val dummyItem = ClubBoardListViewDto(clubBoard)
 
-        val dummyItemList = listOf(dummyItem, dummyItem,dummyItem)
+        val dummyItemList = listOf(dummyItem)
         val resultItemList =  PageImpl(dummyItemList, pageable, 100)
-        given(clubBoardService.getClubBoardList(anyObject(), anyObject(), anyLong()))
-            .willReturn(PageDto(resultItemList))
+
+        every { clubBoardService.getClubBoardList(any(), any(), any()) }.returns(PageDto(resultItemList))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
-                get("/clubs/{clubSeq}/boards", clubSeq)
+                get("/clubs/{clubSeq}/board", clubSeq)
                         .queryParam("page", "$page")
                         .queryParam("size", "$pageSize")
                         .queryParam("title", searchOpt.title)
@@ -183,15 +179,20 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
                         responseFields(
                                 *commonResponseField(),
                                 *pageFieldDescriptor(),
-                                fieldWithPath("data.content[].clubBoardSeq").type(JsonFieldType.NUMBER).description("게시글 seq"),
-                                fieldWithPath("data.content[].clubUserSeq").type(JsonFieldType.NUMBER).description("클럽 유저 seq"),
+                                fieldWithPath("data.content[].boardSeq").type(JsonFieldType.NUMBER).description("게시글 seq"),
                                 fieldWithPath("data.content[].title").type(JsonFieldType.STRING).description("글 제목"),
-                                fieldWithPath("data.content[].userName").type(JsonFieldType.STRING).description("작성자 명"),
-                                fieldWithPath("data.content[].createdAt").type(JsonFieldType.STRING).description("최초 작성 날짜"),
-                                fieldWithPath("data.content[].titleImgUrl").type(JsonFieldType.STRING).description("제목 이미지 url - 없을 시 공백"),
-                                fieldWithPath("data.content[].photoCnt").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
-                                fieldWithPath("data.content[].topFixedFlag").type(JsonFieldType.BOOLEAN).description("상단고정 표시여부"),
-                                fieldWithPath("data.content[].notificationFlag").type(JsonFieldType.BOOLEAN).description("알림 여부")
+                                fieldWithPath("data.content[].simpleContent").type(JsonFieldType.STRING).description("[50자 제한] 게시글"),
+                                fieldWithPath("data.content[].mainImageUrl").type(JsonFieldType.STRING).description("글 제목 이미지 URL - 없으면 공백"),
+                                fieldWithPath("data.content[].createAt").type(JsonFieldType.STRING).description("작성 시간"),
+                                fieldWithPath("data.content[].category").type(JsonFieldType.STRING).description("글 종류"),
+                                fieldWithPath("data.content[].likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
+                                fieldWithPath("data.content[].commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                                fieldWithPath("data.content[].writer").type(JsonFieldType.OBJECT).description("해당 글 사진 총 개수"),
+                                fieldWithPath("data.content[].writer.writerUserSeq").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
+                                fieldWithPath("data.content[].writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
+                                fieldWithPath("data.content[].writer.name").type(JsonFieldType.STRING).description("작성자 명"),
+                                fieldWithPath("data.content[].writer.imgUrl").type(JsonFieldType.STRING).description("작성자 프로필 URL"),
+                                fieldWithPath("data.content[].writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
                         )
                 ))
     }
@@ -204,10 +205,8 @@ class ClubBoardDocumentation: ApiDocumentationTest() {
         val clubSeq =  88L
 
         //  when
-        `when`(clubBoardService.deleteClubBoard(user, clubSeq)).then{ Unit }
-
         val result: ResultActions = this.mockMvc.perform(
-                delete("/clubs/{clubBoardSeq}/boards", clubSeq)
+                delete("/clubs/{clubBoardSeq}/board", clubSeq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)

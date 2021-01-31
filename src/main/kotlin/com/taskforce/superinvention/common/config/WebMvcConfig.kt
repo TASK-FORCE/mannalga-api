@@ -6,11 +6,12 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
+import org.springframework.format.FormatterRegistry
 
 @Configuration
 class WebMvcConfig(
         private val authorizeArgumentResolver: AuthorizeArgumentResolver
-): WebMvcConfigurationSupport() {
+): WebMvcConfigurationSupport()  {
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/docs/**")
