@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.club.board
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.taskforce.superinvention.app.domain.club.QClub
 import com.taskforce.superinvention.app.domain.club.board.img.QClubBoardImg
+import com.taskforce.superinvention.app.domain.club.user.QClubUser
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import org.springframework.data.domain.Page
@@ -18,20 +19,24 @@ interface ClubBoardRepository : JpaRepository<ClubBoard, Long>, ClubBoardCustom 
 
 interface ClubBoardCustom {
      fun searchInList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard>
+     fun findBySeqWithWriterAndImgs(clubBoardSeq: Long): ClubBoard?
 }
 
 @Repository
-class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubBoard::class.java)  {
+class ClubBoardRepositoryImpl : ClubBoardCustom,
+    QuerydslRepositorySupport(ClubBoard::class.java)  {
 
     // 클럽 게시판 리스트 조회
     override fun searchInList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard> {
         val clubBoard   : QClubBoard    = QClubBoard.clubBoard
         val clubBoardImg: QClubBoardImg = QClubBoardImg.clubBoardImg
+        val clubUser = QClubUser.clubUser
         val user: QUser = QUser.user
 
         val query = from(clubBoard)
-                .leftJoin(clubBoard.clubUser.user, user)
-                .leftJoin(clubBoard.boardImgs, clubBoardImg)
+                .join(clubBoard.clubUser, clubUser)
+                .join(clubBoard.clubUser.user, user)
+                .leftJoin(clubBoard.boardImgs, clubBoardImg).fetchJoin()
 
         // 제목 검색
         if(searchOpt.title.isNotBlank()) {
@@ -44,13 +49,29 @@ class ClubBoardRepositoryImpl : ClubBoardCustom, QuerydslRepositorySupport(ClubB
         }
 
         // 삭제된 글 필터링
-        query
-            .where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
+        query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
 
-        val fetchResult = query.fetchResults();
+        val fetchResult = query.fetchResults()
 
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
+    }
+
+    override fun findBySeqWithWriterAndImgs(clubBoardSeq: Long): ClubBoard? {
+        val clubBoard   : QClubBoard    = QClubBoard.clubBoard
+        val clubBoardImg: QClubBoardImg = QClubBoardImg.clubBoardImg
+        val user: QUser = QUser.user
+
+        val query = from(clubBoard)
+            .leftJoin(clubBoard.clubUser.user, user)
+            .leftJoin(clubBoard.boardImgs, clubBoardImg).fetchJoin()
+            .where(eqSeq(clubBoard, clubBoardSeq))
+
+        return query.fetchFirst()
+    }
+
+    private fun eqSeq(club: QClubBoard, clubBoardSeq: Long): BooleanExpression {
+        return club.seq.eq(clubBoardSeq)
     }
 
     private fun eqSeq(club: QClub, clubSeq: Long): BooleanExpression {

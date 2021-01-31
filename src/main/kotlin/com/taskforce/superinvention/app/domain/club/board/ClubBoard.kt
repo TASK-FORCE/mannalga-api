@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.domain.club.board
 
-import com.fasterxml.jackson.annotation.JsonValue
 import com.taskforce.superinvention.app.domain.BaseEntity
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImg
@@ -22,6 +21,7 @@ class ClubBoard(
     @JoinColumn(name = "club_seq")
     var club: Club,
 
+    @Enumerated(EnumType.STRING)
     var category: Category,
 
     var deleteFlag: Boolean ?= false,
@@ -29,13 +29,14 @@ class ClubBoard(
 ): BaseEntity() {
 
         @Formula("(select count(*) from club_board_comment cbc where cbc.club_board_seq = seq)")
-        var boardCommentCnt: Long ?= 0
+        var boardCommentCnt: Long ?= null
 
-        @Formula("(select img_url from club_board_img cbi where cbi.club_board_seq = seq ORDER BY created_at DESC LIMIT 1)")
-        var firstImg: String ?= ""
+        @Formula("(select count(*) from club_board_like cbl where cbl.club_board_seq = seq)")
+        var boardLikeCnt: Long? = null
 
-        @OneToMany(mappedBy = "clubBoard")
-        lateinit var boardImgs: MutableList<ClubBoardImg>
+        @OneToMany
+        @JoinColumn(name = "club_board_seq")
+        var boardImgs: List<ClubBoardImg> = emptyList()
 
         enum class Category(
             val detail   : String,
@@ -43,7 +44,7 @@ class ClubBoard(
             val priority : Int,
         ) {
             NORMAL("일반 게시글", Category.NORMAL, 0),
-            NOTICE("공지 사항" ,  Category.NOTICE, 0);
+            NOTICE("공지 사항" ,  Category.NOTICE, 1);
 
             companion object {
                 private const val NORMAL = "NORMAL"

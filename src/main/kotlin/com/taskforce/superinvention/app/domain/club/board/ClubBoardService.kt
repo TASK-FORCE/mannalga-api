@@ -5,10 +5,12 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
+import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
@@ -27,6 +29,10 @@ class ClubBoardService(
         private val clubUserRepository: ClubUserRepository
 ) {
 
+    companion object {
+        private val resourceNotFoundException = ResourceNotFoundException()
+    }
+
     fun getValidClubBoardBySeq(clubBoardSeq: Long): ClubBoard {
         return clubBoardRepository.findByIdOrNull(clubBoardSeq)
             ?: throw ClubBoardNotFoundException()
@@ -43,6 +49,17 @@ class ClubBoardService(
             .map(::ClubBoardListViewDto)
 
         return PageDto(resultPage)
+    }
+
+    /**
+     * 게시판 글 단건 조회
+     */
+    @Transactional
+    fun getClubBoard(boardSeq: Long, clubSeq: Long): ClubBoardDto {
+        val clubBoard = clubBoardRepository.findBySeqWithWriterAndImgs(boardSeq)
+            ?: throw resourceNotFoundException
+
+        return ClubBoardDto(clubBoard)
     }
 
     /**

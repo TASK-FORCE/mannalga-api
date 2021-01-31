@@ -108,7 +108,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         every { clubBoardService.registerClubBoard(any(), any(), any()) } returns clubBoard
 
         val result: ResultActions = mockMvc.perform(
-                post("/clubs/{clubSeq}/boards", club.seq)
+                post("/clubs/{clubSeq}/board", club.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
                         .characterEncoding("utf-8")
                         .content(objectMapper.writeValueAsString(postBody))
@@ -156,7 +156,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
-                get("/clubs/{clubSeq}/boards", clubSeq)
+                get("/clubs/{clubSeq}/board", clubSeq)
                         .queryParam("page", "$page")
                         .queryParam("size", "$pageSize")
                         .queryParam("title", searchOpt.title)
@@ -206,7 +206,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
-                delete("/clubs/{clubBoardSeq}/boards", clubSeq)
+                delete("/clubs/{clubBoardSeq}/board", clubSeq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
