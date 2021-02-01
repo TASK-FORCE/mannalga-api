@@ -120,13 +120,12 @@ class ClubService(
         val savedClubUser = clubUserRepository.save(superUserClub)
 
         // 3. 해당 클럽에 관심사 부여
-        interestService.checkBeforeConvertClubInterest(interestService.findBySeqList(interestDtoList.map { it.seq }))
-
-        val clubInterestList = interestDtoList.map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }.toList()
+        val clubInterestList = interestDtoList
+            .map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }
+            .toList()
         clubInterestRepository.saveAll(clubInterestList)
 
         // 4. 해당 클럽에 지역 부여
-        regionService.checkBeforeConvertClubRegion(regionService.findBySeqList(regionDtoList.map { it.seq }))
         val clubRegionList = regionDtoList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
         clubRegionRepository.saveAll(clubRegionList)
 
@@ -198,8 +197,6 @@ class ClubService(
         clubInterestRepository.deleteAll(toDelete)
 
         // 신규 관심사 등록
-        interestService.checkBeforeConvertClubInterest(interestService.findBySeqList(interestDtos.map { it.seq }))
-
         val toAdd: List<ClubInterest> = interestDtos.map { interest -> ClubInterest(club, interestService.findBySeq(interest.seq) , interest.priority) }
         clubInterestRepository.saveAll(toAdd)
 
@@ -219,7 +216,6 @@ class ClubService(
         clubRegionRepository.deleteAll(toDelete)
 
         // 신규 모임 지역 등록
-        regionService.checkBeforeConvertClubRegion(regionService.findBySeqList(regionDtoList.map { it.seq }))
         val toAdd: List<ClubRegion> = regionDtoList.map { region -> ClubRegion(club, regionService.findBySeq(region.seq), region.priority) }
         clubRegionRepository.saveAll(toAdd)
     }
