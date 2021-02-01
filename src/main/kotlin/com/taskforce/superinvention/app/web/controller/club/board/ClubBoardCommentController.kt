@@ -39,12 +39,12 @@ class ClubBoardCommentController(
     }
 
     // 게시판 댓글 등록
-    @PostMapping(value = ["/comment", "/comment/{parentCommentSeq}"])
+    @PostMapping("/comment")
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubBoardComment(@AuthUser     user        : User,
                                  @PathVariable clubSeq     : Long,
                                  @PathVariable clubBoardSeq     : Long,
-                                 @PathVariable parentCommentSeq : Long?,
+                                 @RequestParam parentCommentSeq : Long?,
                                  @RequestBody  body: ClubBoardCommentRegisterDto): ResponseDto<String> {
 
         clubBoardCommentService.registerComment(clubSeq, clubBoardSeq, parentCommentSeq, user, body)

@@ -4,7 +4,7 @@ Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-dong}}
 
-### 내 모임 사진첩 댓글 등록
+### 내 모임 사진첩 댓글 등록 - 루트
 POST {{host}}/club/6174/album/6943/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
@@ -21,7 +21,7 @@ Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 ### 내 모임 사진첩 대댓글 등록
-POST {{host}}/club/6174/album/6943/comment/6887
+POST {{host}}/club/6174/album/6943/comment?parentCommentSeq=6887
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
