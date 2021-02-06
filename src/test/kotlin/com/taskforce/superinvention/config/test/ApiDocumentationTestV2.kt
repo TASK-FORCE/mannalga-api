@@ -3,12 +3,11 @@ package com.taskforce.superinvention.config.test
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import com.taskforce.superinvention.app.domain.user.*
-import com.taskforce.superinvention.common.config.argument.auth.AuthorizeArgumentResolver
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthorizeArgumentResolver
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import io.mockk.every
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 
 @AutoConfigureRestDocs

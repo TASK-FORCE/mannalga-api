@@ -1,4 +1,4 @@
-package com.taskforce.superinvention.common.config.argument.auth
+package com.taskforce.superinvention.common.config.argument.resolver.auth
 
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserRepository
@@ -6,7 +6,6 @@ import com.taskforce.superinvention.common.exception.auth.UserNotFoundException
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 @RestControllerAdvice
 @RestController
@@ -25,6 +26,12 @@ class GlobalAdviceController {
     fun bizExceptionAdvice(e: BizException, webRequest: WebRequest): ResponseEntity<ErrorResponse> {
         LOG.error("${e.message}\n${e.stackTrace.joinToString("\n")}")
         return ResponseEntity(ErrorResponse(e.message), e.httpStatus)
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun globalMethodArgumentNotMatchAdvice(e: Exception, webRequest: WebRequest): ResponseEntity<ErrorResponse> {
+        LOG.error("${e.cause?.message ?: ""}\n${e.cause?.stackTrace?.joinToString("\n") ?: ""}")
+        return ResponseEntity(ErrorResponse(message = e.cause?.cause?.message ?: ""), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)

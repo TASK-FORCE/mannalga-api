@@ -12,8 +12,7 @@ import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
-import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus

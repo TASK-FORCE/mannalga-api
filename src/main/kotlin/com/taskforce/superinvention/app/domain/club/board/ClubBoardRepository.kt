@@ -18,7 +18,7 @@ interface ClubBoardRepository : JpaRepository<ClubBoard, Long>, ClubBoardCustom 
 }
 
 interface ClubBoardCustom {
-     fun searchInList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard>
+     fun searchInList(pageable: Pageable, category: ClubBoard.Category?, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard>
      fun findBySeqWithWriterAndImgs(clubBoardSeq: Long): ClubBoard?
 }
 
@@ -27,11 +27,17 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
     QuerydslRepositorySupport(ClubBoard::class.java)  {
 
     // 클럽 게시판 리스트 조회
-    override fun searchInList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard> {
-        val clubBoard   : QClubBoard    = QClubBoard.clubBoard
-        val clubBoardImg: QClubBoardImg = QClubBoardImg.clubBoardImg
-        val clubUser = QClubUser.clubUser
-        val user: QUser = QUser.user
+    override fun searchInList(
+        pageable: Pageable,
+        category: ClubBoard.Category?,
+        searchOpt: ClubBoardSearchOpt,
+        clubSeq: Long
+    ): Page<ClubBoard> {
+
+        val clubBoard    = QClubBoard.clubBoard
+        val clubBoardImg = QClubBoardImg.clubBoardImg
+        val clubUser     = QClubUser.clubUser
+        val user         = QUser.user
 
         val query = from(clubBoard)
                 .join(clubBoard.clubUser, clubUser)
@@ -48,9 +54,15 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
             query.where(clubBoard.content.likeIgnoreCase("${searchOpt.content}%"))
         }
 
+        if(category != null) {
+            query.where(clubBoard.category.eq(category))
+        }
+
         // 삭제된 글 필터링
         query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
 
         val fetchResult = query.fetchResults()
 

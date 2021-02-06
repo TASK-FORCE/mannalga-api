@@ -8,7 +8,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationStatusDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional

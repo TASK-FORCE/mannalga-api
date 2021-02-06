@@ -12,6 +12,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.controller.club.board.ClubBoardController
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
@@ -144,7 +145,10 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         val pageSize = 10
         val pageable = PageRequest.of(page, pageSize)
 
-        val searchOpt = ClubBoardSearchOpt()
+        val searchOpt = ClubBoardSearchOpt(
+            title   = "제목",
+            content = "내용"
+        )
         val clubSeq =  88L
 
         val dummyItem = ClubBoardListViewDto(clubBoard)
@@ -152,14 +156,15 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         val dummyItemList = listOf(dummyItem)
         val resultItemList =  PageImpl(dummyItemList, pageable, 100)
 
-        every { clubBoardService.getClubBoardList(any(), any(), any()) }.returns(PageDto(resultItemList))
+        every { clubBoardService.getClubBoardList(any(), any(), any(), any()) }.returns(PageDto(resultItemList))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
                 get("/clubs/{clubSeq}/board", clubSeq)
                         .queryParam("page", "$page")
                         .queryParam("size", "$pageSize")
-                        .queryParam("title", searchOpt.title)
+                        .queryParam("category", ClubBoard.Category.NORMAL.label)
+                        .queryParam("title"  , searchOpt.title)
                         .queryParam("content", searchOpt.content)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -171,7 +176,8 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                         requestParameters(
                                 *commonPageQueryParam(),
                                 parameterWithName("title").description("검색 글 제목"),
-                                parameterWithName("content").description("검색 내용")
+                                parameterWithName("content").description("검색 내용"),
+                                parameterWithName("category").description("검색 카테고리 (NORMAL, NOTICE)"),
                         ),
                         pathParameters(
                                 parameterWithName("clubSeq").description("[path variable] 모임 시퀀스")
@@ -195,6 +201,47 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                                 fieldWithPath("data.content[].writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
                         )
                 ))
+    }
+
+    @Test
+    fun `모임 게시판 글 단건 조회`() {
+
+        // given
+        every { clubBoardService.getClubBoard(any(), any() ) }.returns(ClubBoardDto(clubBoard))
+
+        //  when
+        val result: ResultActions = this.mockMvc.perform(
+            get("/clubs/{clubSeq}/board/{clubBoardSeq}", club.seq, clubBoard.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("select-club-board", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("clubSeq").description("[path variable] 모임 시퀀스"),
+                    parameterWithName("clubBoardSeq").description("[path variable] 모임 게시판 시퀀스")
+                ),
+                responseFields(
+                    *commonResponseField(),
+                    fieldWithPath("data.boardSeq").type(JsonFieldType.NUMBER).description("게시글 seq"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("글 제목"),
+                    fieldWithPath("data.content").type(JsonFieldType.STRING).description("게시글"),
+                    fieldWithPath("data.imageList[]").type(JsonFieldType.ARRAY).description("이미지 목록"),
+                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("작성 시간"),
+                    fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정 시간"),
+                    fieldWithPath("data.category").type(JsonFieldType.STRING).description("글 종류"),
+                    fieldWithPath("data.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
+                    fieldWithPath("data.commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("data.writer").type(JsonFieldType.OBJECT).description("해당 글 사진 총 개수"),
+                    fieldWithPath("data.writer.writerUserSeq").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
+                    fieldWithPath("data.writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
+                    fieldWithPath("data.writer.name").type(JsonFieldType.STRING).description("작성자 명"),
+                    fieldWithPath("data.writer.imgUrl").type(JsonFieldType.STRING).description("작성자 프로필 URL"),
+                    fieldWithPath("data.writer.role[]").type(JsonFieldType.ARRAY).description("작성자 권한")
+                )
+            ))
     }
 
     @Test

@@ -21,27 +21,33 @@ data class ClubBoardRegisterBody(
 
 class ClubBoardSearchOpt(
         val title  : String = "",
-        val content: String = ""
+        val content: String = "",
 )
 
 // 모임 게시판 단일 조회
 data class ClubBoardDto(
-        val clubBoardSeq: Long,
+        val boardSeq: Long,
         val title      : String,
         val content    : String,
+        val category   : ClubBoard.Category,
+        val likeCnt    : Long,
+        val commentCnt : Long,
         val createdAt  : String,
         val updatedAt  : String,
-        val boardImgs  : List<ClubBoardImg>,
+        val imageList  : List<ClubBoardImg>,
         val writer     : ClubWriter
 ) {
     constructor(clubBoard: ClubBoard): this(
-            clubBoardSeq = clubBoard.seq!!,
-            title     = clubBoard.title,
-            content   = clubBoard.content,
-            createdAt = clubBoard.createdAt?.toBaseDateTime() ?: "",
-            updatedAt = clubBoard.updatedAt?.toBaseDateTime() ?: "",
-            boardImgs = clubBoard.boardImgs,
-            writer    = ClubWriter(clubBoard.clubUser)
+            boardSeq   = clubBoard.seq!!,
+            title      = clubBoard.title,
+            content    = clubBoard.content,
+            category   = clubBoard.category,
+            likeCnt    = clubBoard.boardLikeCnt    ?: 0,
+            commentCnt = clubBoard.boardCommentCnt ?: 0,
+            createdAt  = clubBoard.createdAt?.toBaseDateTime() ?: "",
+            updatedAt  = clubBoard.updatedAt?.toBaseDateTime() ?: "",
+            imageList  = clubBoard.boardImgs,
+            writer     = ClubWriter(clubBoard.clubUser)
     )
 }
 
