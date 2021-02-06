@@ -1,12 +1,13 @@
 package com.taskforce.superinvention.common.config
 
-import com.taskforce.superinvention.common.config.argument.auth.AuthorizeArgumentResolver
+import com.taskforce.superinvention.common.config.argument.converter.ClubBoardCategoryConverter
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthorizeArgumentResolver
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver
+import org.springframework.format.FormatterRegistry
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
-import org.springframework.format.FormatterRegistry
 
 @Configuration
 class WebMvcConfig(
@@ -21,5 +22,9 @@ class WebMvcConfig(
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(authorizeArgumentResolver)
         argumentResolvers.add(PageableHandlerMethodArgumentResolver());
+    }
+
+    override fun addFormatters(registry: FormatterRegistry) {
+        registry.addConverter(ClubBoardCategoryConverter())
     }
 }

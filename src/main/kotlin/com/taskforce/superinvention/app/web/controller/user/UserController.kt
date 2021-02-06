@@ -11,7 +11,7 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.app.web.dto.user.UserMemberCheckDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.exception.BizException

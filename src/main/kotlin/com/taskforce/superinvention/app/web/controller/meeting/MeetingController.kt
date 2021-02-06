@@ -9,7 +9,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.data.domain.Pageable

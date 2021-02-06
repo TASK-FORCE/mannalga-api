@@ -1,12 +1,10 @@
 package com.taskforce.superinvention.app.web.controller.club.board
 
-import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeService
 import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
-import com.taskforce.superinvention.app.web.dto.club.album.like.ClubAlbumLikeDto
 import com.taskforce.superinvention.app.web.dto.club.board.like.ClubBoardLikeDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 

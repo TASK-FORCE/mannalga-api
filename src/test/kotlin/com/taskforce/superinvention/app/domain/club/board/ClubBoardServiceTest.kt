@@ -58,7 +58,7 @@ class ClubBoardServiceTest: IntegrationTest()  {
         val clubSeq   =  88L
 
         // when
-        val searchInList = sut.getClubBoardList(pageable, searchOpt, clubSeq)
+        val searchInList = sut.getClubBoardList(pageable, ClubBoard.Category.NORMAL, searchOpt, clubSeq)
 
         searchInList.content
 

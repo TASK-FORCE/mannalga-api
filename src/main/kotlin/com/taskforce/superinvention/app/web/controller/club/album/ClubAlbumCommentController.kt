@@ -6,7 +6,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentListDto
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
-import com.taskforce.superinvention.common.config.argument.auth.AuthUser
+import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*

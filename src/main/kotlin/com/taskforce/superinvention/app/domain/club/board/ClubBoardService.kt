@@ -42,10 +42,10 @@ class ClubBoardService(
      * 게시판 글 목록 조회
      */
     @Transactional
-    fun getClubBoardList(pageable: Pageable, searchOpt: ClubBoardSearchOpt, clubSeq: Long): PageDto<ClubBoardListViewDto> {
+    fun getClubBoardList(pageable: Pageable, category: ClubBoard.Category?, searchOpt: ClubBoardSearchOpt, clubSeq: Long): PageDto<ClubBoardListViewDto> {
         val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
 
-        val resultPage = clubBoardRepository.searchInList(pageRequest, searchOpt, clubSeq)
+        val resultPage = clubBoardRepository.searchInList(pageRequest, category, searchOpt, clubSeq)
             .map(::ClubBoardListViewDto)
 
         return PageDto(resultPage)

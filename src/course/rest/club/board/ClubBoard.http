@@ -16,10 +16,11 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 모임 게시판 조회
-GET {{host}}/clubs/6174/board
+GET {{host}}/clubs/6174/board?category=NOTICE
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
+GlobalAdviceController
 
 ### 모임 게시판 단일 조회
 GET {{host}}/clubs/6174/board/2

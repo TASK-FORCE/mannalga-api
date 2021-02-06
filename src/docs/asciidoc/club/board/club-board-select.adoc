@@ -11,8 +11,6 @@ endif::[]
 
 Request
 include::{sub-snippet}/select-club-board/http-request.adoc[]
-include::{sub-snippet}/select-club-board/request-parameters.adoc[]
-
 
 Response
 include::{sub-snippet}/select-club-board/response-fields.adoc[]
