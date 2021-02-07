@@ -33,3 +33,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViI
 ### 카카오 유저 정보
 GET {{host}}/users/kakao-profile
 Authorization: Bearer {{token-jun}}
+
+
+### 카카오 토큰 저장
+POST {{host}}/users/saveKakaoToken
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}
+
+{
+"access_token": "PV9R2cX7CDkL38yYijtgaeOtap3FV8d471Xp1Qo9cuoAAAF3etymEA",
+"expireds_in": 21599,
+"refresh_token": "iSoul2MdfKUFqtA1q-J2a_84-6NJw-EYrf1r1wo9cuoAAAF3etymDw",
+"refresh_token_expires_in": 5183999
+}

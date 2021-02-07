@@ -84,10 +84,13 @@ class UserService(
         }
 
         // 토큰이 만료되었을 때
-        if(kakaoToken.access_token.isNullOrBlank() || token.access_token != kakaoToken.access_token) {
+        if(token.access_token.isNullOrBlank() || token.access_token != kakaoToken.access_token) {
             LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
         }
+
+        user.accessToken = token.access_token
+        user.refreshToken = token.refresh_token
 
         return AppToken(
                 user.isRegistered,
