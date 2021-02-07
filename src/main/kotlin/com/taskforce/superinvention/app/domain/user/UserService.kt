@@ -43,7 +43,7 @@ class UserService(
         val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
 
         // 토큰이 만료되었을 때
-        if(token.access_token != kakaoToken.access_token) {
+        if(kakaoToken.access_token.isNullOrBlank() || token.access_token != kakaoToken.access_token) {
             LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
         }
@@ -84,7 +84,7 @@ class UserService(
         }
 
         // 토큰이 만료되었을 때
-        if(token.access_token != kakaoToken.access_token) {
+        if(kakaoToken.access_token.isNullOrBlank() || token.access_token != kakaoToken.access_token) {
             LOG.info("[TOKEN EXPIRE] - ${user.userId}의 카카오 토큰이 만료되어 새로 갱신합니다.")
             updateUserToken(user, token)
         }
@@ -128,5 +128,6 @@ class UserService(
     fun getUserBySeq(userSeq: Long): User {
         return userRepository.findByIdOrNull(userSeq)?: throw cannotFindUserException
     }
+
 
 }

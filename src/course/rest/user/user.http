@@ -20,3 +20,16 @@ Accept: application/json
 GET {{host}}/users/door-seq/8491
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
+
+### 카카오 토큰 조회
+GET https://kapi.kakao.com/v1/user/access_token_info HTTP/1.1
+Authorization: Bearer BoXgGmmlQRziyEx8BZdtwD463IQHK
+Content-type: application/x-www-form-urlencoded;charset=utf-8
+
+### 카카오 유저 정보
+GET {{host}}/users/kakao-profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxMTQ4NTEwOCwiZXhwIjoxNjQzMDIxMTA4fQ.gJg2APZdNtewO_OIfkAhbLB0ZJzBYrTZUjR72JvzXqI
+
+### 카카오 유저 정보
+GET {{host}}/users/kakao-profile
+Authorization: Bearer {{token-jun}}
