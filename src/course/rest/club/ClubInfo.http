@@ -14,3 +14,9 @@ Authorization: Bearer {{token-sdm}}
 GET {{host}}/clubs/6174
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
+
+### 모임 관심사 그룹으로 검색
+GET {{host}}/clubs/search?regionSeq=501
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}

@@ -22,11 +22,13 @@ import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
 import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -207,6 +209,35 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                     pathParameters(
                         parameterWithName("clubSeq").description("모임 시퀀스."),
                         parameterWithName("clubUserSeq").description("강퇴 대상 모임원 시퀀스.")
+                    ),
+                    responseFields(
+                        *commonResponseField()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @WithMockUser
+    fun `모임 삭제`() {
+        every { clubService.deleteClub(any(), any()) }.returns(Unit)
+        every { clubService.getClubUser(any(), any()) }.returns(mockk())
+
+        val result = mockMvc.perform(
+            delete("/clubs/{clubSeq}", club.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+            .andDo(
+                document("club-delete",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                        parameterWithName("clubSeq").description("모임 시퀀스")
                     ),
                     responseFields(
                         *commonResponseField()

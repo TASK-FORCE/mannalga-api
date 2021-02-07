@@ -12,6 +12,7 @@ interface ClubAlbumLikeRepository: JpaRepository<ClubAlbumLike, Long>, ClubAlbum
 
     fun findByClubAlbumAndClubUser(clubAlbum: ClubAlbum, clubUser: ClubUser): ClubAlbumLike?
     fun findByClubAlbumSeqAndClubUser(clubAlbumSeq: Long, clubUser: ClubUser): ClubAlbumLike?
+    fun findByClubAlbumIn(clubAlbumList: List<ClubAlbum>): List<ClubAlbumLike>
 }
 
 interface ClubAlbumLikeCustom {

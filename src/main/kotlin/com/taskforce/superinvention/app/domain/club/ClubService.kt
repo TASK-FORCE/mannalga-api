@@ -1,11 +1,20 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.taskforce.superinvention.app.domain.club.album.ClubAlbumRepository
+import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentRepository
+import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
+import com.taskforce.superinvention.app.domain.club.board.comment.ClubBoardCommentRepository
+import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgRepository
+import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
+import com.taskforce.superinvention.app.domain.meeting.MeetingApplicationRepository
+import com.taskforce.superinvention.app.domain.meeting.MeetingRepository
 import com.taskforce.superinvention.app.domain.meeting.MeetingService
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.ClubUserRoleRepository
@@ -17,16 +26,20 @@ import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
-import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.common.advice.GlobalAdviceController
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -48,8 +61,23 @@ class ClubService(
         private var clubUserRepository: ClubUserRepository,
         private var clubInterestRepository: ClubInterestRepository,
         private var clubRegionRepository: ClubRegionRepository,
-        private var clubUserRoleRepository: ClubUserRoleRepository
+        private var clubUserRoleRepository: ClubUserRoleRepository,
+        private var clubAlbumRepository: ClubAlbumRepository,
+        private val clubAlbumCommentRepository: ClubAlbumCommentRepository,
+        private val clubBoardRepository: ClubBoardRepository,
+        private val clubBoardCommentRepository: ClubBoardCommentRepository,
+        private val clubBoardLikeRepository: ClubBoardLikeRepository,
+        private val clubBoardImgRepository: ClubBoardImgRepository,
+        private val meetingRepository: MeetingRepository,
+        private val meetingApplicationRepository: MeetingApplicationRepository,
+        private val clubAlbumLikeRepository: ClubAlbumLikeRepository
 ) {
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(ClubService::class.java)
+    }
+
+
     @Autowired
     lateinit var meetingService: MeetingService
 
@@ -307,5 +335,147 @@ class ClubService(
         
         // 모임원 권한 회수
         roleService.withdrawRole(withdrawClubUser)
+    }
+
+    /**
+     * 모임 삭제
+     */
+    @Transactional
+    fun deleteClub(clubSeq: Long, actor: ClubUser) {
+        if (!roleService.hasClubMasterAuth(actor)) {
+            throw BizException("모임장만 모임을 삭제할 수 있습니다", HttpStatus.FORBIDDEN)
+        }
+
+        // 모임
+        val club = clubRepository.findBySeq(clubSeq)
+        LOG.info("모임 삭제 시작, 모임 시퀀스 : ${club.seq}, 모임명 : ${club.name}")
+
+        // 모임 관심사
+        val clubInterests = club.clubInterests
+        LOG.info("삭제 대상 모임 관심사 ${clubInterests.size}개")
+
+        // 모임 선호 지역
+        val clubRegions = club.clubRegions
+        LOG.info("삭제 대상 모임 지역 ${clubRegions.size}개")
+
+
+        // 모임원
+        val clubUserList = getClubUserList(club)
+        LOG.info("삭제 대상 모임원 ${clubUserList.size}개")
+        
+        // 모임원 권한
+        val clubUserRoleList = clubUserRoleRepository.findByClubUserIn(clubUserList)
+        LOG.info("삭제 대상 모임원 권한 ${clubUserRoleList.size}개")
+
+        // 모임 사진첩
+        val clubAlbumList = clubAlbumRepository.findClubAlbumList(clubSeq, ClubAlbumSearchOption(), Pageable.unpaged()).toList()
+        LOG.info("삭제 대상 사진첩 ${clubAlbumList.size}개")
+
+        if (clubAlbumList.isNotEmpty()) {
+            // 모임 사진첩 댓글
+            val clubAlbumCommentList = clubAlbumList.flatMap { it.clubAlbumComments }.toList()
+            LOG.info("삭제 대상 사진첩 댓글 ${clubAlbumCommentList.size}개")
+
+            // 모임 사진첩 좋아요
+            val clubAlbumLikeList = clubAlbumLikeRepository.findByClubAlbumIn(clubAlbumList)
+
+            if (clubAlbumCommentList.isNotEmpty()) {
+                LOG.info("사진첩 댓글 삭제 시작")
+                clubAlbumCommentRepository.deleteAll(clubAlbumCommentList)
+            }
+            
+            if (clubAlbumLikeList.isNotEmpty()) {
+                LOG.info("사진첩 좋아요 삭제 시작")
+                clubAlbumLikeRepository.deleteAll(clubAlbumLikeList)
+            }
+
+            LOG.info("사진첩 삭제 시작")
+            clubAlbumRepository.deleteAll(clubAlbumList)
+        }
+
+
+
+        // 모임 게시판
+        val clubBoardList = clubBoardRepository.searchInList(Pageable.unpaged(), null, ClubBoardSearchOpt(), clubSeq).toList()
+        LOG.info("삭제 대상 게시판 ${clubBoardList.size}개")
+
+        if (clubBoardList.isNotEmpty()) {
+            // 게시판 이미지
+            val clubBoardImgList = clubBoardList.flatMap { it.boardImgs }.toList()
+            LOG.info("삭제 대상 게시판 이미지 ${clubBoardImgList.size}개")
+
+            // 게시판 좋아요
+            val clubBoardLikeList = clubBoardLikeRepository.findByClubBoardIn(clubBoardList)
+            LOG.info("삭제 대상 게시판 좋아요 ${clubBoardLikeList.size}개")
+
+            // 게시판 댓글
+            val clubBoardCommentList = clubBoardCommentRepository.findByClubBoardIn(clubBoardList)
+            LOG.info("삭제 대상 게시판 댓글 ${clubBoardCommentList.size}개")
+
+            if (clubBoardCommentList.isNotEmpty()) {
+                LOG.info("게시판 댓글 삭제 시작")
+                clubBoardCommentRepository.deleteAll(clubBoardCommentList)
+            }
+
+            if (clubBoardLikeList.isNotEmpty()) {
+                LOG.info("게시판 좋아요 삭제 시작")
+                clubBoardLikeRepository.deleteAll(clubBoardLikeList)
+            }
+
+            if (clubBoardImgList.isNotEmpty()) {
+                LOG.info("게시판 이미지 삭제 시작")
+                clubBoardImgRepository.deleteAll(clubBoardImgList)
+            }
+
+            LOG.info("게시판 삭제 시작")
+            clubBoardRepository.deleteAll(clubBoardList)
+        }
+
+
+
+        // 만남
+        val meetings = meetingRepository.getMeetings(clubSeq, Pageable.unpaged()).toList()
+        LOG.info("삭제 대상 만남 ${meetings.size}개")
+
+        // 만남 신청
+        val meetingApplications = meetingApplicationRepository.findByMeetingIn(meetings)
+        LOG.info("삭제 대상 만남 신청 ${meetingApplications.size}개")
+
+        if (meetings.isNotEmpty()){
+            if (meetingApplications.isNotEmpty()) {
+                LOG.info("만남 신청 삭제 시작")
+                meetingApplicationRepository.deleteAll(meetingApplications)
+            }
+
+            LOG.info("만남 삭제 시작")
+            meetingRepository.deleteAll(meetings)
+        }
+
+
+
+
+        if (clubUserRoleList.isNotEmpty()) {
+            LOG.info("모임원 권한 삭제 시작")
+            clubUserRoleRepository.deleteAll(clubUserRoleList)
+        }
+
+        if (clubUserList.isNotEmpty()) {
+            LOG.info("모임원 삭제 시작")
+            clubUserRepository.deleteAll(clubUserList)
+        }
+
+
+        if (clubInterests.isNotEmpty()) {
+            LOG.info("모임 관심사 삭제 시작")
+            clubInterestRepository.deleteAll(clubInterests)
+        }
+
+        if (clubRegions.isNotEmpty()) {
+            LOG.info("모임 지역 삭제 시작")
+            clubRegionRepository.deleteAll(clubRegions)
+        }
+
+        LOG.info("모임 삭제 시작")
+        clubRepository.delete(club)
     }
 }

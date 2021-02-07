@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ClubUserRoleRepository : JpaRepository<ClubUserRole, Long> {
     fun findByClubUser(clubUser: ClubUser): Set<ClubUserRole>
+    fun findByClubUserIn(clubUsers: Iterable<ClubUser>): List<ClubUserRole>
 }

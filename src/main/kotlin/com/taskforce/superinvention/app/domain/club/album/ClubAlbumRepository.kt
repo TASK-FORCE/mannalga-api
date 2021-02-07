@@ -26,8 +26,12 @@ class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
 
         val query = from(clubAlbum)
                 .where(clubAlbum.delete_flag.isFalse, eqSeq(clubAlbum.club.seq, clubSeq))
-                .offset(pageable.offset)
+
+        if (pageable != Pageable.unpaged()) {
+            query.offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
+        }
+
 
         if(searchOption.title.isNotBlank()) {
             query.where(clubAlbum.title.like("${searchOption.title}%"))

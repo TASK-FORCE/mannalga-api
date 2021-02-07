@@ -106,6 +106,9 @@ include::{root}/club/withdraw.adoc[]
 === [.toc-list-item]`모임원 강퇴`
 include::{root}/club/kick.adoc[]
 
+=== [.toc-list-item]`모임 삭제`
+include::{root}/club/delete.adoc[]
+
 == 모임 게시판
 
 === [.toc-list-item]`모임 게시판 작성`

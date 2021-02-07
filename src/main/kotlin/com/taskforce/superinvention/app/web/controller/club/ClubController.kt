@@ -175,4 +175,12 @@ class ClubController(
         clubService.withdraw(clubUserSeq, actor.seq!!)
         return ResponseDto(ResponseDto.EMPTY)
     }
+
+    @DeleteMapping("/{clubSeq}")
+    fun deleteClub(@AuthUser user: User, @PathVariable clubSeq: Long): ResponseDto<String> {
+        val actor = clubService.getClubUser(clubSeq, user) ?: throw BizException("존재하지 않는 모임원입니다.", HttpStatus.NOT_FOUND)
+        clubService.deleteClub(clubSeq, actor)
+
+        return ResponseDto(ResponseDto.EMPTY)
+    }
 }

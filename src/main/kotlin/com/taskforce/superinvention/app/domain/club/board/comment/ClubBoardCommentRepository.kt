@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.domain.club.board.comment
 import com.blazebit.persistence.CriteriaBuilderFactory
 import com.blazebit.persistence.querydsl.BlazeJPAQuery
 import com.querydsl.core.types.dsl.BooleanExpression
+import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.QClubBoard
 import com.taskforce.superinvention.app.domain.user.QUser
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,9 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ClubBoardCommentRepository : JpaRepository<ClubBoardComment, Long>, ClubBoardCommentRepositoryCustom
+interface ClubBoardCommentRepository : JpaRepository<ClubBoardComment, Long>, ClubBoardCommentRepositoryCustom {
+    fun findByClubBoardIn(clubBoards: Iterable<ClubBoard>): List<ClubBoardComment>
+}
 
 interface ClubBoardCommentRepositoryCustom {
     fun findRootCommentListWithWriter(pageable: Pageable, clubBoardSeq: Long): Page<ClubBoardComment>
