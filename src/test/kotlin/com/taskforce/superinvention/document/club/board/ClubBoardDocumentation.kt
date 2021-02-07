@@ -172,7 +172,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
 
         // then
         result.andExpect(status().isOk)
-                .andDo(document("club-board-select-list", getDocumentRequest(), getDocumentResponse(),
+                .andDo(document("select-club-board-list", getDocumentRequest(), getDocumentResponse(),
                         requestParameters(
                                 *commonPageQueryParam(),
                                 parameterWithName("title").description("검색 글 제목"),
