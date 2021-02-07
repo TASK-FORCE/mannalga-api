@@ -5,11 +5,13 @@ import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.QClubBoard
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
 interface ClubBoardLikeRepository: JpaRepository<ClubBoardLike, Long>, ClubBoardLikeRepositoryCustom {
     fun findByClubBoardAndClubUser(board: ClubBoard, clubUser: ClubUser): ClubBoardLike?
+    fun findByClubBoardIn(clubBoardList: List<ClubBoard>): List<ClubBoardLike>
 }
 
 interface ClubBoardLikeRepositoryCustom {

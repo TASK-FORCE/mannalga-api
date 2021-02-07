@@ -1,11 +1,20 @@
 package com.taskforce.superinvention.app.domain.club
 
+import com.taskforce.superinvention.app.domain.club.album.ClubAlbumRepository
+import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentRepository
+import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
+import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
+import com.taskforce.superinvention.app.domain.club.board.comment.ClubBoardCommentRepository
+import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgRepository
+import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
+import com.taskforce.superinvention.app.domain.meeting.MeetingApplicationRepository
+import com.taskforce.superinvention.app.domain.meeting.MeetingRepository
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.region.RegionService
@@ -34,6 +43,15 @@ internal class ClubServiceTest {
     lateinit var regionService: RegionService
     lateinit var roleService: RoleService
     lateinit var userRepository: UserRepository
+    lateinit var clubAlbumRepository: ClubAlbumRepository
+    lateinit var clubAlbumCommentRepository: ClubAlbumCommentRepository
+    lateinit var clubBoardRepository: ClubBoardRepository
+    lateinit var clubBoardCommentRepository: ClubBoardCommentRepository
+    lateinit var clubBoardLikeRepository: ClubBoardLikeRepository
+    lateinit var clubBoardImgRepository: ClubBoardImgRepository
+    lateinit var meetingRepository: MeetingRepository
+    lateinit var meetingApplicationRepository: MeetingApplicationRepository
+    lateinit var clubAlbumLikeRepository: ClubAlbumLikeRepository
 
     @BeforeEach
     fun init() {
@@ -47,6 +65,15 @@ internal class ClubServiceTest {
         regionService = mockk()
         roleService = mockk()
         userRepository = mockk()
+        clubAlbumRepository = mockk()
+        clubAlbumCommentRepository = mockk()
+        clubBoardRepository = mockk()
+        clubBoardCommentRepository = mockk()
+        clubBoardLikeRepository = mockk()
+        clubBoardImgRepository = mockk()
+        meetingRepository = mockk()
+        meetingApplicationRepository = mockk()
+        clubAlbumLikeRepository = mockk()
 
         clubService = ClubService(
             clubUserRepository = clubUserRepository,
@@ -58,7 +85,16 @@ internal class ClubServiceTest {
             interestService = interestService,
             regionService = regionService,
             roleService = roleService,
-            userRepository = userRepository
+            userRepository = userRepository,
+            clubAlbumRepository = clubAlbumRepository,
+            clubAlbumCommentRepository = clubAlbumCommentRepository,
+            clubBoardRepository = clubBoardRepository,
+            clubBoardCommentRepository = clubBoardCommentRepository,
+            clubBoardLikeRepository = clubBoardLikeRepository,
+            clubBoardImgRepository = clubBoardImgRepository,
+            meetingRepository = meetingRepository,
+            meetingApplicationRepository = meetingApplicationRepository,
+            clubAlbumLikeRepository = clubAlbumLikeRepository
         )
 
         every { clubRepository.save(any()) }.returns(mockk())

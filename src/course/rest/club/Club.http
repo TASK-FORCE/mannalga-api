@@ -15,3 +15,10 @@ Authorization: Bearer {{token-sdm}}
 POST {{host}} /clubs/6174/users
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
+
+
+### 모임 삭제
+DELETE {{host}}/clubs/6386
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}

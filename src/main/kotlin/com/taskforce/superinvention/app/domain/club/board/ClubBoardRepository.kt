@@ -61,8 +61,11 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         // 삭제된 글 필터링
         query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
-            .offset(pageable.offset)
-            .limit(pageable.pageSize.toLong())
+
+        if (pageable != Pageable.unpaged()) {
+            query.offset(pageable.offset)
+                .limit(pageable.pageSize.toLong())
+        }
 
         val fetchResult = query.fetchResults()
 
