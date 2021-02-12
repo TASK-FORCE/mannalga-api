@@ -1,11 +1,11 @@
 ###  내 모임 게시글 댓글 조회
-GET  {{host}}/club/6174/board/2/comment
+GET  {{host}}/club/6174/board/7/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-dong}}
 
 ### 내 모임 게시글 댓글 등록
-POST {{host}}/club/6174/board/2/comment
+POST {{host}}/club/6327/board/7/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
@@ -15,7 +15,7 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 내 모임 게시글 대댓글 등록
-POST {{host}}/club/6174/board/2/comment/1
+POST {{host}}/club/6327/board/7/comment?parentCommentSeq=36
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
@@ -24,8 +24,14 @@ Authorization: Bearer {{token-sdm}}
   "content" : "테스트 댓글"
 }
 
+### 내 모임 게시글 댓글 조회
+GET {{host}}/club/6174/board/7/comment?page=0&size=20
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
 ### 내 모임 게시글 대댓글 조회
-GET {{host}}/club/6174/board/2/comment/1
+GET {{host}}/club/6174/board/7/comment/36
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
