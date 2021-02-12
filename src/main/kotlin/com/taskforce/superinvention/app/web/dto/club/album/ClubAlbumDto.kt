@@ -2,11 +2,16 @@ package com.taskforce.superinvention.app.web.dto.club.album
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
 import com.taskforce.superinvention.app.web.dto.club.ClubWriter
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 data class ClubAlbumRegisterDto(
-        val title     : String = "",
-        val file_name : String = "",
-        val imgUrl    : String = ""
+        @get:NotBlank(message = "게시판 제목을 입력해주세요")
+        val title : String,
+
+        @get:NotNull(message = "이미지가 없습니다.")
+        val image : S3Path
 )
 
 data class ClubAlbumDto(

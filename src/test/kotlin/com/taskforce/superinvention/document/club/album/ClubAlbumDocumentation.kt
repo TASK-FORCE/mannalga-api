@@ -15,6 +15,7 @@ import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
 import com.taskforce.superinvention.app.web.dto.common.PageDto
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -181,14 +182,15 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
 
         // given
         val body = ClubAlbumRegisterDto(
-                title     = "신규 모임 사진첩 제목",
-                file_name = "파일명",
-                imgUrl    = "이미지 URL"
+            title = "으어아억",
+            image = S3Path(
+                absolutePath = "http://aws/경로/파일명.확장자",
+                filePath     = "/경로/파일명.확장자",
+                fileName     = "파일명.확장자"
+            )
         )
 
         // when
-//        every { (clubAlbumService.registerClubAlbum(eq(user), eq(club.seq!!), eq(body))) }.then
-
         val result: ResultActions = this.mockMvc.perform(
                 post("/club/{clubSeq}/album", club.seq!!)
                         .content(objectMapper.writeValueAsString(body))

@@ -86,6 +86,28 @@ class ClubBoardServiceTest: IntegrationTest()  {
 
     @Disabled
     @Test
+    fun `게시판 글 등록 - 이미지 등록과 함께`() {
+
+        // given
+        val user = userRepository.findByUserId("1439528597")!!
+        val clubSeq = 88L
+
+        val requestBody = registerBody
+
+        // when
+
+
+        val board = sut.registerClubBoard(user, clubSeq, requestBody)
+
+        // then
+        Assertions.assertEquals(board.title   , requestBody.title)
+        Assertions.assertEquals(board.content , requestBody.content)
+        Assertions.assertEquals(board.category, requestBody.category)
+    }
+
+
+    @Disabled
+    @Test
     fun `게시판 글 삭제`() {
         val user = userRepository.findByUserId("1439528597")!!
         val clubSeq = 88L

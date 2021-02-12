@@ -17,6 +17,7 @@ import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.test.MockkTest
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -129,9 +130,8 @@ class ClubAlbumServiceTest: MockkTest() {
 
         // given
         val body = ClubAlbumRegisterDto(
-            title     = "신규 모임 사진첩 제목",
-            file_name = "파일명",
-            imgUrl    = "이미지 URL"
+            title = "신규 모임 사진첩 제목",
+            image = S3Path()
         )
 
         every { clubService.getValidClubBySeq(club.seq!!)        } returns club
@@ -140,7 +140,7 @@ class ClubAlbumServiceTest: MockkTest() {
         every { clubUserService.getValidClubUser(club.seq!!, writer)      } returns writerClubUser
         every { clubUserService.getValidClubUser(club.seq!!, nonClubUser) } throws  UserIsNotClubMemberException()
 
-        every { clubAlbumRepository.save( any<ClubAlbum>()) } returns clubAlbum
+        every { clubAlbumRepository.save( any()) } returns clubAlbum
 
         // 모임이 없을 때
         assertThrows<ClubNotFoundException> {

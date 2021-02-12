@@ -43,10 +43,10 @@ class ClubAlbum(
 
     constructor(writer: ClubUser, club: Club, registerDto: ClubAlbumRegisterDto): this (
             club        = club,
-            writer    = writer,
+            writer      = writer,
             title       = registerDto.title,
-            img_url     = registerDto.imgUrl,
-            file_name   = registerDto.file_name,
+            img_url     = registerDto.image.absolutePath,
+            file_name   = registerDto.image.fileName,
             delete_flag = false
     )
 }

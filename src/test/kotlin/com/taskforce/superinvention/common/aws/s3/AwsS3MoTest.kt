@@ -22,10 +22,9 @@ class AwsS3MoTest: IntegrationTest() {
         multipartFile = MockMultipartFile("test-image-file", "test-image-file.png", "multipart/form-data", inputFile)
     }
 
-
     @Disabled @Test
     fun `AWS S3 파일 업로드`() {
-        val s3Path = awsS3Mo.uploadFile(multipartFile, "temp")
+        val s3Path = awsS3Mo.uploadFileWithUUID(multipartFile, "temp")
         print(s3Path)
     }
 }

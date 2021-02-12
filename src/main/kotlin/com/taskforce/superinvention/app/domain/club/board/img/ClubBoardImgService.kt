@@ -21,10 +21,10 @@ class ClubBoardImgService(
 
         // [1] 기존 임시 저장된 파일들을 해당 폴더로 이동
         val clubBoardImgList = imgList.map{ s3Path ->
-            awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
+            val movedFile = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
             ClubBoardImg(
-                imgName   = s3Path.fileName,
-                imgUrl    = s3Path.absolutePath,
+                imgName   = movedFile.fileName,
+                imgUrl    = movedFile.absolutePath,
                 clubBoard  = clubBoard,
                 deleteFlag = false
             )

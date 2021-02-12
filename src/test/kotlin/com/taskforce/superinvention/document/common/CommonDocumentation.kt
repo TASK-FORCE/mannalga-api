@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.document.common
 
-import com.taskforce.superinvention.common.advice.ErrorResponse
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
@@ -10,9 +9,6 @@ import com.taskforce.superinvention.config.test.ApiDocumentationTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.JsonFieldType

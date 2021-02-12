@@ -6,4 +6,4 @@ import org.springframework.test.context.ActiveProfiles
 
 @ExtendWith(MockKExtension::class)
 @ActiveProfiles(TestEnv.TEST)
-abstract class MockkTest
+abstract class MockkTest: BaseTest

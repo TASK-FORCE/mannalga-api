@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.image.ClubAlbumImageService
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
@@ -19,6 +20,8 @@ import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberExc
 import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoundException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -31,10 +34,11 @@ class ClubAlbumService(
         private val roleService: RoleService,
         private val clubService: ClubService,
         private val clubUserService: ClubUserService,
+        private val clubAlbumImgService: ClubAlbumImageService,
         private val clubUserRepository : ClubUserRepository,
         private val clubAlbumRepository: ClubAlbumRepository,
         private val clubRepository: ClubRepository,
-        private val clubAlbumLikeRepository: ClubAlbumLikeRepository
+        private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
 ) {
 
     companion object {
@@ -57,7 +61,6 @@ class ClubAlbumService(
 
         val club     = clubService.getValidClubBySeq(clubSeq)
         val clubUser = clubUserService.getValidClubUser(clubSeq, user)
-
         if(isValid(clubAlbumDto!!)) {
             val clubAlbum = ClubAlbum (
                 writer      = clubUser,
@@ -65,6 +68,7 @@ class ClubAlbumService(
                 registerDto = clubAlbumDto
             )
             clubAlbumRepository.save(clubAlbum)
+            clubAlbumImgService.registerClubAlbumImage(clubAlbum, clubAlbumDto.image)
             return true
         }
         return false
@@ -121,9 +125,10 @@ class ClubAlbumService(
 
     private fun isValid(clubAlbumDto: ClubAlbumRegisterDto): Boolean {
 
-        if(clubAlbumDto.imgUrl.isBlank()) {
+        if(clubAlbumDto.image.absolutePath.isBlank()) {
             throw BizException("잘못된 이미지 URL입니다.", HttpStatus.BAD_REQUEST)
         }
+
         if(clubAlbumDto.title.isBlank()) {
             throw BizException("제목이 비어있습니다.", HttpStatus.BAD_REQUEST)
         }
