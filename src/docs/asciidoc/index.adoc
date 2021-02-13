@@ -111,6 +111,9 @@ include::{root}/club/kick.adoc[]
 === [.toc-list-item]`모임 삭제`
 include::{root}/club/delete.adoc[]
 
+=== [.toc-list-item]`모임 수정/변경`
+include::{root}/club/modify.adoc[]
+
 == 모임 게시판
 
 === [.toc-list-item]`모임 게시판 작성`

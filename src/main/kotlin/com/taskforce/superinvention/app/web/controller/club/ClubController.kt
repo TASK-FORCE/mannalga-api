@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("clubs")
@@ -182,5 +183,17 @@ class ClubController(
         clubService.deleteClub(clubSeq, actor)
 
         return ResponseDto(ResponseDto.EMPTY)
+    }
+
+
+    /**
+     * 모임 변경
+     * @author eric
+     */
+    @Secured(Role.MEMBER)
+    @PutMapping("/{clubSeq}")
+    fun modifyClub(@AuthUser user: User, @RequestBody @Valid request: ClubAddRequestDto, @PathVariable clubSeq: Long): ResponseDto<Any?> {
+        clubService.modifyClub(clubSeq, user, request)
+        return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
 }
