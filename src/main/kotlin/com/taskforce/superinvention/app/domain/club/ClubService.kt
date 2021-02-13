@@ -34,7 +34,6 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.common.advice.GlobalAdviceController
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
@@ -434,7 +433,7 @@ class ClubService(
 
 
         // 만남
-        val meetings = meetingRepository.getMeetings(clubSeq, Pageable.unpaged()).toList()
+        val meetings = meetingRepository.getPagedMeetings(clubSeq, Pageable.unpaged()).toList()
         LOG.info("삭제 대상 만남 ${meetings.size}개")
 
         // 만남 신청

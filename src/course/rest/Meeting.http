@@ -1,5 +1,5 @@
 ### 모임 내 모든 만남 조회 [준]
-GET {{host}}/clubs/6164/meetings HTTP/1.1
+GET {{host}}/clubs/6164/meetings?size=1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json

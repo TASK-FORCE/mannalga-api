@@ -18,14 +18,14 @@ interface MeetingRepository : JpaRepository<Meeting, Long>, MeetingRepositoryCus
 
 interface MeetingRepositoryCustom {
     fun findMeetingApplicationByUserAndMeetingSeq(clubUser: ClubUser, meetingSeq: Long): MeetingApplication
-    fun getMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting>
+    fun getPagedMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting>
 }
 
 @Repository
 class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), MeetingRepositoryCustom{
 
     @Transactional(readOnly = true)
-    override fun getMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting> {
+    override fun getPagedMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting> {
         val query = from(QMeeting.meeting)
                 .join(QMeeting.meeting.club, QClub.club)
                 .leftJoin(QMeeting.meeting.meetingApplications, QMeetingApplication.meetingApplication)
@@ -40,10 +40,8 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
         }
 
         val fetchResult = query
-                .orderBy(QMeeting.meeting.seq.desc())
+                .orderBy(QMeeting.meeting.startTimestamp.desc())
                 .fetchResults()
-
-
 
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
     }
