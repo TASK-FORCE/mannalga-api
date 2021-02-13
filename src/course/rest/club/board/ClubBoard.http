@@ -23,7 +23,7 @@ Authorization: Bearer {{token-sdm}}
 GlobalAdviceController
 
 ### 모임 게시판 단일 조회
-GET {{host}}/clubs/6174/board/2
+GET {{host}}/clubs/6327/board/43
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-dong}}

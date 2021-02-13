@@ -34,10 +34,11 @@ data class ClubBoardDto(
         val commentCnt : Long,
         val createdAt  : String,
         val updatedAt  : String,
-        val imageList  : List<ClubBoardImg>,
+        val isLiked    : Boolean,
+        val imageList  : List<ClubBoardImgDto>,
         val writer     : ClubWriter
 ) {
-    constructor(clubBoard: ClubBoard): this(
+    constructor(clubBoard: ClubBoard, isLiked: Boolean): this(
             boardSeq   = clubBoard.seq!!,
             title      = clubBoard.title,
             content    = clubBoard.content,
@@ -46,8 +47,9 @@ data class ClubBoardDto(
             commentCnt = clubBoard.boardCommentCnt ?: 0,
             createdAt  = clubBoard.createdAt?.toBaseDateTime() ?: "",
             updatedAt  = clubBoard.updatedAt?.toBaseDateTime() ?: "",
-            imageList  = clubBoard.boardImgs,
-            writer     = ClubWriter(clubBoard.clubUser)
+            imageList  = clubBoard.boardImgs.map(::ClubBoardImgDto).toList(),
+            writer     = ClubWriter(clubBoard.clubUser),
+            isLiked    = isLiked
     )
 }
 
@@ -74,5 +76,17 @@ data class ClubBoardListViewDto(
                 likeCnt    = clubBoard.boardLikeCnt    ?: 0,
                 commentCnt = clubBoard.boardCommentCnt ?: 0,
                 writer     = ClubWriter(clubBoard.clubUser)
+        )
+}
+
+data class ClubBoardImgDto(
+    val imgUrl   : String,
+    val imageName: String,
+    val createdAt: String,
+) {
+        constructor(clubBoardImg: ClubBoardImg): this(
+                imgUrl    = clubBoardImg.imgUrl,
+                imageName = clubBoardImg.imgName,
+                createdAt = clubBoardImg.createdAt?.toBaseDateTime() ?: "",
         )
 }

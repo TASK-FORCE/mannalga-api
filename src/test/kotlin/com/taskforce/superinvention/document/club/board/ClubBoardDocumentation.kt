@@ -5,6 +5,7 @@ import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
+import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImg
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
@@ -12,10 +13,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.controller.club.board.ClubBoardController
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.club.board.*
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
@@ -57,6 +55,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     private lateinit var user: User
     private lateinit var clubUser : ClubUser
     private lateinit var clubBoard: ClubBoard
+    private lateinit var clubBoardImg: ClubBoardImg
 
     private val roleGroup  = RoleGroup("USER", "USER_TYPE")
     private val memberRole = Role(Role.RoleName.CLUB_MEMBER, roleGroup,2)
@@ -84,7 +83,18 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                 clubUser = clubUser,
                 deleteFlag = false,
                 category   = ClubBoard.Category.NORMAL
-        ).apply { seq = 300 }
+        ).apply {
+            seq = 300
+        }
+
+        clubBoardImg = ClubBoardImg (
+            clubBoard = clubBoard,
+            imgUrl    = "이미지 절대 경로",
+            imgName   = "",
+            deleteFlag = false
+        ).apply {
+            seq = 301
+        }
     }
 
     @Test
@@ -204,10 +214,11 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     }
 
     @Test
-    fun `모임 게시판 글 단건 조회`() {
+    fun `모임 게시판 단건 조회`() {
 
         // given
-        every { clubBoardService.getClubBoard(any(), any() ) }.returns(ClubBoardDto(clubBoard))
+        clubBoard.boardImgs = listOf(clubBoardImg)
+        every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto(clubBoard, false))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
@@ -228,11 +239,14 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                     fieldWithPath("data.boardSeq").type(JsonFieldType.NUMBER).description("게시글 seq"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING).description("글 제목"),
                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("게시글"),
-                    fieldWithPath("data.imageList[]").type(JsonFieldType.ARRAY).description("이미지 목록"),
+                    fieldWithPath("data.imageList[].imgUrl").type(JsonFieldType.STRING).description("이미지 절대경로"),
+                    fieldWithPath("data.imageList[].imageName").type(JsonFieldType.STRING).description("이미지 파일 이름"),
+                    fieldWithPath("data.imageList[].createdAt").type(JsonFieldType.STRING).description("생성 일자"),
                     fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("작성 시간"),
                     fieldWithPath("data.updatedAt").type(JsonFieldType.STRING).description("수정 시간"),
                     fieldWithPath("data.category").type(JsonFieldType.STRING).description("글 종류"),
                     fieldWithPath("data.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
+                    fieldWithPath("data.isLiked").type(JsonFieldType.BOOLEAN).description("조회자가 좋아요를 눌렀는지"),
                     fieldWithPath("data.commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
                     fieldWithPath("data.writer").type(JsonFieldType.OBJECT).description("해당 글 사진 총 개수"),
                     fieldWithPath("data.writer.writerUserSeq").type(JsonFieldType.NUMBER).description("해당 글 사진 총 개수"),
