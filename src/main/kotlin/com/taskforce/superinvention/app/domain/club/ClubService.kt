@@ -477,4 +477,22 @@ class ClubService(
         LOG.info("모임 삭제 시작")
         clubRepository.delete(club)
     }
+
+    @Transactional
+    fun modifyClub(clubSeq: Long, user: User, request: ClubAddRequestDto) {
+        val club = clubRepository.findBySeq(clubSeq)
+        val clubUser = clubUserRepository.findByClubAndUser(club, user) ?: throw BizException("존재하지 않는 모임원의 요청입니다.", HttpStatus.FORBIDDEN)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("모임의 매니저 이상만 모임 수정이 가능합니다.", HttpStatus.FORBIDDEN)
+
+        changeClubInterests(user, clubSeq, request.interestList.toSet())
+        changeClubRegions(user, clubSeq, request.regionList.toSet())
+
+        club.apply {
+            name = request.name
+            description = request.description
+            maximumNumber = request.maximumNumber
+            mainImageUrl = request.mainImageUrl
+        }
+
+    }
 }

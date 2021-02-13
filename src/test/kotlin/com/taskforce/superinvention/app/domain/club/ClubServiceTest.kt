@@ -9,12 +9,14 @@ import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgReposi
 import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
+import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroup
 import com.taskforce.superinvention.app.domain.meeting.MeetingApplicationRepository
 import com.taskforce.superinvention.app.domain.meeting.MeetingRepository
+import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.Region
 import com.taskforce.superinvention.app.domain.region.RegionService
@@ -99,8 +101,8 @@ internal class ClubServiceTest {
 
         every { clubRepository.save(any()) }.returns(mockk())
         every { clubUserRepository.save(any()) }.returns(mockk())
-        every { clubInterestRepository.saveAll(any()) }.returns(mockk())
-        every { clubRegionRepository.saveAll(any()) }.returns(mockk())
+        every { clubInterestRepository.saveAll(any<Iterable<ClubInterest>>()) }.returns(mockk())
+        every { clubRegionRepository.saveAll(any<Iterable<ClubRegion>>()) }.returns(mockk())
         every { roleService.findByRoleName(any()) }.returns(mockk())
         every { clubUserRoleRepository.save(any()) }.returns(mockk())
         every { clubUserRepository.findByClubAndUser(any(), any()) }.returns(mockk())

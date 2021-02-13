@@ -22,3 +22,30 @@ DELETE {{host}}/clubs/6386
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-jun}}
+
+### 모임 수정
+PUT {{host}}/clubs/6164
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}
+
+{
+  "name": "제목을 이렇게 바꿔보자",
+  "description": "설명을 이렇게 바꿔보자",
+  "maximumNumber": 55,
+  "mainImageUrl": null,
+  "interestList":
+  [
+    {
+      "seq": 10,
+      "priority": 1
+    }
+  ],
+  "regionList":
+  [
+  {
+    "seq": 120,
+    "priority": 1
+  }
+  ]
+}
