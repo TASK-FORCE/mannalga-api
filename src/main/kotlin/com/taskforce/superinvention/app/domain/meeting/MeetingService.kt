@@ -1,26 +1,24 @@
 package com.taskforce.superinvention.app.domain.meeting
 
-import com.taskforce.superinvention.app.domain.club.ClubRepository
-import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.common.PageDto
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationDto
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingApplicationStatusDto
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
-import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
+import com.taskforce.superinvention.app.web.dto.meeting.*
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.meeting.MeetingAlreadyApplicationException
 import com.taskforce.superinvention.common.exception.club.meeting.MeetingIsClosedException
 import com.taskforce.superinvention.common.exception.club.meeting.MeetingMemberOverflowException
-import org.springframework.data.domain.Page
+import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 @Service
 class MeetingService(
@@ -46,13 +44,33 @@ class MeetingService(
     fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingDto> {
 
         val resultPage = meetingRepositoryImpl
-            .getMeetings(clubSeq, pageable)
+            .getPagedMeetings(clubSeq, pageable)
             .map { e -> MeetingDto(e, currentClubUserSeq)
                 .apply {
                     meetingApplications = meetingApplications.filterNot { it.deleteFlag }
                 }
             }
         return PageDto(resultPage)
+    }
+
+    @Transactional(readOnly = true)
+    fun getMeetingsWithGroup(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingGroupDto> {
+        val meetingDtoPages = meetingRepositoryImpl
+            .getPagedMeetings(clubSeq, pageable)
+            .map { e -> MeetingDto(e, currentClubUserSeq)
+                .apply {
+                    meetingApplications = meetingApplications.filterNot { it.deleteFlag }
+                }
+            }
+        val meetingGroupDtoList = convert(meetingDtoPages.content)
+        return PageDto(PageImpl(meetingGroupDtoList, pageable, meetingGroupDtoList.size.toLong()))
+    }
+
+    fun convert(meetingDtoList: List<MeetingDto>): List<MeetingGroupDto> {
+        return meetingDtoList
+            .groupBy { YearMonth.from(LocalDateTime.parse(it.startTimestamp, DateTimeFormatter.ofPattern(DATE_TIME_FORMAT))) }
+            .map { MeetingGroupDto(it.key, it.value) }
+            .sortedByDescending { it.groupYearMonth }
     }
 
     @Transactional

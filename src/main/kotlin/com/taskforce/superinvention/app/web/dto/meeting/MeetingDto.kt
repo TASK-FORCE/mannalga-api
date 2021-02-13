@@ -10,9 +10,9 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
-import com.taskforce.superinvention.common.util.extendFun.DATE_TIME_FORMAT
-import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
+import com.taskforce.superinvention.common.util.extendFun.*
 import java.time.LocalDateTime
+import java.time.YearMonth
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -34,7 +34,12 @@ class MeetingDto {
     var regionURL: String?
     var cost: Int?
     var isOpen: Boolean
-
+    val meetingDay: Int
+    val meetingDayOfWeek: String
+    val startDate: String
+    val startTime: String
+    val endDate: String
+    val endTime: String
 
     constructor(meeting: Meeting, currentClubUserSeq: Long?){
         seq = meeting.seq!!
@@ -54,6 +59,13 @@ class MeetingDto {
         meetingApplications = meeting.meetingApplications.map(::MeetingApplicationDto)
         isCurrentUserRegMeeting = currentClubUserSeq == regClubUser.seq
         isCurrentUserApplicationMeeting = meeting.meetingApplications.filter { !it.deleteFlag }.map { e -> e.clubUser.seq }.contains(currentClubUserSeq)
+
+        meetingDay = meeting.startTimestamp.dayOfMonth
+        meetingDayOfWeek = meeting.startTimestamp.dayOfWeek.getKorDisplayName()
+        startDate = meeting.startTimestamp.toLocalDate().toKorDate()
+        startTime = meeting.startTimestamp.toLocalTime().toBaseTime()
+        endDate = meeting.endTimestamp.toLocalDate().toKorDate()
+        endTime = meeting.endTimestamp.toLocalTime().toBaseTime()
     }
 
     constructor(
@@ -72,7 +84,13 @@ class MeetingDto {
             region: String?,
             regionURL: String?,
             cost: Int?,
-            isOpen: Boolean
+            isOpen: Boolean,
+            meetingDay: Int,
+            meetingDayOfWeek: String,
+            startDate: String,
+            startTime: String,
+            endDate: String,
+            endTime: String
     ) {
         this.seq = seq
         this.title = title
@@ -90,6 +108,12 @@ class MeetingDto {
         this.regionURL = regionURL
         this.cost = cost
         this.isOpen = isOpen
+        this.meetingDay = meetingDay
+        this.meetingDayOfWeek = meetingDayOfWeek
+        this.startDate = startDate
+        this.startTime = startTime
+        this.endDate = endDate
+        this.endTime = endTime
     }
 
 
@@ -167,4 +191,9 @@ data class MeetingRequestDto(
         val cost: Int?
 )
 
+data class MeetingGroupDto(
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = YEAR_MONTH_KOR, timezone = "Asia/Seaul")
+    val groupYearMonth: YearMonth,
+    val meetings: List<MeetingDto>
+)
 

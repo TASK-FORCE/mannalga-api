@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
 import com.taskforce.superinvention.app.web.dto.user.UserMemberCheckDto
+import com.taskforce.superinvention.app.web.dto.user.UserProfileUpdateDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.config.security.AppToken
@@ -62,6 +63,15 @@ class UserController(
 
         userService.registerUser(request, user)
         return ResponseDto(data = ResponseDto.EMPTY)
+    }
+
+    @Secured(Role.MEMBER)
+    @PatchMapping
+    fun changeUserProfile(@AuthUser user: User,
+                          @RequestBody body: UserProfileUpdateDto): ResponseDto<UserInfoDto> {
+
+        userService.updateUser(user, body)
+        return ResponseDto(data = userInfoService.getUserInfo(user))
     }
 
     /**
