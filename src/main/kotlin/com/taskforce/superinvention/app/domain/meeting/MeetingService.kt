@@ -63,7 +63,7 @@ class MeetingService(
                 }
             }
         val meetingGroupDtoList = convert(meetingDtoPages.content)
-        return PageDto(PageImpl(meetingGroupDtoList, pageable, meetingGroupDtoList.size.toLong()))
+        return PageDto(PageImpl(meetingGroupDtoList, pageable, meetingDtoPages.totalElements))
     }
 
     fun convert(meetingDtoList: List<MeetingDto>): List<MeetingGroupDto> {
