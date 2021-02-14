@@ -20,9 +20,9 @@ java.targetCompatibility = JavaVersion.VERSION_11
 val queryDsl  = "4.3.1"
 val blaze     = "1.5.1"
 val scrimage  = "4.0.16"
-val commonsIo = "2.8.0"
 val commonsLang = "3.11"
 val commonsIo = "2.8.0"
+
 ext {
     set("snippetsDir", file("build/generated-snippets"))
 }
@@ -45,6 +45,11 @@ dependencies {
 
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.apache.httpcomponents:httpclient")
+    implementation("commons-io:commons-io:$commonsIo")
+    implementation("org.apache.commons:commons-lang3:$commonsLang")
+
+    implementation("com.sksamuel.scrimage:scrimage-core:$scrimage")
+    implementation("com.sksamuel.scrimage:scrimage-webp:$scrimage")
 
     // AWS
     implementation("com.amazonaws:aws-java-sdk-bom:1.11.857")
