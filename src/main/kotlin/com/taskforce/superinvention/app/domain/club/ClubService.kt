@@ -34,7 +34,6 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.common.advice.GlobalAdviceController
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
@@ -434,7 +433,7 @@ class ClubService(
 
 
         // 만남
-        val meetings = meetingRepository.getMeetings(clubSeq, Pageable.unpaged()).toList()
+        val meetings = meetingRepository.getPagedMeetings(clubSeq, Pageable.unpaged()).toList()
         LOG.info("삭제 대상 만남 ${meetings.size}개")
 
         // 만남 신청
@@ -477,5 +476,23 @@ class ClubService(
 
         LOG.info("모임 삭제 시작")
         clubRepository.delete(club)
+    }
+
+    @Transactional
+    fun modifyClub(clubSeq: Long, user: User, request: ClubAddRequestDto) {
+        val club = clubRepository.findBySeq(clubSeq)
+        val clubUser = clubUserRepository.findByClubAndUser(club, user) ?: throw BizException("존재하지 않는 모임원의 요청입니다.", HttpStatus.FORBIDDEN)
+        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("모임의 매니저 이상만 모임 수정이 가능합니다.", HttpStatus.FORBIDDEN)
+
+        changeClubInterests(user, clubSeq, request.interestList.toSet())
+        changeClubRegions(user, clubSeq, request.regionList.toSet())
+
+        club.apply {
+            name = request.name
+            description = request.description
+            maximumNumber = request.maximumNumber
+            mainImageUrl = request.mainImageUrl
+        }
+
     }
 }

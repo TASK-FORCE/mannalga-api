@@ -7,6 +7,7 @@ import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
 import com.taskforce.superinvention.app.web.dto.kakao.*
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import com.taskforce.superinvention.config.test.MockTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -40,6 +41,8 @@ class UserServiceTest: MockTest() {
     @Mock
     lateinit var kakaoOAuth: KakaoOAuth
 
+    @Mock
+    lateinit var awsS3Mo: AwsS3Mo
 
     @Test
     fun `AppToken 발행 - 신규 가입 유저`() {

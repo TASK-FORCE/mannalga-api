@@ -37,12 +37,13 @@ class ClubBoardController(
      * 모임 게시판 글 단건 조회
      */
     @GetMapping("/{clubSeq}/board/{boardSeq}")
-    fun getClubBoard(@PathVariable clubSeq : Long,
+    fun getClubBoard(@AuthUser user: User?,
+                     @PathVariable clubSeq : Long,
                      @PathVariable boardSeq: Long,
                      pageable: Pageable,
                      searchRequest: ClubBoardSearchOpt): ResponseDto<ClubBoardDto> {
 
-        val search = clubBoardService.getClubBoard(boardSeq, clubSeq)
+        val search = clubBoardService.getClubBoard(user, boardSeq, clubSeq)
         return ResponseDto(data = search)
     }
 

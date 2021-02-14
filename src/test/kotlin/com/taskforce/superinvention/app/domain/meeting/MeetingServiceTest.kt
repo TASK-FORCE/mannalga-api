@@ -2,7 +2,6 @@ package com.taskforce.superinvention.app.domain.meeting
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
-import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.properties.Delegates
@@ -108,7 +106,7 @@ internal class MeetingServiceTest {
     @DisplayName("모임원이 아닌 유저의 만남 조회")
     fun getMeetingsTestWithoutClubUserRole() {
         // given
-        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response: PageDto<MeetingDto> = meetingService.getMeetings(clubSeq, pageable, null)
@@ -141,7 +139,7 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response = meetingService.getMeetings(clubSeq, pageable, clubUserSeq)
@@ -173,7 +171,7 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response = meetingService.getMeetings(clubSeq, pageable, regClubUserSeq)

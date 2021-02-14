@@ -1,5 +1,5 @@
 ### 내 모임 게시판 등록
-POST {{host}}/clubs/6174/board
+POST {{host}}/clubs/6327/board
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
@@ -16,14 +16,14 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 모임 게시판 조회
-GET {{host}}/clubs/6174/board?category=NOTICE
+GET {{host}}/clubs/6327/board?category=NORMAL
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 GlobalAdviceController
 
-### 모임 게시판 단일 조회
-GET {{host}}/clubs/6174/board/2
+### 모임 게시판 글 단건 조회
+GET {{host}}/clubs/6327/board/43
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-dong}}

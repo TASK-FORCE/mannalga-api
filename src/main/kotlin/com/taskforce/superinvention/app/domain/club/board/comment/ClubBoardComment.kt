@@ -31,11 +31,11 @@ class ClubBoardComment(
 ) : BaseEntity() {
 
         // 직전 하위 뎁스의 댓글 개수만 보여줌
-        @Formula("(select count(*) from club_album_comment cac where cac.parent_comment_seq = seq and cac.depth = depth+1)")
+        @Formula("(select count(*) from club_board_comment cac where cac.parent_comment_seq = seq and cac.depth = depth+1)")
         var subCommentCnt: Long ?= null
 
         // 모든 하위 뎁스의 댓글 개수만 보여줌
-        @Formula("(select count(*) from club_album_comment cac where cac.parent_comment_seq = seq and cac.depth > depth)")
+        @Formula("(select count(*) from club_board_comment cac where cac.parent_comment_seq = seq and cac.depth > depth)")
         var totalSubCommentCnt: Long ?= null
 }
 

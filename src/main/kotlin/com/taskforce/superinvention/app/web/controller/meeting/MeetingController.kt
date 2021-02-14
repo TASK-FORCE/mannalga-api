@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
+import com.taskforce.superinvention.app.web.dto.meeting.MeetingGroupDto
 import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
@@ -34,11 +35,11 @@ class MeetingController(
     @Secured(Role.MEMBER)
     fun getAllMeeting(@AuthUser user: User,
                       @PathVariable clubSeq: Long,
-                      pageable: Pageable): ResponseDto<PageDto<MeetingDto>> {
+                      pageable: Pageable): ResponseDto<PageDto<MeetingGroupDto>> {
 
         val clubUser = clubService.getClubUser(clubSeq, user)
 
-        return ResponseDto(meetingService.getMeetings(clubSeq, pageable, clubUser?.seq))
+        return ResponseDto(meetingService.getMeetingsWithGroup(clubSeq, pageable, clubUser?.seq))
     }
 
     @GetMapping("/{meetingSeq}")

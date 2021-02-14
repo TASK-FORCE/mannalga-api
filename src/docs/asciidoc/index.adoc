@@ -47,7 +47,6 @@ include::{root}/user/changeUserRegions.adoc[]
 === [.toc-list-item]`유저 최종 가입 여부`
 include::{root}/user/user-check-register.adoc[]
 
-
 === [.toc-list-item]`앱 토큰 발급`
 include::{root}/user/saveKakaoToken.adoc[]
 
@@ -59,6 +58,9 @@ include::{root}/user/userRegist.adoc[]
 
 === [.toc-list-item]`유저 정보 가져오기`
 include::{root}/user/userInfo.adoc[]
+
+=== [.toc-list-item]`유저 정보 수정`
+include::{root}/user/user-change.adoc[]
 
 == 관심사
 
@@ -108,6 +110,9 @@ include::{root}/club/kick.adoc[]
 
 === [.toc-list-item]`모임 삭제`
 include::{root}/club/delete.adoc[]
+
+=== [.toc-list-item]`모임 수정/변경`
+include::{root}/club/modify.adoc[]
 
 == 모임 게시판
 

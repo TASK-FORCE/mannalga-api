@@ -15,11 +15,10 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.controller.club.ClubController
-import com.taskforce.superinvention.app.web.dto.club.ClubInfoDetailsDto
-import com.taskforce.superinvention.app.web.dto.club.ClubInfoDto
-import com.taskforce.superinvention.app.web.dto.club.ClubInfoUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
+import com.taskforce.superinvention.app.web.dto.club.*
+import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
+import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.config.MockitoHelper
@@ -234,6 +233,53 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
         result.andExpect(status().isOk)
             .andDo(
                 document("club-delete",
+                    getDocumentRequest(),
+                    getDocumentResponse(),
+                    pathParameters(
+                        parameterWithName("clubSeq").description("모임 시퀀스")
+                    ),
+                    responseFields(
+                        *commonResponseField()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @WithMockUser(authorities = [ Role.MEMBER, Role.MASTER ])
+    fun `모임 수정`() {
+        val clubAddRequestDto = ClubAddRequestDto(
+            name = "테스트 모임",
+            description = "테스트 설명",
+            maximumNumber = 5,
+            mainImageUrl = "귀여운 에릭의 사진.jpeg",
+            interestList = listOf(
+                InterestRequestDto(
+                    seq = 4,
+                    priority = 1
+                )
+            ),
+            regionList = listOf(
+                RegionRequestDto(
+                    seq = 102,
+                    priority = 1
+                )
+            ),
+        )
+        every { clubService.modifyClub(any(), any(), any()) }.returns(Unit)
+
+        val result = mockMvc.perform(
+            put("/clubs/{clubSeq}", club.seq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiW1VTRVJdIi")
+                .content(objectMapper.writeValueAsString(clubAddRequestDto))
+                .characterEncoding("UTF-8")
+        ).andDo(print())
+
+        result.andExpect(status().isOk)
+            .andDo(
+                document("club-modify",
                     getDocumentRequest(),
                     getDocumentResponse(),
                     pathParameters(

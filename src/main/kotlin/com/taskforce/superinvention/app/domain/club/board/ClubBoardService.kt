@@ -1,6 +1,8 @@
 package com.taskforce.superinvention.app.domain.club.board
 
 import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgService
+import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
+import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepositoryCustom
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional
 class ClubBoardService(
         private val roleService: RoleService,
         private val clubBoardImgService: ClubBoardImgService,
+        private val clubBoardLikeRepository: ClubBoardLikeRepository,
         private val clubBoardRepository: ClubBoardRepository,
         private val clubUserRepository: ClubUserRepository
 ) {
@@ -55,11 +58,18 @@ class ClubBoardService(
      * 게시판 글 단건 조회
      */
     @Transactional
-    fun getClubBoard(boardSeq: Long, clubSeq: Long): ClubBoardDto {
+    fun getClubBoard(user: User?, boardSeq: Long, clubSeq: Long): ClubBoardDto {
+
+        // 조회자가 좋아요를 눌렀을 경우
         val clubBoard = clubBoardRepository.findBySeqWithWriterAndImgs(boardSeq)
             ?: throw resourceNotFoundException
 
-        return ClubBoardDto(clubBoard)
+        val isLiked = user
+            ?.let { clubUserRepository.findByClubSeqAndUser(clubSeq, user) }
+            ?.let { clubUser ->  clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }
+            ?.let { true } ?: false
+
+        return ClubBoardDto(clubBoard, isLiked)
     }
 
     /**

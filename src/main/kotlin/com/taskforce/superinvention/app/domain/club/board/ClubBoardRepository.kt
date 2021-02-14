@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 
+@Repository
 interface ClubBoardRepository : JpaRepository<ClubBoard, Long>, ClubBoardCustom {
     fun findBySeq(seq: Long): ClubBoard
 }
@@ -61,6 +62,7 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         // 삭제된 글 필터링
         query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
+            .orderBy(clubBoard.createdAt.desc())
 
         if (pageable != Pageable.unpaged()) {
             query.offset(pageable.offset)
@@ -76,9 +78,11 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         val clubBoard   : QClubBoard    = QClubBoard.clubBoard
         val clubBoardImg: QClubBoardImg = QClubBoardImg.clubBoardImg
         val user: QUser = QUser.user
+        val clubUser     = QClubUser.clubUser
 
         val query = from(clubBoard)
-            .leftJoin(clubBoard.clubUser.user, user)
+            .join(clubBoard.clubUser, clubUser)
+            .join(clubBoard.clubUser.user, user)
             .leftJoin(clubBoard.boardImgs, clubBoardImg).fetchJoin()
             .where(eqSeq(clubBoard, clubBoardSeq))
 

@@ -4,14 +4,15 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
 import com.taskforce.superinvention.app.domain.user.userRegion.UserRegionService
-import com.taskforce.superinvention.app.web.common.response.ResponseDto
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoToken
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserInfo
 import com.taskforce.superinvention.app.web.dto.kakao.KakaoUserRegistRequest
 import com.taskforce.superinvention.app.web.dto.user.UserIdAndNameDto
+import com.taskforce.superinvention.app.web.dto.user.UserProfileUpdateDto
 import com.taskforce.superinvention.common.config.security.AppToken
 import com.taskforce.superinvention.common.config.security.JwtTokenProvider
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,7 +28,8 @@ class UserService(
         private var userRegionService: UserRegionService,
         private var userInterestService: UserInterestService,
         private var kakaoOAuth: KakaoOAuth,
-        private var jwtTokenProvider: JwtTokenProvider
+        private var jwtTokenProvider: JwtTokenProvider,
+        private val awsS3Mo: AwsS3Mo
 ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -59,7 +61,6 @@ class UserService(
         if(token.refresh_token?.isNotBlank()!!) {
             targetUser.refreshToken = token.refresh_token
         }
-
         userRepository.save(targetUser)
     }
 
@@ -89,7 +90,7 @@ class UserService(
             updateUserToken(user, token)
         }
 
-        user.accessToken = token.access_token
+        user.accessToken  = token.access_token
         user.refreshToken = token.refresh_token
 
         return AppToken(
@@ -124,6 +125,16 @@ class UserService(
         return user
     }
 
+    @Transactional
+    fun updateUser(authUser: User, body: UserProfileUpdateDto): User {
+        val user = userRepository.findByIdOrNull(authUser.seq!!)
+            ?: throw cannotFindUserException
+
+        val movedFile = awsS3Mo.moveFile(body.profileImage, "user-profile/${user.seq}/${body.profileImage.fileName}")
+        user.profileImageLink = movedFile.absolutePath
+        return user
+    }
+
     fun getUserIdAndUserNameList(): List<UserIdAndNameDto> {
         return userRepository.findAll().filter { it.isRegistered }.map(::UserIdAndNameDto)
     }
@@ -131,6 +142,4 @@ class UserService(
     fun getUserBySeq(userSeq: Long): User {
         return userRepository.findByIdOrNull(userSeq)?: throw cannotFindUserException
     }
-
-
 }
