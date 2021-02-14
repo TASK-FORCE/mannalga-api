@@ -45,7 +45,7 @@ class ClubAlbum(
             club        = club,
             writer      = writer,
             title       = registerDto.title,
-            img_url     = registerDto.image.absolutePath,
+            img_url     = registerDto.image.filePath,
             file_name   = registerDto.image.fileName,
             delete_flag = false
     )

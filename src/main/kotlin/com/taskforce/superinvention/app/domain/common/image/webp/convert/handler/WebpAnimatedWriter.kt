@@ -5,12 +5,12 @@ import java.io.File
 class WebpAnimatedWriter(
     private var q: Int = -1,
     private var m: Int = -1,
-    private var lossy: Boolean = false,
+    private var lossy: Boolean = true,
 ) {
 
     companion object {
         val DEFAULT: WebpAnimatedWriter = WebpAnimatedWriter()
-        val LOSSY_COMPRESSION: WebpAnimatedWriter = DEFAULT.withLossy()
+        val LOSSLESS_COMPRESSION: WebpAnimatedWriter = DEFAULT.withLossless()
     }
 
     private val handler = Gif2WebpHandler()
@@ -27,8 +27,8 @@ class WebpAnimatedWriter(
         return WebpAnimatedWriter(q, m, lossy)
     }
 
-    fun withLossy(): WebpAnimatedWriter {
-        return WebpAnimatedWriter(q, m, true)
+    fun withLossless(): WebpAnimatedWriter {
+        return WebpAnimatedWriter(q, m, false)
     }
 
     fun writeAsByteArray(gifImage: File): ByteArray {

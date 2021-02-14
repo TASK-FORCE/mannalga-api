@@ -31,7 +31,7 @@ class Gif2WebpStrategy: WebpConvertStrategy {
                 .bytes(WebpWriter.DEFAULT)
         }
 
-        val convertedFile = File(fileName)
+        val convertedFile = File("${fileName}.webp")
         FileUtils.writeByteArrayToFile(convertedFile, bytes)
         return convertedFile
     }

@@ -21,7 +21,7 @@ class WebpConvertService(
     }
 
     // s3 상의 이미지 경로에 /이미지.webp 형태의 압축본 생성
-    fun convertToWebP(s3Path: S3Path) {
+    fun convertToWebP(s3Path: S3Path): S3Path {
         val folderPath = s3Path.folderPath()
 
         val fileName  = FilenameUtils.removeExtension(s3Path.fileName)
@@ -34,6 +34,6 @@ class WebpConvertService(
         val convertStrategy = strategyLocator.getStrategy(format)
         val convertedFile: File = convertStrategy.convert(fileName, s3File, WebpCompressionParam())
 
-        awsS3Mo.uploadFile(convertedFile, "${folderPath}/")
+        return awsS3Mo.uploadFile(convertedFile, folderPath)
     }
 }

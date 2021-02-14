@@ -81,7 +81,7 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
     fun `모임 사진첩 사진 목록 조회`() {
 
         // given
-        val clubAlbumListDto = ClubAlbumListDto(clubAlbum)
+        val clubAlbumListDto = ClubAlbumListDto("https://aws-s3-path", clubAlbum)
 
         val pageable: Pageable = PageRequest.of(0, 20)
         val clubAlbumList: List<ClubAlbumListDto> = listOf(clubAlbumListDto)
@@ -138,7 +138,7 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
 
         // given
         every {clubAlbumService.getClubAlbumDto(any(), club.seq!!, clubAlbum.seq)}
-            .returns(ClubAlbumDto(clubAlbum = clubAlbum, isLiked = false))
+            .returns(ClubAlbumDto(s3Host = "https://aws-s3-path",clubAlbum = clubAlbum, isLiked = false))
 
         // when
 
@@ -205,9 +205,10 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
                                 parameterWithName("clubSeq").description("모임 시퀀스")
                         ),
                         requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("file_name").type(JsonFieldType.STRING).description("파일명"),
-                                fieldWithPath("imgUrl").type(JsonFieldType.STRING).description("이미지 URL")
+                            fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                            fieldWithPath("image.absolutePath").type(JsonFieldType.STRING).description("전체 경로 ( 도메인 포함 )"),
+                            fieldWithPath("image.filePath").type(JsonFieldType.STRING).description("파일 경로"),
+                            fieldWithPath("image.fileName").type(JsonFieldType.STRING).description("파일 명"),
                         ),
                         responseFields(
                                 *commonResponseField()

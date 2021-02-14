@@ -1,22 +1,16 @@
 package com.taskforce.superinvention.app.domain.club.user
 
-import com.querydsl.core.group.GroupBy.*
 import com.querydsl.core.types.Predicate
-import com.querydsl.jpa.JPAExpressions.selectFrom
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.QClub
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.role.QRole
-import com.taskforce.superinvention.app.domain.role.QRoleGroup
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.QUser
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
-import javax.persistence.OrderBy
 
 @Repository
 interface ClubUserRepository : JpaRepository<ClubUser, Long>, ClubUserRepositoryCustom {

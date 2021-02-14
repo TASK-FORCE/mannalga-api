@@ -98,7 +98,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     }
 
     @Test
-    fun `모임 게시판 글 작성`() {
+    fun `모임 게시판 작성`() {
 
         // given
         val s3path = S3Path(
@@ -239,6 +239,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                     fieldWithPath("data.boardSeq").type(JsonFieldType.NUMBER).description("게시글 seq"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING).description("글 제목"),
                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("게시글"),
+                    fieldWithPath("data.imageList[].imgSeq").type(JsonFieldType.NUMBER).description("이미지 PK"),
                     fieldWithPath("data.imageList[].imgUrl").type(JsonFieldType.STRING).description("이미지 절대경로"),
                     fieldWithPath("data.imageList[].imageName").type(JsonFieldType.STRING).description("이미지 파일 이름"),
                     fieldWithPath("data.imageList[].createdAt").type(JsonFieldType.STRING).description("생성 일자"),

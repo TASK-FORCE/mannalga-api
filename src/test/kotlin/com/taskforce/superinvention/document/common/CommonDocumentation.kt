@@ -28,8 +28,8 @@ class CommonDocumentation: ApiDocumentationTest() {
 
     @BeforeEach
     fun setup() {
-        val inputFile = FileInputStream("${getResourcePath()}/test-image-file.png")
-        multipartFile = MockMultipartFile("file", "test-image-file.png", "multipart/form-data", inputFile)
+        val inputFile = getResourceAsStream("/img/test.jpg")
+        multipartFile = MockMultipartFile("file", "test.jpg", "multipart/form-data", inputFile)
     }
 
     @Test

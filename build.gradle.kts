@@ -21,7 +21,7 @@ val queryDsl  = "4.3.1"
 val blaze     = "1.5.1"
 val scrimage  = "4.0.16"
 val commonsLang = "3.11"
-val commonsIo = "2.8.0"
+val commonsIo   = "2.8.0"
 
 ext {
     set("snippetsDir", file("build/generated-snippets"))

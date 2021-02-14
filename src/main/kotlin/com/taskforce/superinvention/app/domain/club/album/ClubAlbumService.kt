@@ -20,8 +20,7 @@ import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberExc
 import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoundException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
-import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
-import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -39,6 +38,9 @@ class ClubAlbumService(
         private val clubAlbumRepository: ClubAlbumRepository,
         private val clubRepository: ClubRepository,
         private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
+
+        @Value("\${aws.s3.endpointUrl}")
+        private var s3Host: String,
 ) {
 
     companion object {
@@ -77,7 +79,7 @@ class ClubAlbumService(
     @Transactional(readOnly = true)
     fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): PageDto<ClubAlbumListDto> {
         val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable)
-            .map(::ClubAlbumListDto)
+            .map{clubAlbum -> ClubAlbumListDto(s3Host, clubAlbum) }
 
         return PageDto(result)
     }
@@ -91,7 +93,7 @@ class ClubAlbumService(
             ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
             ?.let { true } ?: false
 
-        return ClubAlbumDto(getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
+        return ClubAlbumDto(s3Host, getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
     }
 
     @Transactional

@@ -24,11 +24,11 @@ data class ClubAlbumDto(
         val writer     : ClubWriter,
         val isLiked    : Boolean
 ) {
-        constructor(clubAlbum: ClubAlbum, isLiked: Boolean): this (
+        constructor(s3Host: String, clubAlbum: ClubAlbum, isLiked: Boolean): this (
                 albumSeq   = clubAlbum.seq!!,
                 title      = clubAlbum.title,
                 file_name  = clubAlbum.file_name,
-                imgUrl     = clubAlbum.img_url,
+                imgUrl     = "${s3Host}/${clubAlbum.img_url}",
                 likeCnt    = clubAlbum.albumLikeCnt    ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writer     = ClubWriter(clubAlbum.writer),
@@ -45,11 +45,11 @@ data class ClubAlbumListDto(
         val commentCnt : Long,
         val writerClubUserSeq: Long ?= 0
 ) {
-        constructor(clubAlbum: ClubAlbum): this (
+        constructor(s3Host: String, clubAlbum: ClubAlbum): this (
                 albumSeq   = clubAlbum.seq!!,
                 title      = clubAlbum.title,
                 file_name  = clubAlbum.file_name,
-                imgUrl     = clubAlbum.img_url,
+                imgUrl     = "${s3Host}/${clubAlbum.img_url}",
                 likeCnt    = clubAlbum.albumLikeCnt ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writerClubUserSeq = clubAlbum.writer.seq

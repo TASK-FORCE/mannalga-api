@@ -80,11 +80,13 @@ data class ClubBoardListViewDto(
 }
 
 data class ClubBoardImgDto(
+    val imgSeq   : Long,
     val imgUrl   : String,
     val imageName: String,
     val createdAt: String,
 ) {
         constructor(clubBoardImg: ClubBoardImg): this(
+                imgSeq    = clubBoardImg.seq!!,
                 imgUrl    = clubBoardImg.imgUrl,
                 imageName = clubBoardImg.imgName,
                 createdAt = clubBoardImg.createdAt?.toBaseDateTime() ?: "",

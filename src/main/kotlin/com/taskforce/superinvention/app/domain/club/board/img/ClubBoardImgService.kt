@@ -1,6 +1,7 @@
 package com.taskforce.superinvention.app.domain.club.board.img
 
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
+import com.taskforce.superinvention.app.domain.common.image.webp.convert.WebpConvertService
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import org.springframework.stereotype.Service
@@ -9,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ClubBoardImgService(
         private val awsS3Mo: AwsS3Mo,
-        private val clubBoardImgRepository: ClubBoardImgRepository
+        private val clubBoardImgRepository: ClubBoardImgRepository,
+        private val webpConvertService: WebpConvertService
 ) {
 
     /**
@@ -21,18 +23,18 @@ class ClubBoardImgService(
 
         // [1] 기존 임시 저장된 파일들을 해당 폴더로 이동
         val clubBoardImgList = imgList.map{ s3Path ->
-            val movedFile = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
+            val movedFile: S3Path = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
+            val webpFile : S3Path = webpConvertService.convertToWebP(movedFile)
+
             ClubBoardImg(
                 imgName   = movedFile.fileName,
-                imgUrl    = movedFile.absolutePath,
+                imgUrl    = movedFile.filePath,
                 clubBoard  = clubBoard,
                 deleteFlag = false
             )
         }
 
-        // JPA 에서 bulk insert 안됨..
         clubBoardImgRepository.saveAll(clubBoardImgList)
-
         return clubBoardImgList
     }
 
