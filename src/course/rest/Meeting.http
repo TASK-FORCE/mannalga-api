@@ -10,6 +10,11 @@ Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json
 
+### 만남조회3
+GET {{host}}/clubs/6327/meetings?size=1&page=0
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
 
 ### 만남 수정 [준]
 PUT {{host}}/clubs/115/meetings/1 HTTP/1.1

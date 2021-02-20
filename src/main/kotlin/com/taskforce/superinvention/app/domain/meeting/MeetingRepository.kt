@@ -28,7 +28,6 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
     override fun getPagedMeetings(clubSeq: Long, pageable: Pageable): Page<Meeting> {
         val query = from(QMeeting.meeting)
                 .join(QMeeting.meeting.club, QClub.club)
-                .leftJoin(QMeeting.meeting.meetingApplications, QMeetingApplication.meetingApplication)
                 .fetchJoin()
                 .where(QClub.club.seq.eq(clubSeq)
                         , QMeeting.meeting.deleteFlag.isFalse
@@ -43,7 +42,7 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
                 .orderBy(QMeeting.meeting.startTimestamp.desc())
                 .fetchResults()
 
-        return PageImpl(fetchResult.results, pageable, fetchResult.results.size.toLong())
+        return PageImpl(fetchResult.results, pageable, fetchResult.total)
     }
 
     @Transactional

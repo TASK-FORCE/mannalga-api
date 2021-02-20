@@ -22,7 +22,7 @@ class Meeting(
         var regionURL: String?,
         var cost: Int?
 ) : BaseEntity() {
-        @OneToMany(mappedBy = "meeting")
+        @OneToMany(mappedBy = "meeting", fetch = FetchType.EAGER)
         @OrderBy("deleteFlag desc")
         var meetingApplications: List<MeetingApplication> = listOf()
 
