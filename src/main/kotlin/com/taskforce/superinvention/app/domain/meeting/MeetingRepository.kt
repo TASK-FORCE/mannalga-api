@@ -43,7 +43,7 @@ class MeetingRepositoryImpl : QuerydslRepositorySupport(Meeting::class.java), Me
                 .orderBy(QMeeting.meeting.startTimestamp.desc())
                 .fetchResults()
 
-        return PageImpl(fetchResult.results, pageable, fetchResult.total)
+        return PageImpl(fetchResult.results, pageable, fetchResult.results.size.toLong())
     }
 
     @Transactional

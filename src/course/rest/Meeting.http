@@ -5,7 +5,7 @@ Authorization: Bearer {{token-jun}}
 Accept: application/json
 
 ### 만남조회2
-GET {{host}}/clubs/6327/meetings?size=1&page=0
+GET {{host}}/clubs/6327/meetings?size=10&page=1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer {{token-jun}}
 Accept: application/json
@@ -104,3 +104,4 @@ Accept: application/json
   "cost" : 5000
 }
 
+### 만남 조회 디버깅
