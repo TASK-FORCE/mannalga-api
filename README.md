@@ -45,7 +45,7 @@ result.andExpect(status().isOk)
         )
     )
 ```
-#### Type-Safe JPQL
+#### Type-Safe JPQL via using QueryDSL
 ```
 @Transactional
 override fun findMeetingApplicationByUserAndMeetingSeq(clubUserParam: ClubUser, meetingSeq: Long): MeetingApplication {
