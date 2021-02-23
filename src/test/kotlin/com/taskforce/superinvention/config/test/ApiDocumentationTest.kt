@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeServ
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
 import com.taskforce.superinvention.app.domain.common.FileService
+import com.taskforce.superinvention.app.domain.common.image.ImageService
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
 import com.taskforce.superinvention.app.domain.interest.interestGroup.InterestGroupService
 import com.taskforce.superinvention.app.domain.meeting.MeetingService
@@ -102,6 +103,9 @@ abstract class ApiDocumentationTest: BaseTest {
   
     @MockBean
     lateinit var fileService: FileService
+
+    @MockBean
+    lateinit var imageService: ImageService
 
     @MockBean
     lateinit var awsS3Mo: AwsS3Mo

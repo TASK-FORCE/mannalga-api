@@ -45,12 +45,12 @@ class AwsS3Mo(
 
     // AWS S3 파일 업로드
     fun uploadFileWithUUID(multipartFile: MultipartFile, s3DirPath: String): S3Path {
-        val file      = FileMo.convertMultiPartToFile(multipartFile)
+        val file: File = FileMo.convertMultiPartToFile(multipartFile)
         return uploadFileWithUUID(file, s3DirPath)
     }
 
     fun uploadFileWithUUID(file: File, s3DirPath: String): S3Path {
-        val fileName       = FileMo.generateUUID(file)
+        val fileName       =  FileMo.generateUUID(file)
         val filePath       = "$s3DirPath/$fileName"
         val absolutePath   = "$endpointUrl/$filePath"
         uploadFileToBucket(filePath, file)

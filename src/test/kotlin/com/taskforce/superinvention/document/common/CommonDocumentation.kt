@@ -1,14 +1,20 @@
 package com.taskforce.superinvention.document.common
 
+import com.ninjasquad.springmockk.MockkBean
+import com.taskforce.superinvention.app.domain.common.FileService
+import com.taskforce.superinvention.app.domain.common.image.ImageService
+import com.taskforce.superinvention.app.domain.user.UserService
+import com.taskforce.superinvention.app.web.controller.CommonController
+import com.taskforce.superinvention.app.web.controller.user.UserController
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
-import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
-import com.taskforce.superinvention.config.test.ApiDocumentationTest
+import com.taskforce.superinvention.config.test.ApiDocumentationTestV2
+import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.given
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.JsonFieldType
@@ -20,11 +26,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.io.FileInputStream
 
-class CommonDocumentation: ApiDocumentationTest() {
+@WebMvcTest(CommonController::class)
+class CommonDocumentation: ApiDocumentationTestV2() {
 
     lateinit var multipartFile: MockMultipartFile
+
+    @MockkBean
+    lateinit var imageService: ImageService
+
+    @MockkBean
+    lateinit var fileService: FileService
 
     @BeforeEach
     fun setup() {
@@ -35,13 +47,12 @@ class CommonDocumentation: ApiDocumentationTest() {
     @Test
     fun `파일 임시저장`() {
         // given
-        given(fileService.fileTempSave(MockitoHelper.anyObject())).willReturn(
+        every { imageService.fileImageSave(any()) } returns
                 S3Path(
                         absolutePath = "http://{aws-s3-domain}/{file-path}/{file-name}",
                         filePath = "{file-path}/{file-name}",
                         fileName = "{file-name}"
                 )
-        )
 
         val image = MockMultipartFile(
                 "file",
@@ -52,7 +63,7 @@ class CommonDocumentation: ApiDocumentationTest() {
 
         // when
         val result = mockMvc.perform(
-                multipart("/common/temp/file").file(image)
+                multipart("/common/temp/image").file(image)
         ).andDo(print())
 
         // then
@@ -67,25 +78,6 @@ class CommonDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.absolutePath").type(JsonFieldType.STRING).description("임시저장 파일 절대 경로"),
                                         fieldWithPath("data.filePath").type(JsonFieldType.STRING).description("도메인 제외 경로"),
                                         fieldWithPath("data.fileName").type(JsonFieldType.STRING).description("파일명")
-                                )
-                        )
-                )
-    }
-
-    @Test
-    fun `공통 에러 포맷`() {
-        // when
-        val result = mockMvc.perform(
-                get("/users/profile")
-        ).andDo(print())
-
-        // then
-        result.andExpect(status().isInternalServerError)
-                .andDo(
-                        document("error", getDocumentRequest(), getDocumentResponse(),
-                                responseFields(
-                                        fieldWithPath("message").type(JsonFieldType.STRING).description("에러 발생 사유에 대한 메세지, 사용자 전달용"),
-                                        fieldWithPath("stackTrace").type(JsonFieldType.STRING).description("에러에 대한 스택 트레이스 정보 (디버깅용)")
                                 )
                         )
                 )

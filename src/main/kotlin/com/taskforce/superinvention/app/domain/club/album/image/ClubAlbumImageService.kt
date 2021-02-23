@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.app.domain.club.album.image
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
-import com.taskforce.superinvention.app.domain.common.image.ImageService
 import com.taskforce.superinvention.app.domain.common.image.webp.convert.WebpConvertService
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.aws.s3.S3Path

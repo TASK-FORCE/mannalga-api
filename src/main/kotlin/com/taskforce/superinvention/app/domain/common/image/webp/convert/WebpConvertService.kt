@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.app.domain.common.image.webp.convert
 
 import com.taskforce.superinvention.app.domain.common.image.ImageFormat
-import com.taskforce.superinvention.app.domain.common.image.ImageService
 import com.taskforce.superinvention.app.domain.common.image.webp.convert.strategy.WebpConvertStrategyLocator
 import com.taskforce.superinvention.common.exception.InvalidInputException
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
@@ -29,7 +28,7 @@ class WebpConvertService(
         val s3File    = awsS3Mo.getObjectAsFile(s3Path)
 
         val format: ImageFormat = ImageFormat.extensionOf(extension)
-            ?: throw ImageService.invalidInputException
+            ?: throw invalidInputException
 
         val convertStrategy = strategyLocator.getStrategy(format)
         val convertedFile: File = convertStrategy.convert(fileName, s3File, WebpCompressionParam())

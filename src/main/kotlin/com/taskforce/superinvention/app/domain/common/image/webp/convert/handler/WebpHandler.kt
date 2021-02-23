@@ -27,7 +27,7 @@ abstract class WebpHandler {
                     return
                 }
             }
-            throw IOException("Could not locate webp binary at " + Arrays.toString(sources))
+            throw IOException("Could not locate webp binary at " + sources.contentToString())
         }
 
         private fun setExecutable(output: Path): Boolean {

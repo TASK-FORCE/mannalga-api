@@ -35,6 +35,7 @@ import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
@@ -610,5 +611,24 @@ class UserDocumentation : ApiDocumentationTest() {
                 )
             )
         )
+    }
+
+    @Test
+    fun `공통 에러 포맷`() {
+        // when
+        val result = mockMvc.perform(
+            MockMvcRequestBuilders.get("/users/profile")
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isInternalServerError)
+            .andDo(
+                document("error", getDocumentRequest(), getDocumentResponse(),
+                    responseFields(
+                        fieldWithPath("message").type(JsonFieldType.STRING).description("에러 발생 사유에 대한 메세지, 사용자 전달용"),
+                        fieldWithPath("stackTrace").type(JsonFieldType.STRING).description("에러에 대한 스택 트레이스 정보 (디버깅용)")
+                    )
+                )
+            )
     }
 }

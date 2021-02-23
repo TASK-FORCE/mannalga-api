@@ -7,6 +7,9 @@ import java.nio.file.Path
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
+/**
+ * 애니메이션 GIF -> WEBP는 따로 래핑된 라이브러리가 없어 직접 만듬
+ */
 class Gif2WebpHandler : WebpHandler() {
     companion object {
 

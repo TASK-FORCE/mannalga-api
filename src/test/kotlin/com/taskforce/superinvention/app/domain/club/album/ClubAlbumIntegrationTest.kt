@@ -35,7 +35,6 @@ class ClubAlbumIntegrationTest: IntegrationTest() {
         val image = MockMultipartFile("files", "test.jpg", "image/jpg", getResourceAsStream("/img/test.jpg"))
         // 3. gif 파일
         // val image = MockMultipartFile("files", "test.gif", "image/gif", getResourceAsStream("/img/big-animated.gif"))
-
         val s3path: S3Path = fileService.fileTempSave(image)
         val user = userRepository.findByUserId("1451001649")!!
 
