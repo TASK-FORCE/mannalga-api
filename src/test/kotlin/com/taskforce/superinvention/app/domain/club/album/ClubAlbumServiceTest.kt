@@ -91,7 +91,7 @@ class ClubAlbumServiceTest: MockkTest() {
             clubUserRepository = clubUserRepository,
             clubAlbumLikeRepository = clubAlbumLikeRepository,
             clubAlbumImgService = clubAlbumImageService,
-            s3Host = "dummy-aws-s3"
+            imgHost = "dummy-aws-s3"
         )
 
 

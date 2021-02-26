@@ -218,7 +218,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
 
         // given
         clubBoard.boardImgs = listOf(clubBoardImg)
-        every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto(clubBoard, false))
+        every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto("https://개발서버", clubBoard, false))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
