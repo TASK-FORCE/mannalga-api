@@ -30,17 +30,17 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumService(
-        private val roleService: RoleService,
-        private val clubService: ClubService,
-        private val clubUserService: ClubUserService,
-        private val clubAlbumImgService: ClubAlbumImageService,
-        private val clubUserRepository : ClubUserRepository,
-        private val clubAlbumRepository: ClubAlbumRepository,
-        private val clubRepository: ClubRepository,
-        private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
+    private val roleService: RoleService,
+    private val clubService: ClubService,
+    private val clubUserService: ClubUserService,
+    private val clubAlbumImgService: ClubAlbumImageService,
+    private val clubUserRepository : ClubUserRepository,
+    private val clubAlbumRepository: ClubAlbumRepository,
+    private val clubRepository: ClubRepository,
+    private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
 
-        @Value("\${aws.s3.endpointUrl}")
-        private var s3Host: String,
+    @Value("\${host.static.path}")
+    private var imgHost: String,
 ) {
 
     companion object {
@@ -79,7 +79,7 @@ class ClubAlbumService(
     @Transactional(readOnly = true)
     fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): PageDto<ClubAlbumListDto> {
         val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable)
-            .map{clubAlbum -> ClubAlbumListDto(s3Host, clubAlbum) }
+            .map{clubAlbum -> ClubAlbumListDto(imgHost, clubAlbum) }
 
         return PageDto(result)
     }
@@ -93,7 +93,7 @@ class ClubAlbumService(
             ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
             ?.let { true } ?: false
 
-        return ClubAlbumDto(s3Host, getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
+        return ClubAlbumDto(imgHost, getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
     }
 
     @Transactional

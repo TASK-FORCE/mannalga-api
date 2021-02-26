@@ -21,7 +21,7 @@ class ClubBoardController(
 ) {
 
     /**
-     * 모임 게시판 글 조회
+     * 모임 게시판 글 목록 조회
      */
     @GetMapping("/{clubSeq}/board")
     fun getClubBoardList(pageable: Pageable,

@@ -16,7 +16,7 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 모임 게시판 조회
-GET {{host}}/clubs/6327/board?category=NORMAL
+GET {{host}}/clubs/8866/board?category=NORMAL
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}

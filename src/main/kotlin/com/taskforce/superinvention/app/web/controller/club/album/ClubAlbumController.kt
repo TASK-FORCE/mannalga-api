@@ -20,6 +20,7 @@ class ClubAlbumController(
         private val clubAlbumService: ClubAlbumService
 ) {
 
+     // 모임 사진첩 목록 조회
      @GetMapping
      fun gerClubAlbumList(@PathVariable clubSeq:Long,
                           pageable: Pageable,
@@ -29,6 +30,7 @@ class ClubAlbumController(
      }
 
 
+    //  모임 사진첩 단건 조회
     @GetMapping("/{clubAlbumSeq}")
     fun gerClubAlbum(@AuthUser     user: User?,
                      @PathVariable clubSeq      :Long,

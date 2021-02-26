@@ -45,11 +45,11 @@ data class ClubAlbumListDto(
         val commentCnt : Long,
         val writerClubUserSeq: Long ?= 0
 ) {
-        constructor(s3Host: String, clubAlbum: ClubAlbum): this (
+        constructor(imgHost: String, clubAlbum: ClubAlbum): this (
                 albumSeq   = clubAlbum.seq!!,
                 title      = clubAlbum.title,
                 file_name  = clubAlbum.file_name,
-                imgUrl     = "${s3Host}/${clubAlbum.img_url}",
+                imgUrl     = "${imgHost}/${clubAlbum.img_url}",
                 likeCnt    = clubAlbum.albumLikeCnt ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writerClubUserSeq = clubAlbum.writer.seq
