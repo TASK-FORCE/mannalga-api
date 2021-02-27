@@ -1,8 +1,10 @@
 package com.taskforce.superinvention.app.domain.club.album
 
+import com.ninjasquad.springmockk.MockkBean
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.image.ClubAlbumImageService
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
@@ -17,6 +19,7 @@ import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.test.MockkTest
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -25,33 +28,36 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 
 class ClubAlbumServiceTest: MockkTest() {
 
-    @InjectMockKs
     lateinit var clubAlbumService: ClubAlbumService
 
-    @MockK
-    lateinit var clubService: ClubService
-
-    @MockK
-    lateinit var clubUserService: ClubUserService
-
-    @MockK
-    lateinit var clubAlbumRepository: ClubAlbumRepository
-
-    @MockK
-    lateinit var clubRepository: ClubRepository
-
-    @MockK
-    lateinit var clubUserRepository: ClubUserRepository
-
-    @MockK
+    @MockkBean
     lateinit var roleService: RoleService
 
-    @MockK
+    @MockkBean
+    lateinit var clubService: ClubService
+
+    @MockkBean
+    lateinit var clubUserService: ClubUserService
+
+    @MockkBean
+    lateinit var clubAlbumRepository: ClubAlbumRepository
+
+    @MockkBean
+    lateinit var clubRepository: ClubRepository
+
+    @MockkBean
+    lateinit var clubUserRepository: ClubUserRepository
+
+    @MockkBean
     lateinit var clubAlbumLikeRepository: ClubAlbumLikeRepository
+
+    @MockkBean
+    lateinit var clubAlbumImageService: ClubAlbumImageService
 
     lateinit var nonClubUser   : User
     lateinit var writer        : User
@@ -75,6 +81,19 @@ class ClubAlbumServiceTest: MockkTest() {
 
     @BeforeEach
     fun setup() {
+
+        clubAlbumService = ClubAlbumService(
+            roleService = roleService,
+            clubService = clubService,
+            clubUserService = clubUserService,
+            clubAlbumRepository = clubAlbumRepository,
+            clubRepository = clubRepository,
+            clubUserRepository = clubUserRepository,
+            clubAlbumLikeRepository = clubAlbumLikeRepository,
+            clubAlbumImgService = clubAlbumImageService,
+            imgHost = "dummy-aws-s3"
+        )
+
 
         club = Club(
             name = "테스트 모임",
@@ -129,9 +148,10 @@ class ClubAlbumServiceTest: MockkTest() {
 
         // given
         val body = ClubAlbumRegisterDto(
-            title     = "신규 모임 사진첩 제목",
-            file_name = "파일명",
-            imgUrl    = "이미지 URL"
+            title = "신규 모임 사진첩 제목",
+            image = S3Path(
+                absolutePath = "절대경로"
+            )
         )
 
         every { clubService.getValidClubBySeq(club.seq!!)        } returns club
@@ -140,7 +160,8 @@ class ClubAlbumServiceTest: MockkTest() {
         every { clubUserService.getValidClubUser(club.seq!!, writer)      } returns writerClubUser
         every { clubUserService.getValidClubUser(club.seq!!, nonClubUser) } throws  UserIsNotClubMemberException()
 
-        every { clubAlbumRepository.save( any<ClubAlbum>()) } returns clubAlbum
+        every { clubAlbumRepository.save( any()) } returns clubAlbum
+        every { clubAlbumImageService.registerClubAlbumImage(any(), any()) } returns S3Path()
 
         // 모임이 없을 때
         assertThrows<ClubNotFoundException> {

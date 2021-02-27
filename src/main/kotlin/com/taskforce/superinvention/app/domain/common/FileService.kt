@@ -7,13 +7,13 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class FileService (
-        private val awsS3Mo: AwsS3Mo
+    private val awsS3Mo: AwsS3Mo,
 ){
     companion object {
         const val TEMP_IMG_DIR_PATH = "temp/img"
     }
 
-    fun fileTempSave(file: MultipartFile): S3Path {
-        return awsS3Mo.uploadFile(file, TEMP_IMG_DIR_PATH)
+    fun fileTempSave(multipartFile: MultipartFile): S3Path {
+        return awsS3Mo.uploadFileWithUUID(multipartFile, TEMP_IMG_DIR_PATH)
     }
 }

@@ -16,6 +16,7 @@ import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -29,7 +30,10 @@ class ClubBoardService(
         private val clubBoardImgService: ClubBoardImgService,
         private val clubBoardLikeRepository: ClubBoardLikeRepository,
         private val clubBoardRepository: ClubBoardRepository,
-        private val clubUserRepository: ClubUserRepository
+        private val clubUserRepository: ClubUserRepository,
+
+        @Value("\${host.static.path}")
+        private var imgHost: String,
 ) {
 
     companion object {
@@ -49,7 +53,7 @@ class ClubBoardService(
         val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
 
         val resultPage = clubBoardRepository.searchInList(pageRequest, category, searchOpt, clubSeq)
-            .map(::ClubBoardListViewDto)
+            .map{ clubBoard -> ClubBoardListViewDto(imgHost, clubBoard)}
 
         return PageDto(resultPage)
     }
@@ -69,7 +73,7 @@ class ClubBoardService(
             ?.let { clubUser ->  clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }
             ?.let { true } ?: false
 
-        return ClubBoardDto(clubBoard, isLiked)
+        return ClubBoardDto(imgHost, clubBoard, isLiked)
     }
 
     /**

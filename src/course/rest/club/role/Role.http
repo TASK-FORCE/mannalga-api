@@ -1,4 +1,4 @@
-### [로컬] 내 클럽 조회
+### 내 클럽 조회
 GET {{host}}/clubs/my
 Content-Type: application/json;charset=UTF-8
 Accept: application/json

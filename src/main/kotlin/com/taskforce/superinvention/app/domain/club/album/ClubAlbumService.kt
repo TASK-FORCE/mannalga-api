@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.domain.club.album
 
 import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
+import com.taskforce.superinvention.app.domain.club.album.image.ClubAlbumImageService
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
@@ -19,6 +20,7 @@ import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberExc
 import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoundException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -28,13 +30,17 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumService(
-        private val roleService: RoleService,
-        private val clubService: ClubService,
-        private val clubUserService: ClubUserService,
-        private val clubUserRepository : ClubUserRepository,
-        private val clubAlbumRepository: ClubAlbumRepository,
-        private val clubRepository: ClubRepository,
-        private val clubAlbumLikeRepository: ClubAlbumLikeRepository
+    private val roleService: RoleService,
+    private val clubService: ClubService,
+    private val clubUserService: ClubUserService,
+    private val clubAlbumImgService: ClubAlbumImageService,
+    private val clubUserRepository : ClubUserRepository,
+    private val clubAlbumRepository: ClubAlbumRepository,
+    private val clubRepository: ClubRepository,
+    private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
+
+    @Value("\${host.static.path}")
+    private var imgHost: String,
 ) {
 
     companion object {
@@ -57,7 +63,6 @@ class ClubAlbumService(
 
         val club     = clubService.getValidClubBySeq(clubSeq)
         val clubUser = clubUserService.getValidClubUser(clubSeq, user)
-
         if(isValid(clubAlbumDto!!)) {
             val clubAlbum = ClubAlbum (
                 writer      = clubUser,
@@ -65,6 +70,7 @@ class ClubAlbumService(
                 registerDto = clubAlbumDto
             )
             clubAlbumRepository.save(clubAlbum)
+            clubAlbumImgService.registerClubAlbumImage(clubAlbum, clubAlbumDto.image)
             return true
         }
         return false
@@ -73,7 +79,7 @@ class ClubAlbumService(
     @Transactional(readOnly = true)
     fun getClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): PageDto<ClubAlbumListDto> {
         val result: Page<ClubAlbumListDto> = clubAlbumRepository.findClubAlbumList(clubSeq, searchOption, pageable)
-            .map(::ClubAlbumListDto)
+            .map{clubAlbum -> ClubAlbumListDto(imgHost, clubAlbum) }
 
         return PageDto(result)
     }
@@ -87,7 +93,7 @@ class ClubAlbumService(
             ?.let { clubUser ->  clubAlbumLikeRepository.findByClubAlbumSeqAndClubUser(clubAlbumSeq!!, clubUser) }
             ?.let { true } ?: false
 
-        return ClubAlbumDto(getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
+        return ClubAlbumDto(imgHost, getValidClubAlbumBySeq(clubAlbumSeq), isLiked)
     }
 
     @Transactional
@@ -121,9 +127,10 @@ class ClubAlbumService(
 
     private fun isValid(clubAlbumDto: ClubAlbumRegisterDto): Boolean {
 
-        if(clubAlbumDto.imgUrl.isBlank()) {
+        if(clubAlbumDto.image.absolutePath.isBlank()) {
             throw BizException("잘못된 이미지 URL입니다.", HttpStatus.BAD_REQUEST)
         }
+
         if(clubAlbumDto.title.isBlank()) {
             throw BizException("제목이 비어있습니다.", HttpStatus.BAD_REQUEST)
         }
