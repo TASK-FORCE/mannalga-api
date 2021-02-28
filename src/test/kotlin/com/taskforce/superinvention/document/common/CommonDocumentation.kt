@@ -20,8 +20,8 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
-import org.springframework.restdocs.request.RequestDocumentation.partWithName
-import org.springframework.restdocs.request.RequestDocumentation.requestParts
+import org.springframework.restdocs.request.RequestDocumentation
+import org.springframework.restdocs.request.RequestDocumentation.*
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
@@ -45,9 +45,9 @@ class CommonDocumentation: ApiDocumentationTestV2() {
     }
 
     @Test
-    fun `파일 임시저장`() {
+    fun `이미지 임시저장`() {
         // given
-        every { imageService.fileImageSave(any()) } returns
+        every { imageService.fileImageSave(any(), any()) } returns
                 S3Path(
                         absolutePath = "http://{aws-s3-domain}/{file-path}/{file-name}",
                         filePath = "{file-path}/{file-name}",
@@ -63,7 +63,53 @@ class CommonDocumentation: ApiDocumentationTestV2() {
 
         // when
         val result = mockMvc.perform(
-                multipart("/common/temp/image").file(image)
+                multipart("/common/temp/image")
+                    .file(image)
+                    .queryParam("width",  "200")
+                    .queryParam("height", "200")
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+                .andDo(
+                        document("temp-image-upload", getDocumentRequest(), getDocumentResponse(),
+                                requestParts(
+                                        partWithName("file").description("임시 저장 단일파일")
+                                ),
+                                requestParameters(
+                                    parameterWithName("width").description("리사이징용 width ( 픽셀 )"),
+                                    parameterWithName("height").description("리사이징용 height( 픽셀 )"),
+                                ),
+                                responseFields(
+                                        *commonResponseField(),
+                                        fieldWithPath("data.absolutePath").type(JsonFieldType.STRING).description("임시저장 파일 절대 경로"),
+                                        fieldWithPath("data.filePath").type(JsonFieldType.STRING).description("도메인 제외 경로"),
+                                        fieldWithPath("data.fileName").type(JsonFieldType.STRING).description("파일명")
+                                )
+                        )
+                )
+    }
+
+    @Test
+    fun `파일 임시저장`() {
+        // given
+        every { fileService.fileTempSave(any()) } returns
+                S3Path(
+                        absolutePath = "http://{aws-s3-domain}/{file-path}/{file-name}",
+                        filePath = "{file-path}/{file-name}",
+                        fileName = "{file-name}"
+                )
+
+        val image = MockMultipartFile(
+                "file",
+                "image.png",
+                "image/png",
+                "<<png data>>".toByteArray()
+        )
+
+        // when
+        val result = mockMvc.perform(
+                multipart("/common/temp/file").file(image)
         ).andDo(print())
 
         // then
