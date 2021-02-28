@@ -52,6 +52,7 @@ jobs:
           user: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
           args: "-tt"
+        env:
           spring_datasource_url: ${{ secrets.DEV_DATASOURCE_URL }}
           spring_datasource_username: ${{ secrets.DEV_DATASOURCE_USERNAME }}
           spring_datasource_password: ${{ secrets.DEV_DATASOURCE_PASSWORD }}
