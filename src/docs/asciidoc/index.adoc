@@ -26,6 +26,9 @@ endif::[]
 |===
 
 == 공통
+=== [.toc-list-item]`이미지 임시저장`
+include::{root}/common/temp-image-upload.adoc[]
+
 === [.toc-list-item]`파일 임시저장`
 include::{root}/common/temp-file-upload.adoc[]
 
