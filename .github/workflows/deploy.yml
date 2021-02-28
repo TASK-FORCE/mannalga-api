@@ -52,11 +52,11 @@ jobs:
           user: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
           args: "-tt"
-          spring.datasource.url: ${{ secrets.DEV_DATASOURCE_URL }}
-          spring.datasource.username: ${{ secrets.DEV_DATASOURCE_USERNAME }}
-          spring.datasource.password: ${{ secrets.DEV_DATASOURCE_PASSWORD }}
-          spring.redis.host: ${{ secrets.DEV_REDIS_HOST }}
-          spring.redis.port: ${{ secrets.DEV_REDIS_PORT }}
-          oauth.kakao.client-id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
-          aws.s3.accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
-          aws.s3.secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+          spring_datasource_url: ${{ secrets.DEV_DATASOURCE_URL }}
+          spring_datasource_username: ${{ secrets.DEV_DATASOURCE_USERNAME }}
+          spring_datasource_password: ${{ secrets.DEV_DATASOURCE_PASSWORD }}
+          spring_redis_host: ${{ secrets.DEV_REDIS_HOST }}
+          spring_redis_port: ${{ secrets.DEV_REDIS_PORT }}
+          oauth_kakao_client_id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
+          aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
