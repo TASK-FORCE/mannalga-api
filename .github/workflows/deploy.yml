@@ -61,3 +61,5 @@ jobs:
           oauth_kakao_client_id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
           aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+      - name: Test printing your secret (Remove this step in production)
+        run: cat $HOME/secrets/my_secret.json
