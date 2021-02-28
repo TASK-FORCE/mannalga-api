@@ -45,33 +45,9 @@ jobs:
       - name: Launch Script in Remote Server
         if: ${{ success() }}
         uses: fifsky/ssh-action@master
-        env:
-          spring_datasource_url: ${{ secrets.DEV_DATASOURCE_URL }}
-          spring_datasource_username: ${{ secrets.DEV_DATASOURCE_USERNAME }}
-          spring_datasource_password: ${{ secrets.DEV_DATASOURCE_PASSWORD }}
-          spring_redis_host: ${{ secrets.DEV_REDIS_HOST }}
-          spring_redis_port: ${{ secrets.DEV_REDIS_PORT }}
-          oauth_kakao_client_id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
-          aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
-          aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
         with:
           command: |
-            cd ~/app
-            sh ./shutdown.sh && \
-            rm -f ./app.jar  && \
-            mv ./temp/app.jar ./app.jar && \
-            nohup java -jar "$runnableJarName"   \
-            -Dserver.port="$port"                \
-            -Dspring.profiles.active="$profile" \
-            -Dspring.datasource.url="$spring_datasource_url" \
-            -Dspring.datasource.username="$spring_datasource_username" \
-            -Dspring.datasource.password="$spring_datasource_password" \
-            -Dspring.redis.host="$spring_redis_host" \
-            -Dspring.redis.port="$spring_redis_port" \
-            -Doauth.kakao.client-id="$oauth_kakao_client_id" \
-            -Daws.s3.accessKey:"$aws_s3_accessKey" \
-            -Daws.s3.secretAccessKey="$aws_s3_secretAccessKey"
-            rm -f ./temp/app.jar
+            cd ~/app && sh deploy.sh
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
