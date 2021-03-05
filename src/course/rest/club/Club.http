@@ -11,8 +11,8 @@ Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 
-### [개발] 내 클럽 가입
-POST {{host}} /clubs/6174/users
+### [개발] 클럽 가입
+POST {{host}} /clubs/6212/users
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
