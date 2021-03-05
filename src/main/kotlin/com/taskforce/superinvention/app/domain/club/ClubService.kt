@@ -35,6 +35,7 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.CannotJoinClubException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.slf4j.Logger
@@ -181,14 +182,22 @@ class ClubService(
         }
 
         // 모임 가입처리
-        val clubUser = ClubUser(club, user, false)
-        clubUserRepository.save(clubUser)
+        // 이전에 가입되어있었다면?
+        val alreadyJoinedClubUser = club.clubUser.find { e -> e.user.seq == user.seq }
+        if (alreadyJoinedClubUser != null) {
+            val isKickedUser = alreadyJoinedClubUser.clubUserRoles
+                .map { clubUserRole -> clubUserRole.role.name }
+                .contains(Role.RoleName.NONE)
+            if (isKickedUser) throw CannotJoinClubException("강퇴된 모임에는 다시 가입하실 수 없습니다.", HttpStatus.FORBIDDEN)
+            roleService.changeClubUserRoles(alreadyJoinedClubUser, setOf(roleService.findByRoleName(Role.RoleName.CLUB_MEMBER)))
+        } else {
+            val clubUser = clubUserRepository.save(ClubUser(club, user, false))
+            // 디폴트로 모임원 권한 주기
+            val memberRole = roleService.findByRoleName(Role.RoleName.CLUB_MEMBER)
+            val clubUserRole = ClubUserRole(clubUser, memberRole)
 
-        // 디폴트로 모임원 권한 주기
-        val memberRole = roleService.findByRoleName(Role.RoleName.CLUB_MEMBER)
-        val clubUserRole = ClubUserRole(clubUser, memberRole)
-
-        clubUserRoleRepository.save(clubUserRole)
+            clubUserRoleRepository.save(clubUserRole)
+        }
     }
 
     @Transactional(readOnly = true)
