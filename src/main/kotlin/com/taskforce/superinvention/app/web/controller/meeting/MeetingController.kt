@@ -79,7 +79,7 @@ class MeetingController(
         val clubUser = clubService.getClubUser(clubSeq, user)
                 ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
 
-        if (meetingService.getMeeting(meetingSeq, clubUser.seq).regClubUser.user.seq != user.seq) {
+        if (meetingService.getMeeting(meetingSeq, clubUser.seq).regClubUser.seq != clubUser.seq) {
             throw BizException("만남은 작성자만 수정할 수 있습니다.", HttpStatus.UNAUTHORIZED)
         }
 

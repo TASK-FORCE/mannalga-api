@@ -74,7 +74,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
     )
 
     val clubUserDto = ClubUserWithUserDto(
-            seq = 512,
+            seq = 123,
             user = UserDto(
                    4,
                    mutableSetOf(),
@@ -327,7 +327,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
     }
 
     @Test
-    @WithMockUser(authorities = [Role.MEMBER])
+    @WithMockUser(authorities = [Role.MEMBER, Role.MANAGER])
     fun `만남 수정`() {
 
 
@@ -336,6 +336,7 @@ class MeetingDocumentation: ApiDocumentationTest() {
         given(clubService.getClubUser(ArgumentMatchers.anyLong(), MockitoHelper.anyObject())).willReturn(clubUser)
         given(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).willReturn(true)
         given(meetingService.modifyMeeting(ArgumentMatchers.anyLong(), MockitoHelper.anyObject(), MockitoHelper.anyObject())).willReturn(meetingDto)
+        given(meetingService.getMeeting(anyLong(), anyLong())).willReturn(meetingDto)
 
         // when
         val result: ResultActions = this.mockMvc.perform(
