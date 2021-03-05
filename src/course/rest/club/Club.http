@@ -5,16 +5,16 @@ Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 ### [개발] 내 클럽 조회
-GET http://ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com/api/clubs/my
+GET {{host}}/clubs/my
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-dong}}
 
 
 ### [개발] 내 클럽 가입
 POST {{host}} /clubs/6174/users
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-dong}}
 
 
 ### 모임 삭제

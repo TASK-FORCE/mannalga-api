@@ -16,6 +16,7 @@ import com.taskforce.superinvention.app.domain.region.QClubRegion.*
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
 import com.taskforce.superinvention.app.domain.role.QRole
 import com.taskforce.superinvention.app.domain.role.QRoleGroup
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
@@ -123,7 +124,8 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .join(clubUserRole.clubUser, clubUser)
                         .join(clubUserRole.role.roleGroup, roleGroup)
                         .groupBy(clubUserRole.clubUser.club.seq)
-                        .where(clubUserRole.clubUser.user.seq.eq(userInfo.seq))
+                        .where(clubUserRole.clubUser.user.seq.eq(userInfo.seq),
+                            clubUserRole.role.name.notIn(Role.RoleName.NONE, Role.RoleName.MEMBER))
                         .offset(pageable.offset)
                         .limit(pageable.pageSize.toLong())
                         .fetchResults()
