@@ -79,8 +79,8 @@ class MeetingController(
         val clubUser = clubService.getClubUser(clubSeq, user)
                 ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
 
-        if (!roleService.hasClubManagerAuth(clubUser)) {
-            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
+        if (meetingService.getMeeting(meetingSeq, clubUser.seq).regClubUser.seq != clubUser.seq) {
+            throw BizException("만남은 작성자만 수정할 수 있습니다.", HttpStatus.UNAUTHORIZED)
         }
 
         meetingService.checkClubMeeting(clubSeq, meetingSeq)
