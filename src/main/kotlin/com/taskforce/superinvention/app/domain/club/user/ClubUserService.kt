@@ -1,7 +1,9 @@
 package com.taskforce.superinvention.app.domain.club.user
 
+import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubUserStatusDto
+import com.taskforce.superinvention.common.exception.InvalidInputException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,10 +20,10 @@ class ClubUserService(
             return null
         }
 
-        val clubUser = clubUserRepository.findClubUserWithRole(clubSeq, user) ?: return null
-        val roleNames= clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name }
+        val clubUser: ClubUser = clubUserRepository.findClubUserWithRole(clubSeq, user)
+            ?: throw InvalidInputException()
 
-        return ClubUserStatusDto(roleNames, clubUser.isLiked ?: false )
+        return ClubUserStatusDto(clubUser)
     }
 
     fun getValidClubUser(clubSeq: Long, user: User): ClubUser {

@@ -102,10 +102,7 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                         clubInterest = interestList,
                         clubRegion   = clubRegionList
                 ),
-                userInfo = ClubUserStatusDto(
-                        role = listOf(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER),
-                        isLiked = false
-                ),
+                userInfo = ClubUserStatusDto(clubUser),
                 userList = listOf(ClubInfoUserDto(clubUser))
         )
 
@@ -145,6 +142,8 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                                         fieldWithPath("data.clubInfo.clubRegion[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
                                         fieldWithPath("data.clubInfo.clubRegion[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
                                         fieldWithPath("data.clubInfo.clubRegion[].priority").type(JsonFieldType.NUMBER).description("모임에서 설정한 지역 우선순위"),
+                                        fieldWithPath("data.userInfo.userSeq").type(JsonFieldType.NUMBER).description("유저 seq"),
+                                        fieldWithPath("data.userInfo.clubUserSeq").type(JsonFieldType.NUMBER).description("모임원 seq"),
                                         fieldWithPath("data.userInfo.role[]").type(JsonFieldType.ARRAY).description("유저 권한"),
                                         fieldWithPath("data.userInfo.isLiked").type(JsonFieldType.BOOLEAN).description("모임원 모임 좋아요 여부"),
                                         fieldWithPath("data.userList[].clubUserSeq").type(JsonFieldType.NUMBER).description("클럽 유저 seq"),
