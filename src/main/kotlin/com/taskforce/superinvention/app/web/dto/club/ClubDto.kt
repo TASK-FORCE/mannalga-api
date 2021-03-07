@@ -33,9 +33,18 @@ data class ClubInfoDetailsDto(
 )
 
 data class ClubUserStatusDto(
-        val role: List<Role.RoleName>,
-        val isLiked: Boolean
-)
+    val userSeq: Long,
+    val clubUserSeq: Long,
+    val role: List<Role.RoleName>,
+    val isLiked: Boolean
+) {
+    constructor(clubUser: ClubUser) : this(
+        userSeq     = clubUser.user.seq!!,
+        clubUserSeq = clubUser.seq!!,
+        role        = clubUser.clubUserRoles.map { clubUserRoles -> clubUserRoles.role.name },
+        isLiked     = clubUser.isLiked ?: false
+    )
+}
 
 
 data class ClubWriter(
