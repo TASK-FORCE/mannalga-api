@@ -45,9 +45,32 @@ jobs:
       - name: Launch Script in Remote Server
         if: ${{ success() }}
         uses: fifsky/ssh-action@master
+        env:
+          spring_datasource_url: ${{ secrets.DEV_DATASOURCE_URL }}
+          spring_datasource_username: ${{ secrets.DEV_DATASOURCE_USERNAME }}
+          spring_datasource_password: ${{ secrets.DEV_DATASOURCE_PASSWORD }}
+          spring_redis_host: ${{ secrets.DEV_REDIS_HOST }}
+          spring_redis_port: ${{ secrets.DEV_REDIS_PORT }}
+          oauth_kakao_client_id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
+          aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+          host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
+          jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
         with:
           command: |
-            cd ~/app && sh deploy.sh
+            cd ~/app
+            export spring_datasource_url=${{ secrets.DEV_DATASOURCE_URL }}
+            export spring_datasource_username=${{ secrets.DEV_DATASOURCE_USERNAME }}
+            export spring_datasource_password=${{ secrets.DEV_DATASOURCE_PASSWORD }}
+            export spring_redis_host=${{ secrets.DEV_REDIS_HOST }}
+            export spring_redis_port=${{ secrets.DEV_REDIS_PORT }}
+            export oauth_kakao_client_id=${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
+            export aws_s3_accessKey=${{ secrets.AWS_S3_ACCESS_KEY }}
+            export aws_s3_secretAccessKey=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+            export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
+            export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+            echo $spring_datasource_username > eric.txt
+            sh deploy.sh
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
