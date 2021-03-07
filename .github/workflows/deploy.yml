@@ -54,6 +54,7 @@ jobs:
           oauth_kakao_client_id: ${{ secrets.OAUTH_KAKAO_CLIENT_ID }}
           aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+          aws_endpoint_utl: ${{ secrets.DEV_AWS_ENDPOINT_URL }}
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
           jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
         with:
@@ -69,7 +70,7 @@ jobs:
             export aws_s3_secretAccessKey=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
             export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-            echo $spring_datasource_username > eric.txt
+            export aws_endpoint_url= ${{ secrets.DEV_AWS_ENDPOINT_URL }}
             sh deploy.sh
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
