@@ -70,7 +70,7 @@ jobs:
             export aws_s3_secretAccessKey=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
             export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-            export aws_endpoint_url= ${{ secrets.DEV_AWS_ENDPOINT_URL }}
+            export aws_endpoint_url=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
             echo $aws_endpoint_url $aws_s3_secretAccessKey $aws_s3_accessKey > eric.txt
             sh deploy.sh
           host: ${{ secrets.SSH_HOST }}
