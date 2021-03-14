@@ -27,21 +27,21 @@ jobs:
             whoami
             stat app/*.jar
 
-      - name: Build with Gradle
-        run: ./gradlew clean build
-
-
-      - name: Deploy to server
-        uses: appleboy/scp-action@master
-        env:
-          HOST: ${{ secrets.SSH_HOST }}
-          PORT: 22
-          USERNAME: ${{ secrets.SSH_USER }}
-          KEY: ${{ secrets.SSH_KEY }}
-        with:
-          source: "./build/libs/app.jar"
-          target: "./app/temp"
-          strip_components: 3
+#      - name: Build with Gradle
+#        run: ./gradlew clean build
+#
+#
+#      - name: Deploy to server
+#        uses: appleboy/scp-action@master
+#        env:
+#          HOST: ${{ secrets.SSH_HOST }}
+#          PORT: 22
+#          USERNAME: ${{ secrets.SSH_USER }}
+#          KEY: ${{ secrets.SSH_KEY }}
+#        with:
+#          source: "./build/libs/app.jar"
+#          target: "./app/temp"
+#          strip_components: 3
 
       - name: Launch Script in Remote Server
         if: ${{ success() }}
@@ -57,7 +57,7 @@ jobs:
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
           jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-          aws_s3_endpoint_utl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
+          aws_s3_endpointUrl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
         with:
           command: |
             cd ~/app
@@ -71,7 +71,7 @@ jobs:
             export aws_s3_secretAccessKey=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
             export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-            export aws_s3_endpoint_url=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
+            export aws_s3_endpointUrl=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
             sh deploy.sh
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
