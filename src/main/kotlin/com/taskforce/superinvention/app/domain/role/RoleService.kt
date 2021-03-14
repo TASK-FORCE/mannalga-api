@@ -87,9 +87,9 @@ class RoleService(
     }
 
     @Transactional
-    fun withdrawRole(withdrawClubUser: ClubUser) {
+    fun withdrawRole(withdrawClubUser: ClubUser, isKicked: Boolean) {
         clubUserRoleRepository.deleteAll(withdrawClubUser.clubUserRoles)
-        val memberRole = roleRepository.findByName(Role.RoleName.MEMBER)
+        val memberRole = roleRepository.findByName(if(isKicked) Role.RoleName.NONE else Role.RoleName.MEMBER)
         val memberUserRole = ClubUserRole(withdrawClubUser, memberRole)
         clubUserRoleRepository.save(memberUserRole)
     }

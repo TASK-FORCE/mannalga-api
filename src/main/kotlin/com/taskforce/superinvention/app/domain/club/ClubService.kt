@@ -329,7 +329,9 @@ class ClubService(
         if (roleService.hasClubMasterAuth(withdrawClubUser)) throw BizException("모임장은 탈퇴할 수 없습니다. 모임 삭제 또는 모임장을 변경해주세요")
 
         // 다른 모임원에 의한 강퇴일 때
+        var isKicked = false
         if (withdrawClubUser != actorClubUser) {
+            isKicked = true
             // 매니저 이상만 모임원에 대한 탈퇴처리가 가능하다
             if (!roleService.hasClubManagerAuth(actorClubUser)) throw BizException("모임원 강제 탈퇴 처리는 매니저 이상만 할 수 있습니다")
 
@@ -342,7 +344,7 @@ class ClubService(
         meetingService.cancelAllApplication(withdrawClubUser)
         
         // 모임원 권한 회수
-        roleService.withdrawRole(withdrawClubUser)
+        roleService.withdrawRole(withdrawClubUser, isKicked)
     }
 
     /**
