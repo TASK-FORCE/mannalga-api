@@ -17,9 +17,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew clean build
-
       - name: Testing SSH connection
         uses: appleboy/ssh-action@master
         with:
@@ -29,6 +26,10 @@ jobs:
           script: |
             whoami
             stat app/*.jar
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
 
       - name: Deploy to server
         uses: appleboy/scp-action@master
