@@ -57,7 +57,7 @@ jobs:
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
           jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-          aws_endpoint_utl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
+          aws_s3_endpoint_utl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
         with:
           command: |
             cd ~/app
