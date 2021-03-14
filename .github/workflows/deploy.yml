@@ -27,21 +27,21 @@ jobs:
             whoami
             stat app/*.jar
 
-#      - name: Build with Gradle
-#        run: ./gradlew clean build
-#
-#
-#      - name: Deploy to server
-#        uses: appleboy/scp-action@master
-#        env:
-#          HOST: ${{ secrets.SSH_HOST }}
-#          PORT: 22
-#          USERNAME: ${{ secrets.SSH_USER }}
-#          KEY: ${{ secrets.SSH_KEY }}
-#        with:
-#          source: "./build/libs/app.jar"
-#          target: "./app/temp"
-#          strip_components: 3
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@master
+        env:
+          HOST: ${{ secrets.SSH_HOST }}
+          PORT: 22
+          USERNAME: ${{ secrets.SSH_USER }}
+          KEY: ${{ secrets.SSH_KEY }}
+        with:
+          source: "./build/libs/app.jar"
+          target: "./app/temp"
+          strip_components: 3
 
       - name: Launch Script in Remote Server
         if: ${{ success() }}
