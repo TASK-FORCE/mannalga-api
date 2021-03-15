@@ -1,8 +1,8 @@
 # SUPER INVENTION
 
 ## Live Server
-- [Frontend Server](http://ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com)
-- [API Document](http://ec2-52-78-18-217.ap-northeast-2.compute.amazonaws.com:8080/docs/index.html)
+- [Frontend Server](http://mannal.ga)
+- [API Document](http://mannal.ga:8080/docs/index.html)
 
 ## Main Stack
 Project is created with:
