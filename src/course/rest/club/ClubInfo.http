@@ -1,11 +1,11 @@
 ### [로컬] 모임 상세 조회 - 클럽 미가입 && 로그인 상태
-GET {{host}}/clubs/127
+GET {{host}}/clubs/6164
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 ### [로컬] 모임 상세 조회 - 클럽 가입 && 로그인 상태
-GET {{host}}/clubs/127
+GET {{host}}/clubs/8936
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
