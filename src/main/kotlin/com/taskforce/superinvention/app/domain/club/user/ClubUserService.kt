@@ -22,7 +22,7 @@ class ClubUserService(
 
         val clubUser = clubUserRepository.findClubUserWithRole(clubSeq, user)
 
-        return clubUser?.let { ClubUserStatusDto(it) }
+        return clubUser?.let ( ::ClubUserStatusDto )
     }
 
     fun getValidClubUser(clubSeq: Long, user: User): ClubUser {
