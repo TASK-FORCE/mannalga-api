@@ -1,7 +1,7 @@
 # SUPER INVENTION
 
 ## Live Server
-- [Frontend Server](http://mannal.ga)
+- [mannal.ga](http://mannal.ga)
 - [API Document](http://mannal.ga:8080/docs/index.html)
 
 ## Main Stack
@@ -12,8 +12,8 @@ Project is created with:
 
 ## Installation and Getting Started
 ### Setting MySQL DB And Schema
-The MySQL database can create a schema by running `src/course/sql/ddl.sql` attached inside the project.<br>
-If the DB schema setting is complete, enter the settings of the DB you set in the `application.properties` file.
+The MySQL database can create a schema by running [`src/course/sql/ddl.sql`](https://github.com/TASK-FORCE/super-invention/blob/develop/src/course/sql/ddl.sql) attached inside the project.<br>
+If the DB schema setting is complete, enter the settings of the DB you set in the [`application.properties`](https://github.com/TASK-FORCE/super-invention/blob/develop/src/main/resources/application.properties) file.
 
 ### Start Service
 Super Invention software has backend and frontend separation.<br>
@@ -21,7 +21,7 @@ You can run the service by running the Front client after you run the Backend AP
 
 
 - [Backend API Server (this repository)](https://github.com/TASK-FORCE/super-invention)
-- [Frontend](https://github.com/TASK-FORCE/super-front)
+- [Frontend repository](https://github.com/TASK-FORCE/super-front)
 
 ## Project Features
 #### CI/CD with Github Action
