@@ -20,10 +20,9 @@ class ClubUserService(
             return null
         }
 
-        val clubUser: ClubUser = clubUserRepository.findClubUserWithRole(clubSeq, user)
-            ?: throw InvalidInputException()
+        val clubUser = clubUserRepository.findClubUserWithRole(clubSeq, user)
 
-        return ClubUserStatusDto(clubUser)
+        return clubUser?.let { ClubUserStatusDto(it) }
     }
 
     fun getValidClubUser(clubSeq: Long, user: User): ClubUser {
