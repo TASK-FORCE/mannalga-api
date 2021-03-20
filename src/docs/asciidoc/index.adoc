@@ -143,6 +143,7 @@ include::{root}/club/board/club-board-comment-register.adoc[]
 === [.toc-list-item]`모임 게시판 댓글 수정`
 include::{root}/club/board/club-board-comment-edit.adoc[]
 
+=== [.toc-list-item]`모임 게시판 댓글 삭제`
 include::{root}/club/board/club-board-comment-remove.adoc[]
 
 === [.toc-list-item]`모임 게시판 좋아요 등록`
