@@ -1,29 +1,18 @@
 version: '3'
 services:
-  cache:
-    container_name: super-redis
-    image: redis
-    volumes:
-      - ./redis/volume:/data
+  super-invention-server:
+    image: sightstudio/superinvention
     ports:
-      - '6379:6379'
-
-#  RDS - migration 으로 미사용
-#  database:
-#    container_name: super-mysql
-#    image: mysql:8
-#    ports:
-#      - '3306:3306'
-#    volumes:
-#      - ./db/conf:/etc/mysql/conf.d
-#      - ./db/volume:/var/lib/mysql
-#      - ./db/backup:/backup
-#    environment:
-#      MYSQL_DATABASE: taskforce
-#      MYSQL_ROOT_PASSWORD: taskforce
-#      TZ: Asia/Seoul
-#    command:
-#      - --character-set-server=utf8mb4
-#      - --collation-server=utf8mb4_unicode_ci
-#      - --default-authentication-plugin=mysql_native_password
-
+      - '8081:8080'
+    environment:
+      spring_datasource_url: $spring_datasource_url
+      spring_datasource_username: $spring_datasource_username
+      spring_datasource_password: $spring_datasource_password
+      spring_redis_host: $spring_redis_host
+      spring_redis_port: $spring_redis_port
+      oauth_kakao_client_id: $oauth_kakao_client_id
+      aws_s3_accessKey: $aws_s3_accessKey
+      aws_s3_secretAccessKey: $aws_s3_secretAccessKey
+      host_static_path: $host_static_path
+      jwt_token_secret_key: $jwt_token_secret_key
+      aws_s3_endpointUrl: $aws_s3_endpointUrl
