@@ -16,3 +16,17 @@ services:
       host_static_path: $host_static_path
       jwt_token_secret_key: $jwt_token_secret_key
       aws_s3_endpointUrl: $aws_s3_endpointUrl
+      JAVA_OPTS: "-javaagent:/pinpoint-agent/pinpoint-bootstrap-${PINPOINT_VERSION}.jar -Dpinpoint.agentId=${AGENT_ID} -Dpinpoint.applicationName=${APP_NAME}"
+    volumes:
+      - data-volume:/pinpoint-agent
+    networks:
+      - super-invention
+
+volumes:
+  data-volume:
+  external: true
+
+networks:
+  super-invention:
+    driver: bridge
+    external: true
