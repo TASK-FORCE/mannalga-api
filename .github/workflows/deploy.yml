@@ -17,31 +17,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Testing SSH connection
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            whoami
-            stat app/*.jar
-
-      - name: Build with Gradle
-        run: ./gradlew clean build
-
-
-      - name: Deploy to server
-        uses: appleboy/scp-action@master
-        env:
-          HOST: ${{ secrets.SSH_HOST }}
-          PORT: 22
-          USERNAME: ${{ secrets.SSH_USER }}
-          KEY: ${{ secrets.SSH_KEY }}
-        with:
-          source: "./build/libs/app.jar"
-          target: "./app/temp"
-          strip_components: 3
+      - name: BootImageBuild And Push to DOCKER HUB
+        run: ./gradlew bootBuildImage --imageName=${{secrets.APP_IMG_NAME}}
+          && docker login --username ${{secrets.DOCKER_USER}} --password ${{secrets.DOCKER_USER_PASSWD}}
+          && docker push ${{secrets.APP_IMG_NAME}}
 
       - name: Launch Script in Remote Server
         if: ${{ success() }}
@@ -72,7 +51,7 @@ jobs:
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
             export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
             export aws_s3_endpointUrl=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
-            sh deploy.sh
+            sh server-image-deploy.sh
           host: ${{ secrets.SSH_HOST }}
           user: ${{ secrets.SSH_USER }}
           key:  ${{ secrets.SSH_KEY }}
