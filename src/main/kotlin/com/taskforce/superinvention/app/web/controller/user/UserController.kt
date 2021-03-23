@@ -80,7 +80,7 @@ class UserController(
     @DeleteMapping("/withdraw")
     @Secured(Role.MEMBER)
     fun withdrawMember(@AuthUser user: User): ResponseDto<String> {
-        userService.withdraw(user.seq!!)
+        userService.withdraw(user)
         return ResponseDto(ResponseDto.EMPTY)
     }
 

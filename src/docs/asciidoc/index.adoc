@@ -65,6 +65,9 @@ include::{root}/user/userInfo.adoc[]
 === [.toc-list-item]`유저 정보 수정`
 include::{root}/user/user-change.adoc[]
 
+=== [.toc-list-item]`회원탈퇴`
+include::{root}/user/userWithdraw.adoc[]
+
 == 관심사
 
 === [.toc-list-item]`관심사 목록 조회`

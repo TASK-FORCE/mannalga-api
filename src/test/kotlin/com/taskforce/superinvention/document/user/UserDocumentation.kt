@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.user.info.UserInfoDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoInterestDto
 import com.taskforce.superinvention.app.web.dto.user.info.UserInfoRegionDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -631,4 +632,28 @@ class UserDocumentation : ApiDocumentationTest() {
                 )
             )
     }
+
+    @Test
+    @WithMockUser(authorities = [Role.MEMBER])
+    fun `회원탈퇴`() {
+        // given
+
+        // when
+        val result = this.mockMvc.perform(
+            delete("/users/withdraw")
+                .header("Authorization", "Bearer ACACACACACAXCZCZXCXZ")
+                .characterEncoding("utf-8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("userWithdraw", getDocumentRequest(), getDocumentResponse(),
+                responseFields(
+                    *commonResponseField()
+                )
+            ))
+    }
+
 }
