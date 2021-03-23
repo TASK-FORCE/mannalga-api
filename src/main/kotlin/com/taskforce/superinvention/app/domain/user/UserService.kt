@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.club.ClubRepository
+import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
@@ -16,6 +18,7 @@ import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.kakao.KakaoOAuth
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -29,7 +32,9 @@ class UserService(
         private var userInterestService: UserInterestService,
         private var kakaoOAuth: KakaoOAuth,
         private var jwtTokenProvider: JwtTokenProvider,
-        private val awsS3Mo: AwsS3Mo
+        private val awsS3Mo: AwsS3Mo,
+        private val clubService: ClubService,
+        private val clubRepository: ClubRepository
 ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(UserService::class.java)
@@ -141,5 +146,31 @@ class UserService(
 
     fun getUserBySeq(userSeq: Long): User {
         return userRepository.findByIdOrNull(userSeq)?: throw cannotFindUserException
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @Transactional
+    fun withdraw(userSeq: Long) {
+        val user = getUserBySeq(userSeq)
+        
+        // 가입한 모임에서 탈퇴
+        val userClubList = clubRepository.findUserClubList(user, Pageable.unpaged())
+        userClubList.forEach{ clubService.withdraw(it.seq, it.seq) }
+
+        // 유저 관심사 및 지역 제거
+        userInterestService.changeUserInterest(user, emptyList())
+        userRegionService.changeUserRegion(user, emptyList())
+
+        // 프로필 정보 제거
+        user.profileImageLink = null
+        user.userName = null
+
+        // 권한 제거
+        userRoleService.removeRoleIfExist(user, Role.RoleName.MEMBER)
+        
+        // 가입상태 변경
+        user.isRegistered = false
     }
 }

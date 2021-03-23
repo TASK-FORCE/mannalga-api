@@ -126,11 +126,14 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                         .groupBy(clubUserRole.clubUser.club.seq)
                         .where(clubUserRole.clubUser.user.seq.eq(userInfo.seq),
                             clubUserRole.role.name.notIn(Role.RoleName.NONE, Role.RoleName.MEMBER))
-                        .offset(pageable.offset)
-                        .limit(pageable.pageSize.toLong())
-                        .fetchResults()
+        if (pageable.isPaged) {
+            query.offset(pageable.offset)
+                .limit(pageable.pageSize.toLong())
+        }
 
-        val result: List<ClubUserDto> = query.results.map { tuple ->
+        val results = query.fetchResults()
+
+        val result: List<ClubUserDto> = results.results.map { tuple ->
             ClubUserDto(
                     seq = tuple.get(0, Long::class.java)!!,
                     userSeq = tuple.get(1, Long::class.java)!!,
@@ -141,7 +144,7 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
             )
         }
 
-        return PageImpl(result, pageable, query.total)
+        return PageImpl(result, pageable, results.total)
     }
 
     private fun toRoleSet(concatedRole: RoleDtoQueryProjection?): Set<RoleDto> {

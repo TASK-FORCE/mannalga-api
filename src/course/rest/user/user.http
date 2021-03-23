@@ -2,7 +2,7 @@
 GET {{host}} /users/check-already-register
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer {{token-tester}}
 
 ### 유저 백도어 조회
 GET {{host}}/users/door/꽑꽑이
@@ -17,7 +17,7 @@ Content-Type: application/json;charset=UTF-8
 Accept: application/json
 
 ### 유저 앱토큰 조회
-GET {{host}}/users/door-seq/8491
+GET {{host}}/users/door-seq/8981
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 
@@ -47,3 +47,15 @@ Authorization: Bearer {{token-jun}}
 "refresh_token": "iSoul2MdfKUFqtA1q-J2a_84-6NJw-EYrf1r1wo9cuoAAAF3etymDw",
 "refresh_token_expires_in": 5183999
 }
+
+### 회원 탈퇴
+DELETE {{host}}/users/withdraw
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-tester}}
+
+### 내 정보
+GET {{host}}/users/profile
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-tester}}

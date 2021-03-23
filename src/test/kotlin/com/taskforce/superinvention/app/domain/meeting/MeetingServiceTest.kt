@@ -40,8 +40,6 @@ internal class MeetingServiceTest {
 
     lateinit var meetingService: MeetingService
 
-    lateinit var meetingRepositoryImpl: MeetingRepositoryImpl
-
     lateinit var meetingRepository: MeetingRepository
 
 
@@ -91,13 +89,11 @@ internal class MeetingServiceTest {
             meetingApplications = listOf()
         }
 
-        meetingRepositoryImpl = mockk<MeetingRepositoryImpl>()
         meetingRepository = mockk()
         meetingService = MeetingService(
                 meetingRepository = meetingRepository,
                 clubUserRepository = mockk(),
                 meetingApplicationRepository = mockk(),
-                meetingRepositoryImpl = meetingRepositoryImpl,
                 roleService = mockk()
         )
     }
@@ -106,7 +102,7 @@ internal class MeetingServiceTest {
     @DisplayName("모임원이 아닌 유저의 만남 조회")
     fun getMeetingsTestWithoutClubUserRole() {
         // given
-        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepository.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response: PageDto<MeetingDto> = meetingService.getMeetings(clubSeq, pageable, null)
@@ -139,7 +135,7 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepository.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response = meetingService.getMeetings(clubSeq, pageable, clubUserSeq)
@@ -171,7 +167,7 @@ internal class MeetingServiceTest {
                 }
         )
 
-        every { meetingRepositoryImpl.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
+        every { meetingRepository.getPagedMeetings(clubSeq, pageable) }.returns(PageImpl(listOf(meeting), pageable, 1))
 
         // when
         val response = meetingService.getMeetings(clubSeq, pageable, regClubUserSeq)

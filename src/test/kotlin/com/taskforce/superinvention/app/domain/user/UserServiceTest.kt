@@ -1,5 +1,7 @@
 package com.taskforce.superinvention.app.domain.user
 
+import com.taskforce.superinvention.app.domain.club.ClubRepository
+import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.user.userInterest.UserInterestService
 import com.taskforce.superinvention.app.domain.user.userRole.UserRole
 import com.taskforce.superinvention.app.domain.user.userRole.UserRoleService
@@ -43,6 +45,12 @@ class UserServiceTest: MockTest() {
 
     @Mock
     lateinit var awsS3Mo: AwsS3Mo
+
+    @Mock
+    lateinit var clubService: ClubService
+
+    @Mock
+    lateinit var clubRepository: ClubRepository
 
     @Test
     fun `AppToken 발행 - 신규 가입 유저`() {

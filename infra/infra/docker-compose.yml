@@ -8,8 +8,6 @@ services:
       spring_datasource_url: $spring_datasource_url
       spring_datasource_username: $spring_datasource_username
       spring_datasource_password: $spring_datasource_password
-      spring_redis_host: $spring_redis_host
-      spring_redis_port: $spring_redis_port
       oauth_kakao_client_id: $oauth_kakao_client_id
       aws_s3_accessKey: $aws_s3_accessKey
       aws_s3_secretAccessKey: $aws_s3_secretAccessKey
