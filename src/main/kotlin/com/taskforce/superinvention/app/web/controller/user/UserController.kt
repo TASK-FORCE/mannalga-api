@@ -75,6 +75,16 @@ class UserController(
     }
 
     /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/withdraw")
+    @Secured(Role.MEMBER)
+    fun withdrawMember(@AuthUser user: User): ResponseDto<String> {
+        userService.withdraw(user)
+        return ResponseDto(ResponseDto.EMPTY)
+    }
+
+    /**
      * Use Only Develop Profile!!
      * find User token by username.
      */
@@ -102,7 +112,7 @@ class UserController(
     }
 
     private fun checkDevProfile() {
-        if (profile != "dev") throw BizException("개발서버에서만 가능한 동작입니다.")
+        if (!profile.contains("dev")) throw BizException("개발서버에서만 가능한 동작입니다.")
     }
 }
 

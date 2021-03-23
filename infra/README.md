@@ -6,7 +6,6 @@
 - t2.micro 
   - mysql : DB
   - nginx : 리버스 프록시용 ( /api - > 서버로 )
-  - redis : 캐시, 단일 노드
   
   
 - script

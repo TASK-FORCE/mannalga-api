@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter
 @Service
 class MeetingService(
         var meetingRepository: MeetingRepository,
-        var meetingRepositoryImpl: MeetingRepositoryImpl,
         var roleService: RoleService,
         var meetingApplicationRepository: MeetingApplicationRepository,
         var clubUserRepository: ClubUserRepository
@@ -43,7 +42,7 @@ class MeetingService(
     @Transactional(readOnly = true)
     fun getMeetings(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingDto> {
 
-        val resultPage = meetingRepositoryImpl
+        val resultPage = meetingRepository
             .getPagedMeetings(clubSeq, pageable)
             .map { e -> MeetingDto(e, currentClubUserSeq)
                 .apply {
@@ -55,7 +54,7 @@ class MeetingService(
 
     @Transactional(readOnly = true)
     fun getMeetingsWithGroup(clubSeq: Long, pageable: Pageable, currentClubUserSeq: Long?): PageDto<MeetingGroupDto> {
-        val meetingDtoPages = meetingRepositoryImpl
+        val meetingDtoPages = meetingRepository
             .getPagedMeetings(clubSeq, pageable)
             .map { e -> MeetingDto(e, currentClubUserSeq)
                 .apply {

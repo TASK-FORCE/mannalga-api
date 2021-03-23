@@ -29,8 +29,6 @@ class MeetingController(
         var clubService: ClubService
 ) {
 
-    val userIsNotClubMemberException = UserIsNotClubMemberException()
-
     @GetMapping
     @Secured(Role.MEMBER)
     fun getAllMeeting(@AuthUser user: User,
