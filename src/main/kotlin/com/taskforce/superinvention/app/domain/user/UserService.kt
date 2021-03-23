@@ -152,8 +152,8 @@ class UserService(
      * 회원 탈퇴
      */
     @Transactional
-    fun withdraw(userSeq: Long) {
-        val user = getUserBySeq(userSeq)
+    fun withdraw(user: User) {
+        val user = getUserBySeq(user.seq!!)
         
         // 가입한 모임에서 탈퇴
         val userClubList = clubRepository.findUserClubList(user, Pageable.unpaged())
