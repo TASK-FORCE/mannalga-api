@@ -271,7 +271,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 priority = 1
         ).apply { seq = 12466 }
 
-        club.clubInterests = listOf(
+        club.clubInterests = setOf(
                 clubInterest1,
                 clubInterest2
         )
@@ -286,11 +286,8 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         val clubRegion = ClubRegion(club, region1, 1).apply { seq = 41231 }
 
-        club.clubRegions = listOf(
-                clubRegion
-        )
-
-        club.clubUser = listOf(
+        club.clubRegions = setOf(clubRegion)
+        club.clubUser = setOf(
                 ClubUser(club, User("유저 1"), false),
                 ClubUser(club, User("유저 2"), false),
                 ClubUser(club, User("유저 3"), false),
@@ -592,6 +589,7 @@ class ClubDocumentation: ApiDocumentationTest() {
                 "헬스",
                 interestGroup = interestGroup
         ).apply { seq = 3 }
+
         val interest5 = Interest(
                 "운동",
                 interestGroup = interestGroup
@@ -602,18 +600,14 @@ class ClubDocumentation: ApiDocumentationTest() {
                 interest = interest3,
                 priority = 1
         ).apply { seq = 12451 }
+
         val clubInterest2 = ClubInterest(
                 club = club,
                 interest = interest5,
                 priority = 1
         ).apply { seq = 12466 }
 
-        club.clubInterests = listOf(
-                clubInterest1,
-                clubInterest2
-        )
-
-
+        club.clubInterests = setOf(clubInterest1, clubInterest2)
         val region1 = Region(
                 superRegion = null,
                 name = "성남시",
@@ -631,13 +625,13 @@ class ClubDocumentation: ApiDocumentationTest() {
         val clubRegion = ClubRegion(club, region1, 1).apply { seq = 41231 }
         val clubRegion2 = ClubRegion(club, region2, 2).apply { seq = 41231 }
 
-        club.clubRegions = listOf(
+        club.clubRegions = setOf(
                 clubRegion,
                 clubRegion2
         )
 
 
-        club.clubUser = listOf(
+        club.clubUser = setOf(
                 ClubUser(club, User("유저 1"),false),
                 ClubUser(club, User("유저 2"),false),
                 ClubUser(club, User("유저 3"),false),

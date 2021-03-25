@@ -12,27 +12,27 @@ import javax.persistence.*
 @Entity
 @JsonIdentityInfo(property = "objId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class Club(
-    var name: String,
-    var description: String,
-    var maximumNumber: Long,
-    var mainImageUrl: String?
-
+    var name          : String,
+    var description   : String,
+    var maximumNumber : Long,
+    var mainImageUrl  : String?
 ): BaseEntity() {
 
     @Formula("(select count(*) from club_user cu where cu.club_seq = seq)")
-    var userCount: Long? = null
+    var userCount: Long ?= null
 
     @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
-    lateinit var clubInterests: List<ClubInterest>
+    lateinit var clubInterests: Set<ClubInterest>
 
     @OneToMany
     @JoinColumn(name = "club_seq")
     @OrderBy("priority")
-    lateinit var clubRegions: List<ClubRegion>
+    lateinit var clubRegions: Set<ClubRegion>
 
     @OneToMany
     @JoinColumn(name = "club_seq")
-    lateinit var clubUser: List<ClubUser>
+    lateinit var clubUser: Set<ClubUser>
+
 }
