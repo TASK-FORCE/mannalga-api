@@ -1,76 +1,64 @@
 package com.taskforce.superinvention.app.domain.club
 
-import com.querydsl.core.QueryResults
 import com.querydsl.core.Tuple
 import com.querydsl.core.annotations.QueryProjection
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
-import com.querydsl.jpa.JPAExpressions
-import com.querydsl.jpa.impl.JPAQueryFactory
 import com.taskforce.superinvention.app.domain.club.QClub.*
 import com.taskforce.superinvention.app.domain.club.user.QClubUser
+import com.taskforce.superinvention.app.domain.club.user.QClubUser.clubUser
 import com.taskforce.superinvention.app.domain.interest.QClubInterest.*
-import com.taskforce.superinvention.app.domain.interest.interest.QInterest.*
-import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup.*
+import com.taskforce.superinvention.app.domain.interest.interest.QInterest
+import com.taskforce.superinvention.app.domain.interest.interest.QInterest.interest
+import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup
+import com.taskforce.superinvention.app.domain.interest.interestGroup.QInterestGroup.interestGroup
 import com.taskforce.superinvention.app.domain.region.QClubRegion.*
+import com.taskforce.superinvention.app.domain.region.QRegion
+import com.taskforce.superinvention.app.domain.region.QRegion.region
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
-import com.taskforce.superinvention.app.domain.role.QRole
 import com.taskforce.superinvention.app.domain.role.QRoleGroup
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.user.QUser.user
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
-import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
-import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
-import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
-import com.taskforce.superinvention.app.web.dto.user.UserDto
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
-import org.springframework.util.ObjectUtils
 
 interface ClubRepository : JpaRepository<Club, Long>, ClubRepositoryCustom {
     fun findBySeq(seq: Long): Club
 }
 
 interface ClubRepositoryCustom {
-    fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
+    fun search(text: String?, regionSeqList: List<Long>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club>
     fun findUserClubList(userInfo: User, pageable: Pageable): Page<ClubUserDto>
     fun findClubInfo(clubSeq: Long): Tuple?
 }
 
 @Repository
-class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCustom,
-        QuerydslRepositorySupport(Club::class.java) {
+class ClubRepositoryImpl: ClubRepositoryCustom, QuerydslRepositorySupport(Club::class.java) {
 
-    override fun search(text: String?, regionSeqList: List<Long?>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
+    override fun search(text: String?, regionSeqList: List<Long>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
 
-        // SELECT FROM
         val query = from(club)
-                .leftJoin(club.clubInterests, clubInterest)
-                .leftJoin(club.clubRegions, clubRegion)
-
-        // WHERE
-        if (!text.isNullOrBlank())
-            query.where(
-                    club.name.contains(text).or(
-                    club.description.contains(text))
-            )
-
-        if (regionSeqList.isNotEmpty()) query.where(clubRegion.region.seq.`in`(regionSeqList))
-        if (interestSeq != null) query.where(clubInterest.interest.seq.eq(interestSeq))
-        if (interestGroupSeq != null)
-            query.where(clubInterest.interest.seq.`in`(
-                JPAExpressions.select(interest.seq)
-                        .from(interestGroup)
-                        .leftJoin(interestGroup.interestList, interest)
-                        .where(interestGroup.seq.eq(interestGroupSeq))
+                .join(club.clubUser, clubUser).fetchJoin()
+                .join(clubUser.user, user).fetchJoin()
+                .join(club.clubInterests, clubInterest).fetchJoin()
+                .join(clubInterest.interest, interest).fetchJoin()
+                .join(interest.interestGroup, interestGroup).fetchJoin()
+                .join(club.clubRegions, clubRegion).fetchJoin()
+                .join(clubRegion.region, region).fetchJoin()
+                .where(
+                    inIfNotEmpty(clubRegion.region, regionSeqList),
+                    eqIfExist(clubInterest.interest, interestSeq),
+                    eqIfExist(clubInterest.interest.interestGroup, interestGroupSeq),
+                    searchIfExist(club, text)
                 )
-            )
 
         // PAGING
         val fetchResult = query
@@ -81,6 +69,42 @@ class ClubRepositoryImpl(val queryFactory: JPAQueryFactory): ClubRepositoryCusto
                 .fetchResults()
 
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
+    }
+
+    private fun searchIfExist(club: QClub, searchText: String?): BooleanExpression? {
+
+        if(searchText.isNullOrBlank()) {
+            return null
+        }
+
+        return club.name.contains(searchText)
+            .or(club.description.contains(searchText))
+    }
+
+    private fun eqIfExist(interest: QInterest, interestSeq: Long?): BooleanExpression? {
+
+        if(interestSeq == null) {
+            return null
+        }
+
+        return interest.seq.eq(interestSeq)
+    }
+
+    private fun eqIfExist(interestGroup: QInterestGroup, interestSeq: Long?): BooleanExpression? {
+        if(interestSeq == null) {
+            return null
+        }
+
+        return interestGroup.seq.eq(interestSeq)
+    }
+
+    private fun inIfNotEmpty(region: QRegion, regionSeqList: List<Long>): BooleanExpression? {
+
+        if(regionSeqList.isEmpty()) {
+            return null
+        }
+
+        return region.seq.`in`(regionSeqList)
     }
 
     override fun findClubInfo(clubSeq: Long): Tuple? {
