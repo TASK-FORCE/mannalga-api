@@ -25,7 +25,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             whoami
-            stat app/*.jar
 
       - name: Build with Gradle
         run: ./gradlew clean build
