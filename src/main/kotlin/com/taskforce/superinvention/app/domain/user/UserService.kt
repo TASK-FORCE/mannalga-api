@@ -135,7 +135,7 @@ class UserService(
         val user = userRepository.findByIdOrNull(authUser.seq!!)
             ?: throw cannotFindUserException
 
-        val movedFile = awsS3Mo.moveFile(body.profileImage, "/user-profile/${user.seq}/${body.profileImage.fileName}")
+        val movedFile = awsS3Mo.moveFile(body.profileImage, "user-profile/${user.seq}/${body.profileImage.fileName}")
         user.profileImageLink = movedFile.absolutePath
         return user
     }

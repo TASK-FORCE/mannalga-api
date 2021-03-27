@@ -84,7 +84,7 @@ class AwsS3Mo(
         deleteFile(s3PathFrom.filePath)
 
         return S3Path(
-                absolutePath = endpointUrl + s3PathTo,
+                absolutePath = "${endpointUrl}/${s3PathTo}",
                 filePath = s3PathTo,
                 fileName = s3PathFrom.fileName
         )
