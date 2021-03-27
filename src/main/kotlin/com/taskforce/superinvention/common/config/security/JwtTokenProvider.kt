@@ -26,8 +26,8 @@ class JwtTokenProvider(
         @Value("\${security.jwt.token.secret-key}")
         var secretKey: String = "dev-secret-key"
 
-        @Value("\${security.jwt.token.expire-day}")
-        var expireDay: Long = 365
+        @Value("\${security.jwt.token.expireMinuit}")
+        var TOKEN_EXPIRE_MINUIT: Long = 30
     }
 
     fun createAppToken(userId: String?): String {
@@ -35,7 +35,7 @@ class JwtTokenProvider(
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
         val issuedDate  = Date.from(now.toInstant())
-        val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
+        val expiredMinuit = Date.from(now.plusMinutes(TOKEN_EXPIRE_MINUIT).toInstant() )
 
         payloads["userId"] = userId
 
@@ -43,7 +43,7 @@ class JwtTokenProvider(
             .setClaims(payloads)
             .setSubject(userId)
             .setIssuedAt(issuedDate)
-            .setExpiration(expiredDate)
+            .setExpiration(expiredMinuit)
             .signWith(SignatureAlgorithm.HS256, secretKey.toByteArray())
             .compact()
     }
