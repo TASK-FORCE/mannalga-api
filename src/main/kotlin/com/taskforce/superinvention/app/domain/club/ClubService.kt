@@ -177,19 +177,24 @@ class ClubService(
         if (clubUserList.size >= club.maximumNumber) {
             throw IndexOutOfBoundsException("모임 최대 인원을 넘어, 회원가입이 불가합니다.")
         }
-
-        if (clubUserList.map { cu -> cu.user.seq }.contains(user.seq)) {
-            throw BizException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
-        }
+        
 
         // 모임 가입처리
         // 이전에 가입되어있었다면?
         val alreadyJoinedClubUser = club.clubUser.find { e -> e.user.seq == user.seq }
         if (alreadyJoinedClubUser != null) {
+            // 강퇴된 유저는 재가입이 불가능하다
             val isKickedUser = alreadyJoinedClubUser.clubUserRoles
                 .map { clubUserRole -> clubUserRole.role.name }
                 .contains(Role.RoleName.NONE)
+            // member만 재가입이 가능하다
+            val isMember = alreadyJoinedClubUser.clubUserRoles
+                .map { clubUserRole -> clubUserRole.role.name }
+                .contains(Role.RoleName.MEMBER)
+
             if (isKickedUser) throw CannotJoinClubException("강퇴된 모임에는 다시 가입하실 수 없습니다.", HttpStatus.FORBIDDEN)
+            if (!isMember) throw CannotJoinClubException("이미 가입한 모임입니다.", HttpStatus.CONFLICT)
+
             roleService.changeClubUserRoles(alreadyJoinedClubUser, setOf(roleService.findByRoleName(Role.RoleName.CLUB_MEMBER)))
         } else {
             val clubUser = clubUserRepository.save(ClubUser(club, user, false))
