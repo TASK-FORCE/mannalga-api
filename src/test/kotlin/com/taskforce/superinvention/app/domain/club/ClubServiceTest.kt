@@ -236,7 +236,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 관심사가 없을 때`() {
+    fun `모임 생성시 우선순위 1인 관심사가 없을 때 모임 생성 불가`() {
         // given
         val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
         val superUser = User("asd").apply { seq = 4 }
@@ -248,7 +248,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 관심사가 다수일 때`() {
+    fun `모임 생성시 우선순위 1인 관심사가 다수일 때 모임 생성 불가`() {
         // given
         val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
         val superUser = User("asd").apply { seq = 4 }
@@ -260,7 +260,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 지역이 없을 때`() {
+    fun `모임 생성시 우선순위 1인 지역이 없을 때 모임 생성 불가`() {
         // given
         val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
         val superUser = User("asd").apply { seq = 4 }
@@ -272,7 +272,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 지역이 다수일 때`() {
+    fun `모임 생성시 우선순위 1인 지역이 다수일 때 모임 생성 불가`() {
         // given
         val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
         val superUser = User("asd").apply { seq = 4 }
@@ -284,7 +284,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임이 최대 인원일 때 모임 가입신청`() {
+    fun `모임이 최대 인원일 때 모임 가입 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
@@ -296,7 +296,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `이미 가입한 모임에 가입신청`() {
+    fun `이미 가입한 모임에 가입신청시 재가입 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
@@ -312,7 +312,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `강퇴된 모임에 가입신청`() {
+    fun `강퇴된 모임에 가입신청시 가입 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
@@ -328,7 +328,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `이미 탈퇴한 유저가 탈퇴신청`() {
+    fun `이미 탈퇴한 유저가 탈퇴신청시 탈퇴 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
@@ -346,7 +346,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임장이 탈퇴신청`() {
+    fun `모임장이 탈퇴신청시 탈퇴 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
@@ -365,7 +365,7 @@ internal class ClubServiceTest {
     }
 
     @Test
-    fun `모임원이 모임원 강퇴`() {
+    fun `모임원이 모임원 강퇴시 강퇴 불가`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
