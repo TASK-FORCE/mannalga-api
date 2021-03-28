@@ -28,6 +28,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.CannotJoinClubException
+import com.taskforce.superinvention.config.MockitoHelper
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -300,7 +301,7 @@ internal class ClubServiceTest {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
-        val clubMemberRole = Role(Role.RoleName.CLUB_MEMBER, RoleGroup("MEMBER", "ROLE_TYPE"), 3);
+        val clubMemberRole = MockitoHelper.getRoleByRoleName(Role.RoleName.CLUB_MEMBER, 3)
         val joinedClubUser = ClubUser(club, user).apply { clubUserRoles = mutableSetOf(ClubUserRole(this,  clubMemberRole)) }
         club.clubUser = setOf(joinedClubUser)
 
@@ -316,7 +317,7 @@ internal class ClubServiceTest {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
-        val clubMemberRole = Role(Role.RoleName.NONE, RoleGroup("MEMBER", "ROLE_TYPE"), 3);
+        val clubMemberRole = MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)
         val joinedClubUser = ClubUser(club, user).apply { clubUserRoles = mutableSetOf(ClubUserRole(this,  clubMemberRole)) }
         club.clubUser = setOf(joinedClubUser)
 
@@ -332,7 +333,7 @@ internal class ClubServiceTest {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
-        val clubMemberRole = Role(Role.RoleName.NONE, RoleGroup("MEMBER", "ROLE_TYPE"), 3);
+        val clubMemberRole = MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)
         val withdrawClubUser = ClubUser(club, user)
             .apply { clubUserRoles = mutableSetOf(ClubUserRole(this,  clubMemberRole)) }
             .apply { seq = 4541 }
@@ -350,7 +351,7 @@ internal class ClubServiceTest {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
-        val clubMemberRole = Role(Role.RoleName.NONE, RoleGroup("MEMBER", "ROLE_TYPE"), 3);
+        val clubMemberRole = MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)
         val withdrawClubUser = ClubUser(club, user)
             .apply { clubUserRoles = mutableSetOf(ClubUserRole(this,  clubMemberRole)) }
             .apply { seq = 4541 }
@@ -369,10 +370,8 @@ internal class ClubServiceTest {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }
-        val clubMemberRole = Role(Role.RoleName.NONE, RoleGroup("MEMBER", "ROLE_TYPE"), 3);
         val targetMember = ClubUser(club, user).apply { seq = 4541 }
         val actorMember = ClubUser(club, user).apply { seq = 4566 }
-
 
         every { clubUserRepository.findByIdOrNull(4541) }.returns(targetMember)
         every { clubUserRepository.findByIdOrNull(4566) }.returns(actorMember)
