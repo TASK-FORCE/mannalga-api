@@ -24,6 +24,7 @@ class JwtTokenProvider(
     lateinit var expireDay: String
 
     companion object {
+
         const val TOKEN_HEADER  = "Authorization"
         const val TIME_ZONE_KST = "Asia/Seoul"
     }
