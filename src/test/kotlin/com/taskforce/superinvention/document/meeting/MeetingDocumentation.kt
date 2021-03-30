@@ -122,7 +122,8 @@ class MeetingDocumentation: ApiDocumentationTest() {
                 userSeq = 1,
                 regUserFlag = true,
                 profileImageLink = "asfafxcv.jpeg",
-                userName = "eric is cute"
+                userName = "eric is cute",
+                roles = setOf(RoleDto(MockitoHelper.getRoleByRoleName(Role.RoleName.MANAGER, 4)))
         )
     }
 
@@ -213,6 +214,9 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content.[].meetings.[].meetingApplications.[].userInfo.userName").type(JsonFieldType.STRING).description("유저 이름"),
                                 fieldWithPath("data.content.[].meetings.[].meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.content.[].meetings.[].meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.content.[].meetings.[].meetingApplications.[].roles.[]").type(JsonFieldType.ARRAY).description("신청자의 모임 권한"),
+                                fieldWithPath("data.content.[].meetings.[].meetingApplications.[].roles.[].name").type(JsonFieldType.STRING).description("권한 명"),
+                                fieldWithPath("data.content.[].meetings.[].meetingApplications.[].roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명"),
                                 fieldWithPath("data.content.[].meetings.[].isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.content.[].meetings.[].isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.content.[].meetings.[].region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
@@ -307,6 +311,9 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.userName").type(JsonFieldType.STRING).description("유저 이름"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.meetingApplications.[].roles.[]").type(JsonFieldType.ARRAY).description("신청자의 모임 권한"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].name").type(JsonFieldType.STRING).description("권한 명"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
@@ -409,6 +416,9 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.userName").type(JsonFieldType.STRING).description("유저 이름"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.meetingApplications.[].roles.[]").type(JsonFieldType.ARRAY).description("신청자의 모임 권한"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].name").type(JsonFieldType.STRING).description("권한 명"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
@@ -527,6 +537,9 @@ class MeetingDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.meetingApplications.[].userInfo.userName").type(JsonFieldType.STRING).description("유저 이름"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.profileImageLink").type(JsonFieldType.STRING).description("유저의 프로필 이미지 링크"),
                                 fieldWithPath("data.meetingApplications.[].userInfo.regUserFlag").type(JsonFieldType.BOOLEAN).description("해당 유저가 만남을 생성한 유저인지 여부"),
+                                fieldWithPath("data.meetingApplications.[].roles.[]").type(JsonFieldType.ARRAY).description("신청자의 모임 권한"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].name").type(JsonFieldType.STRING).description("권한 명"),
+                                fieldWithPath("data.meetingApplications.[].roles.[].roleGroupName").type(JsonFieldType.STRING).description("권한그룹 명"),
                                 fieldWithPath("data.isCurrentUserRegMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남을 생성한 유저인지 여부"),
                                 fieldWithPath("data.isCurrentUserApplicationMeeting").type(JsonFieldType.BOOLEAN).description("현재 접속한 유저가 해당 만남에 만남 신청을 했는지 여부"),
                                 fieldWithPath("data.region").type(JsonFieldType.STRING).description("만남을 어느 지역에서 하는지 여부 (nullable)"),
