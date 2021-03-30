@@ -127,6 +127,7 @@ internal class MeetingServiceTest {
                         ).apply {
                             seq = clubUserSeq
                             user = user
+                            clubUserRoles = mutableSetOf()
                         },
                         meeting = meeting,
                         deleteFlag = false
@@ -159,6 +160,7 @@ internal class MeetingServiceTest {
                         ).apply {
                             seq = regClubUserSeq
                             user = user
+                            clubUserRoles = mutableSetOf()
                         },
                         meeting = meeting,
                         deleteFlag = false

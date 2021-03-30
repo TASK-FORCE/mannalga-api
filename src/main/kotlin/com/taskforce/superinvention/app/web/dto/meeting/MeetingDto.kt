@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.ClubDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserDto
 import com.taskforce.superinvention.app.web.dto.club.ClubUserWithUserDto
+import com.taskforce.superinvention.app.web.dto.role.RoleDto
 import com.taskforce.superinvention.common.util.extendFun.*
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -124,10 +125,12 @@ class MeetingDto {
         val createdAt: String
         val updatedAt: String?
         val userInfo: UserInfo
+        val roles: Set<RoleDto>
 
         constructor(meetingApplication: MeetingApplication) {
             val clubUser = meetingApplication.clubUser
             val user = clubUser.user
+
 
             userInfo = UserInfo(
                     userSeq = user.seq!!,
@@ -140,6 +143,7 @@ class MeetingDto {
             deleteFlag = meetingApplication.deleteFlag
             createdAt = meetingApplication.createdAt!!.toBaseDateTime()
             updatedAt = meetingApplication.updatedAt?.toBaseDateTime() ?: ""
+            roles = clubUser.clubUserRoles.map { RoleDto(it.role) }.toSet()
         }
 
         constructor(
@@ -150,7 +154,8 @@ class MeetingDto {
                 userSeq: Long,
                 userName: String,
                 profileImageLink: String?,
-                regUserFlag: Boolean
+                regUserFlag: Boolean,
+                roles: Set<RoleDto>
         ) {
             this.seq = seq
             this.deleteFlag = deleteFlag
@@ -162,6 +167,7 @@ class MeetingDto {
                     profileImageLink = profileImageLink,
                     regUserFlag = regUserFlag
             )
+            this.roles = roles
         }
 
         inner class UserInfo (
