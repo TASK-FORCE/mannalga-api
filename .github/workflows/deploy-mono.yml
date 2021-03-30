@@ -55,7 +55,8 @@ jobs:
           aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
-          jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+          security_jwt_token_secret_key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+          security_jwt_token_expire-day: ${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
           aws_s3_endpointUrl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
         with:
           command: |

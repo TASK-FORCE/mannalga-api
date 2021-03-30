@@ -1,6 +1,6 @@
 package com.taskforce.superinvention.common.config.security
 
-class AppToken(
+data class AppToken(
         var isRegistered: Boolean?,
         var appToken    : String?
 )
