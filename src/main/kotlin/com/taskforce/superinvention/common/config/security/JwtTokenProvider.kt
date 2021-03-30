@@ -15,19 +15,17 @@ import java.util.*
 
 @Component
 class JwtTokenProvider(
-    private val userDetailsProvider: UserDetailsProvider
+    private val userDetailsProvider: UserDetailsProvider,
 ) {
+    @Value("\${security.jwt.token.secret-key}")
+    lateinit var secretKey: String
+
+    @Value("\${security.jwt.token.expire-day}")
+    lateinit var expireDay: String
 
     companion object {
-
         const val TOKEN_HEADER  = "Authorization"
         const val TIME_ZONE_KST = "Asia/Seoul"
-
-        @Value("\${security.jwt.token.secret-key}")
-        var secretKey: String = "dev-secret-key"
-
-        @Value("\${security.jwt.token.expire-day}")
-        var expireDay: Long = 365
     }
 
     fun createAppToken(userId: String?): String {
@@ -35,7 +33,7 @@ class JwtTokenProvider(
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
         val issuedDate  = Date.from(now.toInstant())
-        val expiredDate = Date.from(now.plusDays(expireDay).toInstant() )
+        val expiredDate = Date.from(now.plusDays(expireDay.toLong()).toInstant() )
 
         payloads["userId"] = userId
 

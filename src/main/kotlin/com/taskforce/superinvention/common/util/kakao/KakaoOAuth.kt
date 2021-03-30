@@ -50,7 +50,7 @@ class KakaoOAuth(
         headers.set("Authorization", "Bearer ${kakaoToken.access_token}")
 
         val request = HttpEntity<MultiValueMap<String, String>>(headers)
-        val userProfile = kakaoApi.exchange( KAPI_USER_PROFILE, HttpMethod.GET, request, KakaoUserInfo::class.java)
+        val userProfile = kakaoApi.exchange(KAPI_USER_PROFILE, HttpMethod.GET, request, KakaoUserInfo::class.java)
 
         return userProfile.body!!
     }

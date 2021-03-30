@@ -69,9 +69,9 @@ class UserService(
         userRepository.save(targetUser)
     }
 
-    @Transactional(rollbackOn = [Exception::class])
+    @Transactional
     fun saveKakaoToken(kakaoToken: KakaoToken): AppToken {
-        val token = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
+        val token   = kakaoOAuth.refreshIfTokenExpired(kakaoToken)
         val kakaoId = kakaoOAuth.getKakaoUserProfile(token).id
 
         // [1] kakao 유저 존재 x
