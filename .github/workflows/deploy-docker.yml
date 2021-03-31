@@ -33,8 +33,8 @@ jobs:
           aws_s3_accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
           aws_s3_secretAccessKey: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
-          security_jwt_token_secret-key: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
-          security_jwt_token_expire-day: ${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
+          security_jwt_token_secretKey: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+          security_jwt_token_expireDay: ${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
           aws_s3_endpointUrl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
         with:
           command: |
@@ -46,7 +46,8 @@ jobs:
             export aws_s3_accessKey=${{ secrets.AWS_S3_ACCESS_KEY }}
             export aws_s3_secretAccessKey=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
-            export jwt_token_secret_key=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+            export security_jwt_token_secretKey=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
+            export security_jwt_token_expireDay=${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
             export aws_s3_endpointUrl=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
             sh server-image-deploy.sh
           host: ${{ secrets.SSH_HOST }}

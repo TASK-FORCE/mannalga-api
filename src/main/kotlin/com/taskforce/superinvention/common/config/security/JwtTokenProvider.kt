@@ -17,10 +17,10 @@ import java.util.*
 class JwtTokenProvider(
     private val userDetailsProvider: UserDetailsProvider,
 ) {
-    @Value("\${security.jwt.token.secret-key}")
+    @Value("\${security.jwt.token.secretKey}")
     lateinit var secretKey: String
 
-    @Value("\${security.jwt.token.expire-day}")
+    @Value("\${security.jwt.token.expireDay}")
     lateinit var expireDay: String
 
     companion object {
