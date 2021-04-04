@@ -35,6 +35,7 @@ jobs:
           host_static_path: ${{ secrets.DEV_HOST_STATIC_PATH }}
           security_jwt_token_secretKey: ${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
           security_jwt_token_expireDay: ${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
+          security_jwt_token_expireMinute: ${{ secrets.DEV_JWT_TOKEN_EXPIRE_MINUTE }}
           aws_s3_endpointUrl: ${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
         with:
           command: |
@@ -48,6 +49,7 @@ jobs:
             export host_static_path=${{ secrets.DEV_HOST_STATIC_PATH }}
             export security_jwt_token_secretKey=${{ secrets.DEV_JWT_TOKEN_SECRET_KEY }}
             export security_jwt_token_expireDay=${{ secrets.DEV_JWT_TOKEN_EXPIRE_DAY }}
+            export security_jwt_token_expireMinute=${{ secrets.DEV_JWT_TOKEN_EXPIRE_MINUTE }}
             export aws_s3_endpointUrl=${{ secrets.DEV_AWS_S3_ENDPOINT_URL }}
             sh server-image-deploy.sh
           host: ${{ secrets.SSH_HOST }}
