@@ -180,6 +180,7 @@ include::{root}/club/album/club-album-comment-register.adoc[]
 === [.toc-list-item]`사진첩 댓글 수정`
 include::{root}/club/album/club-album-comment-edit.adoc[]
 
+=== [.toc-list-item]`사진첩 댓글 삭제`
 include::{root}/club/album/club-album-comment-remove.adoc[]
 
 === [.toc-list-item]`사진첩 좋아요 등록`

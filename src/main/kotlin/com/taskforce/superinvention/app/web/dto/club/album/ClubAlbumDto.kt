@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.web.dto.club.album
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbum
 import com.taskforce.superinvention.app.web.dto.club.ClubWriter
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
@@ -22,7 +23,8 @@ data class ClubAlbumDto(
         val likeCnt    : Long = 0,
         val commentCnt : Long = 0,
         val writer     : ClubWriter,
-        val isLiked    : Boolean
+        val isLiked    : Boolean,
+        val createdAt  : String
 ) {
         constructor(s3Host: String, clubAlbum: ClubAlbum, isLiked: Boolean): this (
                 albumSeq   = clubAlbum.seq!!,
@@ -32,7 +34,8 @@ data class ClubAlbumDto(
                 likeCnt    = clubAlbum.albumLikeCnt    ?: 0,
                 commentCnt = clubAlbum.albumCommentCnt ?: 0,
                 writer     = ClubWriter(clubAlbum.writer),
-                isLiked    = isLiked
+                isLiked    = isLiked,
+                createdAt  = clubAlbum.createdAt?.toBaseDateTime() ?: ""
         )
 }
 
@@ -43,7 +46,7 @@ data class ClubAlbumListDto(
         val imgUrl     : String = "",
         val likeCnt    : Long,
         val commentCnt : Long,
-        val writerClubUserSeq: Long ?= 0
+        val writerClubUserSeq: Long ?= 0,
 ) {
         constructor(imgHost: String, clubAlbum: ClubAlbum): this (
                 albumSeq   = clubAlbum.seq!!,

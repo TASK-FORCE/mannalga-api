@@ -11,13 +11,13 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 모임 사진첩  사진첩 조회
-GET {{host}}/club/6327/album
+GET {{host}}/club/6327/album?title=2
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 ### 모임 사진첩 단일 조회
-GET {{host}}/club/6327/album/6652
+GET {{host}}/club/6327/album/9068
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
