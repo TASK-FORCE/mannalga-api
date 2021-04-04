@@ -20,8 +20,8 @@ class JwtTokenProvider(
     @Value("\${security.jwt.token.secretKey}")
     lateinit var secretKey: String
 
-    @Value("\${security.jwt.token.expireDay}")
-    lateinit var expireDay: String
+    @Value("\${security.jwt.token.expireMinute}")
+    lateinit var expireMinute: String
 
     companion object {
 
@@ -34,7 +34,7 @@ class JwtTokenProvider(
         val now = LocalDateTime.now().atZone(ZoneId.of(TIME_ZONE_KST))
 
         val issuedDate  = Date.from(now.toInstant())
-        val expiredDate = Date.from(now.plusDays(expireDay.toLong()).toInstant() )
+        val expiredDate = Date.from(now.plusMinutes(expireMinute.toLong()).toInstant() )
 
         payloads["userId"] = userId
 
@@ -57,13 +57,13 @@ class JwtTokenProvider(
     fun validateToken(token: String?): Boolean {
         return try {
             Jwts.parser()
-                .setSigningKey(secretKey.toByteArray())
-                .parseClaimsJws(token)
+                    .setSigningKey(secretKey.toByteArray())
+                    .parseClaimsJws(token)
             true
+        } catch (e: ExpiredJwtException) {
+            throw BizException("JWT 토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED)
         } catch (e: JwtException) {
-            throw BizException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR)
-        } catch (e: IllegalArgumentException) {
-            throw BizException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR)
+            throw BizException("잘못된 JWT 토큰입니다.", HttpStatus.UNAUTHORIZED)
         }
     }
 
