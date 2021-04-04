@@ -165,6 +165,7 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
                     fieldWithPath("data.isLiked").type(JsonFieldType.BOOLEAN).description("조회자가 좋아요를 눌렀는지"),
                     fieldWithPath("data.likeCnt").type(JsonFieldType.NUMBER).description("좋아요 개수"),
                     fieldWithPath("data.commentCnt").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("작성 시간"),
                     fieldWithPath("data.writer.writerUserSeq").type(JsonFieldType.NUMBER).description("댓글 개수"),
                     fieldWithPath("data.writer.writerClubUserSeq").type(JsonFieldType.NUMBER).description("댓글 개수"),
                     fieldWithPath("data.writer.name").type(JsonFieldType.STRING).description("작성자명 (user)"),
