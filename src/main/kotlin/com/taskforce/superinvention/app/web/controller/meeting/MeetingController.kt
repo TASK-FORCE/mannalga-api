@@ -45,7 +45,7 @@ class MeetingController(
                    @PathVariable meetingSeq: Long,
                    @PathVariable clubSeq: Long): ResponseDto<MeetingDto> {
         val clubUser = clubService.getClubUser(clubSeq, user)
-        return ResponseDto(meetingService.getMeeting(meetingSeq, clubUser?.seq!!))
+        return ResponseDto(meetingService.getMeeting(meetingSeq, clubUser?.seq))
     }
 
     @PostMapping
