@@ -121,14 +121,15 @@ class ClubBoardService(
     @Transactional
     fun deleteClubBoard(user: User, clubBoardSeq: Long) {
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)
-        val clubUser = clubBoard.clubUser
-        val isWriter =  clubBoard.clubUser.user == user
+        val actor = clubUserRepository.findByClubAndUser(clubBoard.club, user)
+            ?: throw UserIsNotClubMemberException()
+        val isWriter =  clubBoard.clubUser == actor
 
-        if(!roleService.hasClubManagerAuth(clubUser) && !isWriter) {
+        if(!roleService.hasClubManagerAuth(actor) && !isWriter) {
             throw InsufficientAuthException("충분한 권한이 없습니다.", HttpStatus.FORBIDDEN)
         }
 
-        clubBoard.deleteFlag = false
+        clubBoard.deleteFlag = true
         clubBoardImgService.deleteImages(clubBoard)
     }
 }
