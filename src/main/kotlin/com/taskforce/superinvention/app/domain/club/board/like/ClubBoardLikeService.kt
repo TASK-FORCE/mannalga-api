@@ -6,6 +6,7 @@ import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.like.ClubBoardLikeDto
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +24,7 @@ class ClubBoardLikeService(
             ?: throw UserIsNotClubMemberException()
 
         val clubBoard = clubBoardRepository.findByIdOrNull(clubBoardSeq)
-            ?: throw ClubNotFoundException()
+            ?: throw ClubBoardNotFoundException()
 
 
         // 좋아요 하지 않았을 경우에만 좋아요 처리
