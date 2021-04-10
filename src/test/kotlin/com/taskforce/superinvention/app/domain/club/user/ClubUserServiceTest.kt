@@ -23,7 +23,7 @@ internal class ClubUserServiceTest {
     ).apply { seq = clubSeq }
 
     @Test
-    fun `모임에 미가입한 유저가 모임을 조회하였을 때`() {
+    fun `모임에 미가입한 유저가 모임을 조회하였을 때는 null을 반환한다`() {
         val clubSeq = 555L
         val user = mockk<User>()
 
