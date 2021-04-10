@@ -2,11 +2,15 @@ package com.taskforce.superinvention.app.domain.club.board
 
 import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgService
 import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
+import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepositoryCustom
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.board.*
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
@@ -48,7 +52,6 @@ class ClubBoardService(
     fun getClubBoardList(pageable: Pageable, category: ClubBoard.Category?, searchOpt: ClubBoardSearchOpt, clubSeq: Long): PageDto<ClubBoardListViewDto> {
         val pageRequest: Pageable = PageRequest.of(pageable.pageNumber, pageable.pageSize)
 
-        // 게시글 조회
         val resultPage = clubBoardRepository.searchInList(pageRequest, category, searchOpt, clubSeq)
             .map{ clubBoard -> ClubBoardListViewDto(imgHost, clubBoard)}
 
