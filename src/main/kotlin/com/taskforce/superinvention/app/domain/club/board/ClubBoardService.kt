@@ -14,6 +14,7 @@ import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
+import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
 import org.springframework.beans.factory.annotation.Value
@@ -84,6 +85,10 @@ class ClubBoardService(
         val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
                 ?: throw UserIsNotClubMemberException()
 
+        if(!roleService.hasClubMemberAuth(writer)) {
+            throw WithdrawClubUserNotAllowedException()
+        }
+
         // [1] 매니저 권한 이상일 경우 에만 공지사항 가능
         if(body.category == ClubBoard.Category.NOTICE) {
             if(!roleService.hasClubManagerAuth(writer)) {
@@ -121,14 +126,15 @@ class ClubBoardService(
     @Transactional
     fun deleteClubBoard(user: User, clubBoardSeq: Long) {
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)
-        val clubUser = clubBoard.clubUser
-        val isWriter =  clubBoard.clubUser.user == user
+        val actor = clubUserRepository.findByClubAndUser(clubBoard.club, user)
+            ?: throw UserIsNotClubMemberException()
+        val isWriter =  clubBoard.clubUser == actor
 
-        if(!roleService.hasClubManagerAuth(clubUser) && !isWriter) {
+        if(!roleService.hasClubManagerAuth(actor) && !isWriter) {
             throw InsufficientAuthException("충분한 권한이 없습니다.", HttpStatus.FORBIDDEN)
         }
 
-        clubBoard.deleteFlag = false
+        clubBoard.deleteFlag = true
         clubBoardImgService.deleteImages(clubBoard)
     }
 }
