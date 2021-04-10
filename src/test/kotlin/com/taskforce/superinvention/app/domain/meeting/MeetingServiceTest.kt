@@ -2,16 +2,19 @@ package com.taskforce.superinvention.app.domain.meeting
 
 import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
+import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.app.web.dto.meeting.MeetingDto
+import com.taskforce.superinvention.app.web.dto.meeting.MeetingRequestDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingAlreadyApplicationException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingIsClosedException
+import com.taskforce.superinvention.common.exception.club.meeting.MeetingMemberOverflowException
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -41,6 +44,10 @@ internal class MeetingServiceTest {
     lateinit var meetingService: MeetingService
 
     lateinit var meetingRepository: MeetingRepository
+
+    lateinit var clubUserRepository: ClubUserRepository
+
+    lateinit var meetingApplicationRepository: MeetingApplicationRepository
 
 
     @BeforeEach
@@ -90,10 +97,12 @@ internal class MeetingServiceTest {
         }
 
         meetingRepository = mockk()
+        clubUserRepository = mockk()
+        meetingApplicationRepository = mockk()
         meetingService = MeetingService(
                 meetingRepository = meetingRepository,
-                clubUserRepository = mockk(),
-                meetingApplicationRepository = mockk(),
+                clubUserRepository = clubUserRepository,
+                meetingApplicationRepository = meetingApplicationRepository,
                 roleService = mockk()
         )
     }
@@ -267,4 +276,63 @@ internal class MeetingServiceTest {
         assertFalse(meetingApplicationStatus.isCurrentUserRegMeeting)
         assertFalse(meetingApplicationStatus.isCurrentUserApplicationMeeting)
     }
+
+    @Test
+    fun `모임원이 아닌 유저의 만남 생성은 실패해야한다`() {
+        // given
+        val meetingRequestDto = mockk<MeetingRequestDto>()
+        val clubUserSeq = 6592L
+        every { clubUserRepository.findById(clubUserSeq) }.returns(Optional.empty())
+
+        // when & then
+        assertThrows<BizException>("존재하지 않는 모임원입니다"){ meetingService.createMeeting(meetingRequestDto, clubUserSeq) }
+    }
+    
+    @Test
+    fun `활성상태가 아닌 만남에 만남신청시 실패해야 한다`() {
+        // given
+        meeting.endTimestamp = LocalDateTime.now().minusDays(1)
+        every { meetingRepository.findById(meeting.seq!!) }.returns(Optional.of(meeting))
+
+        // when & then
+        assertThrows<MeetingIsClosedException> { meetingService.application(clubUser, meeting.seq!!) }
+    }
+
+    @Test
+    fun `신청자가 꽉 찬 만남에 만남신청을 할 경우 실패해야 한다`() {
+        // given
+        meeting.endTimestamp = LocalDateTime.now().plusDays(1)      // 만남 활성화
+        every { meetingRepository.findById(meeting.seq!!) }.returns(Optional.of(meeting))
+        meeting.maximumNumber = 3
+        meeting.meetingApplications = listOf(
+            MeetingApplication(clubUser = mockk<ClubUser>(relaxed = true).apply { seq = 111 }, meeting = meeting, deleteFlag = false),
+            MeetingApplication(clubUser = mockk<ClubUser>(relaxed = true).apply { seq = 222 }, meeting = meeting, deleteFlag = false),
+            MeetingApplication(clubUser = mockk<ClubUser>(relaxed = true).apply { seq = 333 }, meeting = meeting, deleteFlag = false),
+        )
+
+        // when & then
+        assertThrows<MeetingMemberOverflowException> { meetingService.application(clubUser, meetingSeq = meeting.seq!!) }
+    }
+
+    @Test
+    fun `이미 신청한 만남에 만남신청을 할 경우 실패해야 한다`() {
+        // given
+        meeting.endTimestamp = LocalDateTime.now().plusDays(1)      // 만남 활성화
+        every { meetingRepository.findById(meeting.seq!!) }.returns(Optional.of(meeting))
+        meeting.maximumNumber = 10
+        val alreadyApplicationdMeetingApplication = MeetingApplication(
+            clubUser = mockk<ClubUser>(relaxed = true).apply { seq = clubUser.seq!! },
+            meeting = meeting,
+            deleteFlag = false
+        )
+        meeting.meetingApplications = listOf(
+            alreadyApplicationdMeetingApplication
+        )
+        every { meetingApplicationRepository.findByClubUserAndMeeting(any(), any()) }.returns(alreadyApplicationdMeetingApplication)
+
+        // when & then
+        assertThrows<MeetingAlreadyApplicationException> { meetingService.application(clubUser, meetingSeq = meeting.seq!!) }
+    }
+    
+
 }
