@@ -10,8 +10,8 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
-import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
+import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.config.MockitoHelper
 import io.mockk.every
@@ -62,7 +62,6 @@ internal class ClubBoardServiceTest {
     }
 
 
-
     @Test
     fun `모임원이 아닌 유저가 게시글 등록을 요청하면 실패해야한다`() {
         // given
@@ -77,9 +76,10 @@ internal class ClubBoardServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<BizException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
+        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
     }
 
     @Test
@@ -87,9 +87,10 @@ internal class ClubBoardServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.MEMBER, 2)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<BizException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
+        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
     }
 
     @Test
@@ -107,6 +108,7 @@ internal class ClubBoardServiceTest {
         )
         every { roleService.hasClubManagerAuth(clubUser) }.returns(false)
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
         assertThrows<InsufficientAuthException> { clubBoardService.registerClubBoard(user, club.seq!!, body) }
@@ -157,5 +159,4 @@ internal class ClubBoardServiceTest {
         // when & then
         assertThrows<InsufficientAuthException> { clubBoardService.deleteClubBoard(actorUser, clubBoard.seq!!) }
     }
-    
 }
