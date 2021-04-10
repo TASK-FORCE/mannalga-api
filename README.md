@@ -67,3 +67,11 @@ override fun findMeetingApplicationByUserAndMeetingSeq(clubUserParam: ClubUser, 
         ).fetchOne()
 }
 ```
+
+## Additional Information
+### Database ERD
+![diagram](https://user-images.githubusercontent.com/46917538/114275243-c18f6100-9a5c-11eb-92ea-79b3142e9766.png)
+
+### Entity Relationship Diagram
+![entityManagerFactory(EntityManagerFactoryBuilder)](https://user-images.githubusercontent.com/46917538/114275292-ee437880-9a5c-11eb-93d1-f577f68f858c.png)
+
