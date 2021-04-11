@@ -123,7 +123,11 @@ class ClubBoardService(
             ?: throw ClubBoardNotFoundException()
 
         if(clubBoard.clubUser != actor) {
-            throw InsufficientAuthException("계시글 수정은 작성자만 할 수 있습니다.", HttpStatus.FORBIDDEN)
+            throw InsufficientAuthException("게시글 수정은 작성자만 할 수 있습니다.", HttpStatus.FORBIDDEN)
+        }
+
+        if(!roleService.hasClubMemberAuth(actor)) {
+            throw InsufficientAuthException("탈퇴한 유저는 게시글을 수정할 수 없습니다.", HttpStatus.FORBIDDEN)
         }
 
         if(body.category != null) {

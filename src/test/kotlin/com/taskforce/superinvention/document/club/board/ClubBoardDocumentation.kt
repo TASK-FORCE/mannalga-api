@@ -271,7 +271,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     fun `모임 게시판 단건 조회`() {
 
         // given
-        val clubBoardImgDto = ClubBoardImgDto(clubBoardImg)
+        val clubBoardImgDto = ClubBoardImgDto("이미지 호스트 서버", clubBoardImg)
         every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto(clubBoard, listOf(clubBoardImgDto), false))
 
         //  when

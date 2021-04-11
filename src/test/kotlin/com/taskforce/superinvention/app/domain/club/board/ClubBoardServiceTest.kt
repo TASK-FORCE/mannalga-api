@@ -189,7 +189,31 @@ internal class ClubBoardServiceTest {
     }
 
     @Test
+    fun `작성자가 모임을 탈퇴하면 게시글을 수정할 수 없다`() {
+
+        // given
+        val actorUser    : User = mockk()
+        val actorClubUser: ClubUser = mockk()
+        val editBody = ClubBoardEditBody(
+            title    = "sss",
+            content  = "",
+            category = ClubBoard.Category.NORMAL,
+            imgAddList    = emptyList(),
+            imgDeleteList = emptyList()
+        )
+
+        every { clubUserRepository.findByClubSeqAndUser(club.seq!!, actorUser) }.returns(actorClubUser)
+        every { clubBoardRepository.findBySeqWithWriter(clubBoard.seq!!) }.returns(clubBoard)
+        every { roleService.hasClubMemberAuth(actorClubUser) }.returns(false)
+        every { clubBoardImgService.softDeleteImageBySeqIn(any()) }.returns(Unit)
+
+        // when & then
+        assertThrows<InsufficientAuthException> { clubBoardService.editClubBoard(actorUser, club.seq!!, clubBoard.seq!!, editBody)}
+    }
+
+    @Test
     fun `게시글 작성자는 게시글 삭제가 가능하다`() {
+
         // given
         every { clubUserRepository.findByClubAndUser(club, user) }.returns(clubUser)
         every { clubBoardRepository.findBySeq(clubBoard.seq!!) }.returns(clubBoard)
