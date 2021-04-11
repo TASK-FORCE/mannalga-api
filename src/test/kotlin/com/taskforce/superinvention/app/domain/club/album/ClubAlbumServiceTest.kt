@@ -14,7 +14,10 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumEditDto
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
+import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
@@ -87,7 +90,6 @@ class ClubAlbumServiceTest: MockkTest() {
             clubService = clubService,
             clubUserService = clubUserService,
             clubAlbumRepository = clubAlbumRepository,
-            clubRepository = clubRepository,
             clubUserRepository = clubUserRepository,
             clubAlbumLikeRepository = clubAlbumLikeRepository,
             clubAlbumImgService = clubAlbumImageService,
@@ -172,9 +174,51 @@ class ClubAlbumServiceTest: MockkTest() {
         assertThrows<UserIsNotClubMemberException> {
             clubAlbumService.registerClubAlbum(nonClubUser, club.seq!!, body)
         }
+    }
 
-        // 정상 작동
-        assertEquals(true, clubAlbumService.registerClubAlbum(writer, club.seq!!, body))
+    @Test
+    fun `작성자 이외에는 모임 사진첩을 수정 할 수 없다`() {
+
+        // given
+        val body = ClubAlbumEditDto(
+            title = "제목",
+            image = S3Path(
+                absolutePath = "이미지 절대경로",
+                filePath     = "이미지 상대경로",
+                fileName     = "파일명",
+            )
+        )
+
+        every { clubService.getValidClubBySeq(club.seq!!) }                returns club
+        every { clubUserService.getValidClubUser(club.seq!!, writer) }     returns nonWriterClubUser
+        every { clubAlbumRepository.findBySeqWithWriter(clubAlbum.seq!!) } returns clubAlbum
+
+        assertThrows<InsufficientAuthException> {
+            clubAlbumService.editClubAlbum(writer, club.seq!!, clubAlbum.seq!!, body)
+        }
+    }
+
+    @Test
+    fun `탈퇴한 모임원은 자신이 작성했던 모임 사진첩을 수정 할 수 없다`() {
+
+        // given
+        val body = ClubAlbumEditDto(
+            title = "제목",
+            image = S3Path(
+                absolutePath = "이미지 절대경로",
+                filePath     = "이미지 상대경로",
+                fileName     = "파일명",
+            )
+        )
+
+        every { clubService.getValidClubBySeq(club.seq!!) }                returns club
+        every { clubUserService.getValidClubUser(club.seq!!, writer) }     returns writerClubUser
+        every { clubAlbumRepository.findBySeqWithWriter(clubAlbum.seq!!) } returns clubAlbum
+        every { roleService.hasClubMemberAuth(writerClubUser) } returns false
+
+        assertThrows<WithdrawClubUserNotAllowedException> {
+            clubAlbumService.editClubAlbum(writer, club.seq!!, clubAlbum.seq!!, body)
+        }
     }
 
     @Test
