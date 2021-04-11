@@ -20,7 +20,7 @@ interface ClubBoardRepository : JpaRepository<ClubBoard, Long>, ClubBoardCustom 
 
 interface ClubBoardCustom {
      fun searchInList(pageable: Pageable, category: ClubBoard.Category?, searchOpt: ClubBoardSearchOpt, clubSeq: Long): Page<ClubBoard>
-     fun findBySeqWithWriterAndImgs(clubBoardSeq: Long): ClubBoard?
+     fun findBySeqWithWriter(clubBoardSeq: Long): ClubBoard?
 }
 
 @Repository
@@ -60,7 +60,7 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         }
 
         // 삭제된 글 필터링
-        query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
+        query.where(eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
             .orderBy(clubBoard.createdAt.desc())
 
@@ -74,16 +74,14 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         return PageImpl(fetchResult.results, pageable, fetchResult.total)
     }
 
-    override fun findBySeqWithWriterAndImgs(clubBoardSeq: Long): ClubBoard? {
+    override fun findBySeqWithWriter(clubBoardSeq: Long): ClubBoard? {
         val clubBoard   : QClubBoard    = QClubBoard.clubBoard
-        val clubBoardImg: QClubBoardImg = QClubBoardImg.clubBoardImg
         val user: QUser = QUser.user
         val clubUser     = QClubUser.clubUser
 
         val query = from(clubBoard)
             .join(clubBoard.clubUser, clubUser)
             .join(clubBoard.clubUser.user, user)
-            .leftJoin(clubBoard.boardImgs, clubBoardImg).fetchJoin()
             .where(eqSeq(clubBoard, clubBoardSeq))
 
         return query.fetchFirst()

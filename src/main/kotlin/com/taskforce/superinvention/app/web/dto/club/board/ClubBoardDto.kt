@@ -19,14 +19,23 @@ data class ClubBoardRegisterBody(
     val imgList : List<S3Path> = emptyList()
 )
 
-class ClubBoardSearchOpt(
+data class ClubBoardEditBody(
+    val title   : String?,
+    val content : String?,
+    val category: ClubBoard.Category?,
+
+    val imgAddList     : List<S3Path> = emptyList(),
+    val imgDeleteList  : List<Long>   = emptyList()
+)
+
+data class ClubBoardSearchOpt(
     val title  : String = "",
     val content: String = "",
 )
 
 // 모임 게시판 단일 조회
 data class ClubBoardDto(
-    val boardSeq: Long,
+    val boardSeq   : Long,
     val title      : String,
     val content    : String,
     val category   : ClubBoard.Category,
@@ -38,7 +47,7 @@ data class ClubBoardDto(
     val imageList  : List<ClubBoardImgDto>,
     val writer     : ClubWriter
 ) {
-    constructor(imgHost: String, clubBoard: ClubBoard, isLiked: Boolean): this(
+    constructor(clubBoard: ClubBoard, boardImgList: List<ClubBoardImgDto> ,isLiked: Boolean): this(
         boardSeq   = clubBoard.seq!!,
         title      = clubBoard.title,
         content    = clubBoard.content,
@@ -47,7 +56,7 @@ data class ClubBoardDto(
         commentCnt = clubBoard.boardCommentCnt ?: 0,
         createdAt  = clubBoard.createdAt?.toBaseDateTime() ?: "",
         updatedAt  = clubBoard.updatedAt?.toBaseDateTime() ?: "",
-        imageList  = clubBoard.boardImgs.map{img -> ClubBoardImgDto(imgHost, img)}.toList(),
+        imageList  = boardImgList,
         writer     = ClubWriter(clubBoard.clubUser),
         isLiked    = isLiked
     )
@@ -79,14 +88,14 @@ data class ClubBoardListViewDto(
     )
 
     constructor(imgHost: String, clubBoard: ClubBoard): this(
-        boardSeq = clubBoard.seq!!,
-        title    = clubBoard.title,
+        boardSeq      = clubBoard.seq!!,
+        title         = clubBoard.title,
         simpleContent = clubBoard.content.sliceIfExceed(0 until 50),
         createAt      = clubBoard.createdAt?.toBaseDateTime()     ?: "",
-        category   = clubBoard.category.label,
-        likeCnt    = clubBoard.boardLikeCnt    ?: 0,
-        commentCnt = clubBoard.boardCommentCnt ?: 0,
-        writer     = ClubWriter(clubBoard.clubUser)
+        category      = clubBoard.category.label,
+        likeCnt       = clubBoard.boardLikeCnt    ?: 0,
+        commentCnt    = clubBoard.boardCommentCnt ?: 0,
+        writer        = ClubWriter(clubBoard.clubUser)
     ) {
         val firstImg: ClubBoardImg? = clubBoard.boardImgs.firstOrNull()
         mainImageUrl = if(firstImg != null) {
