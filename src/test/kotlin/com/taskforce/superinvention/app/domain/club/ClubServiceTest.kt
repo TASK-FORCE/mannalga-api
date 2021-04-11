@@ -29,6 +29,7 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.CannotJoinClubException
 import com.taskforce.superinvention.config.MockitoHelper
+import com.taskforce.superinvention.config.test.MockTest
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -36,7 +37,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.data.repository.findByIdOrNull
 
-internal class ClubServiceTest {
+internal class ClubServiceTest: MockTest() {
 
     lateinit var clubService: ClubService
     lateinit var clubUserRepository: ClubUserRepository

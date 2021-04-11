@@ -108,21 +108,16 @@ data class ClubBoardListViewDto(
 
 data class ClubBoardImgDto(
     val imgSeq   : Long,
-    val imgUrl   : String,
-    val imageName: String,
+    val img      : S3Path,
     val createdAt: String,
 ) {
-    constructor(clubBoardImg: ClubBoardImg): this(
-        imgSeq    = clubBoardImg.seq!!,
-        imgUrl    = clubBoardImg.imgUrl,
-        imageName = clubBoardImg.imgName,
-        createdAt = clubBoardImg.createdAt?.toBaseDateTime() ?: "",
-    )
-
     constructor(imgHost: String, clubBoardImg: ClubBoardImg): this(
-        imgSeq    = clubBoardImg.seq!!,
-        imgUrl    = "${imgHost}/${clubBoardImg.imgUrl}",
-        imageName = clubBoardImg.imgName,
+        imgSeq = clubBoardImg.seq!!,
+        img    = S3Path(
+            absolutePath = "${imgHost}/${clubBoardImg.imgUrl}",
+            filePath     = clubBoardImg.imgUrl,
+            fileName     = clubBoardImg.imgName
+        ),
         createdAt = clubBoardImg.createdAt?.toBaseDateTime() ?: "",
     )
 }
