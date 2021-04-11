@@ -60,7 +60,7 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         }
 
         // 삭제된 글 필터링
-        query.where(clubBoard.deleteFlag.isFalse, eqSeq(clubBoard.club, clubSeq))
+        query.where(eqSeq(clubBoard.club, clubSeq))
             .groupBy(clubBoard.seq)
             .orderBy(clubBoard.createdAt.desc())
 

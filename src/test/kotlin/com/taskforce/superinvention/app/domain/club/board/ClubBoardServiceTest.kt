@@ -9,14 +9,16 @@ import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardEditBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.config.MockitoHelper
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -41,8 +43,8 @@ internal class ClubBoardServiceTest {
     fun init() {
         user = User("cute eric").apply { seq = 562354 }
         club = Club("mock name", "mock desc", 10, "mainImageURL-url.com").apply { seq = 152125 }
-        clubUser = ClubUser(club, user).apply { seq = 903125 }
-        clubBoard = ClubBoard("게시판 제목", "게시판 내용", clubUser, club, ClubBoard.Category.NORMAL, false).apply { seq = 5153333 }
+        clubUser  = ClubUser(club, user).apply { seq = 903125 }
+        clubBoard = ClubBoard("게시판 제목", "게시판 내용", clubUser, club, ClubBoard.Category.NORMAL).apply { seq = 5153333 }
 
 
         roleService = mockk()
@@ -74,23 +76,35 @@ internal class ClubBoardServiceTest {
     @Test
     fun `강퇴된 모임원이 게시글 등록을 요청하면 실패해야 한다`() {
         // given
+        val registerBody = ClubBoardRegisterBody(
+            title   = "제목",
+            content = "내용",
+            category = ClubBoard.Category.NORMAL
+        )
+
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
         every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
+        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, registerBody) }
     }
 
     @Test
     fun `탈퇴한 모임원이 게시글 등록을 요청하면 실패해야 한다`() {
         // given
+        val registerBody = ClubBoardRegisterBody(
+            title   = "제목",
+            content = "내용",
+            category = ClubBoard.Category.NORMAL
+        )
+
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.MEMBER, 2)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
         every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, mockk()) }
+        assertThrows<WithdrawClubUserNotAllowedException> { clubBoardService.registerClubBoard(user, club.seq!!, registerBody) }
     }
 
     @Test
@@ -122,13 +136,56 @@ internal class ClubBoardServiceTest {
         every { clubUserRepository.findByClubAndUser(club, actorUser) }.returns(actorClubUser)
         every { clubBoardRepository.findBySeq(clubBoard.seq!!) }.returns(clubBoard)
         every { roleService.hasClubManagerAuth(actorClubUser) }.returns(true)
-        every { clubBoardImgService.deleteImages(clubBoard) }.returns(Unit)
+        every { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }.returns(Unit)
 
         // when
         clubBoardService.deleteClubBoard(actorUser, clubBoard.seq!!)
 
         // then
-        assertEquals(true, clubBoard.deleteFlag)
+        verify { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }
+        confirmVerified(clubBoardImgService)
+    }
+
+    @Test
+    fun `게시글 작성자가 다른 유저는 게시글은 수정할 수 없다`() {
+        // given
+        val actorUser: User = mockk()
+        val actorClubUser: ClubUser = mockk()
+
+        every { clubUserRepository.findByClubAndUser(club, actorUser) }.returns(actorClubUser)
+        every { clubBoardRepository.findBySeq(clubBoard.seq!!) }.returns(clubBoard)
+        every { roleService.hasClubManagerAuth(actorClubUser) }.returns(true)
+        every { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }.returns(Unit)
+
+        // when
+        clubBoardService.deleteClubBoard(actorUser, clubBoard.seq!!)
+
+        // then
+        verify { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }
+        confirmVerified(clubBoardImgService)
+    }
+
+    @Test
+    fun `모임 매니저와 관리자는 다른 모임원의 게시글을 수정할 수 없다`() {
+
+        // given
+        val actorUser: User = mockk()
+        val actorClubUser: ClubUser = mockk()
+        val editBody = ClubBoardEditBody(
+            title    = "sss",
+            content  = "",
+            category = ClubBoard.Category.NORMAL,
+            imgAddList    = emptyList(),
+            imgDeleteList = emptyList()
+        )
+
+        every { clubUserRepository.findByClubSeqAndUser(club.seq!!, actorUser) }.returns(actorClubUser)
+        every { clubBoardRepository.findBySeqWithWriter(clubBoard.seq!!) }.returns(clubBoard)
+        every { roleService.hasClubManagerAuth(actorClubUser) }.returns(true)
+        every { clubBoardImgService.softDeleteImageBySeqIn(any()) }.returns(Unit)
+
+        // when & then
+        assertThrows<InsufficientAuthException> { clubBoardService.editClubBoard(actorUser, club.seq!!, clubBoard.seq!!, editBody)}
     }
 
     @Test
@@ -137,13 +194,14 @@ internal class ClubBoardServiceTest {
         every { clubUserRepository.findByClubAndUser(club, user) }.returns(clubUser)
         every { clubBoardRepository.findBySeq(clubBoard.seq!!) }.returns(clubBoard)
         every { roleService.hasClubManagerAuth(clubUser) }.returns(false)
-        every { clubBoardImgService.deleteImages(clubBoard) }.returns(Unit)
+        every { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }.returns(Unit)
 
         // when
         clubBoardService.deleteClubBoard(user, clubBoard.seq!!)
 
         // then
-        assertEquals(true, clubBoard.deleteFlag)
+        verify { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }
+        confirmVerified(clubBoardImgService)
     }
 
     @Test
@@ -154,7 +212,7 @@ internal class ClubBoardServiceTest {
         every { clubUserRepository.findByClubAndUser(club, actorUser) }.returns(actorClubUser)
         every { clubBoardRepository.findBySeq(clubBoard.seq!!) }.returns(clubBoard)
         every { roleService.hasClubManagerAuth(actorClubUser) }.returns(false)
-        every { clubBoardImgService.deleteImages(clubBoard) }.returns(Unit)
+        every { clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard) }.returns(Unit)
 
         // when & then
         assertThrows<InsufficientAuthException> { clubBoardService.deleteClubBoard(actorUser, clubBoard.seq!!) }

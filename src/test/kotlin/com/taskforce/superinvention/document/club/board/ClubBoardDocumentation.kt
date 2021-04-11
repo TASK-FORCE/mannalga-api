@@ -81,7 +81,6 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                 content  = "test-content",
                 club     = club,
                 clubUser = clubUser,
-                deleteFlag = false,
                 category   = ClubBoard.Category.NORMAL
         ).apply {
             seq = 300
@@ -146,6 +145,61 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                         )
                 ))
     }
+
+    @Test
+    fun `모임 게시판 수정`() {
+
+        // given
+        val s3path = S3Path(
+            absolutePath = "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/test/i3.jpg",
+            fileName = "i3.jpg",
+            filePath = "test/i3.jpg"
+        )
+
+        val editBody = ClubBoardEditBody(
+            title    = "글 제목",
+            content  = "내용",
+            imgAddList    = listOf(s3path),
+            imgDeleteList = listOf(clubBoardImg.seq!!),
+            category      = ClubBoard.Category.NORMAL,
+        )
+
+        // when
+        every { clubBoardService.editClubBoard(user, club.seq!!, clubBoard.seq!!, editBody) } returns Unit
+
+        val result: ResultActions = mockMvc.perform(
+            put("/clubs/{clubSeq}/board/{clubBoardSeq}", club.seq, clubBoard.seq)
+                .header("Authorization", "Bearer xxxxxxxxxxx")
+                .characterEncoding("utf-8")
+                .content(objectMapper.writeValueAsString(editBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(document("edit-club-board", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("clubSeq").description("모임 시퀀스"),
+                    parameterWithName("clubBoardSeq").description("모임 게시판 시퀀스")
+
+                ),
+                requestFields(
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+                    fieldWithPath("category").type(JsonFieldType.STRING).description("글 상태, NORMAL | NOTICE"),
+                    fieldWithPath("imgAddList[].absolutePath").type(JsonFieldType.STRING).description("전체 경로 ( 도메인 포함 )"),
+                    fieldWithPath("imgAddList[].filePath").type(JsonFieldType.STRING).description("파일 경로"),
+                    fieldWithPath("imgAddList[].fileName").type(JsonFieldType.STRING).description("파일 명"),
+                    fieldWithPath("imgDeleteList[]").type(JsonFieldType.ARRAY).description("삭제할 이미지 seq 리스트"),
+                ),
+                responseFields(
+                    *commonResponseField()
+                )
+            ))
+    }
+
+
 
     @Test
     fun `모임 게시판 글 목록 조회`() {
@@ -217,8 +271,8 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     fun `모임 게시판 단건 조회`() {
 
         // given
-        clubBoard.boardImgs = listOf(clubBoardImg)
-        every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto("https://개발서버", clubBoard, false))
+        val clubBoardImgDto = ClubBoardImgDto(clubBoardImg)
+        every { clubBoardService.getClubBoard(any(), any(), any()) }.returns(ClubBoardDto(clubBoard, listOf(clubBoardImgDto), false))
 
         //  when
         val result: ResultActions = this.mockMvc.perform(
@@ -263,12 +317,9 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
     @WithMockUser(username = "sight", authorities = [Role.MEMBER])
     fun `모임 게시판 글 목록 삭제`() {
 
-        // given
-        val clubSeq =  88L
-
         //  when
         val result: ResultActions = this.mockMvc.perform(
-                delete("/clubs/{clubBoardSeq}/board", clubSeq)
+                delete("/clubs/{clubSeq}/board/{clubBoardSeq}", club.seq, clubBoard.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -278,7 +329,8 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         result.andExpect(status().isOk)
                 .andDo(document("delete-club-board", getDocumentRequest(), getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("clubBoardSeq").description("[path variable] 모임 게시판 시퀀스")
+                            parameterWithName("clubSeq").description("[path variable] 모임 시퀀스"),
+                            parameterWithName("clubBoardSeq").description("[path variable] 모임 게시판 시퀀스")
                         ),
                         responseFields(
                                 *commonResponseField()

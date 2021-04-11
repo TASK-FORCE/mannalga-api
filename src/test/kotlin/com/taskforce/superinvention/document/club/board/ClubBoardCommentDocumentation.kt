@@ -76,7 +76,6 @@ class ClubBoardCommentDocumentation: ApiDocumentationTestV2() {
             content  = "test-content",
             club     = club,
             clubUser = clubUser,
-            deleteFlag = false,
             category   = ClubBoard.Category.NORMAL
         ).apply { seq = 100 }
 

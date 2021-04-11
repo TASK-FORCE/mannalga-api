@@ -54,14 +54,14 @@ class ClubBoardImgService(
     }
 
     @Transactional
-    fun deleteImageBySeqIn(clubBoardImgSeqList: List<Long>) {
+    fun softDeleteImageBySeqIn(clubBoardImgSeqList: List<Long>) {
         val imgList =  clubBoardImgRepository.findBySeqIn(clubBoardImgSeqList)
 
         imgList.forEach{ clubBoardImg -> clubBoardImg.deleteFlag = true}
     }
 
     @Transactional
-    fun deleteImageAllInClubBoard(clubBoard: ClubBoard) {
+    fun softDeleteImageAllInClubBoard(clubBoard: ClubBoard) {
         val imgList =  clubBoardImgRepository.findByClubBoard(clubBoard)
 
         imgList.forEach{ clubBoardImg -> clubBoardImg.deleteFlag = true}

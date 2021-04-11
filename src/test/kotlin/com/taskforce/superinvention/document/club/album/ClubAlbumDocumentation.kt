@@ -219,11 +219,9 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
 
     @Test
     @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
-    fun `모임 게시판 글 목록 삭제`() {
+    fun `모임 사진첩 글 목록 삭제`() {
 
         //  when
-//        every { (clubAlbumService.removeClubAlbum(user, club.seq!!, clubAlbum.seq!!) }.then{ Unit }
-
         val result: ResultActions = this.mockMvc.perform(
                 delete("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")

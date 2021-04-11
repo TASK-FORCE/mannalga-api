@@ -47,7 +47,7 @@ data class ClubBoardDto(
     val imageList  : List<ClubBoardImgDto>,
     val writer     : ClubWriter
 ) {
-    constructor(imgHost: String, clubBoard: ClubBoard, boardImgList: List<ClubBoardImgDto> ,isLiked: Boolean): this(
+    constructor(clubBoard: ClubBoard, boardImgList: List<ClubBoardImgDto> ,isLiked: Boolean): this(
         boardSeq   = clubBoard.seq!!,
         title      = clubBoard.title,
         content    = clubBoard.content,

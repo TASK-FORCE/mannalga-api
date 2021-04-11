@@ -125,6 +125,9 @@ include::{root}/club/modify.adoc[]
 === [.toc-list-item]`모임 게시판 작성`
 include::{root}/club/board/club-board-register.adoc[]
 
+=== [.toc-list-item]`모임 게시판 수정`
+include::{root}/club/board/club-board-edit.adoc[]
+
 === [.toc-list-item]`모임 게시판 목록 조회`
 include::{root}/club/board/club-board-select-list.adoc[]
 

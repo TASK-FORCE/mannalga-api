@@ -2,18 +2,15 @@ package com.taskforce.superinvention.app.domain.club.board
 
 import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImgService
 import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepository
-import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepositoryCustom
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.club.board.*
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
+import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
 import org.springframework.beans.factory.annotation.Value
@@ -75,7 +72,7 @@ class ClubBoardService(
             ?.let { clubUser ->  clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }
             ?.let { true } ?: false
 
-        return ClubBoardDto(imgHost, clubBoard, imgList, isLiked)
+        return ClubBoardDto(clubBoard, imgList, isLiked)
     }
 
     /**
@@ -85,6 +82,10 @@ class ClubBoardService(
     fun registerClubBoard(user: User, clubSeq: Long, body: ClubBoardRegisterBody): ClubBoard {
         val writer: ClubUser = clubUserRepository.findByClubSeqAndUser(clubSeq, user)
                 ?: throw UserIsNotClubMemberException()
+
+        if(!roleService.hasClubMemberAuth(writer)) {
+            throw WithdrawClubUserNotAllowedException()
+        }
 
         // [1] 매니저 권한 이상일 경우 에만 공지사항 가능
         if(body.category == ClubBoard.Category.NOTICE) {
@@ -147,7 +148,7 @@ class ClubBoardService(
                 .filter { clubBoardImgDto -> body.imgDeleteList.contains(clubBoardImgDto.imgSeq) }
                 .map { dto -> dto.imgSeq }
 
-            clubBoardImgService.deleteImageBySeqIn(deleteImgSeq)
+            clubBoardImgService.softDeleteImageBySeqIn(deleteImgSeq)
         }
 
         if(body.imgAddList.isNotEmpty()) {
@@ -163,13 +164,13 @@ class ClubBoardService(
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)
         val actor = clubUserRepository.findByClubAndUser(clubBoard.club, user)
             ?: throw UserIsNotClubMemberException()
+
         val isWriter =  clubBoard.clubUser == actor
 
         if(!roleService.hasClubManagerAuth(actor) && !isWriter) {
             throw InsufficientAuthException("매니저, 마스터 그리고 작성자만 삭제할 수 있습니다. ", HttpStatus.FORBIDDEN)
         }
 
-        clubBoard.deleteFlag = true
-        clubBoardImgService.deleteImageAllInClubBoard(clubBoard)
+        clubBoardImgService.softDeleteImageAllInClubBoard(clubBoard)
     }
 }
