@@ -31,7 +31,7 @@ class ImageService(
         return awsS3Mo.uploadFileWithUUID(file, TEMP_IMG_DIR_PATH)
     }
 
-    private fun resizeImage(file: File, resize: ResizeDto): File {
+    fun resizeImage(file: File, resize: ResizeDto): File {
         val extension = FilenameUtils.getExtension(file.name)
 
         val format: ImageFormat = ImageFormat.extensionOf(extension)
@@ -41,5 +41,4 @@ class ImageService(
             .resize(file, resize)
             .absoluteFile
     }
-
 }
