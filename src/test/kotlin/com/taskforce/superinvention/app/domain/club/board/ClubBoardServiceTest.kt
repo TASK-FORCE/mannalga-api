@@ -14,6 +14,7 @@ import com.taskforce.superinvention.common.exception.auth.InsufficientAuthExcept
 import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.config.MockitoHelper
+import com.taskforce.superinvention.config.test.MockTest
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 
-internal class ClubBoardServiceTest {
+internal class ClubBoardServiceTest: MockTest(){
     lateinit var roleService: RoleService;
     lateinit var clubBoardImgService: ClubBoardImgService
     lateinit var clubBoardLikeRepository: ClubBoardLikeRepository

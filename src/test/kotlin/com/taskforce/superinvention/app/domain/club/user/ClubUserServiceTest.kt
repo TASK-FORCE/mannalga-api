@@ -4,15 +4,16 @@ import com.taskforce.superinvention.app.domain.club.Club
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.config.test.MockTest
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-internal class ClubUserServiceTest {
+internal class ClubUserServiceTest: MockTest() {
 
     val clubUserRepository = mockk<ClubUserRepository>()
-    val clubUserService = ClubUserService(clubUserRepository)
+    val clubUserService    = ClubUserService(clubUserRepository)
 
     val clubSeq = 555L
     val userSeq = 111L
