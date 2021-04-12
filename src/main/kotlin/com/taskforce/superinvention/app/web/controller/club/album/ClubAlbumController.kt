@@ -27,7 +27,7 @@ class ClubAlbumController(
     }
 
 
-    //  모임 사진첩 단건 조회
+    // 모임 사진첩 등록
     @GetMapping("/{clubAlbumSeq}")
     fun gerClubAlbum(@AuthUser     user: User?,
                      @PathVariable clubSeq      :Long,
@@ -46,6 +46,7 @@ class ClubAlbumController(
         return ResponseDto(data = "")
     }
 
+    // 모임 사진첩 수정
     @PutMapping("/{clubAlbumSeq}")
     @ResponseStatus(HttpStatus.CREATED)
     fun editClubAlbum(@AuthUser     user         : User?,
