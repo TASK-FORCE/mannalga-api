@@ -225,14 +225,14 @@ class ClubAlbumServiceTest: MockkTest() {
     fun `모임 사진첩은 사진 게시자와 매니저가 아니면 삭제할 수 없음`() {
 
         // given
-        every { clubRepository.findByIdOrNull(club.seq)        } returns club
-        every { clubRepository.findByIdOrNull(neq(club.seq!!)) } returns null
+        every { clubService.getValidClubBySeq(club.seq!!)      } returns club
+        every { clubService.getValidClubBySeq(neq(club.seq!!)) } throws ClubNotFoundException()
 
-        every { clubUserRepository.findByClubAndUser(club, writer)        } returns writerClubUser
-        every { clubUserRepository.findByClubAndUser(club, nonWriter)     } returns nonWriterClubUser
-        every { clubUserRepository.findByClubAndUser(club, userAsManager) } returns clubManager
-        every { clubUserRepository.findByClubAndUser(club, userAsMaster)  } returns clubMaster
-        every { clubUserRepository.findByClubAndUser(club, nonClubUser)   } returns null
+        every { clubUserService.getValidClubUser(club.seq!!, writer)        } returns writerClubUser
+        every { clubUserService.getValidClubUser(club.seq!!, nonWriter)     } returns nonWriterClubUser
+        every { clubUserService.getValidClubUser(club.seq!!, userAsManager) } returns clubManager
+        every { clubUserService.getValidClubUser(club.seq!!, userAsMaster)  } returns clubMaster
+        every { clubUserService.getValidClubUser(club.seq!!, nonClubUser)   } throws  UserIsNotClubMemberException()
 
         // @TODO 해당부분 처음부터 fetch join으로 가져오도록 리팩토링 필요해보임 (매우)
         every { roleService.hasClubManagerAuth(nonWriterClubUser) } returns false
