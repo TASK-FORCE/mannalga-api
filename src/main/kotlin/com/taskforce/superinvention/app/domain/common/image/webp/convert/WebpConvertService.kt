@@ -33,7 +33,7 @@ class WebpConvertService(
         val convertStrategy = strategyLocator.getStrategy(format)
         val convertedFile: File = convertStrategy.convert(fileName, s3File, WebpCompressionParam())
 
-        val convertedExtension = ImageFormat.extensionOf(FilenameUtils.getExtension(s3Path.fileName))
+        val convertedExtension = ImageFormat.extensionOf(FilenameUtils.getExtension(convertedFile.name))
 
         // 변환에 실패한 경우 원본 url을 리턴
         if(convertedExtension != ImageFormat.WEBP) {

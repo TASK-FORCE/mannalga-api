@@ -168,6 +168,9 @@ include::{root}/club/album/club-album-select-single.adoc[]
 === [.toc-list-item]`사진첩 등록`
 include::{root}/club/album/club-album-register.adoc[]
 
+=== [.toc-list-item]`사진첩 등록`
+include::{root}/club/album/club-album-edit.adoc[]
+
 === [.toc-list-item]`사진첩 삭제`
 include::{root}/club/album/club-album-remove.adoc[]
 
