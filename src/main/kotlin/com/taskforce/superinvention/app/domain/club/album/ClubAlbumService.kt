@@ -67,6 +67,10 @@ class ClubAlbumService(
         val club     = clubService.getValidClubBySeq(clubSeq)
         val clubUser = clubUserService.getValidClubUser(clubSeq, user)
 
+        if(!roleService.hasClubMemberAuth(clubUser)) {
+            throw WithdrawClubUserNotAllowedException()
+        }
+
         if(!isValid(clubAlbumDto)) {
             throw InvalidInputException()
         }

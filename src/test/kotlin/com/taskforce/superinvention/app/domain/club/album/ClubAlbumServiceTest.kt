@@ -157,7 +157,6 @@ class ClubAlbumServiceTest: MockkTest() {
         )
 
         every { clubService.getValidClubBySeq(club.seq!!)        } returns club
-        every { clubService.getValidClubBySeq(neq(club.seq!!))   } throws  ClubNotFoundException()
 
         every { clubUserService.getValidClubUser(club.seq!!, writer)      } returns writerClubUser
         every { clubUserService.getValidClubUser(club.seq!!, nonClubUser) } throws  UserIsNotClubMemberException()
@@ -165,14 +164,28 @@ class ClubAlbumServiceTest: MockkTest() {
         every { clubAlbumRepository.save( any()) } returns clubAlbum
         every { clubAlbumImageService.registerClubAlbumImage(any(), any()) } returns S3Path()
 
-        // 모임이 없을 때
-        assertThrows<ClubNotFoundException> {
-            clubAlbumService.registerClubAlbum(writer, nonClubSeq, body)
-        }
-
-        // 모임원이 아닐 때
         assertThrows<UserIsNotClubMemberException> {
             clubAlbumService.registerClubAlbum(nonClubUser, club.seq!!, body)
+        }
+    }
+
+    @Test
+    fun `탈퇴한 상태의 유저도 해당 모임 사진첩에 사진을 등록할 수 없음`() {
+
+        // given
+        val body = ClubAlbumRegisterDto(
+            title = "신규 모임 사진첩 제목",
+            image = S3Path(
+                absolutePath = "절대경로"
+            )
+        )
+
+        every { clubService.getValidClubBySeq(club.seq!!)              } returns club
+        every { clubUserService.getValidClubUser(club.seq!!, writer)   } returns writerClubUser
+        every { roleService.hasClubMemberAuth(writerClubUser)      } returns false
+
+        assertThrows<WithdrawClubUserNotAllowedException> {
+            clubAlbumService.registerClubAlbum(writer, club.seq!!, body)
         }
     }
 
