@@ -7,7 +7,9 @@ import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.role.ClubUserRole
 import com.taskforce.superinvention.app.domain.role.Role
+import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.board.ClubBoardNotFoundException
 import com.taskforce.superinvention.config.MockitoHelper
@@ -30,6 +32,7 @@ internal class ClubBoardLikeServiceTest {
     lateinit var club: Club
     lateinit var clubUser: ClubUser
     lateinit var clubBoard: ClubBoard
+    lateinit var roleService: RoleService
 
     @BeforeEach
     fun init() {
@@ -42,11 +45,13 @@ internal class ClubBoardLikeServiceTest {
         clubBoardLikeRepository = mockk()
         clubBoardRepository = mockk()
         clubUserRepository = mockk()
+        roleService = mockk()
 
         clubBoardLikeService = ClubBoardLikeService(
             clubBoardLikeRepository,
             clubBoardRepository,
-            clubUserRepository
+            clubUserRepository,
+            roleService
         )
     }
 
@@ -58,6 +63,7 @@ internal class ClubBoardLikeServiceTest {
         every { clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }.returns(null)
         every { clubBoardLikeRepository.save(any()) }.returns(mockk())
         every { clubBoardLikeRepository.getClubBoardLikeCnt(clubBoard) }.returns(1)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when
         val result = clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!)
@@ -77,6 +83,7 @@ internal class ClubBoardLikeServiceTest {
         every { clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }.returns(mockk())
         every { clubBoardLikeRepository.save(any()) }.throws(Exception())
         every { clubBoardLikeRepository.getClubBoardLikeCnt(clubBoard) }.returns(1)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when
         val result = clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!)
@@ -95,7 +102,6 @@ internal class ClubBoardLikeServiceTest {
 
         // when & then
         assertThrows<UserIsNotClubMemberException> { clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
-
     }
 
     @Test
@@ -103,9 +109,10 @@ internal class ClubBoardLikeServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.MEMBER, 2)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<UserIsNotClubMemberException> { clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
+        assertThrows<InsufficientAuthException> { clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
     }
 
     @Test
@@ -113,14 +120,16 @@ internal class ClubBoardLikeServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<UserIsNotClubMemberException> { clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
+        assertThrows<InsufficientAuthException> { clubBoardLikeService.registerClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
     }
 
     @Test
     fun `삭제된 게시글에 좋아요를 누를 때 실패해야 한다`() {
         // given
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardRepository.findByIdOrNull(clubBoard.seq!!) }.returns(null)
 
@@ -136,6 +145,7 @@ internal class ClubBoardLikeServiceTest {
         every { clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }.returns(mockk())
         every { clubBoardLikeRepository.delete(any()) }.returns(mockk())
         every { clubBoardLikeRepository.getClubBoardLikeCnt(clubBoard) }.returns(0)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when
         val result = clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!)
@@ -155,6 +165,7 @@ internal class ClubBoardLikeServiceTest {
         every { clubBoardLikeRepository.findByClubBoardAndClubUser(clubBoard, clubUser) }.returns(null)
         every { clubBoardLikeRepository.delete(any()) }.throws(Exception())
         every { clubBoardLikeRepository.getClubBoardLikeCnt(clubBoard) }.returns(0)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when
         val result = clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!)
@@ -181,9 +192,10 @@ internal class ClubBoardLikeServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.MEMBER, 2)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<UserIsNotClubMemberException> { clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
+        assertThrows<InsufficientAuthException> { clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
     }
 
     @Test
@@ -191,9 +203,10 @@ internal class ClubBoardLikeServiceTest {
         // given
         clubUser.clubUserRoles = mutableSetOf(ClubUserRole(clubUser, MockitoHelper.getRoleByRoleName(Role.RoleName.NONE, 1)))
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<UserIsNotClubMemberException> { clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
+        assertThrows<InsufficientAuthException> { clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
     }
 
     @Test
@@ -201,6 +214,7 @@ internal class ClubBoardLikeServiceTest {
         // given
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardRepository.findByIdOrNull(clubBoard.seq!!) }.returns(null)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when & then
         assertThrows<ClubBoardNotFoundException> { clubBoardLikeService.removeClubBoardLike(user, club.seq!!, clubBoard.seq!!) }
