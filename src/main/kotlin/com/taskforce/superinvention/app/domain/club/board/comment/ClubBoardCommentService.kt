@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.web.dto.club.board.comment.ClubBoardComm
 import com.taskforce.superinvention.app.web.dto.club.board.comment.ClubBoardCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -70,6 +71,11 @@ class ClubBoardCommentService(
         val clubUser  = clubUserService.getValidClubUser(clubSeq, user)
         val clubBoard = clubBoardService.getValidClubBoardBySeq(clubBoardSeq)
 
+        if (!roleService.hasClubMemberAuth(clubUser)) {
+            throw InsufficientAuthException("탈퇴한 유저는 댓글을 등록하실 수 없습니다.")
+        }
+
+
         var parentComment: ClubBoardComment?= null
         var depth = 1L
 
@@ -100,6 +106,10 @@ class ClubBoardCommentService(
     ) {
 
         val clubUser = clubUserService.getValidClubUser(clubSeq, user)
+        if (!roleService.hasClubMemberAuth(clubUser)) {
+            throw InsufficientAuthException("탈퇴한 유저는 댓글을 수정하실 수 없습니다.")
+        }
+
         val comment  = getValidCommentBySeq(clubBoardCommentSeq)
 
         if(comment.clubUser != clubUser) {

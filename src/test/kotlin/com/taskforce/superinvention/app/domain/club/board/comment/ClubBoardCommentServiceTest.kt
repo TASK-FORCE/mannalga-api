@@ -9,6 +9,7 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.comment.ClubBoardCommentRegisterDto
 import com.taskforce.superinvention.common.exception.BizException
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
 import io.mockk.every
 import io.mockk.mockk
@@ -86,6 +87,7 @@ internal class ClubBoardCommentServiceTest {
         every { clubUserService.getValidClubUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardService.getValidClubBoardBySeq(clubBoard.seq!!) }.returns(clubBoard)
         every { clubBoardCommentRepository.save(any()) }.returnsArgument(0)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
 
         // when
@@ -110,7 +112,7 @@ internal class ClubBoardCommentServiceTest {
 
 
         // when & then
-        assertThrows<BizException> {
+        assertThrows<InsufficientAuthException> {
             clubBoardCommentService.registerComment(
                 club.seq!!,
                 clubBoard.seq!!,
@@ -126,6 +128,7 @@ internal class ClubBoardCommentServiceTest {
         // given
         every { clubUserService.getValidClubUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardCommentService.getValidCommentBySeq(any()) }.returns(clubBoardComment)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when
         clubBoardCommentService.editComment(
@@ -147,7 +150,7 @@ internal class ClubBoardCommentServiceTest {
         every { roleService.hasClubMemberAuth(clubUser) }.returns(false)
 
         // when & then
-        assertThrows<BizException> {
+        assertThrows<InsufficientAuthException> {
             clubBoardCommentService.editComment(
                 club.seq!!,
                 clubBoard.seq!!,
@@ -164,6 +167,7 @@ internal class ClubBoardCommentServiceTest {
         clubBoardComment.clubUser = ClubUser(mockk(), mockk())
         every { clubUserService.getValidClubUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardCommentService.getValidCommentBySeq(any()) }.returns(clubBoardComment)
+        every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
         // when & then
         assertThrows<OnlyWriterCanAccessException> {
