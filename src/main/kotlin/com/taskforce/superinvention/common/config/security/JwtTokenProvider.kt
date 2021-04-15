@@ -24,7 +24,6 @@ class JwtTokenProvider(
     lateinit var expireMinute: String
 
     companion object {
-
         const val TOKEN_HEADER  = "Authorization"
         const val TIME_ZONE_KST = "Asia/Seoul"
     }
@@ -57,8 +56,8 @@ class JwtTokenProvider(
     fun validateToken(token: String?): Boolean {
         return try {
             Jwts.parser()
-                    .setSigningKey(secretKey.toByteArray())
-                    .parseClaimsJws(token)
+                .setSigningKey(secretKey.toByteArray())
+                .parseClaimsJws(token)
             true
         } catch (e: ExpiredJwtException) {
             throw BizException("JWT 토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED)

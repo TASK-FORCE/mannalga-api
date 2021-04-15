@@ -10,10 +10,7 @@ import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.controller.club.album.ClubAlbumController
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumDto
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumListDto
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumRegisterDto
-import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
+import com.taskforce.superinvention.app.web.dto.club.album.*
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
@@ -219,11 +216,52 @@ class ClubAlbumDocumentation: ApiDocumentationTestV2() {
 
     @Test
     @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
-    fun `모임 게시판 글 목록 삭제`() {
+    fun `모임 사진첩 수정`() {
+
+        // given
+        val body = ClubAlbumEditDto(
+            title = "으어아억",
+            image = S3Path(
+                absolutePath = "http://aws/경로/파일명.확장자",
+                filePath     = "/경로/파일명.확장자",
+                fileName     = "파일명.확장자"
+            )
+        )
+
+        // when
+        val result: ResultActions = this.mockMvc.perform(
+            put("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq!!, clubAlbum.seq)
+                .content(objectMapper.writeValueAsString(body))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+
+        // then
+        result.andExpect(status().isCreated)
+            .andDo(document("club-album-edit", getDocumentRequest(), getDocumentResponse(),
+                pathParameters(
+                    parameterWithName("clubSeq").description("모임 시퀀스"),
+                    parameterWithName("clubAlbumSeq").description("모임 사진첩 시퀀스")
+
+                ),
+                requestFields(
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("image.absolutePath").type(JsonFieldType.STRING).description("전체 경로 ( 도메인 포함 )"),
+                    fieldWithPath("image.filePath").type(JsonFieldType.STRING).description("파일 경로"),
+                    fieldWithPath("image.fileName").type(JsonFieldType.STRING).description("파일 명"),
+                ),
+                responseFields(
+                    *commonResponseField()
+                )
+            )
+        )
+    }
+
+    @Test
+    @WithMockUser(username = "sight", authorities = [Role.CLUB_MEMBER])
+    fun `모임 사진첩 글 목록 삭제`() {
 
         //  when
-//        every { (clubAlbumService.removeClubAlbum(user, club.seq!!, clubAlbum.seq!!) }.then{ Unit }
-
         val result: ResultActions = this.mockMvc.perform(
                 delete("/club/{clubSeq}/album/{clubAlbumSeq}", club.seq, clubAlbum.seq)
                         .header("Authorization", "Bearer xxxxxxxxxxx")

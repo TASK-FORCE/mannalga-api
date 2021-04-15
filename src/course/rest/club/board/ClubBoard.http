@@ -15,12 +15,28 @@ Authorization: Bearer {{token-sdm}}
   }]
 }
 
+### 모임 게시판 글 수정
+PUT {{host}}/clubs/6327/board/67
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "title"    : "테스트 제목 - 수정됨",
+  "content"  : "테스트 글   - 수정됨" ,
+  "imgAddList"   : [{
+    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg",
+    "filePath": "temp/img/20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg",
+    "fileName": "20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg"
+  }]
+}
+
+
 ### 모임 게시판 조회
 GET {{host}}/clubs/8866/board?category=NORMAL
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
-GlobalAdviceController
 
 ### 모임 게시판 글 단건 조회
 GET {{host}}/clubs/6327/board/43

@@ -23,8 +23,6 @@ class GifResizeStrategy: ImageResizeStrategy {
     override fun resize(file: File, resize: ResizeDto): File {
         val metadata = ImageMetadataReader.readMetadata(file)
         return if(GifMo.isAnimated(metadata)) {
-            
-            // @Todo 애니메이션 gif는 resizing 하지 않음
             file
         } else {
              ImmutableImage
