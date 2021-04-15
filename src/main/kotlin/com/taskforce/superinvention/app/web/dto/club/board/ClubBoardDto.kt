@@ -97,7 +97,7 @@ data class ClubBoardListViewDto(
         commentCnt    = clubBoard.boardCommentCnt ?: 0,
         writer        = ClubWriter(clubBoard.clubUser)
     ) {
-        val firstImg: ClubBoardImg? = clubBoard.boardImgs.firstOrNull()
+        val firstImg: ClubBoardImg? = clubBoard.boardImgs.filterNot{ boardImg -> boardImg.deleteFlag }.firstOrNull()
         mainImageUrl = if(firstImg != null) {
             "${imgHost}/${firstImg.imgUrl}"
         } else {

@@ -60,9 +60,11 @@ class ClubBoardRepositoryImpl : ClubBoardCustom,
         }
 
         // 삭제된 글 필터링
-        query.where(eqSeq(clubBoard.club, clubSeq))
-            .groupBy(clubBoard.seq)
-            .orderBy(clubBoard.createdAt.desc())
+        query.where(
+            eqSeq(clubBoard.club, clubSeq),
+            clubBoard.deleteFlag.isFalse
+        ).groupBy(clubBoard.seq)
+        .orderBy(clubBoard.createdAt.desc())
 
         if (pageable != Pageable.unpaged()) {
             query.offset(pageable.offset)
