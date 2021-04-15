@@ -47,6 +47,7 @@ class ClubBoardImgService(
     @Transactional
     fun getImageList(clubBoard: ClubBoard): List<ClubBoardImgDto> {
        return clubBoardImgRepository.findByClubBoardOrderByCreatedAtAsc(clubBoard)
+           .filterNot { clubBoardImg -> clubBoardImg.deleteFlag }
            .map { clubBoardImg -> ClubBoardImgDto(
                imgHost      = imgHost,
                clubBoardImg = clubBoardImg
