@@ -4,9 +4,9 @@ Content-Type: multipart/form-data; boundary=boundary
 Authorization: Bearer {{token-sdm}}
 
 --boundary
-Content-Disposition: form-data; name="file"; filename="test-img.jpg"
+Content-Disposition: form-data; name="file"; filename="large-sizessssss.jpg"
 
-< ../asset/test.jpg
+< ../asset/large-size.jpg
 
 ### 이미지 임시저장
 POST {{host}}/common/temp/image?width=200&height=100
