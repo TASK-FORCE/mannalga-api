@@ -20,6 +20,7 @@ interface ClubAlbumRepository: JpaRepository<ClubAlbum, Long>, ClubAlbumReposito
 
 interface ClubAlbumRepositoryCustom {
     fun findClubAlbumList(clubSeq: Long, searchOption: ClubAlbumSearchOption, pageable: Pageable): Page<ClubAlbum>
+    fun findBySeqWithWriter(clubAlbumSeq: Long): ClubAlbum?
 }
 
 @Repository
@@ -51,6 +52,16 @@ class ClubAlbumRepositoryImpl: ClubAlbumRepositoryCustom,
         val fetchResults = query.fetchResults()
 
         return PageImpl(fetchResults.results, pageable, fetchResults.total)
+    }
+
+    override fun findBySeqWithWriter(clubAlbumSeq: Long): ClubAlbum? {
+        val clubAlbum = QClubAlbum.clubAlbum
+        val clubUser  = QClubUser.clubUser
+
+        return from(clubAlbum)
+            .leftJoin(clubAlbum.writer, clubUser).fetchJoin()
+            .where(clubAlbum.seq.eq(clubAlbumSeq))
+            .fetchFirst()
     }
 
     private fun likeIfNotBlank(title: StringPath, keyword: String): BooleanExpression? {

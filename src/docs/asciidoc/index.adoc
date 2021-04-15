@@ -125,6 +125,9 @@ include::{root}/club/modify.adoc[]
 === [.toc-list-item]`모임 게시판 작성`
 include::{root}/club/board/club-board-register.adoc[]
 
+=== [.toc-list-item]`모임 게시판 수정`
+include::{root}/club/board/club-board-edit.adoc[]
+
 === [.toc-list-item]`모임 게시판 목록 조회`
 include::{root}/club/board/club-board-select-list.adoc[]
 
@@ -164,6 +167,9 @@ include::{root}/club/album/club-album-select-single.adoc[]
 
 === [.toc-list-item]`사진첩 등록`
 include::{root}/club/album/club-album-register.adoc[]
+
+=== [.toc-list-item]`사진첩 등록`
+include::{root}/club/album/club-album-edit.adoc[]
 
 === [.toc-list-item]`사진첩 삭제`
 include::{root}/club/album/club-album-remove.adoc[]

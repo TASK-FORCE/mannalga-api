@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubUserService(
-        private val clubUserRepository: ClubUserRepository
+    private val clubUserRepository: ClubUserRepository
 ) {
 
     // 클럽에서의 유저 상태 표시

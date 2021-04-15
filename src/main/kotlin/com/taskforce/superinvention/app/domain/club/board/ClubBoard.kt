@@ -25,7 +25,6 @@ class ClubBoard(
     var category: Category,
 
     var deleteFlag: Boolean ?= false,
-
 ): BaseEntity() {
 
         @Formula("(select count(*) from club_board_comment cbc where cbc.club_board_seq = seq)")

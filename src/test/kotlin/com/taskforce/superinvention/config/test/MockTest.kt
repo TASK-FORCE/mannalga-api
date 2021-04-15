@@ -6,4 +6,4 @@ import org.springframework.test.context.ActiveProfiles
 
 @ExtendWith(MockitoExtension::class)
 @ActiveProfiles(TestEnv.TEST)
-abstract class MockTest
+abstract class MockTest: BaseTest

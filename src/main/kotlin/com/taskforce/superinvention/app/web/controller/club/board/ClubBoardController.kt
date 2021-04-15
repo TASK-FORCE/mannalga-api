@@ -4,10 +4,7 @@ import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.common.response.ResponseDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardListViewDto
-import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
+import com.taskforce.superinvention.app.web.dto.club.board.*
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.config.argument.resolver.auth.AuthUser
 import org.springframework.data.domain.Pageable
@@ -62,10 +59,27 @@ class ClubBoardController(
     }
 
     /**
+     * 모임 게시판 글 수정
+     */
+    @PutMapping("/{clubSeq}/board/{clubBoardSeq}")
+    fun editClubBoard(@AuthUser user: User,
+                      @PathVariable clubSeq: Long,
+                      @PathVariable clubBoardSeq: Long,
+                      @RequestBody  body: ClubBoardEditBody,
+    ): ResponseDto<String> {
+
+        clubBoardService.editClubBoard(user, clubSeq, clubBoardSeq, body)
+        return ResponseDto(data = "")
+    }
+
+    /**
      * 모임 게시판 글 삭제
      */
-    @DeleteMapping("/{clubBoardSeq}/board")
-    fun deleteClubBoard(@AuthUser user: User, @PathVariable clubBoardSeq: Long): ResponseDto<String> {
+    @DeleteMapping("/{clubSeq}/board/{clubBoardSeq}")
+    fun deleteClubBoard(@AuthUser user: User,
+                        @PathVariable clubBoardSeq: Long,
+                        @PathVariable clubSeq: String
+    ): ResponseDto<String> {
 
         clubBoardService.deleteClubBoard(user, clubBoardSeq)
         return ResponseDto(data = "")
