@@ -26,8 +26,7 @@ class ClubAlbumController(
         return ResponseDto(clubAlbumService.getClubAlbumList(clubSeq, searchOption, pageable))
     }
 
-
-    // 모임 사진첩 등록
+    // 사진첩 개별 조회
     @GetMapping("/{clubAlbumSeq}")
     fun gerClubAlbum(@AuthUser     user: User?,
                      @PathVariable clubSeq      :Long,
@@ -36,6 +35,7 @@ class ClubAlbumController(
         return ResponseDto(clubAlbumService.getClubAlbumDto(user, clubSeq, clubAlbumSeq))
     }
 
+    // 모임 사진첩 등록
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubAlbum(@AuthUser     user: User,
