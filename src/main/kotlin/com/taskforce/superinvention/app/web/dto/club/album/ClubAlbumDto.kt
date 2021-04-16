@@ -24,7 +24,7 @@ data class ClubAlbumDto(
     val albumSeq   : Long   = 0,
     val title      : String = "",
     val file_name  : String = "",
-    val imgUrl     : String = "",
+    val image      : S3Path,
     val likeCnt    : Long = 0,
     val commentCnt : Long = 0,
     val writer     : ClubWriter,
@@ -35,7 +35,11 @@ data class ClubAlbumDto(
         albumSeq   = clubAlbum.seq!!,
         title      = clubAlbum.title,
         file_name  = clubAlbum.file_name,
-        imgUrl     = "${s3Host}/${clubAlbum.img_url}",
+        image      = S3Path(
+            absolutePath = "${s3Host}/${clubAlbum.img_url}",
+            filePath     = clubAlbum.img_url,
+            fileName     = clubAlbum.file_name
+        ),
         likeCnt    = clubAlbum.albumLikeCnt    ?: 0,
         commentCnt = clubAlbum.albumCommentCnt ?: 0,
         writer     = ClubWriter(clubAlbum.writer),
