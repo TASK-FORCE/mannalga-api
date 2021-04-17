@@ -3,6 +3,7 @@ package com.taskforce.superinvention.app.web.dto.club.board
 import com.taskforce.superinvention.app.domain.club.board.ClubBoard
 import com.taskforce.superinvention.app.domain.club.board.img.ClubBoardImg
 import com.taskforce.superinvention.app.web.dto.club.ClubWriter
+import com.taskforce.superinvention.app.web.dto.club.board.img.ClubBoardImgEditS3Path
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.common.util.extendFun.sliceIfExceed
 import com.taskforce.superinvention.common.util.extendFun.toBaseDateTime
@@ -24,8 +25,7 @@ data class ClubBoardEditBody(
     val content : String?,
     val category: ClubBoard.Category?,
 
-    val imgAddList     : List<S3Path> = emptyList(),
-    val imgDeleteList  : List<Long>   = emptyList()
+    val imageList : List<ClubBoardImgEditS3Path> = emptyList(),
 )
 
 data class ClubBoardSearchOpt(

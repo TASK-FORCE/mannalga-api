@@ -5,7 +5,9 @@ import java.io.File
 class WebpAnimatedWriter(
     private var q: Int = -1,
     private var m: Int = -1,
+    private var mixed: Boolean = true,
     private var lossy: Boolean = true,
+    private var multiThread: Boolean = true,
 ) {
 
     companion object {
@@ -32,6 +34,6 @@ class WebpAnimatedWriter(
     }
 
     fun writeAsByteArray(gifImage: File): ByteArray {
-        return handler.convert(gifImage, q, m, lossy)
+        return handler.convert(gifImage, q, m, lossy, mixed, multiThread)
     }
 }

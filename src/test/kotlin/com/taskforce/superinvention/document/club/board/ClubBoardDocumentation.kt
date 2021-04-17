@@ -14,6 +14,7 @@ import com.taskforce.superinvention.app.domain.role.RoleGroup
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.controller.club.board.ClubBoardController
 import com.taskforce.superinvention.app.web.dto.club.board.*
+import com.taskforce.superinvention.app.web.dto.club.board.img.ClubBoardImgEditS3Path
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonPageQueryParam
@@ -87,9 +88,10 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         }
 
         clubBoardImg = ClubBoardImg (
-            clubBoard = clubBoard,
-            imgUrl    = "이미지 절대 경로",
-            imgName   = "",
+            clubBoard  = clubBoard,
+            imgUrl     = "이미지 절대 경로",
+            imgName    = "",
+            displayOrder      = 1,
             deleteFlag = false
         ).apply {
             seq = 301
@@ -157,11 +159,13 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
         )
 
         val editBody = ClubBoardEditBody(
-            title    = "글 제목",
-            content  = "내용",
-            imgAddList    = listOf(s3path),
-            imgDeleteList = listOf(clubBoardImg.seq!!),
-            category      = ClubBoard.Category.NORMAL,
+            title     = "글 제목",
+            content   = "내용",
+            imageList = listOf(ClubBoardImgEditS3Path(
+                imgSeq = 1,
+                image  = s3path
+            )),
+            category  = ClubBoard.Category.NORMAL,
         )
 
         // when
@@ -188,10 +192,10 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                     fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
                     fieldWithPath("category").type(JsonFieldType.STRING).description("글 상태, NORMAL | NOTICE"),
-                    fieldWithPath("imgAddList[].absolutePath").type(JsonFieldType.STRING).description("전체 경로 ( 도메인 포함 )"),
-                    fieldWithPath("imgAddList[].filePath").type(JsonFieldType.STRING).description("파일 경로"),
-                    fieldWithPath("imgAddList[].fileName").type(JsonFieldType.STRING).description("파일 명"),
-                    fieldWithPath("imgDeleteList[]").type(JsonFieldType.ARRAY).description("삭제할 이미지 seq 리스트"),
+                    fieldWithPath("imageList[].imgSeq").type(JsonFieldType.NUMBER).description("이미지 seq (신규등록의 경우 제외)"),
+                    fieldWithPath("imageList[].image.absolutePath").type(JsonFieldType.STRING).description("절대 경로"),
+                    fieldWithPath("imageList[].image.filePath").type(JsonFieldType.STRING).description("상대 경로"),
+                    fieldWithPath("imageList[].image.fileName").type(JsonFieldType.STRING).description("파일 명"),
                 ),
                 responseFields(
                     *commonResponseField()

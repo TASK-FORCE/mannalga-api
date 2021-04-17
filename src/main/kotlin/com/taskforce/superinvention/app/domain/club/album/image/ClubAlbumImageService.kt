@@ -18,7 +18,7 @@ class ClubAlbumImageService (
     fun registerClubAlbumImage(clubAlbum: ClubAlbum, s3Path: S3Path): S3Path {
         val imgFolder = "clubAlbumImg/${clubAlbum.seq}"
         val movedFile = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
-        val webpFile  = webpConvertService.convertToWebP(movedFile)
+        webpConvertService.convertToWebP(movedFile)
 
         clubAlbum.img_url   = movedFile.filePath
         clubAlbum.file_name = movedFile.fileName
@@ -31,7 +31,7 @@ class ClubAlbumImageService (
 
         val imgFolder = "clubAlbumImg/${clubAlbum.seq}"
         val movedFile = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
-        val webpFile  = webpConvertService.convertToWebP(movedFile)
+        webpConvertService.convertToWebP(movedFile)
 
         deleteAlbumImg(clubAlbum)
 
