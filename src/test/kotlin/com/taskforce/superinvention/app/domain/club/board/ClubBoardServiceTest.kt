@@ -11,9 +11,11 @@ import com.taskforce.superinvention.app.domain.role.RoleService
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardEditBody
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardRegisterBody
+import com.taskforce.superinvention.app.web.dto.club.board.img.ClubBoardImgEditS3Path
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -45,7 +47,6 @@ internal class ClubBoardServiceTest {
         club = Club("mock name", "mock desc", 10, "mainImageURL-url.com").apply { seq = 152125 }
         clubUser  = ClubUser(club, user).apply { seq = 903125 }
         clubBoard = ClubBoard("게시판 제목", "게시판 내용", clubUser, club, ClubBoard.Category.NORMAL).apply { seq = 5153333 }
-
 
         roleService = mockk()
         clubBoardImgService = mockk()
@@ -175,8 +176,16 @@ internal class ClubBoardServiceTest {
             title    = "sss",
             content  = "",
             category = ClubBoard.Category.NORMAL,
-            imgAddList    = emptyList(),
-            imgDeleteList = emptyList()
+            imageList = listOf(
+                ClubBoardImgEditS3Path(
+                    imgSeq = null,
+                    img = S3Path(
+                        absolutePath = "신규이미지-절대경로",
+                        filePath     = "신규이미지 상대 경로",
+                        fileName     = "신규이미지 이름"
+                    )
+                )
+            )
         )
 
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, actorUser) }.returns(actorClubUser)
@@ -198,8 +207,16 @@ internal class ClubBoardServiceTest {
             title    = "sss",
             content  = "",
             category = ClubBoard.Category.NORMAL,
-            imgAddList    = emptyList(),
-            imgDeleteList = emptyList()
+            imageList = listOf(
+                ClubBoardImgEditS3Path(
+                    imgSeq = null,
+                    img = S3Path(
+                        absolutePath = "신규이미지-절대경로",
+                        filePath     = "신규이미지 상대 경로",
+                        fileName     = "신규이미지 이름"
+                    )
+                )
+            )
         )
 
         every { clubUserRepository.findByClubSeqAndUser(club.seq!!, actorUser) }.returns(actorClubUser)
@@ -242,3 +259,4 @@ internal class ClubBoardServiceTest {
         assertThrows<InsufficientAuthException> { clubBoardService.deleteClubBoard(actorUser, clubBoard.seq!!) }
     }
 }
+

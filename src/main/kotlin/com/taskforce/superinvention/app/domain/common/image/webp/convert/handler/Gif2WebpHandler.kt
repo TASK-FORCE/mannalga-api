@@ -30,10 +30,10 @@ class Gif2WebpHandler : WebpHandler() {
         }
     }
 
-    fun convert(gifFile: File, q: Int, m: Int, lossy: Boolean): ByteArray {
+    fun convert(gifFile: File, q: Int, m: Int, lossy: Boolean, mixed: Boolean, multiThreaded: Boolean): ByteArray {
         return try {
             val target = Files.createTempFile("to_webp", "webp").toAbsolutePath()
-            convert(gifFile.toPath().toAbsolutePath(), target, m, q, lossy)
+            convert(gifFile.toPath().toAbsolutePath(), target, m, q, lossy, mixed, multiThreaded)
             Files.readAllBytes(target)
         } finally {
             gifFile.delete()
@@ -45,7 +45,9 @@ class Gif2WebpHandler : WebpHandler() {
         target: Path,
         m: Int,
         q: Int,
-        lossy: Boolean
+        lossy: Boolean,
+        mixed: Boolean,
+        multiThreaded: Boolean
     ) {
         val stdout = Files.createTempFile("stdout", "webp")
         val commands: MutableList<String> = ArrayList(5)
@@ -60,8 +62,17 @@ class Gif2WebpHandler : WebpHandler() {
             commands.add("-q")
             commands.add(q.toString())
         }
+
         if (lossy) {
             commands.add("-lossy")
+        }
+
+        if(mixed) {
+            commands.add("-mixed")
+        }
+
+        if(multiThreaded) {
+            commands.add("-mt")
         }
 
         commands.add(input.toAbsolutePath().toString())

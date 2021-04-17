@@ -2,7 +2,7 @@
 GET {{host}} /users/check-already-register
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDM5NTI4NTk3Iiwic3ViIjoiMTQzOTUyODU5NyIsImlhdCI6MTYxNzA5MDk3NiwiZXhwIjoxNjE3MDkyNzc2fQ.WC21kPa-PkFCsAbm2gWFQo0g3hlHd5IzKZqvbq2w19I
+Authorization: Bearer {{token-sdm}}
 
 ### 유저 백도어 조회
 GET {{host}}/users/door/꽑꽑이
@@ -26,7 +26,7 @@ Content-type: application/x-www-form-urlencoded;charset=utf-8
 
 ### 카카오 유저 정보
 GET {{host}}/users/kakao-profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxMTQ4NTEwOCwiZXhwIjoxNjQzMDIxMTA4fQ.gJg2APZdNtewO_OIfkAhbLB0ZJzBYrTZUjR72JvzXqI
+Authorization: Bearer {{token-sdm}}
 
 ### 카카오 유저 정보
 GET {{host}}/users/kakao-profile
@@ -54,7 +54,7 @@ Authorization: Bearer {{token-tester}}
 GET {{host}}/users/profile
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDM5NTI4NTk3Iiwic3ViIjoiMTQzOTUyODU5NyIsImlhdCI6MTYxNzEyMzExOCwiZXhwIjoxNjQ4NjU5MTE4fQ.kCvbUinWut0cP9h7Sd_XJ7SfmWGWbSIi-LpeHIodMnk
+Authorization: Bearer {{token-sdm}}
 
 
 ### 내 정보

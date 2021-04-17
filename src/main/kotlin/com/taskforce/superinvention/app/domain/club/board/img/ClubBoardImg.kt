@@ -18,5 +18,7 @@ class ClubBoardImg(
 
     var imgName: String,
 
+    var displayOrder: Long?,
+
     var deleteFlag: Boolean
 ): BaseEntity()

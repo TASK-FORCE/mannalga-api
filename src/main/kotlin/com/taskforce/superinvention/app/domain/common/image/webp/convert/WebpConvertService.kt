@@ -2,10 +2,12 @@ package com.taskforce.superinvention.app.domain.common.image.webp.convert
 
 import com.taskforce.superinvention.app.domain.common.image.ImageFormat
 import com.taskforce.superinvention.app.domain.common.image.webp.convert.strategy.WebpConvertStrategyLocator
+import com.taskforce.superinvention.common.config.async.AsyncConfig
 import com.taskforce.superinvention.common.exception.InvalidInputException
 import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
 import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import org.apache.commons.io.FilenameUtils
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.io.File
 
@@ -20,7 +22,8 @@ class WebpConvertService(
     }
 
     // s3 상의 이미지 경로에 /이미지.webp 형태의 압축본 생성
-    fun convertToWebP(s3Path: S3Path): S3Path {
+    @Async(AsyncConfig.WEBP_CONVERSION)
+    fun convertToWebP(s3Path: S3Path) {
         val folderPath = s3Path.folderPath()
 
         val fileName  = FilenameUtils.removeExtension(s3Path.fileName)
@@ -33,13 +36,6 @@ class WebpConvertService(
         val convertStrategy = strategyLocator.getStrategy(format)
         val convertedFile: File = convertStrategy.convert(fileName, s3File, WebpCompressionParam())
 
-        val convertedExtension = ImageFormat.extensionOf(FilenameUtils.getExtension(convertedFile.name))
-
-        // 변환에 실패한 경우 원본 url을 리턴
-        if(convertedExtension != ImageFormat.WEBP) {
-            return s3Path
-        }
-        
-        return awsS3Mo.uploadFile(convertedFile, folderPath)
+        awsS3Mo.uploadFile(convertedFile, folderPath)
     }
 }

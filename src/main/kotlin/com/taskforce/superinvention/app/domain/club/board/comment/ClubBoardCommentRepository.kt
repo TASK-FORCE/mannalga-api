@@ -25,7 +25,7 @@ interface ClubBoardCommentRepositoryCustom {
 }
 
 @Repository
-class ClubBoardCommentRepositoryImpl : ClubBoardCommentRepositoryCustom,
+class ClubBoardCommentRepositoryImpl: ClubBoardCommentRepositoryCustom,
     QuerydslRepositorySupport(ClubBoardComment::class.java) {
 
     companion object {

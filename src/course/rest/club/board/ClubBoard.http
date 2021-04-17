@@ -8,27 +8,48 @@ Authorization: Bearer {{token-sdm}}
   "title"    : "테스트 제목",
   "content"  : "테스트 글"  ,
   "category" : "NORMAL"   ,
-  "imgUrl"   : [{
-    "absolutePath" : "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20201212112310-c234aede-b227-4fd3-a02c-13a86624c7ef-test.png",
-    "filePath"     : "/temp/img/20201212112310-c234aede-b227-4fd3-a02c-13a86624c7ef-test.png",
-    "fileName"     : "20201212112310-c234aede-b227-4fd3-a02c-13a86624c7ef-test.png"
+  "imgList"   : [{
+    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210417083305-f001c13f-b310-4e04-a70f-eace30bdfa01-test.jpg",
+    "filePath": "temp/img/20210417083305-f001c13f-b310-4e04-a70f-eace30bdfa01-test.jpg",
+    "fileName": "20210417083305-f001c13f-b310-4e04-a70f-eace30bdfa01-test.jpg"
   }]
 }
 
 ### 모임 게시판 글 수정
-PUT {{host}}/clubs/6327/board/67
+PUT {{host}}/clubs/6327/board/83
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 {
-  "title"    : "테스트 제목 - 수정됨",
-  "content"  : "테스트 글   - 수정됨" ,
-  "imgAddList"   : [{
-    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg",
-    "filePath": "temp/img/20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg",
-    "fileName": "20210411103757-854080b9-f5a6-43c8-8fb8-05f42a23b05e-s3-img13346524765970679600test-img.jpg"
-  }]
+  "title": "테스트 제목 - 수정됨",
+  "content": "테스트 글   - 수정됨",
+  "imageList": [
+    {
+      "imgSeq": 35,
+      "img": {
+        "absolutePath": "http://mannal.ga/static/img/clubBoardImg/83/20210417083842-f8614f92-07f0-49f0-9259-10541efb6e43-test.jpg",
+        "filePath": "clubBoardImg/83/20210417083842-f8614f92-07f0-49f0-9259-10541efb6e43-test.jpg",
+        "fileName": "20210417083842-f8614f92-07f0-49f0-9259-10541efb6e43-test.jpg"
+      }
+    },
+    {
+      "imgSeq": null,
+      "img" : {
+        "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210417084738-42bbe8e1-1267-4e89-8fef-94040908cf0c-test.jpg",
+        "filePath": "temp/img/20210417084738-42bbe8e1-1267-4e89-8fef-94040908cf0c-test.jpg",
+        "fileName": "20210417084738-42bbe8e1-1267-4e89-8fef-94040908cf0c-test.jpg"
+      }
+    },
+    {
+      "imgSeq": 33,
+      "img" : {
+        "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210417083542-877db044-6eb2-4e35-8b28-87268114e34d-test.jpg",
+        "filePath": "temp/img/20210417083542-877db044-6eb2-4e35-8b28-87268114e34d-test.jpg",
+        "fileName": "20210417083542-877db044-6eb2-4e35-8b28-87268114e34d-test.jpg"
+      }
+    }
+  ]
 }
 
 
@@ -39,7 +60,7 @@ Accept: application/json
 Authorization: Bearer {{token-sdm}}
 
 ### 모임 게시판 글 단건 조회
-GET {{host}}/clubs/6327/board/43
+GET {{host}}/clubs/6327/board/83
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-dong}}
+Authorization: Bearer {{token-sdm}}

@@ -23,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubBoardService(
-        private val roleService: RoleService,
-        private val clubBoardImgService: ClubBoardImgService,
+        private val roleService            : RoleService,
+        private val clubBoardImgService    : ClubBoardImgService,
         private val clubBoardLikeRepository: ClubBoardLikeRepository,
-        private val clubBoardRepository: ClubBoardRepository,
-        private val clubUserRepository: ClubUserRepository,
+        private val clubBoardRepository    : ClubBoardRepository,
+        private val clubUserRepository     : ClubUserRepository,
 
         @Value("\${host.static.path}")
         private var imgHost: String,
@@ -134,7 +134,6 @@ class ClubBoardService(
             if(body.category == ClubBoard.Category.NOTICE && roleService.hasClubManagerAuth(actor)) {
                 throw InsufficientAuthException("매니저, 마스터만 공지사항으로 공지사항으로 변경할 수 있습니다. ", HttpStatus.FORBIDDEN)
             }
-
             clubBoard.category = body.category
         }
 
@@ -146,23 +145,11 @@ class ClubBoardService(
             clubBoard.content = body.content
         }
 
-        val clubBoardImgs = clubBoardImgService.getImageList(clubBoard)
-        if(body.imgDeleteList.isNotEmpty()) {
-            val deleteImgSeq: List<Long> = clubBoardImgs
-                .filter { clubBoardImgDto -> body.imgDeleteList.contains(clubBoardImgDto.imgSeq) }
-                .map { dto -> dto.imgSeq }
-
-            clubBoardImgService.softDeleteImageBySeqIn(deleteImgSeq)
-        }
-
-        if(body.imgAddList.isNotEmpty()) {
-            clubBoardImgService.registerImg(clubBoard, body.imgAddList)
+        if(body.imageList.isNotEmpty()) {
+            clubBoardImgService.editClubBoardImages(clubBoard, body.imageList)
         }
     }
 
-    /**
-     * 게시판 글 삭제
-     */
     @Transactional
     fun deleteClubBoard(user: User, clubBoardSeq: Long) {
         val clubBoard: ClubBoard = clubBoardRepository.findBySeq(clubBoardSeq)

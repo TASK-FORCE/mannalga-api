@@ -58,7 +58,6 @@ class ClubService(
         private var roleService: RoleService,
         private var interestService: InterestService,
         private var regionService: RegionService,
-        private var userRepository: UserRepository,
         private var clubUserRepository: ClubUserRepository,
         private var clubInterestRepository: ClubInterestRepository,
         private var clubRegionRepository: ClubRegionRepository,
