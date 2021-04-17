@@ -81,14 +81,14 @@ data class ClubInfoUserDto(
 }
 
 data class ClubInfoDto(
-        var seq: Long?,
-        var name: String,
-        var description: String,
-        var maximumNumber: Long,
-        var userCount: Long?,
-        var mainImageUrl: String?,
-        var clubInterest: List<InterestWithPriorityDto>,
-        var clubRegion: List<RegionWithPriorityDto>
+    var seq: Long?,
+    var name: String,
+    var description: String,
+    var maximumNumber: Long,
+    var userCount: Long?,
+    var mainImageUrl: String?,
+    var interests: List<InterestWithPriorityDto>,
+    var regions: List<RegionWithPriorityDto>
 ) {
     constructor(
             club : Club,
