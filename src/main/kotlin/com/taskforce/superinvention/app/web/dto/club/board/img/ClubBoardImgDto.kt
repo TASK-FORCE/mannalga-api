@@ -4,5 +4,5 @@ import com.taskforce.superinvention.common.util.aws.s3.S3Path
 
 data class ClubBoardImgEditS3Path (
     val imgSeq: Long?,
-    val image: S3Path
+    val img: S3Path
 )

@@ -163,7 +163,7 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
             content   = "내용",
             imageList = listOf(ClubBoardImgEditS3Path(
                 imgSeq = 1,
-                image  = s3path
+                img  = s3path
             )),
             category  = ClubBoard.Category.NORMAL,
         )
@@ -193,9 +193,9 @@ class ClubBoardDocumentation: ApiDocumentationTestV2() {
                     fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
                     fieldWithPath("category").type(JsonFieldType.STRING).description("글 상태, NORMAL | NOTICE"),
                     fieldWithPath("imageList[].imgSeq").type(JsonFieldType.NUMBER).description("이미지 seq (신규등록의 경우 제외)"),
-                    fieldWithPath("imageList[].image.absolutePath").type(JsonFieldType.STRING).description("절대 경로"),
-                    fieldWithPath("imageList[].image.filePath").type(JsonFieldType.STRING).description("상대 경로"),
-                    fieldWithPath("imageList[].image.fileName").type(JsonFieldType.STRING).description("파일 명"),
+                    fieldWithPath("imageList[].img.absolutePath").type(JsonFieldType.STRING).description("절대 경로"),
+                    fieldWithPath("imageList[].img.filePath").type(JsonFieldType.STRING).description("상대 경로"),
+                    fieldWithPath("imageList[].img.fileName").type(JsonFieldType.STRING).description("파일 명"),
                 ),
                 responseFields(
                     *commonResponseField()

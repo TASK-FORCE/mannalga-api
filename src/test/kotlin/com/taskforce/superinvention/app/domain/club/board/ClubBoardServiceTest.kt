@@ -179,7 +179,7 @@ internal class ClubBoardServiceTest {
             imageList = listOf(
                 ClubBoardImgEditS3Path(
                     imgSeq = null,
-                    image = S3Path(
+                    img = S3Path(
                         absolutePath = "신규이미지-절대경로",
                         filePath     = "신규이미지 상대 경로",
                         fileName     = "신규이미지 이름"
@@ -210,7 +210,7 @@ internal class ClubBoardServiceTest {
             imageList = listOf(
                 ClubBoardImgEditS3Path(
                     imgSeq = null,
-                    image = S3Path(
+                    img = S3Path(
                         absolutePath = "신규이미지-절대경로",
                         filePath     = "신규이미지 상대 경로",
                         fileName     = "신규이미지 이름"

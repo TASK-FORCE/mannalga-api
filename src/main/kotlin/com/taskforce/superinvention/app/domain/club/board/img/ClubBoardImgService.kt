@@ -82,8 +82,8 @@ class ClubBoardImgService(
         val imgList =  clubBoardImgRepository.findByClubBoard(clubBoard)
 
         imgList.forEach{ clubBoardImg ->
-            clubBoardImg.deleteFlag = true
-            clubBoardImg.displayOrder      = null
+            clubBoardImg.deleteFlag   = true
+            clubBoardImg.displayOrder = null
         }
 
         // [1] 해당 이미지 DB에서 제거 / flag 처리
@@ -118,9 +118,10 @@ class ClubBoardImgService(
             } else {
                 registerImg(
                     clubBoard = clubBoard,
-                    s3Path    = editS3Path.image,
+                    s3Path    = editS3Path.img,
                     order     = order
                 )
+                order++
             }
         }
     }
