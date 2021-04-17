@@ -549,17 +549,17 @@ class ClubDocumentation: ApiDocumentationTest() {
                                         fieldWithPath("data.content[].roles[].name").type(JsonFieldType.STRING).description("권한 이름"),
                                         fieldWithPath("data.content[].roles[].roleGroupName").type(JsonFieldType.STRING).description("권한 그룹 이름"),
 
-                                        fieldWithPath("data.content[].club.clubInterest[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
-                                        fieldWithPath("data.content[].club.clubInterest[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
-                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
-                                        fieldWithPath("data.content[].club.clubInterest[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
-                                        fieldWithPath("data.content[].club.clubInterest[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
-                                        fieldWithPath("data.content[].club.clubRegion[].region").type(JsonFieldType.OBJECT).description("지역 상세 정보"),
-                                        fieldWithPath("data.content[].club.clubRegion[].region.seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
-                                        fieldWithPath("data.content[].club.clubRegion[].region.name").type(JsonFieldType.STRING).description("모임 지역명"),
-                                        fieldWithPath("data.content[].club.clubRegion[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
-                                        fieldWithPath("data.content[].club.clubRegion[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
-                                        fieldWithPath("data.content[].club.clubRegion[].priority").type(JsonFieldType.NUMBER).description("모임에서 설정한 지역 우선순위")
+                                        fieldWithPath("data.content[].club.interests[].interest.seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
+                                        fieldWithPath("data.content[].club.interests[].interest.name").type(JsonFieldType.STRING).description("모임 관심사명"),
+                                        fieldWithPath("data.content[].club.interests[].interest.interestGroup.seq").type(JsonFieldType.NUMBER).description("모임 관심사 그룹 Seq"),
+                                        fieldWithPath("data.content[].club.interests[].interest.interestGroup.name").type(JsonFieldType.STRING).description("모임 관심사 그룹명"),
+                                        fieldWithPath("data.content[].club.interests[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
+                                        fieldWithPath("data.content[].club.regions[].region").type(JsonFieldType.OBJECT).description("지역 상세 정보"),
+                                        fieldWithPath("data.content[].club.regions[].region.seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                                        fieldWithPath("data.content[].club.regions[].region.name").type(JsonFieldType.STRING).description("모임 지역명"),
+                                        fieldWithPath("data.content[].club.regions[].region.superRegionRoot").type(JsonFieldType.STRING).description("모임 상위 지역"),
+                                        fieldWithPath("data.content[].club.regions[].region.level").type(JsonFieldType.NUMBER).description("모임 지역 단계"),
+                                        fieldWithPath("data.content[].club.regions[].priority").type(JsonFieldType.NUMBER).description("모임에서 설정한 지역 우선순위")
                                 )
                         )
                 )
