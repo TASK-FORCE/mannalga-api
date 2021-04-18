@@ -3,10 +3,11 @@
 On hobbies and club services at Mannalga,
 Register your interests and join the meeting!
 ```
-![image](https://user-images.githubusercontent.com/46917538/115131232-6bf51e80-a031-11eb-91a1-9258d3001293.png)
-![image](https://user-images.githubusercontent.com/46917538/115131104-53d0cf80-a030-11eb-8ad1-e3895f268ffd.png)
-![image](https://user-images.githubusercontent.com/46917538/115131176-f8531180-a030-11eb-879b-a9d5b8d2efbb.png)
-![image](https://user-images.githubusercontent.com/46917538/115131195-30f2eb00-a031-11eb-84d8-c955937fcf56.png)
+![1](https://user-images.githubusercontent.com/46917538/115131293-f0e03800-a031-11eb-868c-06ac3cf5f415.png)
+![2](https://user-images.githubusercontent.com/46917538/115131294-f178ce80-a031-11eb-861a-dfb0b263f48f.png)
+![3](https://user-images.githubusercontent.com/46917538/115131295-f2116500-a031-11eb-9d78-736b2548f7ce.png)
+![4](https://user-images.githubusercontent.com/46917538/115131296-f2116500-a031-11eb-93c4-d9cae88088f2.png)
+
 
 
 
