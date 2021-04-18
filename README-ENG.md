@@ -20,6 +20,9 @@ Register your interests and join the meeting!
 - Spring boot
 - MySQL
 
+## Server Architecture
+![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115133383-ba5ee900-a042-11eb-86dd-a8685e8ada17.png)
+
 ## Installation and Getting Started
 ### Setting MySQL DB And Schema
 The MySQL database can create a schema by running [`src/course/sql/ddl.sql`](https://github.com/TASK-FORCE/mannalga-api/blob/develop/src/course/sql/ddl.sql) attached inside the project.<br>
