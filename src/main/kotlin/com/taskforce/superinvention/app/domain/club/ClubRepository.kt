@@ -2,6 +2,7 @@ package com.taskforce.superinvention.app.domain.club
 
 import com.querydsl.core.Tuple
 import com.querydsl.core.annotations.QueryProjection
+import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
 import com.taskforce.superinvention.app.domain.club.QClub.*
@@ -16,6 +17,7 @@ import com.taskforce.superinvention.app.domain.region.QClubRegion.*
 import com.taskforce.superinvention.app.domain.region.QRegion
 import com.taskforce.superinvention.app.domain.region.QRegion.region
 import com.taskforce.superinvention.app.domain.role.QClubUserRole
+import com.taskforce.superinvention.app.domain.role.QRole
 import com.taskforce.superinvention.app.domain.role.QRoleGroup
 import com.taskforce.superinvention.app.domain.role.Role
 import com.taskforce.superinvention.app.domain.user.QUser.user
@@ -45,9 +47,14 @@ class ClubRepositoryImpl: ClubRepositoryCustom, QuerydslRepositorySupport(Club::
 
     override fun search(text: String?, regionSeqList: List<Long>, interestSeq: Long?, interestGroupSeq: Long?, pageable: Pageable): Page<Club> {
 
+        val clubUserRole = QClubUserRole.clubUserRole
+        val role = QRole.role
+
         val query = from(club)
                 .join(club.clubUser, clubUser).fetchJoin()
-                .join(clubUser.user, user).fetchJoin()
+                .leftJoin(clubUser.user, user).fetchJoin()
+                .leftJoin(clubUser.clubUserRoles, clubUserRole).fetchJoin()
+                .leftJoin(clubUserRole.role, role).fetchJoin()
                 .join(club.clubInterests, clubInterest).fetchJoin()
                 .join(clubInterest.interest, interest).fetchJoin()
                 .join(interest.interestGroup, interestGroup).fetchJoin()
@@ -57,7 +64,8 @@ class ClubRepositoryImpl: ClubRepositoryCustom, QuerydslRepositorySupport(Club::
                     inIfNotEmpty(clubRegion.region, regionSeqList),
                     eqIfExist(clubInterest.interest, interestSeq),
                     eqIfExist(clubInterest.interest.interestGroup, interestGroupSeq),
-                    searchIfExist(club, text)
+                    searchIfExist(club, text),
+                    role.name.`in`(Role.RoleName.CLUB_MEMBER, Role.RoleName.MANAGER, Role.RoleName.MASTER)
                 )
 
         // PAGING

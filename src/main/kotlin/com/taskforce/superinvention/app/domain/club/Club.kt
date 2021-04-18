@@ -33,7 +33,11 @@ class Club(
         mainImageName = ""
     )
 
-    @Formula("(select count(*) from club_user cu where cu.club_seq = seq)")
+    @Formula("(SELECT count(*)\n" +
+            "FROM club_user cu\n" +
+            "JOIN club_user_role cur on cu.seq = cur.club_user_seq\n" +
+            "JOIN role r on cur.role_seq = r.seq\n" +
+            "WHERE r.name IN ('CLUB_MEMBER', 'MANAGER', 'MASTER') AND cu.club_seq = seq)")
     var userCount: Long ?= null
 
     @OneToMany

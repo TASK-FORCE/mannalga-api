@@ -1,8 +1,8 @@
 ### [로컬] 내 클럽 조회
-GET http://localhost:8080/clubs/my
+GET http://localhost:8080/clubs/search
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTYxODc0MzEzOSwiZXhwIjoxNjE5MzQ3OTM5fQ.9i64zN1FJIGB8NF-goqeDBtvSGDoKF566eB_w3O6xAw
 
 ### [개발] 내 클럽 조회
 GET {{host}}/clubs/my
