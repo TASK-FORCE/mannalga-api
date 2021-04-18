@@ -4,7 +4,7 @@ On hobbies and club services at Mannalga,
 Register your interests and join the meeting!
 ```
 ![1](https://user-images.githubusercontent.com/46917538/115131293-f0e03800-a031-11eb-868c-06ac3cf5f415.png)
-![2](https://user-images.githubusercontent.com/46917538/115131294-f178ce80-a031-11eb-861a-dfb0b263f48f.png)
+![2](https://user-images.githubusercontent.com/46917538/115131294-f178ce80-a031-11eb-861a-dfb0b263f48f.png)<br>
 ![3](https://user-images.githubusercontent.com/46917538/115131295-f2116500-a031-11eb-9d78-736b2548f7ce.png)
 ![4](https://user-images.githubusercontent.com/46917538/115131296-f2116500-a031-11eb-93c4-d9cae88088f2.png)
 
