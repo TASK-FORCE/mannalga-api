@@ -21,6 +21,7 @@ import com.taskforce.superinvention.app.web.dto.interest.InterestWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.commonResponseField
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
@@ -251,7 +252,6 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
             name = "테스트 모임",
             description = "테스트 설명",
             maximumNumber = 5,
-            mainImageUrl = "귀여운 에릭의 사진.jpeg",
             interestList = listOf(
                 InterestRequestDto(
                     seq = 4,
@@ -264,6 +264,11 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                     priority = 1
                 )
             ),
+            img  = S3Path (
+                absolutePath  = "img.com/path/asdasd.png",
+                filePath      = "path/asdasd.png",
+                fileName      = "asdasd.png",
+            )
         )
         every { clubService.modifyClub(any(), any(), any()) }.returns(Unit)
 
@@ -283,6 +288,18 @@ class ClubInfoDocumentation: ApiDocumentationTestV2() {
                     getDocumentResponse(),
                     pathParameters(
                         parameterWithName("clubSeq").description("모임 시퀀스")
+                    ),
+                    requestFields(
+                        fieldWithPath("name").type(JsonFieldType.STRING).description("모임 이름"),
+                        fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
+                        fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원"),
+                        fieldWithPath("img.absolutePath").type(JsonFieldType.STRING).description("모임 이미지 도메인 포함 경로"),
+                        fieldWithPath("img.filePath").type(JsonFieldType.STRING).description("모임 이미지 경로"),
+                        fieldWithPath("img.fileName").type(JsonFieldType.STRING).description("모임 이미지 이름"),
+                        fieldWithPath("interestList[].seq").type(JsonFieldType.NUMBER).description("모임 관심사 seq"),
+                        fieldWithPath("interestList[].priority").type(JsonFieldType.NUMBER).description("모임 관심사 우선순위"),
+                        fieldWithPath("regionList[].seq").type(JsonFieldType.NUMBER).description("모임 지역 seq"),
+                        fieldWithPath("regionList[].priority").type(JsonFieldType.NUMBER).description("모임 지역 우선순위"),
                     ),
                     responseFields(
                         *commonResponseField()

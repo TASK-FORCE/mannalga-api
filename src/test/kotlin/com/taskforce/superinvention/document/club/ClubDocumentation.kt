@@ -20,6 +20,7 @@ import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionWithPriorityDto
 import com.taskforce.superinvention.app.web.dto.region.SimpleRegionDto
 import com.taskforce.superinvention.app.web.dto.role.RoleDto
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentRequest
 import com.taskforce.superinvention.config.documentation.ApiDocumentUtil.getDocumentResponse
 import com.taskforce.superinvention.config.test.ApiDocumentationTest
@@ -48,12 +49,16 @@ class ClubDocumentation: ApiDocumentationTest() {
     @WithMockUser(authorities = [Role.MEMBER])
     fun `모임 생성`() {
         val clubAddRequestDto = ClubAddRequestDto(
-                name = "땔감 스터디",
-                description = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
+                name          = "땔감 스터디",
+                description   = "땔깜중에서도 고오급 땔깜이 되기 위해 노력하는 스터디",
                 maximumNumber = 5L,
-                mainImageUrl = "s3urlhost/d2e4dxxadf2E.png",
                 interestList = listOf(InterestRequestDto(3L, 1L), InterestRequestDto(6L, 2L)),
-                regionList = listOf(RegionRequestDto(101L, 1L), RegionRequestDto(102L, 2L))
+                regionList   = listOf(RegionRequestDto(101L, 1L), RegionRequestDto(102L, 2L)),
+                img          = S3Path (
+                    absolutePath  = "img.com/path/asdasd.png",
+                    filePath      = "path/asdasd.png",
+                    fileName      = "asdasd.png",
+                )
         )
 
         val result = mockMvc.perform(
@@ -67,28 +72,30 @@ class ClubDocumentation: ApiDocumentationTest() {
 
         result.andExpect(status().isCreated)
                 .andDo(
-                        document("addClub",
-                                getDocumentRequest(),
-                                getDocumentResponse(),
-                                requestFields(
-                                        fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
-                                        fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
-                                        fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)"),
-                                        fieldWithPath("mainImageUrl").type(JsonFieldType.STRING).description("모임 메인 이미지 url (Nullable)"),
-                                        fieldWithPath("interestList").type(JsonFieldType.ARRAY)
-                                                .description("모임 관심사. 반드시 1개 이상이어야 하며 우선순위가 1인 관심사가 하나 있어야한다. 0개 또는 2개 이상일 수 없다."),
-                                        fieldWithPath("interestList[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
-                                        fieldWithPath("interestList[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위. 우선순위가 1인 관심사가 반드시 하나 필요하다."),
-                                        fieldWithPath("regionList").type(JsonFieldType.ARRAY)
-                                                .description("모임이 활동하는 지역. 1개 이상이어야하며 우선순위가 1인 지역이 하나 있어야한다."),
-                                        fieldWithPath("regionList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
-                                        fieldWithPath("regionList[].priority").type(JsonFieldType.NUMBER).description("활동 지역 우선순위")
-                                ),
-                                responseFields(
-                                        *commonResponseField()
-                                )
-                        )
-                )
+                    document("addClub",
+                            getDocumentRequest(),
+                            getDocumentResponse(),
+                            requestFields(
+                                    fieldWithPath("name").type(JsonFieldType.STRING).description("모임명"),
+                                    fieldWithPath("description").type(JsonFieldType.STRING).description("모임 설명"),
+                                    fieldWithPath("maximumNumber").type(JsonFieldType.NUMBER).description("모임 최대 인원 수(변경 가능)"),
+                                    fieldWithPath("img.absolutePath").type(JsonFieldType.STRING).description("모임 메인 이미지 url - (Nullable)"),
+                                    fieldWithPath("img.filePath").type(JsonFieldType.STRING).description("모임 메인 이미지 경로 (Nullable)"),
+                                    fieldWithPath("img.fileName").type(JsonFieldType.STRING).description("모임 메인 이미지 파일명 (Nullable)"),
+                                    fieldWithPath("interestList").type(JsonFieldType.ARRAY)
+                                            .description("모임 관심사. 반드시 1개 이상이어야 하며 우선순위가 1인 관심사가 하나 있어야한다. 0개 또는 2개 이상일 수 없다."),
+                                    fieldWithPath("interestList[].seq").type(JsonFieldType.NUMBER).description("관심사 시퀀스"),
+                                    fieldWithPath("interestList[].priority").type(JsonFieldType.NUMBER).description("관심사 우선순위. 우선순위가 1인 관심사가 반드시 하나 필요하다."),
+                                    fieldWithPath("regionList").type(JsonFieldType.ARRAY)
+                                            .description("모임이 활동하는 지역. 1개 이상이어야하며 우선순위가 1인 지역이 하나 있어야한다."),
+                                    fieldWithPath("regionList[].seq").type(JsonFieldType.NUMBER).description("지역 시퀀스"),
+                                    fieldWithPath("regionList[].priority").type(JsonFieldType.NUMBER).description("활동 지역 우선순위")
+                            ),
+                            responseFields(
+                                    *commonResponseField()
+                            )
+                    )
+            )
     }
 
     @Test

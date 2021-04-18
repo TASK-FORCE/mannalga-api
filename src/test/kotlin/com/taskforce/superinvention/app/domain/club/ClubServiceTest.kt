@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepo
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
+import com.taskforce.superinvention.app.domain.common.image.webp.convert.WebpConvertService
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.Interest
@@ -24,10 +25,13 @@ import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.role.*
 import com.taskforce.superinvention.app.domain.user.User
 import com.taskforce.superinvention.app.domain.user.UserRepository
+import com.taskforce.superinvention.app.web.dto.club.ClubAddRequestDto
 import com.taskforce.superinvention.app.web.dto.interest.InterestRequestDto
 import com.taskforce.superinvention.app.web.dto.region.RegionRequestDto
 import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.CannotJoinClubException
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
 import com.taskforce.superinvention.config.MockitoHelper
 import com.taskforce.superinvention.config.test.MockTest
 import io.mockk.every
@@ -59,48 +63,54 @@ internal class ClubServiceTest: MockTest() {
     lateinit var meetingRepository: MeetingRepository
     lateinit var meetingApplicationRepository: MeetingApplicationRepository
     lateinit var clubAlbumLikeRepository: ClubAlbumLikeRepository
+    lateinit var awsS3Mo: AwsS3Mo
+    lateinit var webpConvertService: WebpConvertService
 
     @BeforeEach
     fun init() {
-        clubUserRepository = mockk()
-        clubInterestRepository = mockk()
-        clubRegionRepository = mockk()
-        clubRepository = mockk()
-        clubUserRoleRepository = mockk()
-        clubUserService = mockk()
-        interestService = mockk()
-        regionService = mockk()
-        roleService = mockk()
-        userRepository = mockk()
-        clubAlbumRepository = mockk()
-        clubAlbumCommentRepository = mockk()
-        clubBoardRepository = mockk()
-        clubBoardCommentRepository = mockk()
-        clubBoardLikeRepository = mockk()
-        clubBoardImgRepository = mockk()
-        meetingRepository = mockk()
+        clubUserRepository           = mockk()
+        clubInterestRepository       = mockk()
+        clubRegionRepository         = mockk()
+        clubRepository               = mockk()
+        clubUserRoleRepository       = mockk()
+        clubUserService              = mockk()
+        interestService              = mockk()
+        regionService                = mockk()
+        roleService                  = mockk()
+        userRepository               = mockk()
+        clubAlbumRepository          = mockk()
+        clubAlbumCommentRepository   = mockk()
+        clubBoardRepository          = mockk()
+        clubBoardCommentRepository   = mockk()
+        clubBoardLikeRepository      = mockk()
+        clubBoardImgRepository       = mockk()
+        meetingRepository            = mockk()
         meetingApplicationRepository = mockk()
-        clubAlbumLikeRepository = mockk()
+        clubAlbumLikeRepository      = mockk()
+        awsS3Mo                      = mockk()
+        webpConvertService           = mockk()
 
         clubService = ClubService(
-            clubUserRepository = clubUserRepository,
-            clubInterestRepository = clubInterestRepository,
-            clubRegionRepository = clubRegionRepository,
-            clubRepository = clubRepository,
-            clubUserRoleRepository = clubUserRoleRepository,
-            clubUserService = clubUserService,
-            interestService = interestService,
-            regionService = regionService,
-            roleService = roleService,
-            clubAlbumRepository = clubAlbumRepository,
-            clubAlbumCommentRepository = clubAlbumCommentRepository,
-            clubBoardRepository = clubBoardRepository,
-            clubBoardCommentRepository = clubBoardCommentRepository,
-            clubBoardLikeRepository = clubBoardLikeRepository,
-            clubBoardImgRepository = clubBoardImgRepository,
-            meetingRepository = meetingRepository,
+            clubUserRepository           = clubUserRepository,
+            clubInterestRepository       = clubInterestRepository,
+            clubRegionRepository         = clubRegionRepository,
+            clubRepository               = clubRepository,
+            clubUserRoleRepository       = clubUserRoleRepository,
+            clubUserService              = clubUserService,
+            interestService              = interestService,
+            regionService                = regionService,
+            roleService                  = roleService,
+            clubAlbumRepository          = clubAlbumRepository,
+            clubAlbumCommentRepository   = clubAlbumCommentRepository,
+            clubBoardRepository          = clubBoardRepository,
+            clubBoardCommentRepository   = clubBoardCommentRepository,
+            clubBoardLikeRepository      = clubBoardLikeRepository,
+            clubBoardImgRepository       = clubBoardImgRepository,
+            meetingRepository            = meetingRepository,
             meetingApplicationRepository = meetingApplicationRepository,
-            clubAlbumLikeRepository = clubAlbumLikeRepository
+            clubAlbumLikeRepository      = clubAlbumLikeRepository,
+            awsS3Mo                      = awsS3Mo,
+            webpConvertService           = webpConvertService
         )
 
         every { clubRepository.save(any()) }.returns(mockk())
@@ -117,7 +127,6 @@ internal class ClubServiceTest: MockTest() {
         every { clubInterestRepository.deleteAll(any()) }.returns(mockk())
     }
 
-
     @Test
     fun `모임 생성시 관심사 및 지역 제한 해제`() {
         // given
@@ -132,7 +141,9 @@ internal class ClubServiceTest: MockTest() {
             name = "mock club",
             description = "mock desc",
             maximumNumber = 10,
-            mainImageUrl = "asdasd.png"
+            mainImageUrl  = "img.com/path/asdasd.png",
+            mainImagePath = "path/asdasd.png",
+            mainImageName = "asdasd.png",
         ).apply { seq = 1 }
 
         val interestGroup1 = InterestGroup("1번 그룹").apply { seq = 1 }
@@ -149,6 +160,18 @@ internal class ClubServiceTest: MockTest() {
         val subRegion2 = Region(superRegion1, "서브 2 - 루트 1", "루트 1/서브 1 - 루트 1", 2)
         val subRegion3 = Region(superRegion2, "서브 1 - 루트 2", "루트 2/서브 1 - 루트 2", 2)
 
+        val requestBody = ClubAddRequestDto(
+            name          = club.name,
+            description   = club.description,
+            maximumNumber = club.maximumNumber,
+            interestList  = clubInterestDtoList,
+            regionList    = clubRegionDtoList,
+            img           = S3Path(
+                absolutePath = "img.com/temp/img/file.jpg",
+                filePath     = "temp/img/file.jpg",
+                fileName     = "file.jpg",
+            )
+        )
 
         every { interestService.findBySeq(1) }.returns(interest1)
         every { interestService.findBySeq(2) }.returns(interest2)
@@ -157,9 +180,15 @@ internal class ClubServiceTest: MockTest() {
         every { regionService.findBySeq(2) }.returns(subRegion2)
         every { regionService.findBySeq(3) }.returns(subRegion3)
 
+        every { awsS3Mo.moveFile(requestBody.img!!, any()) } returns
+                S3Path(
+                    absolutePath = "img.com/club/${club.seq}/file.jpg",
+                    filePath     = "club/${club.seq}/file.jpg",
+                    fileName     = "file.jpg",
+                )
 
         // when
-        clubService.addClub(club, superUser, clubInterestDtoList, clubRegionDtoList)
+        clubService.addClub(superUser, requestBody)
 
         // then
         // success
@@ -170,14 +199,16 @@ internal class ClubServiceTest: MockTest() {
         // given
         val user = mockk<User>()
         val clubInterestDtoSet = setOf(
-            InterestRequestDto(1, 1), InterestRequestDto(2, 2), InterestRequestDto(3, 3)
+            InterestRequestDto(1, 1),
+            InterestRequestDto(2, 2),
+            InterestRequestDto(3, 3)
         )
 
         val club = Club(
             name = "mock club",
             description = "mock desc",
             maximumNumber = 10,
-            mainImageUrl = "asdasd.png"
+            mainImageUrl = null
         ).apply { seq = 1 }
 
         val interestGroup1 = InterestGroup("1번 그룹").apply { seq = 1 }
@@ -237,55 +268,110 @@ internal class ClubServiceTest: MockTest() {
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 관심사가 없을 때 모임 생성 불가`() {
+    fun `모임 생성시 우선순위 1인 관심사가 없으면 모임을 생성할 수 없다`() {
+
         // given
-        val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
-        val superUser = User("asd").apply { seq = 4 }
+        val club            = Club("모임 이름", "모임 설명", 4, "asd.jpg")
+        val superUser       = User("asd").apply { seq = 4 }
         val interestDtoList = listOf(InterestRequestDto(1, 3))
-        val regionDtoList = listOf(RegionRequestDto(1, 1))
+        val regionDtoList   = listOf(RegionRequestDto(1, 1))
+
+        val requestBody = ClubAddRequestDto(
+            name          = club.name,
+            description   = club.description,
+            maximumNumber = club.maximumNumber,
+            interestList  = interestDtoList,
+            regionList    = regionDtoList,
+            img           = S3Path(
+                absolutePath = club.mainImageUrl   ?: "",
+                filePath     = club.mainImagePath  ?: "",
+                fileName     = club.mainImageName  ?: ""
+            )
+        )
 
         // when, then
-        assertThrows<BizException> ("우선순위가 1인 관심사가 한개가 아닙니다"){ clubService.addClub(clubRequest, superUser, interestDtoList, regionDtoList) }
+        assertThrows<BizException> ("우선순위가 1인 관심사가 한개가 아닙니다"){ clubService.addClub(superUser, requestBody) }
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 관심사가 다수일 때 모임 생성 불가`() {
+    fun `모임 생성시 우선순위 1인 관심사가 여러개이면 모임 생성을 할 수 없다`() {
+
         // given
-        val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
-        val superUser = User("asd").apply { seq = 4 }
+        val club            = Club("모임 이름", "모임 설명", 4, "asd.jpg")
+        val superUser       = User("asd").apply { seq = 4 }
         val interestDtoList = listOf(InterestRequestDto(1, 1), InterestRequestDto(3, 1))
-        val regionDtoList = listOf(RegionRequestDto(1, 1))
+        val regionDtoList   = listOf(RegionRequestDto(1, 1))
+
+        val requestBody = ClubAddRequestDto(
+            name          = club.name,
+            description   = club.description,
+            maximumNumber = club.maximumNumber,
+            interestList  = interestDtoList,
+            regionList    = regionDtoList,
+            img           = S3Path(
+                absolutePath = club.mainImageUrl   ?: "",
+                filePath     = club.mainImagePath  ?: "",
+                fileName     = club.mainImageName  ?: ""
+            )
+        )
+
 
         // when, then
-        assertThrows<BizException> ("우선순위가 1인 관심사가 한개가 아닙니다"){ clubService.addClub(clubRequest, superUser, interestDtoList, regionDtoList) }
+        assertThrows<BizException> ("우선순위가 1인 관심사가 한개가 아닙니다"){ clubService.addClub(superUser, requestBody) }
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 지역이 없을 때 모임 생성 불가`() {
+    fun `모임 생성시 우선순위 1인 지역이 없으면 모임을 생성할 수 없다`() {
         // given
-        val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
-        val superUser = User("asd").apply { seq = 4 }
+        val club            = Club("모임 이름", "모임 설명", 4, "asd.jpg")
+        val superUser       = User("asd").apply { seq = 4 }
         val interestDtoList = listOf(InterestRequestDto(1, 1))
-        val regionDtoList = listOf(RegionRequestDto(1, 3))
+        val regionDtoList   = listOf(RegionRequestDto(1, 3))
+
+        val requestBody = ClubAddRequestDto(
+            name          = club.name,
+            description   = club.description,
+            maximumNumber = club.maximumNumber,
+            interestList  = interestDtoList,
+            regionList    = regionDtoList,
+            img           = S3Path(
+                absolutePath = club.mainImageUrl   ?: "",
+                filePath     = club.mainImagePath  ?: "",
+                fileName     = club.mainImageName  ?: ""
+            )
+        )
 
         // when, then
-        assertThrows<BizException> ("우선순위가 1인 지역이 한개가 아닙니다"){ clubService.addClub(clubRequest, superUser, interestDtoList, regionDtoList) }
+        assertThrows<BizException> ("우선순위가 1인 지역이 한개가 아닙니다") { clubService.addClub(superUser, requestBody) }
     }
 
     @Test
-    fun `모임 생성시 우선순위 1인 지역이 다수일 때 모임 생성 불가`() {
+    fun `모임 생성시 우선순위 1인 지역이 여러개이면 모임을 생성할 수 없다`() {
         // given
-        val clubRequest = Club("모임 이름", "모임 설명", 4, "asd.jpg")
-        val superUser = User("asd").apply { seq = 4 }
+        val club            = Club("모임 이름", "모임 설명", 4, "asd.jpg")
+        val superUser       = User("asd").apply { seq = 4 }
         val interestDtoList = listOf(InterestRequestDto(1, 1))
-        val regionDtoList = listOf(RegionRequestDto(1, 1), RegionRequestDto(12, 1))
+        val regionDtoList   = listOf(RegionRequestDto(1, 1), RegionRequestDto(12, 1))
+
+        val requestBody = ClubAddRequestDto(
+            name          = club.name,
+            description   = club.description,
+            maximumNumber = club.maximumNumber,
+            interestList  = interestDtoList,
+            regionList    = regionDtoList,
+            img           = S3Path(
+                absolutePath = club.mainImageUrl   ?: "",
+                filePath     = club.mainImagePath  ?: "",
+                fileName     = club.mainImageName  ?: ""
+            )
+        )
 
         // when, then
-        assertThrows<BizException> ("우선순위가 1인 지역이 한개가 아닙니다"){ clubService.addClub(clubRequest, superUser, interestDtoList, regionDtoList) }
+        assertThrows<BizException> ("우선순위가 1인 지역이 한개가 아닙니다") { clubService.addClub(superUser, requestBody) }
     }
 
     @Test
-    fun `모임이 최대 인원일 때 모임 가입 불가`() {
+    fun `모임이 최대 인원일 때 모임에 가입 할 수 없다`() {
         // given
         val club = Club("모임", "설명", 5, null).apply { seq = 56 }
         val user = User("asd").apply { seq = 4 }

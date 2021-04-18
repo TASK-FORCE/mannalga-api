@@ -10,6 +10,7 @@ import com.taskforce.superinvention.app.domain.club.board.like.ClubBoardLikeRepo
 import com.taskforce.superinvention.app.domain.club.user.ClubUser
 import com.taskforce.superinvention.app.domain.club.user.ClubUserRepository
 import com.taskforce.superinvention.app.domain.club.user.ClubUserService
+import com.taskforce.superinvention.app.domain.common.image.webp.convert.WebpConvertService
 import com.taskforce.superinvention.app.domain.interest.ClubInterest
 import com.taskforce.superinvention.app.domain.interest.ClubInterestRepository
 import com.taskforce.superinvention.app.domain.interest.interest.InterestService
@@ -38,6 +39,9 @@ import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.club.CannotJoinClubException
 import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
+import com.taskforce.superinvention.common.util.aws.s3.AwsS3Mo
+import com.taskforce.superinvention.common.util.aws.s3.S3Path
+import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -70,7 +74,10 @@ class ClubService(
         private val clubBoardImgRepository: ClubBoardImgRepository,
         private val meetingRepository: MeetingRepository,
         private val meetingApplicationRepository: MeetingApplicationRepository,
-        private val clubAlbumLikeRepository: ClubAlbumLikeRepository
+        private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
+        private val webpConvertService: WebpConvertService,
+        private val awsS3Mo: AwsS3Mo,
+
 ) {
 
     companion object {
@@ -132,32 +139,51 @@ class ClubService(
      * 새로운 모임을 생성한다.
      */
     @Transactional
-    fun addClub(club: Club, superUser: User, interestDtoList: List<InterestRequestDto>, regionDtoList: List<RegionRequestDto>) {
+    fun addClub(superUser: User, request: ClubAddRequestDto) {
+
+        val club = Club(name = request.name,
+            description = request.description,
+            maximumNumber = request.maximumNumber,
+            mainImageUrl  = null,
+            mainImagePath = null,
+            mainImageName = null,
+        )
+
         // validation
-        if (interestDtoList.stream().filter { e -> e.priority == 1L }.count() != 1L)
+        if (request.interestList.filter { e -> e.priority == 1L }.count() != 1)
             throw BizException("우선순위가 1인 관심사가 한개가 아닙니다", HttpStatus.BAD_REQUEST)
 
-        if (regionDtoList.stream().filter { e -> e.priority == 1L }.count() != 1L)
+        if (request.regionList.filter { e -> e.priority == 1L }.count() != 1)
             throw BizException("우선순위가 1인 지역이 한개가 아닙니다", HttpStatus.BAD_REQUEST)
 
         // 1. 모임 생성
         val savedClub = clubRepository.save(club)
 
-        // 2. 생성한 유저가 해당 모임에 들어감
+        // 2. 모임 사진 생성
+        if(request.img != null) {
+            val imgFolder = "club/${club.seq}"
+            val movedFile: S3Path = awsS3Mo.moveFile(request.img!!, "$imgFolder/${request.img!!.fileName}")
+
+            club.mainImageUrl  = movedFile.absolutePath
+            club.mainImagePath = movedFile.filePath
+            club.mainImageName = movedFile.fileName
+        }
+
+        // 3. 생성한 유저가 해당 모임에 들어감
         val superUserClub = ClubUser(savedClub, superUser, false)
         val savedClubUser = clubUserRepository.save(superUserClub)
 
-        // 3. 해당 클럽에 관심사 부여
-        val clubInterestList = interestDtoList
+        // 4. 해당 클럽에 관심사 부여
+        val clubInterestList = request.interestList
             .map { e -> ClubInterest(savedClub, interestService.findBySeq(e.seq), e.priority) }
             .toList()
         clubInterestRepository.saveAll(clubInterestList)
 
-        // 4. 해당 클럽에 지역 부여
-        val clubRegionList = regionDtoList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
+        // 5. 해당 클럽에 지역 부여
+        val clubRegionList = request.regionList.map { e -> ClubRegion(savedClub, regionService.findBySeq(e.seq), e.priority) }
         clubRegionRepository.saveAll(clubRegionList)
 
-        // 5. 생성한 유저에게 모임장 권한을 부여
+        // 6. 생성한 유저에게 모임장 권한을 부여
         val masterRole = roleService.findByRoleName(Role.RoleName.MASTER)
         val clubUserRole = ClubUserRole(savedClubUser, masterRole)
         clubUserRoleRepository.save(clubUserRole)
@@ -316,11 +342,6 @@ class ClubService(
         return PageDto(result)
     }
 
-    fun getManagers(clubSeq: Long): List<ClubUserWithUserDto> {
-        val clubManagers = clubUserRepository.findManagersByClubSeq(clubSeq)
-        return clubManagers.map(::ClubUserWithUserDto)
-    }
-
     @Transactional
     fun withdraw(clubUserSeq: Long, actorClubUser: Long) {
         val withdrawClubUser =
@@ -409,8 +430,6 @@ class ClubService(
             clubAlbumRepository.deleteAll(clubAlbumList)
         }
 
-
-
         // 모임 게시판
         val clubBoardList = clubBoardRepository.searchInList(Pageable.unpaged(), null, ClubBoardSearchOpt(), clubSeq).toList()
         LOG.info("삭제 대상 게시판 ${clubBoardList.size}개")
@@ -447,8 +466,6 @@ class ClubService(
             clubBoardRepository.deleteAll(clubBoardList)
         }
 
-
-
         // 만남
         val meetings = meetingRepository.getPagedMeetings(clubSeq, Pageable.unpaged()).toList()
         LOG.info("삭제 대상 만남 ${meetings.size}개")
@@ -466,9 +483,6 @@ class ClubService(
             LOG.info("만남 삭제 시작")
             meetingRepository.deleteAll(meetings)
         }
-
-
-
 
         if (clubUserRoleList.isNotEmpty()) {
             LOG.info("모임원 권한 삭제 시작")
@@ -497,9 +511,12 @@ class ClubService(
 
     @Transactional
     fun modifyClub(clubSeq: Long, user: User, request: ClubAddRequestDto) {
-        val club = clubRepository.findBySeq(clubSeq)
-        val clubUser = clubUserRepository.findByClubAndUser(club, user) ?: throw BizException("존재하지 않는 모임원의 요청입니다.", HttpStatus.FORBIDDEN)
-        if (!roleService.hasClubManagerAuth(clubUser)) throw BizException("모임의 매니저 이상만 모임 수정이 가능합니다.", HttpStatus.FORBIDDEN)
+        val club     = clubRepository.findBySeq(clubSeq)
+        val clubUser = clubUserRepository.findByClubAndUser(club, user)
+            ?: throw BizException("존재하지 않는 모임원의 요청입니다.", HttpStatus.FORBIDDEN)
+
+        if (!roleService.hasClubManagerAuth(clubUser))
+            throw BizException("모임의 매니저 이상만 모임 수정이 가능합니다.", HttpStatus.FORBIDDEN)
 
         changeClubInterests(user, clubSeq, request.interestList.toSet())
         changeClubRegions(user, clubSeq, request.regionList.toSet())
@@ -508,8 +525,22 @@ class ClubService(
             name = request.name
             description = request.description
             maximumNumber = request.maximumNumber
-            mainImageUrl = request.mainImageUrl
         }
 
+        if(request.img != null) {
+            val imgFolder = "club/${club.seq}"
+            val movedFile: S3Path = awsS3Mo.moveFile(request.img!!, "$imgFolder/${request.img!!.fileName}")
+            webpConvertService.convertToWebP(movedFile)
+
+            if(club.mainImageUrl != null) {
+                val webpFilePath  = "${FilenameUtils.removeExtension(club.mainImageUrl!!)}.webp"
+                awsS3Mo.deleteFile(club.mainImageUrl!!)
+                awsS3Mo.deleteFile(webpFilePath)
+            }
+
+            club.mainImageUrl  = request.img?.absolutePath
+            club.mainImagePath = request.img?.filePath
+            club.mainImageName = request.img?.fileName
+        }
     }
 }

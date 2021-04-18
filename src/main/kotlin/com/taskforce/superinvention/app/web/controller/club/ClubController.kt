@@ -59,12 +59,8 @@ class ClubController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addClub(@AuthUser user: User, @RequestBody request: ClubAddRequestDto): ResponseDto<Any?> {
-        val club = Club(name = request.name,
-            description = request.description,
-            maximumNumber = request.maximumNumber,
-            mainImageUrl = request.mainImageUrl)
 
-        clubService.addClub(club, user, request.interestList, request.regionList)
+        clubService.addClub(user, request)
 
         return ResponseDto(data = ResponseDto.EMPTY, message = "")
     }
