@@ -9,11 +9,11 @@ open class InsufficientAuthException(
 ) : BizException(message, httpStatus) {
         constructor(): this(
                 message    = "권한이 충분하지 않습니다.",
-                httpStatus = HttpStatus.UNAUTHORIZED
+                httpStatus = HttpStatus.FORBIDDEN
         )
 
         constructor(message: String): this(
                 message    = message,
-                httpStatus = HttpStatus.UNAUTHORIZED
+                httpStatus = HttpStatus.FORBIDDEN
         )
 }

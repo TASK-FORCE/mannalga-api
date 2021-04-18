@@ -56,10 +56,10 @@ class MeetingController(
 
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
-                ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+                ?: throw BizException("모임원이 아닙니다!", HttpStatus.FORBIDDEN)
 
         if (!roleService.hasClubManagerAuth(clubUser)) {
-            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
+            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.FORBIDDEN)
         }
 
         val data = meetingService.createMeeting(meetingRequestDto, clubUser.seq!!)
@@ -75,10 +75,10 @@ class MeetingController(
                       @RequestBody @Valid meetingRequestDto: MeetingRequestDto): ResponseDto<MeetingDto> {
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
-                ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+                ?: throw BizException("모임원이 아닙니다!", HttpStatus.FORBIDDEN)
 
         if (meetingService.getMeeting(meetingSeq, clubUser.seq).regClubUser.seq != clubUser.seq) {
-            throw BizException("만남은 작성자만 수정할 수 있습니다.", HttpStatus.UNAUTHORIZED)
+            throw BizException("만남은 작성자만 수정할 수 있습니다.", HttpStatus.FORBIDDEN)
         }
 
         meetingService.checkClubMeeting(clubSeq, meetingSeq)
@@ -93,10 +93,10 @@ class MeetingController(
                       @PathVariable meetingSeq: Long): ResponseDto<String> {
         // check auth
         val clubUser = clubService.getClubUser(clubSeq, user)
-                ?: throw BizException("모임원이 아닙니다!", HttpStatus.UNAUTHORIZED)
+                ?: throw BizException("모임원이 아닙니다!", HttpStatus.FORBIDDEN)
 
         if (!roleService.hasClubManagerAuth(clubUser)) {
-            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.UNAUTHORIZED)
+            throw BizException("매니저 이상의 권한이 필요합니다.", HttpStatus.FORBIDDEN)
         }
 
         meetingService.checkClubMeeting(clubSeq, meetingSeq)
