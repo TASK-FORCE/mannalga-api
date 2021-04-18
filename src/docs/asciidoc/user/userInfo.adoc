@@ -1,0 +1,17 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+Request
+include::{sub-snippet}/user-info/http-request.adoc[]
+
+Response
+include::{sub-snippet}/user-info/http-response.adoc[]
+include::{sub-snippet}/user-info/response-fields.adoc[]

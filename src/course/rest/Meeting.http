@@ -1,0 +1,112 @@
+### 모임 내 모든 만남 조회 [준]
+GET {{host}}/clubs/6164/meetings?size=1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남조회2
+GET {{host}}/clubs/6327/meetings?size=10&page=1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남조회3
+GET {{host}}/clubs/6327/meetings?size=1&page=0
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 수정 [준]
+PUT {{host}}/clubs/6327/meetings/8708 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-dong}}
+Accept: application/json
+
+{
+  "title" : "modified Title111",
+  "content" : "modified content",
+  "startTimestamp" : "2020-08-08 10:00:00",
+  "endTimestamp" : "2020-08-09 11:00:00",
+  "maximumNumber" : 10
+}
+
+### 만남 삭제 [준]
+DELETE {{host}}/clubs/115/meetings/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 생성 [준]
+POST {{host}}/clubs/6164/meetings HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+{
+  "title" : "test title",
+  "content" : "test content",
+  "startTimestamp" : "2020-08-08 10:00:00",
+  "endTimestamp" : "2020-08-09 11:00:00",
+  "maximumNumber" : 20
+}
+
+### 만남 신청 [준]
+POST {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 신청 취소 [준]
+DELETE {{host}}/clubs/115/meetings/6111/applications/6112 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 신청 취소 [준]
+DELETE {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 신청 정보 [준]
+GET {{host}}/clubs/6164/meetings/6228/applications HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 개별건 조회 [준]
+GET {{host}}/clubs/8995/meetings/8718
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 개별건 조회 [준]
+GET {{host}}/clubs/6164/meetings/612314
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 상태 조회 [준]
+GET {{host}}/clubs/6164/meetings/6228/applications/status HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+### 만남 생성
+POST {{host}}/clubs/6164/meetings HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-jun}}
+Accept: application/json
+
+{
+  "title" : "제약조건 테스트 제목",
+  "content" : "제약조건 테스트 내용",
+  "startTimestamp" : "2020-08-08 10:00:00",
+  "endTimestamp" : "2020-08-09 11:00:00",
+  "maximumNumber" : 1,
+  "region" : "건대 엔젤리너스",
+  "regionURL" : "map.naver.com/aabb",
+  "cost" : 5000
+}
+
+### 만남 조회 디버깅

@@ -1,0 +1,28 @@
+### [로컬] 모임 상세 조회 - 클럽 미가입 && 로그인 상태
+GET {{host}}/clubs/6164
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### [로컬] 모임 상세 조회 - 클럽 가입 && 로그인 상태
+GET {{host}}/clubs/8936
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### [로컬] 클럽 상세 정보 조회 - 비로그인 상태
+GET {{host}}/clubs/6174
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+
+### 모임 관심사 그룹으로 검색
+GET {{host}}/clubs/search?regionSeq=501
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}
+
+### 모임 그룹으로 검색
+GET {{host}}/clubs/search?size=20&page=0
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}

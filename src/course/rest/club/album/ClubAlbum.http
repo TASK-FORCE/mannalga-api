@@ -1,0 +1,41 @@
+### 모임 사진첩 등록
+POST {{host}}/club/6327/album
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "title": "1234",
+  "image": {
+    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210413125934-3b9266dc-b87b-46ed-9244-84ec9eb87508-test-img.jpg",
+    "filePath": "temp/img/20210413125934-3b9266dc-b87b-46ed-9244-84ec9eb87508-test-img.jpg",
+    "fileName": "20210413125934-3b9266dc-b87b-46ed-9244-84ec9eb87508-test-img.jpg"
+  }
+}
+
+### 모임 사진첩 수정
+PUT {{host}}/club/6327/album/9078
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "title": "12342222",
+  "image": {
+    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210413011914-11e7686f-3e7f-4107-b0c5-960a5e1600dc-large-sizessssss.jpg",
+    "filePath": "temp/img/20210413011914-11e7686f-3e7f-4107-b0c5-960a5e1600dc-large-sizessssss.jpg",
+    "fileName": "20210413011914-11e7686f-3e7f-4107-b0c5-960a5e1600dc-large-sizessssss.jpg"
+  }
+}
+
+### 모임 사진첩  사진첩 조회
+GET {{host}}/club/6327/album?title=2
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### 모임 사진첩 단일 조회
+GET {{host}}/club/6327/album/9068
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}

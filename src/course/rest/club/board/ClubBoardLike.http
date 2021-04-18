@@ -1,0 +1,11 @@
+### 내 모임 게시글 좋아요 등록
+POST {{host}}/club/6174/board/2/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+###  내 모임 게시글 좋아요 취소
+DELETE {{host}}/club/6174/board/2/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}

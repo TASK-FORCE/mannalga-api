@@ -1,0 +1,22 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+Request
+....
+요구 Request Header 없음
+....
+
+include::{sub-snippet}/saveKakaoToken/http-request.adoc[]
+include::{sub-snippet}/saveKakaoToken/request-fields.adoc[]
+
+Response
+include::{sub-snippet}/saveKakaoToken/response-fields.adoc[]
+include::{sub-snippet}/saveKakaoToken/http-response.adoc[]

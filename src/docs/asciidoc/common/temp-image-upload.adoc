@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/common
+
+Request
+include::{sub-snippet}/temp-image-upload/http-request.adoc[]
+include::{sub-snippet}/temp-image-upload/request-parts.adoc[]
+include::{sub-snippet}/temp-image-upload/request-parameters.adoc[]
+
+Response
+include::{sub-snippet}/temp-image-upload/response-fields.adoc[]
+include::{sub-snippet}/temp-image-upload/http-response.adoc[]

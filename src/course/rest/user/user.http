@@ -1,0 +1,77 @@
+### 최종 회원 가입 여부 조회
+GET {{host}} /users/check-already-register
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxODc0NDc3MSwiZXhwIjoxNjE5MzQ5NTcxfQ.f3Hx5zrH6T_-g3UvRQddpWvdzTAoxfZbqOAfxw8hbcg
+
+### 유저 백도어 조회
+GET {{host}}/users/door/꽑꽑이
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+
+### 유저리스트 백도어 조회
+GET {{host}}/users/door
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+
+### 유저 앱토큰 조회
+GET {{host}}/users/door-seq/1
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+
+### 카카오 토큰 조회
+GET https://kapi.kakao.com/v1/user/access_token_info HTTP/1.1
+Authorization: Bearer BoXgGmmlQRziyEx8BZdtwD463IQHK
+Content-type: application/x-www-form-urlencoded;charset=utf-8
+
+### 카카오 유저 정보
+GET {{host}}/users/kakao-profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxODc0NDc3MSwiZXhwIjoxNjE5MzQ5NTcxfQ.f3Hx5zrH6T_-g3UvRQddpWvdzTAoxfZbqOAfxw8hbcg
+
+### 카카오 유저 정보
+GET {{host}}/users/kakao-profile
+Authorization: Bearer {{token-jun}}
+
+### 카카오 토큰 저장
+POST {{host}}/users/saveKakaoToken
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+
+{
+"access_token": "kvoxr1NmDAdKG2nra_2NvXJ1S1c3thIwpdvRVQo9cxgAAAF4g2SiIQ",
+"expireds_in": 21599,
+"refresh_token": "qR-JoV1JHCHCtAFjSL8rhv_ZF4_nMhEIKOIc7wo9cxgAAAF4g2SiIA",
+"refresh_token_expires_in": 5183999
+}
+
+### 회원 탈퇴
+DELETE {{host}}/users/withdraw
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-tester}}
+
+### 내 정보
+GET {{host}}/users/profile
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTYxODY3NTk4NiwiZXhwIjoxNjE4Njc1ODY2fQ.A9y49aFlBduAMkVMfdWNFrudeJ0YtaMEGJ3Honk4Rl4
+
+
+### 탈퇴
+PATCH {{host}}/users
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+{
+  "profileImage" : {
+    "absolutePath": "https://super-invention-static.s3.ap-northeast-2.amazonaws.com/temp/img/20210327045227-99731ad1-213d-4075-a032-79f3508fdf18-test-img.jpg",
+    "filePath": "temp/img/20210327045227-99731ad1-213d-4075-a032-79f3508fdf18-test-img.jpg",
+    "fileName": "20210327045227-99731ad1-213d-4075-a032-79f3508fdf18-test-img.jpg"
+  }
+}
+
+### 탈퇴2
+DELETE {{host}}/users/withdraw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxODcxNDE3OSwiZXhwIjoxNjE5MzE4OTc5fQ.7DYUDnCojty95oHF8ikOWVJigrIdSTVUVuiFEJJ9rv0
+Accept: application/json

@@ -1,0 +1,11 @@
+### 내 클럽 조회
+GET {{host}}/clubs/my
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### 모임 매니저 조회
+GET {{host}}/clubs/6164/roles/managers
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}

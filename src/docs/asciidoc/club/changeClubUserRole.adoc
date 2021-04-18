@@ -1,0 +1,44 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+
+
+Request
+include::{sub-snippet}/changeClubUserRole/http-request.adoc[]
+|===
+| 권한번호 | 권한코드 | 권한명
+
+| 1
+| NONE
+| 없음 (미사용)
+
+| 2
+| MEMBER
+| 회원 (모임 미가입)
+
+| 3
+| CLUB_MEMBER
+| 모임원
+
+| 4
+| MANAGER
+| 매니저
+
+| 5
+| MASTER
+| 모임장
+|===
+
+Response
+include::{sub-snippet}/changeClubUserRole/response-fields.adoc[]
+
+include::{sub-snippet}/changeClubUserRole/http-response.adoc[]
+

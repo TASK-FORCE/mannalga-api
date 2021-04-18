@@ -1,0 +1,51 @@
+### [로컬] 내 클럽 조회
+GET http://localhost:8080/clubs/search
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTYxODc0MzEzOSwiZXhwIjoxNjE5MzQ3OTM5fQ.9i64zN1FJIGB8NF-goqeDBtvSGDoKF566eB_w3O6xAw
+
+### [개발] 내 클럽 조회
+GET {{host}}/clubs/my
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-dong}}
+
+
+### [개발] 클럽 가입
+POST {{host}} /clubs/6212/users
+Accept: application/json
+Authorization: Bearer {{token-dong}}
+
+
+### 모임 삭제
+DELETE {{host}}/clubs/6386
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}
+
+### 모임 수정
+PUT {{host}}/clubs/6164
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-jun}}
+
+{
+  "name": "제목을 이렇게 바꿔보자",
+  "description": "설명을 이렇게 바꿔보자",
+  "maximumNumber": 55,
+  "mainImageUrl": null,
+  "interestList":
+  [
+    {
+      "seq": 10,
+      "priority": 1
+    }
+  ],
+  "regionList":
+  [
+  {
+    "seq": 120,
+    "priority": 1
+  }
+  ]
+}

@@ -1,0 +1,21 @@
+ifndef::snippets[]
+:sub-snippet: ../../../../../build/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:site-url: /build/asciidoc/html5/state
+
+Request
+include::{sub-snippet}/club-board-comment-register/http-request.adoc[]
+include::{sub-snippet}/club-board-comment-register/request-parameters.adoc[]
+include::{sub-snippet}/club-board-comment-register/path-parameters.adoc[]
+include::{sub-snippet}/club-board-comment-register/request-fields.adoc[]
+
+Response
+include::{sub-snippet}/club-board-comment-register/response-fields.adoc[]
+include::{sub-snippet}/club-board-comment-register/http-response.adoc[]
+

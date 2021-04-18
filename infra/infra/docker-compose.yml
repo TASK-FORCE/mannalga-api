@@ -1,0 +1,30 @@
+version: '3'
+services:
+  super-invention-server:
+    image: sightstudio/superinvention
+    ports:
+      - '8080:8080'
+    environment:
+      spring_datasource_url: $spring_datasource_url
+      spring_datasource_username: $spring_datasource_username
+      spring_datasource_password: $spring_datasource_password
+      oauth_kakao_client_id: $oauth_kakao_client_id
+      aws_s3_accessKey: $aws_s3_accessKey
+      aws_s3_secretAccessKey: $aws_s3_secretAccessKey
+      host_static_path: $host_static_path
+      jwt_token_secret_key: $jwt_token_secret_key
+      aws_s3_endpointUrl: $aws_s3_endpointUrl
+      JAVA_OPTS: "-javaagent:/pinpoint-agent/pinpoint-bootstrap-${PINPOINT_VERSION}.jar -Dpinpoint.agentId=${AGENT_ID} -Dpinpoint.applicationName=${APP_NAME}"
+    volumes:
+      - data-volume:/pinpoint-agent
+    networks:
+      - super-invention
+
+volumes:
+  data-volume:
+  external: true
+
+networks:
+  super-invention:
+    driver: bridge
+    external: true

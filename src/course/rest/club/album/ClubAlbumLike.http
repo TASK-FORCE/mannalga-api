@@ -1,0 +1,24 @@
+### 내 클럽 사진첩 좋아요 등록
+POST {{host}}/club/6327/album/6652/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### 내 클럽 사진첩 좋아요 등록
+POST {{host}}/club/6327/album/6652/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-dong}}
+
+
+###  내 클럽 사진첩 좋아요 취소
+DELETE {{host}}/club/6327/album/6652/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
+
+### 내 클럽 사진첩 좋아요 등록
+DELETE {{host}}/club/6174/album/6451/like
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer {{token-sdm}}
