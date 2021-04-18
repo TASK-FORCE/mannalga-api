@@ -43,19 +43,16 @@ class UserController(
         return ResponseDto(data = userInfoService.getUserInfo(user))
     }
 
-    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/check-already-register")
     fun checkMember(@AuthUser user: User): ResponseDto<UserMemberCheckDto> {
         return ResponseDto(data = UserMemberCheckDto(user.isRegistered ?: false))
     }
 
-    @Secured(Role.NONE, Role.MEMBER)
     @GetMapping("/kakao-profile")
     fun getKakaoUserInfo(@AuthUser user: User): ResponseDto<KakaoUserInfo> {
         return ResponseDto(data = userService.getKakaoUserInfo(user))
     }
 
-    @Secured(Role.NONE, Role.MEMBER)
     @PostMapping("/regist")
     @ResponseStatus(HttpStatus.CREATED)
     fun registerUser(@AuthUser user: User,
