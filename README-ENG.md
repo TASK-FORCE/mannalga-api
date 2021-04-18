@@ -1,4 +1,4 @@
-# SUPER INVENTION
+# MANNALGA
 ```
 On hobbies and club services at Mannalga,
 Register your interests and join the meeting!
