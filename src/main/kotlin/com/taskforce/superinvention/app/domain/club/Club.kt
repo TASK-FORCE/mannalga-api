@@ -15,8 +15,23 @@ class Club(
     var name          : String,
     var description   : String,
     var maximumNumber : Long,
-    var mainImageUrl  : String?
+    var mainImageUrl   : String?,  // 절대경로 (도메인 포함)
+    var mainImagePath  : String?,  // 경로
+    var mainImageName  : String?,  // 파일명
 ): BaseEntity() {
+
+    // test - only
+    constructor(name          : String,
+                description   : String,
+                maximumNumber : Long,
+                mainImageUrl  : String?): this(
+        name          = name,
+        description   = description,
+        maximumNumber = maximumNumber,
+        mainImageUrl  = mainImageUrl,
+        mainImagePath = "",
+        mainImageName = ""
+    )
 
     @Formula("(select count(*) from club_user cu where cu.club_seq = seq)")
     var userCount: Long ?= null
