@@ -54,16 +54,11 @@ class JwtTokenProvider(
     }
 
     fun validateToken(token: String?): Boolean {
-        return try {
-            Jwts.parser()
-                .setSigningKey(secretKey.toByteArray())
-                .parseClaimsJws(token)
-            true
-        } catch (e: ExpiredJwtException) {
-            throw BizException("JWT 토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED)
-        } catch (e: JwtException) {
-            throw BizException("잘못된 JWT 토큰입니다.", HttpStatus.UNAUTHORIZED)
-        }
+        Jwts.parser()
+            .setSigningKey(secretKey.toByteArray())
+            .parseClaimsJws(token)
+
+        return  true
     }
 
     private fun getUserId(token: String): String {
