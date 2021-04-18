@@ -12,9 +12,9 @@ import javax.persistence.*
 @Entity
 @JsonIdentityInfo(property = "objId", generator = ObjectIdGenerators.StringIdGenerator::class)
 class Club(
-    var name          : String,
-    var description   : String,
-    var maximumNumber : Long,
+    var name           : String,
+    var description    : String,
+    var maximumNumber  : Long,
     var mainImageUrl   : String?,  // 절대경로 (도메인 포함)
     var mainImagePath  : String?,  // 경로
     var mainImageName  : String?,  // 파일명

@@ -20,7 +20,8 @@ data class ClubAlbumCommentListDto(
         val isWrittenByMe: Boolean,
         val depth: Long,
         var childCommentCnt   : Long    ? = 0,
-        val onlyDirectChildCnt: Boolean ?= false
+        val onlyDirectChildCnt: Boolean ?= false,
+        val isDeleted : Boolean
 ) {
 
     constructor(clubAlbumComment: ClubAlbumComment) :this(
@@ -32,7 +33,8 @@ data class ClubAlbumCommentListDto(
             writerSeq        = clubAlbumComment.clubUser.user.seq!!,
             depth            = clubAlbumComment.depth,
             imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
-            isWrittenByMe    = false
+            isWrittenByMe    = false,
+            isDeleted        = clubAlbumComment.deleteFlag!!
     ) {
         childCommentCnt = if(onlyDirectChildCnt == true) {
             clubAlbumComment.subCommentCnt
@@ -50,7 +52,8 @@ data class ClubAlbumCommentListDto(
         writerSeq        = clubAlbumComment.clubUser.user.seq!!,
         depth            = clubAlbumComment.depth,
         imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
-        isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq
+        isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq,
+        isDeleted        = clubAlbumComment.deleteFlag!!
     ) {
         childCommentCnt = if(onlyDirectChildCnt == true) {
             clubAlbumComment.subCommentCnt
@@ -69,7 +72,8 @@ data class ClubAlbumCommentListDto(
         imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
         depth            = clubAlbumComment.depth,
         childCommentCnt  = clubAlbumComment.subCommentCnt ?: 0,
-        isWrittenByMe    = false
+        isWrittenByMe    = false,
+        isDeleted        = clubAlbumComment.deleteFlag!!
     )
 
     constructor(clubAlbumComment: ClubAlbumCommentCTE, user: User): this(
@@ -82,6 +86,7 @@ data class ClubAlbumCommentListDto(
         imgUrl           = clubAlbumComment.clubUser.user.profileImageLink ?: "",
         depth            = clubAlbumComment.depth,
         childCommentCnt  = clubAlbumComment.subCommentCnt ?: 0,
-        isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq
+        isWrittenByMe    = user.seq == clubAlbumComment.clubUser.user.seq,
+        isDeleted        = clubAlbumComment.deleteFlag!!
     )
 }

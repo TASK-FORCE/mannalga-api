@@ -12,13 +12,13 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/club/{clubSeq}/album/{clubAlbumSeq}")
+@RequestMapping("/club/{clubSeq}/album/{clubAlbumSeq}/comment")
 class ClubAlbumCommentController(
         private val clubAlbumCommentService: ClubAlbumCommentService
 ) {
 
     // 클럽 댓글 조회
-    @GetMapping("/comment")
+    @GetMapping
     fun getClubAlbumComments(pageable: Pageable,
                              @AuthUser     user        : User,
                              @PathVariable clubSeq     : Long,
@@ -28,7 +28,7 @@ class ClubAlbumCommentController(
     }
 
     // 클럽 대댓글 조회
-    @GetMapping("/comment/{parentCommentSeq}")
+    @GetMapping("/{parentCommentSeq}")
     fun getClubAlbumComments(@AuthUser     user        : User,
                              @PathVariable clubSeq     : Long,
                              @PathVariable clubAlbumSeq: Long,
@@ -39,7 +39,7 @@ class ClubAlbumCommentController(
     }
 
     // 클럽 댓글 등록
-    @PostMapping("/comment")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun registerClubAlbumComment(@AuthUser     user        : User,
                                  @PathVariable clubSeq     : Long,

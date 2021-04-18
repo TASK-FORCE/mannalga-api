@@ -144,7 +144,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                                 fieldWithPath("data.content[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부"),
                                 fieldWithPath("data.content[].depth").type(JsonFieldType.NUMBER).description("현재 댓글 뎁스"),
                                 fieldWithPath("data.content[].childCommentCnt").type(JsonFieldType.NUMBER).description("하위 댓글 개수"),
-                                fieldWithPath("data.content[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지")
+                                fieldWithPath("data.content[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지"),
+                                fieldWithPath("data.content[].isDeleted").type(JsonFieldType.BOOLEAN).description("댓글이 삭제된 상태인지 체크")
                         )
                 ))
     }
@@ -192,7 +193,8 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
                     fieldWithPath("data[].isWrittenByMe").type(JsonFieldType.BOOLEAN).description("조회시, 내가 쓴 글인지 여부"),
                     fieldWithPath("data[].depth").type(JsonFieldType.NUMBER).description("현재 댓글 뎁스"),
                     fieldWithPath("data[].childCommentCnt").type(JsonFieldType.NUMBER).description("하위 댓글 개수"),
-                    fieldWithPath("data[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지")
+                    fieldWithPath("data[].onlyDirectChildCnt").type(JsonFieldType.BOOLEAN).description("childCommentCnt가 하위뎁스 하나만인지 전체인지"),
+                    fieldWithPath("data[].isDeleted").type(JsonFieldType.BOOLEAN).description("댓글이 삭제된 상태인지 체크")
                 )
             ))
     }
@@ -257,7 +259,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         )).then { Unit }
 
         val result: ResultActions = this.mockMvc.perform(
-                patch("/club/{clubSeq}/album/{clubAlbumSeq}/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
+                patch("/club/{clubSeq}/album/{clubAlbumSeq}/comment/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
                         .content(objectMapper.writeValueAsString(body))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -293,7 +295,7 @@ class ClubAlbumCommentDocumentation: ApiDocumentationTest() {
         )).then { Unit }
 
         val result: ResultActions = this.mockMvc.perform(
-                delete("/club/{clubSeq}/album/{clubAlbumSeq}/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
+                delete("/club/{clubSeq}/album/{clubAlbumSeq}/comment/{clubAlbumCommentSeq}", club.seq, clubAlbum.seq, clubAlbumComment.seq)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())

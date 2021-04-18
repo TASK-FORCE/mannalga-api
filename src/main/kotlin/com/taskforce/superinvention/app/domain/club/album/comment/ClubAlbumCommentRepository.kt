@@ -36,10 +36,13 @@ class ClubAlbumCommentRepositoryImpl: ClubAlbumCommentRepositoryCustom,
         val user = QUser.user
         val comment = QClubAlbumComment.clubAlbumComment
 
-        // @TODO N+1 issue
         val result = from(comment)
                 .join(comment.clubUser.user, user)
-                .where(eqSeq(comment.clubAlbum, clubAlbumSeq), comment.depth.eq(rootDepth))
+                .where(
+                    eqSeq(comment.clubAlbum, clubAlbumSeq),
+                    comment.depth.eq(rootDepth),
+                    comment.deleteFlag.isFalse
+                )
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
                 .fetchResults()
@@ -64,12 +67,13 @@ class ClubAlbumCommentRepositoryImpl: ClubAlbumCommentRepositoryCustom,
                     .bind(commentCTE.clubUser , comment.clubUser)
                     .bind(commentCTE.createdAt, comment.createdAt)
                     .bind(commentCTE.updatedAt, comment.updatedAt)
-                    .bind(commentCTE.parent, comment.parent)
-                    .bind(commentCTE.depth , comment.depth)
+                    .bind(commentCTE.parent       , comment.parent)
+                    .bind(commentCTE.depth        , comment.depth)
                     .bind(commentCTE.subCommentCnt, comment.subCommentCnt)
+                    .bind(commentCTE.deleteFlag   , comment.deleteFlag)
                     .where(
                         comment.parent.seq.eq(parentCommentSeq),
-                        comment.depth.eq(startDepth)
+                        comment.depth.eq(startDepth),
                     ),
                 BlazeJPAQuery<ClubAlbumCommentCTE>()
                     .from(comment)
@@ -84,7 +88,10 @@ class ClubAlbumCommentRepositoryImpl: ClubAlbumCommentRepositoryCustom,
                     .bind(commentCTE.parent, comment.parent)
                     .bind(commentCTE.depth , comment.depth)
                     .bind(commentCTE.subCommentCnt, comment.subCommentCnt)
-                    .where(comment.depth.loe(limitDepth))
+                    .bind(commentCTE.deleteFlag   , comment.deleteFlag)
+                    .where(
+                        comment.depth.loe(limitDepth),
+                    )
             ))
             .select(commentCTE)
             .from(commentCTE)
