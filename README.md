@@ -19,8 +19,8 @@
 - MySQL
 
 ## 서버 아키텍처
-![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115133365-969ba300-a042-11eb-943a-f592534e2235.png)
-
+![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115134137-91d9ed80-a048-11eb-997f-2a37b4d30cf8.png)
+<br>
 
 ## 프로젝트 실행 방법
 ### MySQL 및 스키마 설정
