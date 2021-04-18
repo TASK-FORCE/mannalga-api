@@ -18,6 +18,10 @@
 - Spring boot
 - MySQL
 
+## 서버 아키텍처
+![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115133365-969ba300-a042-11eb-943a-f592534e2235.png)
+
+
 ## 프로젝트 실행 방법
 ### MySQL 및 스키마 설정
 MySQL 데이터베이스는 프로젝트 내부의 [`src/course/sql/ddl.sql`](https://github.com/TASK-FORCE/mannalga-api/blob/develop/src/course/sql/ddl.sql)을 실행하여 스키마를 만들 수 있습니다.<br>
