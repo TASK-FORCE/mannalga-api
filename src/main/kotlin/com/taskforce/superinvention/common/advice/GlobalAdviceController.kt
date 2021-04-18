@@ -1,6 +1,8 @@
 package com.taskforce.superinvention.common.advice
 
 import com.taskforce.superinvention.common.exception.BizException
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.JwtException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -58,4 +60,10 @@ class GlobalAdviceController {
 
         return ResponseEntity(ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST)
     }
+
+    @ExceptionHandler(ExpiredJwtException::class)
+    fun handleExpiredJwtException(e: Exception): ResponseEntity<ErrorResponse> = ResponseEntity(ErrorResponse("JWT 토큰이 만료되었습니다."), HttpStatus.UNAUTHORIZED)
+
+    @ExceptionHandler(JwtException::class)
+    fun handleJwtException(e: Exception): ResponseEntity<ErrorResponse> = ResponseEntity(ErrorResponse("JWT 토큰이 유효하지 않습니다"), HttpStatus.UNAUTHORIZED)
 }

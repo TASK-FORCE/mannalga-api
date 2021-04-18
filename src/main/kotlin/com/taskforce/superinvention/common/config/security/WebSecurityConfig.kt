@@ -11,12 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.logout.LogoutFilter
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true, securedEnabled = true)
 class WebSecurityConfig(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val filterChainExceptionHandler: FilterChainExceptionHandler,
 ): WebSecurityConfigurerAdapter() {
+
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -49,7 +52,9 @@ class WebSecurityConfig(
 
         // [4] entry point
         http.authorizeRequests()
-            .anyRequest()
-            .permitAll()
+                .anyRequest()
+                .permitAll()
+            .and()
+            .addFilterBefore(filterChainExceptionHandler, LogoutFilter::class.java)
     }
 }
