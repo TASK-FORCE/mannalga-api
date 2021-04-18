@@ -186,6 +186,8 @@ internal class ClubServiceTest: MockTest() {
                     fileName     = "file.jpg",
                 )
 
+        every { webpConvertService.convertToWebP(any()) } returns Unit
+
         // when
         clubService.addClub(superUser, requestBody)
 

@@ -162,7 +162,7 @@ class ClubService(
             val imgFolder = "club/${club.seq}"
             val movedFile: S3Path = awsS3Mo.moveFile(request.img!!, "$imgFolder/${request.img!!.fileName}")
             webpConvertService.convertToWebP(movedFile)
-            
+
             club.mainImageUrl  = movedFile.absolutePath
             club.mainImagePath = movedFile.filePath
             club.mainImageName = movedFile.fileName
