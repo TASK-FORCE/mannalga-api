@@ -35,3 +35,9 @@ GET {{host}}/club/6174/board/7/comment/36
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
+
+### 내 모임 게시글 댓글 삭제
+DELETE {{host}}/club/6212/board/60/comment/107
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDM5NTI4NTk3Iiwic3ViIjoiMTQzOTUyODU5NyIsImlhdCI6MTYxODc0MTU3MCwiZXhwIjoxNjE5MzQ2MzcwfQ.3eAa3y3hgIhQQAfOiq6AW_Qt_Seuf4YcnwBPVNfexpc

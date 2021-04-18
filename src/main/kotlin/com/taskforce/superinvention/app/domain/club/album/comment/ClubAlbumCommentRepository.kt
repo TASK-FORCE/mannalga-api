@@ -41,7 +41,6 @@ class ClubAlbumCommentRepositoryImpl: ClubAlbumCommentRepositoryCustom,
                 .where(
                     eqSeq(comment.clubAlbum, clubAlbumSeq),
                     comment.depth.eq(rootDepth),
-                    comment.deleteFlag.isFalse
                 )
                 .offset(pageable.offset)
                 .limit(pageable.pageSize.toLong())
