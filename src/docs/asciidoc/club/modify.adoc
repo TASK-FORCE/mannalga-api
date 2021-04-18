@@ -12,6 +12,7 @@ endif::[]
 Request
 include::{sub-snippet}/club-modify/http-request.adoc[]
 include::{sub-snippet}/club-modify/path-parameters.adoc[]
+include::{sub-snippet}/club-modify/request-body.adoc[]
 
 Response
 include::{sub-snippet}/club-modify/http-response.adoc[]
