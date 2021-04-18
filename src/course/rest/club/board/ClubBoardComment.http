@@ -40,4 +40,4 @@ Authorization: Bearer {{token-sdm}}
 DELETE {{host}}/club/6212/board/60/comment/107
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDM5NTI4NTk3Iiwic3ViIjoiMTQzOTUyODU5NyIsImlhdCI6MTYxODc0MTU3MCwiZXhwIjoxNjE5MzQ2MzcwfQ.3eAa3y3hgIhQQAfOiq6AW_Qt_Seuf4YcnwBPVNfexpc
+Authorization: Bearer {{token-sdm}}
