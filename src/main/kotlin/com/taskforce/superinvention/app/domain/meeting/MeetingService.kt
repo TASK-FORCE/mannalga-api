@@ -163,7 +163,6 @@ class MeetingService(
     fun applicationCancel(clubUser: ClubUser, meetingApplicationSeq: Long): MeetingApplicationDto{
         val meetingApplication = meetingApplicationRepository
             .findById(meetingApplicationSeq)
-            .filter{!it.deleteFlag}
             .orElseThrow{ meetingApplicationNotFoundException }
 
         if (!meetingApplication.meeting.isOpen()) throw meetingIsClosedException

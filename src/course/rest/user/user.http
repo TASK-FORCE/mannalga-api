@@ -2,7 +2,7 @@
 GET {{host}} /users/check-already-register
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDM5NTI4NTk3Iiwic3ViIjoiMTQzOTUyODU5NyIsImlhdCI6MTYxNzA5MDk3NiwiZXhwIjoxNjE3MDkyNzc2fQ.WC21kPa-PkFCsAbm2gWFQo0g3hlHd5IzKZqvbq2w19I
 
 ### 유저 백도어 조회
 GET {{host}}/users/door/꽑꽑이
@@ -15,7 +15,7 @@ Content-Type: application/json;charset=UTF-8
 Accept: application/json
 
 ### 유저 앱토큰 조회
-GET {{host}}/users/door-seq/8981
+GET {{host}}/users/door-seq/1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 
@@ -26,7 +26,7 @@ Content-type: application/x-www-form-urlencoded;charset=utf-8
 
 ### 카카오 유저 정보
 GET {{host}}/users/kakao-profile
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxMTQ4NTEwOCwiZXhwIjoxNjQzMDIxMTA4fQ.gJg2APZdNtewO_OIfkAhbLB0ZJzBYrTZUjR72JvzXqI
 
 ### 카카오 유저 정보
 GET {{host}}/users/kakao-profile
@@ -54,10 +54,10 @@ Authorization: Bearer {{token-tester}}
 GET {{host}}/users/profile
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-sdm}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDUxMDAxNjQ5Iiwic3ViIjoiMTQ1MTAwMTY0OSIsImlhdCI6MTYxODY3NTk4NiwiZXhwIjoxNjE4Njc1ODY2fQ.A9y49aFlBduAMkVMfdWNFrudeJ0YtaMEGJ3Honk4Rl4
 
 
-### 내 정보
+### 탈퇴
 PATCH {{host}}/users
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
@@ -70,3 +70,8 @@ Authorization: Bearer {{token-sdm}}
     "fileName": "20210327045227-99731ad1-213d-4075-a032-79f3508fdf18-test-img.jpg"
   }
 }
+
+### 탈퇴2
+DELETE {{host}}/users/withdraw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxNDEyMzc1MzA5Iiwic3ViIjoiMTQxMjM3NTMwOSIsImlhdCI6MTYxODcxNDE3OSwiZXhwIjoxNjE5MzE4OTc5fQ.7DYUDnCojty95oHF8ikOWVJigrIdSTVUVuiFEJJ9rv0
+Accept: application/json
