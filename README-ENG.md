@@ -21,7 +21,7 @@ Register your interests and join the meeting!
 - MySQL
 
 ## Server Architecture
-![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115133383-ba5ee900-a042-11eb-86dd-a8685e8ada17.png)
+![MANNALGA arch](https://user-images.githubusercontent.com/46917538/115134137-91d9ed80-a048-11eb-997f-2a37b4d30cf8.png)
 
 ## Installation and Getting Started
 ### Setting MySQL DB And Schema
