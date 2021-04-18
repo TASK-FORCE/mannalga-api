@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumCommentService(
-    private val roleService: RoleService,
-    private val clubAlbumService: ClubAlbumService,
-    private val clubUserService: ClubUserService,
-    private val commentRepository  : ClubAlbumCommentRepository
+    private val roleService       : RoleService,
+    private val clubAlbumService  : ClubAlbumService,
+    private val clubUserService   : ClubUserService,
+    private val commentRepository : ClubAlbumCommentRepository
 ) {
 
     fun getValidCommentBySeq(commentSeq: Long): ClubAlbumComment {
@@ -78,11 +78,12 @@ class ClubAlbumCommentService(
         }
 
         val comment = ClubAlbumComment(
-            content = body.content,
-            clubUser = clubUser,
-            clubAlbum = clubAlbum,
-            parent = parentComment,
-            depth = depth
+            content    = body.content,
+            clubUser   = clubUser,
+            clubAlbum  = clubAlbum,
+            parent     = parentComment,
+            depth      = depth,
+            deleteFlag = false
         )
 
         return commentRepository.save(comment)
@@ -113,10 +114,28 @@ class ClubAlbumCommentService(
         val comment  = getValidCommentBySeq(clubAlbumCommentSeq)
 
         // 관리자이거나, 작성자만 삭제 가능
-        if(!roleService.hasClubManagerAuth(clubUser) && clubUser != comment.clubUser) {
-            throw OnlyWriterCanAccessException("댓글 작성자와 관리자만 삭제 할 수 있습니다.")
+        val hasManagerAuth = roleService.hasClubManagerAuth(clubUser)
+        val isWriter       = clubUser == comment.clubUser
+
+        if(!hasManagerAuth && !isWriter) {
+            throw OnlyWriterCanAccessException("댓글은 작성자와 관리자만 삭제 할 수 있습니다.")
         }
 
-        commentRepository.delete(comment)
+        val directChildComments = commentRepository.findChildCommentsWithWriter(
+            parentCommentSeq = comment.seq!!,
+            startDepth       = comment.depth + 1,
+            limitDepth       = comment.depth + 2
+        )
+
+        if(directChildComments.isEmpty()) {
+            commentRepository.delete(comment)
+        } else {
+            comment.deleteFlag = true
+            comment.content = if(isWriter) {
+                "작성자가 삭제한 댓글입니다"
+            } else {
+                "관리자가 삭제한 댓글입니다"
+            }
+        }
     }
 }

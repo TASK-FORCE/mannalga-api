@@ -12,21 +12,24 @@ import javax.persistence.ManyToOne
 @CTE
 @Entity
 class ClubAlbumCommentCTE(
-        var content: String,
+    var content: String,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="parent_comment_seq")
-        var parent: ClubAlbumComment?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="parent_comment_seq")
+    var parent: ClubAlbumComment?,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="club_user_seq")
-        var clubUser: ClubUser,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="club_user_seq")
+    var clubUser: ClubUser,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="club_album_seq")
-        var clubAlbum: ClubAlbum,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="club_album_seq")
+    var clubAlbum: ClubAlbum,
 
-        var depth: Long,
+    var depth: Long,
 
-        var subCommentCnt: Long?
+    var subCommentCnt: Long?,
+
+    var deleteFlag: Boolean ?= false
+
 ): BaseEntity()

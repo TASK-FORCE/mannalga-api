@@ -1,11 +1,11 @@
 ###  내 클럽 사진첩 댓글 조회
-GET  {{host}}/club/6174/album/6943/comment
+GET  {{host}}/club/6174/album/9108/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-Authorization: Bearer {{token-dong}}
+Authorization: Bearer {{token-sdm}}
 
 ### 내 모임 사진첩 댓글 등록 - 루트
-POST {{host}}/club/6174/album/6943/comment
+POST {{host}}/club/9000/album/9120/comment
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
@@ -15,7 +15,7 @@ Authorization: Bearer {{token-sdm}}
 }
 
 ### 내 모임 사진첩 대댓글 조회
-GET {{host}}/club/6174/album/6943/comment/6887
+GET {{host}}/club/9000/album/9120/comment/12083?depthLimit=2
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Authorization: Bearer {{token-sdm}}
@@ -29,3 +29,8 @@ Authorization: Bearer {{token-sdm}}
 {
   "content" : "테스트 대댓글"
 }
+
+### 댓글 삭제
+DELETE {{host}}/club/9000/album/9120/comment/12083
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer {{token-sdm}}

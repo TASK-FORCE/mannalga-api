@@ -67,9 +67,10 @@ class ClubBoardCommentRepositoryImpl: ClubBoardCommentRepositoryCustom,
                     .bind(commentCTE.clubUser , comment.clubUser)
                     .bind(commentCTE.createdAt, comment.createdAt)
                     .bind(commentCTE.updatedAt, comment.updatedAt)
-                    .bind(commentCTE.parent, comment.parent)
-                    .bind(commentCTE.depth , comment.depth)
+                    .bind(commentCTE.parent       , comment.parent)
+                    .bind(commentCTE.depth        , comment.depth)
                     .bind(commentCTE.subCommentCnt, comment.subCommentCnt)
+                    .bind(commentCTE.deleteFlag   , comment.deleteFlag)
                     .where(
                         comment.parent.seq.eq(parentCommentSeq),
                         comment.depth.eq(startDepth)
@@ -87,7 +88,10 @@ class ClubBoardCommentRepositoryImpl: ClubBoardCommentRepositoryCustom,
                     .bind(commentCTE.parent, comment.parent)
                     .bind(commentCTE.depth , comment.depth)
                     .bind(commentCTE.subCommentCnt, comment.subCommentCnt)
-                    .where(comment.depth.loe(limitDepth))
+                    .bind(commentCTE.deleteFlag   , comment.deleteFlag)
+                    .where(
+                        comment.depth.loe(limitDepth)
+                    )
             ))
             .select(commentCTE)
             .from(commentCTE)

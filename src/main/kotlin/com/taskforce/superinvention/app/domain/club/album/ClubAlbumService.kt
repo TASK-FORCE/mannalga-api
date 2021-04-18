@@ -1,6 +1,5 @@
 package com.taskforce.superinvention.app.domain.club.album
 
-import com.taskforce.superinvention.app.domain.club.ClubRepository
 import com.taskforce.superinvention.app.domain.club.ClubService
 import com.taskforce.superinvention.app.domain.club.album.image.ClubAlbumImageService
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
@@ -15,14 +14,12 @@ import com.taskforce.superinvention.common.exception.BizException
 import com.taskforce.superinvention.common.exception.InvalidInputException
 import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.WithdrawClubUserNotAllowedException
-import com.taskforce.superinvention.common.exception.club.ClubNotFoundException
 import com.taskforce.superinvention.common.exception.club.UserIsNotClubMemberException
 import com.taskforce.superinvention.common.exception.club.album.ClubAlbumNotFoundException
 import com.taskforce.superinvention.common.exception.club.album.NoAuthForClubAlbumException
 import com.taskforce.superinvention.common.exception.common.IsAlreadyDeletedException
 import com.taskforce.superinvention.common.util.aws.s3.isValidPath
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -31,12 +28,12 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ClubAlbumService(
-    private val roleService: RoleService,
-    private val clubService: ClubService,
-    private val clubUserService: ClubUserService,
-    private val clubAlbumImgService: ClubAlbumImageService,
-    private val clubUserRepository : ClubUserRepository,
-    private val clubAlbumRepository: ClubAlbumRepository,
+    private val roleService            : RoleService,
+    private val clubService            : ClubService,
+    private val clubUserService        : ClubUserService,
+    private val clubAlbumImgService    : ClubAlbumImageService,
+    private val clubUserRepository     : ClubUserRepository,
+    private val clubAlbumRepository    : ClubAlbumRepository,
     private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
 
     @Value("\${host.static.path}")

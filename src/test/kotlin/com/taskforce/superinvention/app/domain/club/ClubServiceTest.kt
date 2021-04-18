@@ -101,7 +101,6 @@ internal class ClubServiceTest: MockTest() {
             regionService                = regionService,
             roleService                  = roleService,
             clubAlbumRepository          = clubAlbumRepository,
-            clubAlbumCommentRepository   = clubAlbumCommentRepository,
             clubBoardRepository          = clubBoardRepository,
             clubBoardCommentRepository   = clubBoardCommentRepository,
             clubBoardLikeRepository      = clubBoardLikeRepository,

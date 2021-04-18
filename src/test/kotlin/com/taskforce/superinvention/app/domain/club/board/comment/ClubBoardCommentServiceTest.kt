@@ -89,7 +89,6 @@ internal class ClubBoardCommentServiceTest {
         every { clubBoardCommentRepository.save(any()) }.returnsArgument(0)
         every { roleService.hasClubMemberAuth(clubUser) }.returns(true)
 
-
         // when
         val result = clubBoardCommentService.registerComment(
             club.seq!!,
@@ -183,11 +182,13 @@ internal class ClubBoardCommentServiceTest {
 
     @Test
     fun `댓글 작성자가 댓글 삭제를 삭제할 경우 성공해야 한다`() {
+
         // given
         every { clubUserService.getValidClubUser(club.seq!!, user) }.returns(clubUser)
         every { clubBoardCommentService.getValidCommentBySeq(any()) }.returns(clubBoardComment)
         every { roleService.hasClubManagerAuth(clubUser) }.returns(false)
         every { clubBoardCommentRepository.delete(clubBoardComment) }.returns(mockk())
+        every { clubBoardCommentRepository.findChildCommentsWithWriter(clubBoardComment.seq!!) } returns emptyList()
 
         // when
         clubBoardCommentService.removeComment(club.seq!!, clubBoard.seq!!, clubBoardComment.seq!!, user)
@@ -198,6 +199,7 @@ internal class ClubBoardCommentServiceTest {
 
     @Test
     fun `댓글 작성자가 아닌 매니저가 댓글을 삭제할 경우 성공해야 한다`() {
+
         // given
         val manager = User("MANAGER")
         val managerClubUser = ClubUser(club, manager)
@@ -205,6 +207,7 @@ internal class ClubBoardCommentServiceTest {
         every { clubBoardCommentService.getValidCommentBySeq(any()) }.returns(clubBoardComment)
         every { roleService.hasClubManagerAuth(managerClubUser) }.returns(true)
         every { clubBoardCommentRepository.delete(clubBoardComment) }.returns(mockk())
+        every { clubBoardCommentRepository.findChildCommentsWithWriter(clubBoardComment.seq!!) } returns emptyList()
 
         // when
         clubBoardCommentService.removeComment(club.seq!!, clubBoard.seq!!, clubBoardComment.seq!!, manager)

@@ -51,7 +51,7 @@ class ClubBoardCommentController(
         return ResponseDto(data = "")
     }
 
-    @PatchMapping("/{clubBoardCommentSeq}")
+    @PatchMapping("/comment/{clubBoardCommentSeq}")
     fun editClubBoardComment(@AuthUser     user        : User,
                              @PathVariable clubSeq     : Long,
                              @PathVariable clubBoardSeq: Long,
@@ -62,7 +62,7 @@ class ClubBoardCommentController(
         return ResponseDto(data = "")
     }
 
-    @DeleteMapping("/{clubBoardCommentSeq}")
+    @DeleteMapping("/comment/{clubBoardCommentSeq}")
     fun deleteClubBoardComment(@AuthUser     user        : User,
                                @PathVariable clubSeq     : Long,
                                @PathVariable clubBoardSeq: Long,

@@ -14,22 +14,24 @@ import javax.persistence.ManyToOne
 @Entity
 class ClubBoardCommentCTE(
 
-        var content: String,
+    var content: String,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="parent_comment_seq")
-        var parent: ClubBoardComment?,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="parent_comment_seq")
+    var parent: ClubBoardComment?,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="club_user_seq")
-        var clubUser: ClubUser,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="club_user_seq")
+    var clubUser: ClubUser,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name="club_board_seq")
-        var clubBoard: ClubBoard,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="club_board_seq")
+    var clubBoard: ClubBoard,
 
-        var depth: Long,
+    var depth: Long,
 
-        var subCommentCnt: Long?
+    var subCommentCnt: Long?,
 
-): BaseEntity()
+    var deleteFlag: Boolean ?= false,
+
+    ): BaseEntity()

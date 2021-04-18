@@ -57,27 +57,25 @@ import java.util.*
 
 @Service
 class ClubService(
-        private var clubRepository: ClubRepository,
-        private val clubUserService: ClubUserService,
-        private var roleService: RoleService,
-        private var interestService: InterestService,
-        private var regionService: RegionService,
-        private var clubUserRepository: ClubUserRepository,
-        private var clubInterestRepository: ClubInterestRepository,
-        private var clubRegionRepository: ClubRegionRepository,
-        private var clubUserRoleRepository: ClubUserRoleRepository,
-        private var clubAlbumRepository: ClubAlbumRepository,
-        private val clubAlbumCommentRepository: ClubAlbumCommentRepository,
-        private val clubBoardRepository: ClubBoardRepository,
-        private val clubBoardCommentRepository: ClubBoardCommentRepository,
-        private val clubBoardLikeRepository: ClubBoardLikeRepository,
-        private val clubBoardImgRepository: ClubBoardImgRepository,
-        private val meetingRepository: MeetingRepository,
-        private val meetingApplicationRepository: MeetingApplicationRepository,
-        private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
-        private val webpConvertService: WebpConvertService,
-        private val awsS3Mo: AwsS3Mo,
-
+    private var clubRepository: ClubRepository,
+    private val clubUserService: ClubUserService,
+    private var roleService: RoleService,
+    private var interestService: InterestService,
+    private var regionService: RegionService,
+    private var clubUserRepository: ClubUserRepository,
+    private var clubInterestRepository: ClubInterestRepository,
+    private var clubRegionRepository: ClubRegionRepository,
+    private var clubUserRoleRepository: ClubUserRoleRepository,
+    private var clubAlbumRepository: ClubAlbumRepository,
+    private val clubBoardRepository: ClubBoardRepository,
+    private val clubBoardCommentRepository: ClubBoardCommentRepository,
+    private val clubBoardLikeRepository: ClubBoardLikeRepository,
+    private val clubBoardImgRepository: ClubBoardImgRepository,
+    private val meetingRepository: MeetingRepository,
+    private val meetingApplicationRepository: MeetingApplicationRepository,
+    private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
+    private val webpConvertService: WebpConvertService,
+    private val awsS3Mo: AwsS3Mo,
 ) {
 
     companion object {
@@ -413,14 +411,16 @@ class ClubService(
             val clubAlbumCommentList = clubAlbumList.flatMap { it.clubAlbumComments }.toList()
             LOG.info("삭제 대상 사진첩 댓글 ${clubAlbumCommentList.size}개")
 
-            // 모임 사진첩 좋아요
-            val clubAlbumLikeList = clubAlbumLikeRepository.findByClubAlbumIn(clubAlbumList)
-
             if (clubAlbumCommentList.isNotEmpty()) {
                 LOG.info("사진첩 댓글 삭제 시작")
-                clubAlbumCommentRepository.deleteAll(clubAlbumCommentList)
+                for (clubAlbumComment in clubAlbumCommentList) {
+                    clubAlbumComment.deleteFlag = true
+                    clubAlbumComment.content    = "탈퇴한 모임원의 게시글입니다."
+                }
             }
-            
+
+            // 모임 사진첩 좋아요
+            val clubAlbumLikeList = clubAlbumLikeRepository.findByClubAlbumIn(clubAlbumList)
             if (clubAlbumLikeList.isNotEmpty()) {
                 LOG.info("사진첩 좋아요 삭제 시작")
                 clubAlbumLikeRepository.deleteAll(clubAlbumLikeList)
@@ -449,7 +449,10 @@ class ClubService(
 
             if (clubBoardCommentList.isNotEmpty()) {
                 LOG.info("게시판 댓글 삭제 시작")
-                clubBoardCommentRepository.deleteAll(clubBoardCommentList)
+                for (comment in clubBoardCommentList) {
+                    comment.deleteFlag = true
+                    comment.content    = "탈퇴된 사용자의 게시글입니다."
+                }
             }
 
             if (clubBoardLikeList.isNotEmpty()) {
@@ -493,7 +496,6 @@ class ClubService(
             LOG.info("모임원 삭제 시작")
             clubUserRepository.deleteAll(clubUserList)
         }
-
 
         if (clubInterests.isNotEmpty()) {
             LOG.info("모임 관심사 삭제 시작")

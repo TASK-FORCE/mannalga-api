@@ -20,7 +20,8 @@ data class ClubBoardCommentListDto(
     val isWrittenByMe: Boolean,
     val depth: Long,
     var childCommentCnt   : Long    ? = 0,
-    val onlyDirectChildCnt: Boolean ?= false
+    val onlyDirectChildCnt: Boolean ?= false,
+    val isDeleted         : Boolean
 ) {
 
     constructor(clubBoardComment: ClubBoardComment) :this(
@@ -32,7 +33,8 @@ data class ClubBoardCommentListDto(
         writerSeq        = clubBoardComment.clubUser.user.seq!!,
         depth            = clubBoardComment.depth,
         imgUrl           = clubBoardComment.clubUser.user.profileImageLink ?: "",
-        isWrittenByMe    = false
+        isWrittenByMe    = false,
+        isDeleted        = clubBoardComment.deleteFlag!!
     ) {
         childCommentCnt = if(onlyDirectChildCnt == true) {
             clubBoardComment.subCommentCnt
@@ -50,7 +52,8 @@ data class ClubBoardCommentListDto(
         writerSeq        = clubBoardComment.clubUser.user.seq!!,
         depth            = clubBoardComment.depth,
         imgUrl           = clubBoardComment.clubUser.user.profileImageLink ?: "",
-        isWrittenByMe    = user.seq == clubBoardComment.clubUser.user.seq
+        isWrittenByMe    = user.seq == clubBoardComment.clubUser.user.seq,
+        isDeleted        = clubBoardComment.deleteFlag!!
     ) {
         childCommentCnt = if(onlyDirectChildCnt == true) {
             clubBoardComment.subCommentCnt
@@ -69,7 +72,8 @@ data class ClubBoardCommentListDto(
         imgUrl           = clubBoardComment.clubUser.user.profileImageLink ?: "",
         depth            = clubBoardComment.depth,
         childCommentCnt  = clubBoardComment.subCommentCnt ?: 0,
-        isWrittenByMe    = false
+        isWrittenByMe    = false,
+        isDeleted        = clubBoardComment.deleteFlag!!
     )
 
     constructor(clubBoardComment: ClubBoardCommentCTE, user: User): this(
@@ -82,6 +86,7 @@ data class ClubBoardCommentListDto(
         imgUrl           = clubBoardComment.clubUser.user.profileImageLink ?: "",
         depth            = clubBoardComment.depth,
         childCommentCnt  = clubBoardComment.subCommentCnt ?: 0,
-        isWrittenByMe    = user.seq == clubBoardComment.clubUser.user.seq
+        isWrittenByMe    = user.seq == clubBoardComment.clubUser.user.seq,
+        isDeleted        = clubBoardComment.deleteFlag!!
     )
 }

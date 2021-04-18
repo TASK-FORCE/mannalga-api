@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ClubBoardCommentService(
     private val commentRepository: ClubBoardCommentRepository,
-    private val clubBoardService: ClubBoardService,
-    private val clubUserService: ClubUserService,
-    private val roleService: RoleService
+    private val clubBoardService : ClubBoardService,
+    private val clubUserService  : ClubUserService,
+    private val roleService      : RoleService
 ) {
 
     fun getValidCommentBySeq(commentSeq: Long): ClubBoardComment {
@@ -75,7 +75,6 @@ class ClubBoardCommentService(
             throw InsufficientAuthException("탈퇴한 유저는 댓글을 등록하실 수 없습니다.")
         }
 
-
         var parentComment: ClubBoardComment?= null
         var depth = 1L
 
@@ -89,7 +88,8 @@ class ClubBoardCommentService(
             clubUser = clubUser,
             clubBoard = clubBoard,
             parent = parentComment,
-            depth = depth
+            depth = depth,
+            deleteFlag = false
         )
 
         return commentRepository.save(comment)
@@ -125,10 +125,28 @@ class ClubBoardCommentService(
         val comment  = getValidCommentBySeq(clubBoardCommentSeq)
 
         // 관리자이거나, 작성자만 삭제 가능
-        if(!roleService.hasClubManagerAuth(clubUser) && clubUser != comment.clubUser) {
+        val isManager = roleService.hasClubManagerAuth(clubUser)
+        val isWriter  = clubUser == comment.clubUser
+
+        if(!isManager && !isWriter) {
             throw OnlyWriterCanAccessException("댓글 작성자와 관리자만 삭제 할 수 있습니다.")
         }
 
-        commentRepository.delete(comment)
+        val directChildCommentList = commentRepository.findChildCommentsWithWriter(
+            parentCommentSeq = comment.seq!!,
+            startDepth = comment.depth + 1,
+            limitDepth = comment.depth + 2
+        )
+
+        if(directChildCommentList.isEmpty()) {
+            commentRepository.delete(comment)
+        }else {
+            comment.deleteFlag = true
+            comment.content = if(isWriter) {
+                "작성자가 삭제한 댓글입니다"
+            } else {
+                "관리자가 삭제한 댓글입니다"
+            }
+        }
     }
 }
