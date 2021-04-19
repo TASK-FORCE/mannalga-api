@@ -34,7 +34,7 @@ class MeetingApplicationRepositoryImpl : QuerydslRepositorySupport(MeetingApplic
         return from(meetingApplication)
             .join(meetingApplication.meeting, meeting)
             .join(meetingApplication.clubUser, clubUser)
-            .where(clubUser.eq(clubUser), meeting.deleteFlag.isFalse, meeting.endTimestamp.after(LocalDateTime.now()), meetingApplication.deleteFlag.isFalse)
+            .where(clubUser.eq(targetClubUser), meeting.deleteFlag.isFalse, meeting.endTimestamp.after(LocalDateTime.now()), meetingApplication.deleteFlag.isFalse)
             .fetch()
     }
 }
