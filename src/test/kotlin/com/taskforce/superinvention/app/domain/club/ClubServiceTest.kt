@@ -109,7 +109,8 @@ internal class ClubServiceTest: MockTest() {
             meetingApplicationRepository = meetingApplicationRepository,
             clubAlbumLikeRepository      = clubAlbumLikeRepository,
             awsS3Mo                      = awsS3Mo,
-            webpConvertService           = webpConvertService
+            webpConvertService           = webpConvertService,
+            imgHost = "imgHost"
         )
 
         every { clubRepository.save(any()) }.returns(mockk())
