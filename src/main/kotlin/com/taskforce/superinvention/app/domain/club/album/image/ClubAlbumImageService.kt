@@ -28,6 +28,9 @@ class ClubAlbumImageService (
     @Transactional
     fun editClubAlbumImage(clubAlbum: ClubAlbum, s3Path: S3Path): S3Path {
 
+        if(clubAlbum.img_url == s3Path.filePath) {
+            return s3Path
+        }
 
         val imgFolder = "clubAlbumImg/${clubAlbum.seq}"
         val movedFile = awsS3Mo.moveFile(s3Path, "$imgFolder/${s3Path.fileName}")
