@@ -1,7 +1,6 @@
 package com.taskforce.superinvention.app.domain.club
 
 import com.taskforce.superinvention.app.domain.club.album.ClubAlbumRepository
-import com.taskforce.superinvention.app.domain.club.album.comment.ClubAlbumCommentRepository
 import com.taskforce.superinvention.app.domain.club.album.like.ClubAlbumLikeRepository
 import com.taskforce.superinvention.app.domain.club.board.ClubBoardRepository
 import com.taskforce.superinvention.app.domain.club.board.comment.ClubBoardCommentRepository
@@ -25,7 +24,6 @@ import com.taskforce.superinvention.app.domain.region.ClubRegion
 import com.taskforce.superinvention.app.domain.region.ClubRegionRepository
 import com.taskforce.superinvention.app.domain.region.RegionService
 import com.taskforce.superinvention.app.domain.user.User
-import com.taskforce.superinvention.app.domain.user.UserRepository
 import com.taskforce.superinvention.app.web.dto.club.*
 import com.taskforce.superinvention.app.web.dto.club.album.ClubAlbumSearchOption
 import com.taskforce.superinvention.app.web.dto.club.board.ClubBoardSearchOpt
@@ -45,6 +43,7 @@ import org.apache.commons.io.FilenameUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -53,7 +52,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class ClubService(
@@ -76,12 +74,14 @@ class ClubService(
     private val clubAlbumLikeRepository: ClubAlbumLikeRepository,
     private val webpConvertService: WebpConvertService,
     private val awsS3Mo: AwsS3Mo,
+
+    @Value("\${host.static.path}")
+    private var imgHost: String,
 ) {
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(ClubService::class.java)
     }
-
 
     @Autowired
     lateinit var meetingService: MeetingService
@@ -243,6 +243,7 @@ class ClubService(
 
         val result = clubRepository.search(request.text, regionSeqList, request.interestSeq, request.interestGroupSeq, pageable)
         val mappingContents = result.content.map { e ->  ClubWithRegionInterestDto(
+                imgHost = imgHost,
                 club = e,
                 userCount = e.userCount ?: 0
         )}.toList()
@@ -290,7 +291,7 @@ class ClubService(
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun getClubWithPriorityDto(clubSeq: Long): ClubWithRegionInterestDto {
         val club = getValidClubBySeq(clubSeq)
-        return ClubWithRegionInterestDto(club, club.clubUser.size.toLong())
+        return ClubWithRegionInterestDto(club, club.clubUser.size.toLong(), imgHost)
     }
 
     @Transactional

@@ -304,7 +304,7 @@ class ClubDocumentation: ApiDocumentationTest() {
 
 
         `when`(clubService.getClubWithPriorityDto(clubSeq))
-                .thenReturn(ClubWithRegionInterestDto(club, 5L))
+                .thenReturn(ClubWithRegionInterestDto(club, 5L, "file-mannalga.com"))
 
         `when`(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).thenReturn(true)
 
@@ -648,7 +648,7 @@ class ClubDocumentation: ApiDocumentationTest() {
 
 
         `when`(clubService.getClubWithPriorityDto(clubSeq))
-                .thenReturn(ClubWithRegionInterestDto(club, 5L))
+                .thenReturn(ClubWithRegionInterestDto(club, 5L, "file-mannalga.com"))
 
         `when`(roleService.hasClubManagerAuth(MockitoHelper.anyObject())).thenReturn(true)
 

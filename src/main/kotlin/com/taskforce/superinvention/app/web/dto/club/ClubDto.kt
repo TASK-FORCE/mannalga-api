@@ -131,14 +131,14 @@ data class ClubWithRegionInterestDto (
         var interests: List<InterestWithPriorityDto>,
         var regions: List<RegionWithPriorityDto>
 ) {
-    constructor(club : Club, userCount: Long):
+    constructor(club: Club, userCount: Long, imgHost: String):
             this(
                     club.seq,
                     club.name,
                     club.description,
                     club.maximumNumber,
                     userCount,
-                    club.mainImageUrl,
+                    "${imgHost}/${club.mainImagePath}",
                     club.clubInterests.map(::InterestWithPriorityDto),
                     club.clubRegions.map(::RegionWithPriorityDto)
             )
