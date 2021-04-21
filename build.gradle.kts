@@ -12,6 +12,12 @@ plugins {
     kotlin("plugin.noarg")    version "1.4.21"
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.Embeddable")
+    annotation("javax.persistence.MappedSuperclass")
+}
+
 group = "com.taskforce"
 version = "SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
