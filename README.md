@@ -77,11 +77,11 @@ result.andExpect(status().isOk)
 
 
 #### Type-Safe JPQL 및 QueryDSL 적용
-단순 문자열로 SQL을 구현하게되면 사람의 실수로 인해 에러가 발생하기 쉽습니다. 
-테이블의 필드명을 잘못 입력한다던가, 문법에 오타가 발생 할 수 있으며
+단순 문자열로 SQL을 구현하게되면 사람의 실수로 인해 에러가 발생하기 쉽습니다.   
+테이블의 필드명을 잘못 입력한다던가, 문법에 오타가 발생 할 수 있으며 
 
-이를 확인하게 되는 시점은 해당 쿼리가 실제 동작하는 단계입니다. (JPQL도 예외는 아닙니다)
-QueryDSL과 같이 Type-Safe한 쿼리 빌더를 사용한다면 이러한 실수를 조금 더 일찍 발견할 수 있습니다. 
+이를 확인하게 되는 시점은 해당 쿼리가 실제 동작하는 단계입니다. (JPQL도 예외는 아닙니다)  
+QueryDSL과 같이 Type-Safe한 쿼리 빌더를 사용한다면 이러한 실수를 조금 더 일찍 발견할 수 있습니다.   
 
 ```kotlin
 @Transactional
@@ -97,8 +97,9 @@ override fun findMeetingApplicationByUserAndMeetingSeq(clubUserParam: ClubUser, 
 ```
 
 #### WEBP 포맷 지원 
-웹의 트래픽중 많은 부분은 이미지가 차지하고 있습니다. 이미지들의 용량이 클 경우, 사용자가 이미지를 보기위해 대기하는 시간이 점점 길어집니다. 
-HTTP 2.0을 적용하면 이부분을 일부 해소 할 수 있지만, 우리는 이미지의 용량 자체를 줄여보고 싶었습니다. 
+웹의 트래픽중 많은 부분은 이미지가 차지하고 있습니다.  
+이미지들의 용량이 클 경우, 사용자가 이미지를 보기위해 대기하는 시간이 점점 길어집니다.  
+HTTP 2.0을 적용하면 이부분을 일부 해소 할 수 있지만, 우리는 이미지의 용량 자체를 줄여보고 싶었습니다.   
 
 그래서 기존의 gif, jpg, png 형식을 구글에서 제공하는 WEBP 포맷으로 변환하여 용량을 줄이도록 프로세스를 추가하였습니다.
 
@@ -124,7 +125,7 @@ http 1.1 상에서 **HOLB(head of line blocking)** 현상이 발생합니다.
 네트워크 | ![http1](https://user-images.githubusercontent.com/50672087/115439666-cb2d7b80-a249-11eb-94c9-445512c7e585.PNG) | ![http2](https://user-images.githubusercontent.com/50672087/115439798-f1ebb200-a249-11eb-9a0f-014f152afb89.PNG)
 
 HTTP 1.1 상에서 크롬은 한번에 최대 6개 밖에 TCP 커넥션을 열 수 없어    
-이후 요청에 대해 HOLB가 발생하는 것을 볼 수 있는 것 확인   
+이후 요청에 대해 HOLB가 발생하는 것을 볼 수 있는 것 확인 할 수 있습니다. 
 
 ![image](https://user-images.githubusercontent.com/50672087/115440626-e947ab80-a24a-11eb-9991-cea147cf9afa.png)
 
