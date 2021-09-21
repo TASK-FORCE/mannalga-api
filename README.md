@@ -13,6 +13,8 @@
 - [mannal.ga](http://mannal.ga)
 - [API Document](http://mannal.ga:8080/docs/index.html)
 
+> 2021.09.16 ~ 2021.09.30 이사로 인한 서비스 불가 [[이슈]](https://github.com/TASK-FORCE/mannalga-api/issues/419)
+
 ## 주 사용 기술
 - Kotlin 1.4
 - Spring boot
