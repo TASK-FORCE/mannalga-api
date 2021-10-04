@@ -8,6 +8,7 @@ import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumComm
 import com.taskforce.superinvention.app.web.dto.club.album.comment.ClubAlbumCommentRegisterDto
 import com.taskforce.superinvention.app.web.dto.common.PageDto
 import com.taskforce.superinvention.common.exception.ResourceNotFoundException
+import com.taskforce.superinvention.common.exception.auth.InsufficientAuthException
 import com.taskforce.superinvention.common.exception.auth.OnlyWriterCanAccessException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -67,6 +68,10 @@ class ClubAlbumCommentService(
                         body: ClubAlbumCommentRegisterDto): ClubAlbumComment {
 
         val clubUser = clubUserService.getValidClubUser(clubSeq, user)
+        if (!roleService.hasClubMemberAuth(clubUser)) {
+            throw InsufficientAuthException("탈퇴한 유저는 댓글 등록을 할 수 없습니다.")
+        }
+
         val clubAlbum= clubAlbumService.getValidClubAlbumBySeq(clubAlbumSeq)
 
         var parentComment: ClubAlbumComment ?= null
